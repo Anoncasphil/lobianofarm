@@ -11,9 +11,6 @@
 </head>
 <body>
 
-<!-- etits -->
- <!-- bobo si ralph -->
-	
 	<!-- SIDEBAR -->
 	<section id="sidebar">
 
