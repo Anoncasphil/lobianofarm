@@ -12,7 +12,7 @@
 <body>
 
 <!-- etits -->
- <!-- bobo si ralph -->
+ <!-- bobo si ralph , bobo ka phil-->
 	
 	<!-- SIDEBAR -->
 	<section id="sidebar">
