@@ -7,7 +7,7 @@
 	<link href='https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css' rel='stylesheet'>
 	<link rel="stylesheet" href="styles/style.css">
 	
-	<title>Cabuquin</title>
+	<title>CABUQUIN</title>
 </head>
 <body>
 	
