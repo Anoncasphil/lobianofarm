@@ -10,7 +10,10 @@
 	<title>CABUQUIN</title>
 </head>
 <body>
-	
+
+<!-- etits -->
+ <!-- bobo si ralph , bobo ka phil-->
+	<!-- Ewan ko ba -->
 	<!-- SIDEBAR -->
 	<section id="sidebar">
 
