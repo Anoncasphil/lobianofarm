@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Testing</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link rel="stylesheet" href="/src/calendar.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="/src/styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" />
+</head>
+<body class="flex justify-center items-center">
+    <a href="main_page_logged.html" class="absolute top-10 left-10 text-gray-700 hover:text-gray-900 text-lg">
+        <i class="fa-solid fa-arrow-left"></i>
+      </a>
+      
+    <div id="main_container" class="flex flex-row justify-self-center w-[95%] h-[95%]">
+        <div id="input_container" class="flex flex-col h-full w-[70%]">
+            <div id="customer_details_input" class="flex flex-col w-[80%] h-[40%] mt-[10%]">
+                <!-- Name Inputs -->
+                <div id="name_input" class="flex justify-between w-full gap-5">
+                    <div class="flex flex-col w-[48%]">
+                        <label class="mb-1 text-sm font-medium">First Name</label>
+                        <input type="text" class="w-full h-10 rounded-md border border-gray-300 px-2 focus:outline-none focus:ring-2 focus:ring-blue-400">
+                    </div>
+                    <div class="flex flex-col w-[48%]">
+                        <label class="mb-1 text-sm font-medium">Last Name</label>
+                        <input type="text" class="w-full h-10 rounded-md border border-gray-300 px-2 focus:outline-none focus:ring-2 focus:ring-blue-400">
+                    </div>
+                </div>
+            
+                <!-- Electronic Inputs -->
+                <div id="electronic_input" class="flex justify-between w-full h-[50%] gap-5 mt-3">
+                    <div class="flex flex-col w-[48%]">
+                        <label class="mb-1 text-sm font-medium">Email</label>
+                        <input type="email" class="w-full h-10 rounded-md border border-gray-300 px-2 focus:outline-none focus:ring-2 focus:ring-blue-400">
+                    </div>
+                    <div class="flex flex-col w-[48%]">
+                        <label class="mb-1 text-sm font-medium">Mobile Number</label>
+                        <input type="tel" class="w-full h-10 rounded-md border border-gray-300 px-2 focus:outline-none focus:ring-2 focus:ring-blue-400">
+                    </div>
+                </div>
+            </div>
+            
+            <div id="rates_amenities_container" class="w-full">
+                
+                <div id="scroll_container" class="w-full h-[110vh]">
+                    <div id="rates_container" class="flex flex-col w-full h-[50%]">
+                        <h1 class="text-4xl">Rates</h1>
+                        <div id="scroll_rates_container" class="flex flex-row items-center w-full h-full overflow-y-auto gap-5">
+                            <!-- RATES CARD START -->
+                            <div id="rate_card" class="flex flex-col justify-center items-center w-[35%] sm:w-[25%] h-[90%] shrink-0 shadow-lg rounded-2xl" data-name="Standard Stay" data-price="15000">
+                                <div id="rate_card_pic" class="flex items-center justify-center relative w-full h-[30%] sm:h-[60%] rounded-xl">
+                                    <img src="/images/RP1.jpg" loading="lazy" class="sm:w-full h-full rounded-xl">
+                                </div>
+                                <div id="rate_description" class="flex flex-col w-full h-[40%]">
+                                    <h1 id="rates_name" class="text-xl font-bold">Standard Stay</h1>
+                                    <p id="rates_hour" class="text-sm"><i class="fa-solid fa-clock text-gray-500"></i> 12 hours</p>
+                                    <p id="rates_price" class="text-lg">₱15,000</p>
+                                    <p id="rates_tag" class="text-xs text-gray-500">Includes taxes & fees</p>
+                                </div>
+                                <div class="flex w-full h-[30%] justify-center items-center">
+                                    <button id="select_btn" class="w-[80%] h-[70%] bg-[#0092C0] rounded-lg">Select</button>
+                                </div>
+                            </div>
+
+                            
+                            <div id="amenities_card" class="flex flex-col justify-center items-center w-[35%] sm:w-[25%] h-[90%] shrink-0 shadow-lg rounded-2xl">
+                                <div id="amenities_card_pic" class="flex items-center justify-center relative w-full h-[30%] sm:h-[60%] rounded-xl">
+                                    <img src="/images/RP1.jpg" loading="lazy" class="sm:w-full h-full rounded-xl">
+                                </div>
+                                <div id="amenities_description" class="flex flex-col w-full h-[40%]">
+                                    <h1 id="amenities_name" class="text-xl font-bold">Standard Stay</h1>
+                                    <p id="amenities_hour" class="text-sm"><i class="fa-solid fa-clock text-gray-500"></i> 12 hours</p>
+                                    <p id="amenities_price" class="text-lg">₱15,000</p>
+                                    <p id="amenities_tag" class="text-xs text-gray-500">Includes taxes & fees</p>
+                                </div>
+                                <div class="flex w-full h-[30%] justify-center items-center">
+                                    <button id="select_btn" class="w-[80%] h-[70%] bg-[#0092C0] rounded-lg">Select</button>
+                                </div>
+                            </div>
+
+                            <div id="amenities_card" class="flex flex-col justify-center items-center w-[35%] sm:w-[25%] h-[90%] shrink-0 shadow-lg rounded-2xl">
+                                <div id="amenities_card_pic" class="flex items-center justify-center relative w-full h-[30%] sm:h-[60%] rounded-xl">
+                                    <img src="/images/RP1.jpg" loading="lazy" class="sm:w-full h-full rounded-xl">
+                                </div>
+                                <div id="amenities_description" class="flex flex-col w-full h-[40%]">
+                                    <h1 id="amenities_name" class="text-xl font-bold">Premium Stay</h1>
+                                    <p id="amenities_hour" class="text-sm"><i class="fa-solid fa-clock text-gray-500"></i> 12 hours</p>
+                                    <p id="amenities_price" class="text-lg">₱20,000</p>
+                                    <p id="amenities_tag" class="text-xs text-gray-500">Includes taxes & fees</p>
+                                </div>
+                                <div class="flex w-full h-[30%] justify-center items-center">
+                                    <button id="select_btn" class="w-[80%] h-[70%] bg-[#0092C0] rounded-lg">Select</button>
+                                </div>
+                            </div>
+
+                            <div id="amenities_card" class="flex flex-col justify-center items-center w-[35%] sm:w-[25%] h-[90%] shrink-0 shadow-lg rounded-2xl">
+                                <div id="amenities_card_pic" class="flex items-center justify-center relative w-full h-[30%] sm:h-[60%] rounded-xl">
+                                    <img src="/images/RP1.jpg" loading="lazy" class="sm:w-full h-full rounded-xl">
+                                </div>
+                                <div id="amenities_description" class="flex flex-col w-full h-[40%]">
+                                    <h1 id="amenities_name" class="text-xl font-bold">Gardent view Stay</h1>
+                                    <p id="amenities_hour" class="text-sm"><i class="fa-solid fa-clock text-gray-500"></i> 12 hours</p>
+                                    <p id="amenities_price" class="text-lg">₱25,000</p>
+                                    <p id="amenities_tag" class="text-xs text-gray-500">Includes taxes & fees</p>
+                                </div>
+                                <div class="flex w-full h-[30%] justify-center items-center">
+                                    <button id="select_btn" class="w-[80%] h-[70%] bg-[#0092C0] rounded-lg">Select</button>
+                                </div>
+                            </div>
+
+                            <div id="amenities_card" class="flex flex-col justify-center items-center w-[35%] sm:w-[25%] h-[90%] shrink-0 shadow-lg rounded-2xl">
+                                <div id="amenities_card_pic" class="flex items-center justify-center relative w-full h-[30%] sm:h-[60%] rounded-xl">
+                                    <img src="/images/RP1.jpg" loading="lazy" class="sm:w-full h-full rounded-xl">
+                                </div>
+                                <div id="amenities_description" class="flex flex-col w-full h-[40%]">
+                                    <h1 id="amenities_name" class="text-xl font-bold">SPrem Stay</h1>
+                                    <p id="amenities_hour" class="text-sm"><i class="fa-solid fa-clock text-gray-500"></i> 12 hours</p>
+                                    <p id="amenities_price" class="text-lg">₱30,000</p>
+                                    <p id="amenities_tag" class="text-xs text-gray-500">Includes taxes & fees</p>
+                                </div>
+                                <div class="flex w-full h-[30%] justify-center items-center">
+                                    <button id="select_btn" class="w-[80%] h-[70%] bg-[#0092C0] rounded-lg">Select</button>
+                                </div>
+                            </div>
+                            
+
+                            
+                            
+                             <!-- RATES CARD END -->
+                        </div>
+                    </div>
+
+                    <div id="amenities_container" class="flex flex-col w-full h-[50%] mt-[3%]">
+                        <h1 class="text-4xl">Amenities</h1>
+                        <div id="scroll_amenities_container" class="flex flex-row items-center w-full h-full overflow-y-auto gap-5">
+                            <div id="amenities_card" class="flex flex-col justify-center items-center w-[35%] sm:w-[25%] h-[90%] shrink-0 shadow-lg rounded-2xl">
+                                <div id="amenities_card_pic" class="flex items-center justify-center relative w-full h-[30%] sm:h-[60%] rounded-xl">
+                                    <img src="/images/RP1.jpg" loading="lazy" class="sm:w-full h-full rounded-xl">
+                                </div>
+                                <div id="amenities_description" class="flex flex-col w-full h-[40%]">
+                                    <h1 id="amenities_name" class="text-xl font-bold">Billiards</h1>
+                                    <p id="amenities_hour" class="text-sm"><i class="fa-solid fa-clock text-gray-500"></i> 12 hours</p>
+                                    <p id="amenities_price" class="text-lg">₱15,000</p>
+                                    <p id="amenities_tag" class="text-xs text-gray-500">Includes taxes & fees</p>
+                                </div>
+                                <div class="flex w-full h-[30%] justify-center items-center">
+                                    <button id="select_btn" class="w-[80%] h-[70%] bg-[#0092C0] rounded-lg">Select</button>
+                                </div>
+                            </div>
+
+                            <div id="amenities_card" class="flex flex-col justify-center items-center w-[35%] sm:w-[25%] h-[90%] shrink-0 shadow-lg rounded-2xl">
+                                <div id="amenities_card_pic" class="flex items-center justify-center relative w-full h-[30%] sm:h-[60%] rounded-xl">
+                                    <img src="/images/RP1.jpg" loading="lazy" class="sm:w-full h-full rounded-xl">
+                                </div>
+                                <div id="amenities_description" class="flex flex-col w-full h-[40%]">
+                                    <h1 id="amenities_name" class="text-xl font-bold">ATV</h1>
+                                    <p id="amenities_hour" class="text-sm"><i class="fa-solid fa-clock text-gray-500"></i> 12 hours</p>
+                                    <p id="amenities_price" class="text-lg">₱20,000</p>
+                                    <p id="amenities_tag" class="text-xs text-gray-500">Includes taxes & fees</p>
+                                </div>
+                                <div class="flex w-full h-[30%] justify-center items-center">
+                                    <button id="select_btn" class="w-[80%] h-[70%] bg-[#0092C0] rounded-lg">Select</button>
+                                </div>
+                            </div>
+
+                            <div id="amenities_card" class="flex flex-col justify-center items-center w-[35%] sm:w-[25%] h-[90%] shrink-0 shadow-lg rounded-2xl">
+                                <div id="amenities_card_pic" class="flex items-center justify-center relative w-full h-[30%] sm:h-[60%] rounded-xl">
+                                    <img src="/images/RP1.jpg" loading="lazy" class="sm:w-full h-full rounded-xl">
+                                </div>
+                                <div id="amenities_description" class="flex flex-col w-full h-[40%]">
+                                    <h1 id="amenities_name" class="text-xl font-bold">Karaoke</h1>
+                                    <p id="amenities_hour" class="text-sm"><i class="fa-solid fa-clock text-gray-500"></i> 12 hours</p>
+                                    <p id="amenities_price" class="text-lg">₱25,000</p>
+                                    <p id="amenities_tag" class="text-xs text-gray-500">Includes taxes & fees</p>
+                                </div>
+                                <div class="flex w-full h-[30%] justify-center items-center">
+                                    <button id="select_btn" class="w-[80%] h-[70%] bg-[#0092C0] rounded-lg">Select</button>
+                                </div>
+                            </div>
+
+                            <div id="amenities_card" class="flex flex-col justify-center items-center w-[35%] sm:w-[25%] h-[90%] shrink-0 shadow-lg rounded-2xl">
+                                <div id="amenities_card_pic" class="flex items-center justify-center relative w-full h-[30%] sm:h-[60%] rounded-xl">
+                                    <img src="/images/RP1.jpg" loading="lazy" class="sm:w-full h-full rounded-xl">
+                                </div>
+                                <div id="amenities_description" class="flex flex-col w-full h-[40%]">
+                                    <h1 id="amenities_name" class="text-xl font-bold">Ewan</h1>
+                                    <p id="amenities_hour" class="text-sm"><i class="fa-solid fa-clock text-gray-500"></i> 12 hours</p>
+                                    <p id="amenities_price" class="text-lg">₱30,000</p>
+                                    <p id="amenities_tag" class="text-xs text-gray-500">Includes taxes & fees</p>
+                                </div>
+                                <div class="flex w-full h-[30%] justify-center items-center">
+                                    <button id="select_btn" class="w-[80%] h-[70%] bg-[#0092C0] rounded-lg">Select</button>
+                                </div>
+                            </div>
+
+                            
+                        </div>
+                    </div>
+                    
+                </div>
+
+            </div>
+        </div>
+
+        <div id="calendar_side" class="flex flex-col w-[30%] h-full">
+            <div id="calendar_container" class="flex justify-center w-full mt-[3%]">
+                <div id="calendar"></div>
+            </div>
+            <div id="invoice_container" class="flex flex-col justify-self-center self-center w-[80%] mt-[3%] rounded-lg border-2 p-2">
+                <table id="invoice" class="w-[90%] px-10 mx-5">
+                    <thead>
+                        <tr>
+                            <th>Item</th>
+                            <th>Price</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Items will be dynamically added here -->
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td>Total</td>
+                            <td id="totalPrice">₱0.00</td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+            <button id="select_btn" class="mx-10 w-[83%] h-11 rounded-xl bg-[#37863B] mt-[5%]">Book <i class="fa-sharp fa-solid fa-arrow-right ml-1"></i></button>
+
+        </div>
+    </div>
+    <div class="h-[20%] flex bg-red-400"></div>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="/js/payment.js"></script>
+    <script src="https://kit.fontawesome.com/26528a6def.js" crossorigin="anonymous"></script>
+
+</body>
+</html>

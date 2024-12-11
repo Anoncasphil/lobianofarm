@@ -1,0 +1,43 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* width */
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 5px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+.date-highlight {
+    background-color: red !important;
+    color: white !important;
+    border-radius: 50%; /* Optional: make it circular */
+}
+
+table {
+    margin: 0; /* Remove margin */
+    padding: 0; /* Remove padding */
+    border-spacing: 0; /* Remove space between table cells */
+    border-collapse: collapse; /* Collapse cell borders */
+  }
+  
+  th, td {
+    padding: 4px 8px; /* Reduce cell padding */
+  }
+  
+
