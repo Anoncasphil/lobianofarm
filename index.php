@@ -10,6 +10,9 @@
 	<title>AdminSite</title>
 </head>
 <body>
+
+<!-- etits -->
+ <!-- bobo si ralph -->
 	
 	<!-- SIDEBAR -->
 	<section id="sidebar">
