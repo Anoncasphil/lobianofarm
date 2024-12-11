@@ -7,13 +7,10 @@
 	<link href='https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css' rel='stylesheet'>
 	<link rel="stylesheet" href="styles/style.css">
 	
-	<title>CABUQUIN</title>
+	<title>Asta dns_get_mx</title>
 </head>
 <body>
-
-<!-- etits -->
- <!-- bobo si ralph , bobo ka phil-->
-	<!-- Ewan ko ba -->
+	
 	<!-- SIDEBAR -->
 	<section id="sidebar">
 
