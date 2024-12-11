@@ -7,13 +7,10 @@
 	<link href='https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css' rel='stylesheet'>
 	<link rel="stylesheet" href="styles/style.css">
 	
-	<title>AdminSite</title>
+	<title>Admin Interface hell yeah baby</title>
 </head>
 <body>
 
-<!-- etits -->
- <!-- bobo si ralph , bobo ka phil bignto si cabuquin-->
-	
 	<!-- SIDEBAR -->
 	<section id="sidebar">
 
