@@ -13,80 +13,82 @@ flatpickr("#calendar", {
             dayElem.setAttribute("title", "This date is unavailable"); // Add a tooltip
         }
     },
+    onChange: function(selectedDates, dateStr, instance) {
+        if (selectedDates.length === 2) {
+            // Add 1 day to each selected date
+            let startDate = new Date(selectedDates[0]);
+            let endDate = new Date(selectedDates[1]);
+            startDate.setDate(startDate.getDate() + 1); // Add 1 day to start date
+            endDate.setDate(endDate.getDate() + 1); // Add 1 day to end date
+
+            // Log the adjusted selected date range
+            console.log(`Selected Range: ${startDate.toISOString().slice(0, 10)} to ${endDate.toISOString().slice(0, 10)}`);
+        }
+    }
 });
 
 
-document.addEventListener('DOMContentLoaded', function () {
-    // Select all 'Select' buttons inside the amenities cards
+
+
+
+
+// Function to update the invoice table
+function updateInvoice(itemName, itemPrice) {
+    // Get the invoice table body
+    const tableBody = document.querySelector('#invoice tbody');
+    
+    // Create a new row
+    const newRow = document.createElement('tr');
+    
+    // Add the item name and price to the row (format price with commas)
+    newRow.innerHTML = `
+        <td>${itemName}</td>
+        <td>₱${formatPrice(itemPrice)}</td>
+    `;
+    
+    // Append the new row to the table
+    tableBody.appendChild(newRow);
+    
+    // Update the total price
+    updateTotalPrice();
+}
+
+// Function to calculate the total price
+function updateTotalPrice() {
+    const tableRows = document.querySelectorAll('#invoice tbody tr');
+    let total = 0;
+    
+    // Sum up all the prices in the table
+    tableRows.forEach(row => {
+        const priceCell = row.querySelectorAll('td')[1];
+        const price = parseFloat(priceCell.textContent.replace('₱', '').replace(/,/g, ''));
+        total += price;
+    });
+    
+    // Update the total price in the footer (formatted with commas)
+    document.querySelector('#totalPrice').textContent = '₱' + formatPrice(total);
+}
+
+// Function to format numbers with commas and 2 decimal places
+function formatPrice(price) {
+    return parseFloat(price).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
+
+// Event listener for the "Select" buttons
+function setupSelectButtonListeners() {
     const selectButtons = document.querySelectorAll('#select_btn');
-
-    // Event listener for each 'Select' button
     selectButtons.forEach(button => {
-        button.addEventListener('click', function () {
-            // Get the closest amenities card
-            const card = button.closest('#amenities_card');
+        button.addEventListener('click', function() {
+            const itemName = this.getAttribute('data-name');
+            const itemPrice = this.getAttribute('data-price');
             
-            // Get the name (h1) and price (p with class 'text-lg') from the selected card
-            const name = card.querySelector('h1').textContent.trim();  // Name of the card (item)
-            const price = card.querySelector('.text-lg').textContent.trim();  // Price of the card (item)
-
-            // Check if the item is already in the invoice
-            const existingRow = findRowByName(name);
-
-            if (existingRow) {
-                // If the item already exists, remove it from the invoice
-                existingRow.remove();
-                button.textContent = "Select"; // Change button text back to "Select"
-            } else {
-                // If the item doesn't exist, add it to the invoice
-                addItemToInvoice(name, price);
-                button.textContent = "Unselect"; // Change button text to "Unselect"
-            }
-
-            // Update the total price in the invoice
-            updateInvoiceTotal();
+            // Add the selected item to the invoice
+            updateInvoice(itemName, itemPrice);
         });
     });
+}
 
-    // Add an item to the invoice
-    function addItemToInvoice(name, price) {
-        const invoiceBody = document.querySelector('#invoice tbody');
-        const newRow = document.createElement('tr');
-        newRow.innerHTML = `
-            <td class="text-left">${name}</td>
-            <td class="text-right">${price}</td>
-        `;
-        invoiceBody.appendChild(newRow);
-    }
-
-    // Find an existing row by item name
-    function findRowByName(name) {
-        const rows = document.querySelectorAll('#invoice tbody tr');
-        return Array.from(rows).find(row => row.querySelector('td').textContent.trim() === name);
-    }
-
-    // Update the total amount on the invoice
-    function updateInvoiceTotal() {
-        let total = 0;
-        const rows = document.querySelectorAll('#invoice tbody tr');
-        rows.forEach(row => {
-            const priceText = row.querySelector('td:last-child').textContent;
-            const price = parseFloat(priceText.replace('₱', '').replace(',', ''));
-            total += isNaN(price) ? 0 : price; // Sum the prices, ensuring valid price format
-        });
-    
-        // Update total in the footer
-        const totalElement = document.querySelector('#invoice tfoot #totalPrice');
-        totalElement.textContent = `₱${total.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-    }
-    
-
-    // Optional: Event listener for the "Book" button (if present) to confirm the booking
-    const bookButton = document.querySelector('#calendar_side button');
-    if (bookButton) {
-        bookButton.addEventListener('click', function () {
-            const totalAmount = document.querySelector('#invoice tfoot #totalPrice').textContent;
-            alert(`Your booking has been confirmed! Total Amount: ${totalAmount}`);
-        });
-    }
+// Call the setup function when the page loads
+document.addEventListener('DOMContentLoaded', function() {
+    setupSelectButtonListeners();
 });

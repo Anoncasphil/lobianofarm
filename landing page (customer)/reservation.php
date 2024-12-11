@@ -5,12 +5,10 @@
         die("Connection failed: " . $conn->connect_error);
     }
     
-    // Fetch rates data
-    $sql_rates = "SELECT * FROM rates WHERE status='active'"; // Replace with your actual table name
+    $sql_rates = "SELECT * FROM rates WHERE status='active'";
     $result_rates = $conn->query($sql_rates);
     
-    // Fetch amenities data
-    $sql_amenities = "SELECT * FROM addons WHERE status='active'"; // Change table name to "addons"
+    $sql_amenities = "SELECT * FROM addons WHERE status='active'";
     $result_amenities = $conn->query($sql_amenities);
 ?>
 
@@ -61,7 +59,7 @@
             </div>
             
             <div id="rates_amenities_container" class="w-full">
-                <div id="scroll_container" class="w-full h-[110vh]">
+                <div id="scroll_container" class="w-full h-[120vh]">
                     <div id="rates_container" class="flex flex-col w-full h-[50%]">
                         <h1 class="text-4xl">Rates</h1>
                         <div id="scroll_rates_container" class="flex flex-row items-center w-full h-full overflow-y-auto gap-5">
@@ -76,12 +74,14 @@
                                 </div>
                                 <div id="rate_description" class="flex flex-col w-full h-[40%]">
                                     <h1 id="rates_name" class="text-xl font-bold"><?php echo $rate['name']; ?></h1>
-                                    <p id="rates_hour" class="text-sm"><i class="fa-solid fa-clock text-gray-500"></i> <?php echo $rate['hoursofstay']; ?></p>
+                                    <p id="rates_hour" class="text-sm"><i class="fa-solid fa-clock text-gray-500"></i> <?php echo $rate['hoursofstay']; ?> hours</p>
                                     <p id="rates_price" class="text-lg"><?php echo '₱' . number_format($rate['price'], 2); ?></p>
                                     <p id="rates_tag" class="text-xs text-gray-500">Includes taxes & fees</p>
                                 </div>
                                 <div class="flex w-full h-[30%] justify-center items-center">
-                                    <button id="select_btn" class="w-[200px] h-[40px] bg-[#0092C0] rounded-lg mt-3">Select</button>
+                                <button id="select_btn" class="w-[200px] h-[40px] bg-[#0092C0] rounded-lg mt-3" data-name="<?php echo $rate['name']; ?>" data-price="<?php echo $rate['price']; ?>">
+                                    Select
+                                </button>
                                 </div>
                             </div>
                         <?php } ?>
@@ -90,30 +90,30 @@
                     </div>
 
                     <div id="amenities_container" class="flex flex-col w-full h-[50%] mt-[3%]">
-    <h1 class="text-4xl">Amenities</h1>
-    <div id="scroll_amenities_container" class="flex flex-row items-center w-full h-full overflow-y-auto gap-5">
-    <?php while($amenity = $result_amenities->fetch_assoc()) { 
-    // Fetch and encode image data as base64
-    $imageData = base64_encode($amenity['picture']); // Update column name here
-?>
-    <div id="amenity_card" class="flex flex-col justify-center items-center w-[35%] sm:w-[25%] h-[90%] shrink-0 shadow-lg rounded-2xl">
-        <div id="amenity_card_pic" class="flex items-center justify-center relative w-full h-[60%] rounded-xl">
-            <!-- Embed the Base64 image directly in the src -->
-            <img src="data:image/jpeg;base64,<?php echo $imageData; ?>" loading="lazy" class="w-full h-[160px] rounded-xl" alt="Amenity Image">
-        </div>
-        <div id="amenity_description" class="flex flex-col w-full h-[40%]">
-            <h1 id="amenity_name" class="text-xl font-bold"><?php echo $amenity['name']; ?></h1>
-            <p id="amenity_price" class="text-lg"><?php echo '₱' . number_format($amenity['price'], 2); ?></p>
-            <p id="amenity_tag" class="text-xs text-gray-500">Includes taxes & fees</p>
-        </div>
-        <div class="flex w-full h-[30%] justify-center items-center">
-            <button id="select_btn" class="w-[200px] h-[40px] bg-[#0092C0] rounded-lg mt-3">Select</button>
-        </div>
-    </div>
-<?php } ?>
+                        <h1 class="text-4xl">Amenities</h1>
+                        <div id="scroll_amenities_container" class="flex flex-row items-center w-full h-full overflow-y-auto gap-5">
+                        <?php while($amenity = $result_amenities->fetch_assoc()) { 
+                            // Fetch and encode image data as base64
+                            $imageData = base64_encode($amenity['picture']); // Update column name here
+                            ?>
+                            <div id="amenity_card" class="flex flex-col justify-center items-center w-[35%] sm:w-[25%] h-[90%] shrink-0 shadow-lg rounded-2xl">
+                                <div id="amenity_card_pic" class="flex items-center justify-center relative w-full h-[60%] rounded-xl">
+                                    <!-- Embed the Base64 image directly in the src -->
+                                    <img src="data:image/jpeg;base64,<?php echo $imageData; ?>" loading="lazy" class="w-full h-[160px] rounded-xl" alt="Amenity Image">
+                                </div>
+                                <div id="amenity_description" class="flex flex-col w-full h-[40%]">
+                                    <h1 id="amenity_name" class="text-xl font-bold"><?php echo $amenity['name']; ?></h1>
+                                    <p id="amenity_price" class="text-lg"><?php echo '₱' . number_format($amenity['price'], 2); ?></p>
+                                    <p id="amenity_tag" class="text-xs text-gray-500">Includes taxes & fees</p>
+                                </div>
+                                <div class="flex w-full h-[30%] justify-center items-center">
+                                <button id="select_btn" class="w-[200px] h-[40px] bg-[#0092C0] rounded-lg mt-3" data-name="<?php echo $amenity['name']; ?>" data-price="<?php echo $amenity['price']; ?>">Select</button>
+                                </div>
+                            </div>
+                        <?php } ?>
 
-    </div>
-</div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -152,6 +152,5 @@
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="../scripts/payment.js"></script>
     <script src="https://kit.fontawesome.com/26528a6def.js" crossorigin="anonymous"></script>
-
 </body>
 </html>
