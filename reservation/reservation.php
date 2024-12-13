@@ -145,7 +145,7 @@
             </tfoot>
         </table>
     </div>
-    <button id="select_btn" class="mx-10 w-[83%] h-11 rounded-xl bg-[#37863B] mt-[5%]">Book <i class="fa-sharp fa-solid fa-arrow-right ml-1"></i></button>
+    <button id="book_btn" class="mx-10 w-[83%] h-11 rounded-xl bg-[#37863B] mt-[5%]">Book <i class="fa-sharp fa-solid fa-arrow-right ml-1"></i></button>
 </div>
     </div>
     <div class="h-[20%] flex bg-red-400"></div>

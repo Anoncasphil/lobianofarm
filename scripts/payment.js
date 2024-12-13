@@ -75,17 +75,46 @@ function formatPrice(price) {
 }
 
 // Event listener for the "Select" buttons
+// Event listener for the "Select" buttons
 function setupSelectButtonListeners() {
     const selectButtons = document.querySelectorAll('#select_btn');
     selectButtons.forEach(button => {
         button.addEventListener('click', function() {
             const itemName = this.getAttribute('data-name');
             const itemPrice = this.getAttribute('data-price');
-            
-            // Add the selected item to the invoice
-            updateInvoice(itemName, itemPrice);
+
+            // Check if the button is currently "selected"
+            if (this.classList.contains('selected')) {
+                // Unselect: Remove the item from the invoice
+                removeInvoiceItem(itemName);
+
+                // Update button state and appearance
+                this.classList.remove('selected');
+                this.textContent = "Select";
+            } else {
+                // Select: Add the item to the invoice
+                updateInvoice(itemName, itemPrice);
+
+                // Update button state and appearance
+                this.classList.add('selected');
+                this.textContent = "Unselect";
+            }
         });
     });
+}
+
+// Function to remove an item from the invoice by name
+function removeInvoiceItem(itemName) {
+    const tableRows = document.querySelectorAll('#invoice tbody tr');
+    tableRows.forEach(row => {
+        const nameCell = row.querySelector('td:first-child');
+        if (nameCell && nameCell.textContent === itemName) {
+            row.remove(); // Remove the matching row
+        }
+    });
+
+    // Update the total price after removal
+    updateTotalPrice();
 }
 
 // Call the setup function when the page loads
