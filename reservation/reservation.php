@@ -138,7 +138,7 @@
                 <!-- Items will be dynamically added here -->
             </tbody>
             <tfoot>
-                <tr>
+                <tr class="border-t-2">
                     <td>Total</td>
                     <td id="totalPrice">₱0.00</td>
                 </tr>
