@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/main.min.css" rel="stylesheet">
+	<link href='https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css' rel='stylesheet'>
+    
+	<link rel="stylesheet" href="../styles/style.css">
+    <link rel="stylesheet" href="calendar.css">
+	
+	<title>Admin Dashboard</title>
+</head>
+<body>
+	
+	<!-- SIDEBAR -->
+	<section id="sidebar">
+
+	<a href="#" class="brand"><i class='bx bxs-smile icon'></i>Ad</a>
+
+		<ul class="side-menu">
+			<li><a href="../index.php"><i class='bx bxs-dashboard icon' ></i> Dashboard</a></li>
+
+			<li class="divider" data-text="management">Management</li>
+			<li><a href="../reservation/reservation.php"><i class='bx bxs-widget icon' ></i> Reservations</a></li>
+            <li><a href="../calendar/calendar.php" class="active"><i class='bx bxs-widget icon active' ></i> Calendar</a></li>
+			<li><a href="../rates/rates.php"><i class="bx bxs-chart icon min-w-[48px] flex justify-center items-center mr-2"></i>Rates</a></li>
+			<li><a href="../addons/addons.php"><i class='bx bxs-widget icon' ></i> Add-ons</a></li>
+			<li><a href="../events/events.php"><i class='bx bxs-widget icon' ></i> Events</a></li>
+			<li><a href="../album/album.php"><i class='bx bxs-widget icon' ></i> Album</a></li>
+
+			<li class="divider" data-text="table and forms">Table and forms</li>
+			<li><a href="#"><i class='bx bx-table icon' ></i> Tables</a></li>
+			<li>
+				<a href="#"><i class='bx bxs-notepad icon' ></i> Forms <i class='bx bx-chevron-right icon-right' ></i></a>
+				<ul class="side-dropdown">
+					<li><a href="#">Basic</a></li>
+					<li><a href="#">Select</a></li>
+					<li><a href="#">Checkbox</a></li>
+					<li><a href="#">Radio</a></li>
+				</ul>
+			</li>
+		</ul>
+	</section>
+	<!-- SIDEBAR -->
+
+	<!-- NAVBAR -->
+	<section id="content">
+		<!-- NAVBAR -->
+		<nav>
+			<i class='bx bx-menu toggle-sidebar' ></i>
+			<form action="#">
+			</form>
+			<a href="#" class="nav-link">
+				<i class='bx bxs-bell icon' ></i>
+				<span class="badge">5</span>
+			</a>
+			<span class="divider"></span>
+			<div class="relative">
+				<!-- Profile Dropdown Trigger -->
+				<div class="profile flex items-center space-x-4 cursor-pointer">
+					<img class="w-10 h-10 rounded-full" src="../src/images/profile.jpg" alt="Profile Picture">
+					<div>
+						<h4 class="text-sm font-medium text-gray-800 dark:text-gray-200">Antoine Philipp Ochea</h4>
+						<span class="text-xs text-gray-500 dark:text-gray-400">Admin</span>
+					</div>
+				</div>
+			
+				<!-- Profile Dropdown Menu -->
+				<ul class="profile-link absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-lg z-50 hidden">
+					<li>
+						<a href="#" class="flex items-center px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
+							<i class='bx bxs-user-circle text-xl mr-2'></i> 
+							Profile
+						</a>
+					</li>
+					<li>
+						<a href="#" class="flex items-center px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
+							<i class='bx bxs-cog text-xl mr-2'></i> 
+							Settings
+						</a>
+					</li>
+					<li>
+						<a href="#" class="flex items-center px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-red-100 dark:hover:bg-red-700">
+							<i class='bx bxs-log-out-circle text-xl mr-2'></i> 
+							Logout
+						</a>
+					</li>
+				</ul>
+			</div>
+			
+		</nav>
+		<!-- NAVBAR -->
+
+		<!-- MAIN -->
+		<main>
+        <div id="calendar"></div>
+
+            <div id="dateModal" class="modal">
+                <div class="modal-content">
+                    <span class="close" id="closeModal">&times;</span>
+                    <h2>Reservation Details</h2>
+                    <p><strong>Name:</strong> <span id="modal-name">John Doe</span></p>
+                    <p><strong>Reservation Date:</strong> <span id="modal-reservation-date">2024-12-11</span></p>
+                    <p><strong>Desired Date:</strong> <span id="modal-desired-date">2024-12-15</span></p>
+                    <div class="qr-code">
+                        <img id="modal-qr" src="https://via.placeholder.com/150" alt="QR Code">
+                    </div>
+                    <div class="modal-buttons">
+                        <button class="approve-button">Approve</button>
+                        <button class="decline-button">Decline</button>
+                    </div>
+                </div>
+            </div>
+		</main>
+		<!-- MAIN -->
+	</section>
+	<!-- NAVBAR -->
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
+    
+	<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+	<script src="../scripts/script.js"></script>
+    <script src="../scripts/calendar.js"></script>
+</body>
+</html>
