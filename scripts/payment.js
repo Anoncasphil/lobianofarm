@@ -1,7 +1,10 @@
+let reservation_check_in_date;
+let reservation_check_out_date;
+
 flatpickr("#calendar", {
     mode: "range",
     inline: true, // Renders the calendar inline
-    dateFormat: "Y-m-d", // Customize the date format
+    dateFormat: "Y-m-d",
     onDayCreate: (dObj, dStr, fp, dayElem) => {
         // Mark specific dates
         const markedDates = ['2024-03-21', '2024-11-08', '2024-11-26', '2024-11-16'];
@@ -13,111 +16,107 @@ flatpickr("#calendar", {
             dayElem.setAttribute("title", "This date is unavailable"); // Add a tooltip
         }
     },
-    onChange: function(selectedDates, dateStr, instance) {
+    onChange: (selectedDates) => {
         if (selectedDates.length === 2) {
-            // Add 1 day to each selected date
-            let startDate = new Date(selectedDates[0]);
-            let endDate = new Date(selectedDates[1]);
+            const startDate = selectedDates[0];
+            const endDate = selectedDates[1];
             startDate.setDate(startDate.getDate() + 1); // Add 1 day to start date
             endDate.setDate(endDate.getDate() + 1); // Add 1 day to end date
 
-            // Log the adjusted selected date range
-            console.log(`Selected Range: ${startDate.toISOString().slice(0, 10)} to ${endDate.toISOString().slice(0, 10)}`);
+            
+            // Store the values in reservation_check_in_date and reservation_check_out_date
+            reservation_check_in_date = startDate.toISOString().slice(0, 10);
+            reservation_check_out_date = endDate.toISOString().slice(0, 10);
+            
+            console.log(`Start Date: ${reservation_check_in_date}`);
+            console.log(`End Date: ${reservation_check_out_date}`);
+            
+            // Set the hidden input values
+            document.getElementById("reservation_check_in_date").value = reservation_check_in_date;
+            document.getElementById("reservation_check_out_date").value = reservation_check_out_date;
         }
     }
 });
 
 
 
-
-
-
-// Function to update the invoice table
-function updateInvoice(itemName, itemPrice) {
-    // Get the invoice table body
-    const tableBody = document.querySelector('#invoice tbody');
-    
-    // Create a new row
-    const newRow = document.createElement('tr');
-    
-    // Add the item name and price to the row (format price with commas)
-    newRow.innerHTML = `
-        <td>${itemName}</td>
-        <td>₱${formatPrice(itemPrice)}</td>
-    `;
-    
-    // Append the new row to the table
-    tableBody.appendChild(newRow);
-    
-    // Update the total price
-    updateTotalPrice();
-}
-
-// Function to calculate the total price
-function updateTotalPrice() {
-    const tableRows = document.querySelectorAll('#invoice tbody tr');
-    let total = 0;
-    
-    // Sum up all the prices in the table
-    tableRows.forEach(row => {
-        const priceCell = row.querySelectorAll('td')[1];
-        const price = parseFloat(priceCell.textContent.replace('₱', '').replace(/,/g, ''));
-        total += price;
-    });
-    
-    // Update the total price in the footer (formatted with commas)
-    document.querySelector('#totalPrice').textContent = '₱' + formatPrice(total);
-}
-
-// Function to format numbers with commas and 2 decimal places
-function formatPrice(price) {
-    return parseFloat(price).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-}
-
-// Event listener for the "Select" buttons
-// Event listener for the "Select" buttons
-function setupSelectButtonListeners() {
+document.addEventListener('DOMContentLoaded', function () {
     const selectButtons = document.querySelectorAll('#select_btn');
+
+    // Event listener for each 'Select' button
     selectButtons.forEach(button => {
-        button.addEventListener('click', function() {
-            const itemName = this.getAttribute('data-name');
-            const itemPrice = this.getAttribute('data-price');
-
-            // Check if the button is currently "selected"
-            if (this.classList.contains('selected')) {
-                // Unselect: Remove the item from the invoice
-                removeInvoiceItem(itemName);
-
-                // Update button state and appearance
-                this.classList.remove('selected');
-                this.textContent = "Select";
+        button.addEventListener('click', function (event) {
+            event.preventDefault(); 
+            
+            // Determine whether the card is a rates_card or amenities_card
+            const card = button.closest('#rates_card') || button.closest('#amenities_card');
+            
+            // Get the name (h1) and price (p with class 'text-lg') from the selected card
+            const name = card.querySelector('h1').textContent.trim();  // Name of the card (item)
+            const price = card.querySelector('.text-lg').textContent.trim();  // Price of the card (item)
+    
+            // Check if the item is already in the invoice
+            const existingRow = findRowByName(name);
+    
+            if (existingRow) {
+                // If the item already exists, remove it from the invoice
+                existingRow.remove();
+                button.textContent = "Select"; // Change button text back to "Select"
             } else {
-                // Select: Add the item to the invoice
-                updateInvoice(itemName, itemPrice);
-
-                // Update button state and appearance
-                this.classList.add('selected');
-                this.textContent = "Unselect";
+                // If the item doesn't exist, add it to the invoice
+                addItemToInvoice(name, price);
+                button.textContent = "Unselect"; // Change button text to "Unselect"
             }
+    
+            // Update the total price in the invoice
+            updateInvoiceTotal();
         });
     });
-}
+    
 
-// Function to remove an item from the invoice by name
-function removeInvoiceItem(itemName) {
-    const tableRows = document.querySelectorAll('#invoice tbody tr');
-    tableRows.forEach(row => {
-        const nameCell = row.querySelector('td:first-child');
-        if (nameCell && nameCell.textContent === itemName) {
-            row.remove(); // Remove the matching row
-        }
-    });
+    // Add an item to the invoice
+    function addItemToInvoice(name, price) {
+        const invoiceBody = document.querySelector('#invoice tbody');
+        const newRow = document.createElement('tr');
+        newRow.innerHTML = `
+            <td class="text-left">${name}</td>
+            <td class="text-right">${price}</td>
+        `;
+        invoiceBody.appendChild(newRow);
+    }
 
-    // Update the total price after removal
-    updateTotalPrice();
-}
+    // Find an existing row by item name
+    function findRowByName(name) {
+        const rows = document.querySelectorAll('#invoice tbody tr');
+        return Array.from(rows).find(row => row.querySelector('td').textContent.trim() === name);
+    }
 
-// Call the setup function when the page loads
-document.addEventListener('DOMContentLoaded', function() {
-    setupSelectButtonListeners();
+    // Update the total amount on the invoice
+    function updateInvoiceTotal() {
+        let total = 0;
+        const rows = document.querySelectorAll('#invoice tbody tr');
+        rows.forEach(row => {
+            const priceText = row.querySelector('td:last-child').textContent;
+            const price = parseFloat(priceText.replace('₱', '').replace(',', ''));
+            total += isNaN(price) ? 0 : price; // Sum the prices, ensuring valid price format
+        });
+    
+        // Update total in the footer
+        const totalElement = document.querySelector('#invoice tfoot #totalPrice');
+        totalElement.textContent = `₱${total.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+        
+        // Update the hidden input for total_amount
+        const totalAmountInput = document.querySelector('#total_amount');
+        totalAmountInput.value = total;
+    }
+    
+
+    // Optional: Event listener for the "Book" button (if present) to confirm the booking
+    const bookButton = document.querySelector('#calendar_side button');
+    if (bookButton) {
+        bookButton.addEventListener('click', function () {
+            const totalAmount = document.querySelector('#invoice tfoot #totalPrice').textContent;
+            alert(`Your booking has been confirmed! Total Amount: ${totalAmount}`);
+        });
+    }
 });
