@@ -16,7 +16,7 @@ include '../db_connection.php';
 
     <div id="slogan_container" class="flex h-2/5 w-3/5 items-center justify-center flex-col text-center m-0 text-white">
         <div id="main_slogan" class="flex w-[full] flex-row ">
-            <img src="logo.png" class="w-10 h-10" alt="Logo"><h2 class="text-[30px]">888 Lobiano's Farm</h2>
+            <img src="../src/images/logo.png" class="w-10 h-10" alt="Logo"><h2 class="text-[30px]">888 Lobiano's Farm</h2>
         </div>
         <div id="slogan">
             <h1 class="text-[50px] ">Swim In Style,<br>Customized For<br>Your Comfort</h1>
@@ -31,7 +31,7 @@ include '../db_connection.php';
 if (isset($_POST["logme"])) {
     $input = $_POST["email"]; // This will now be used for both email or username
     $password = $_POST["password"];
-    require_once "db_connection.php";
+    require_once "../db_connection.php";
 
     // SQL query to check both email and username
     $stmt = $conn->prepare("SELECT * FROM user_tbl WHERE email = ? OR username = ?");
@@ -40,6 +40,7 @@ if (isset($_POST["logme"])) {
     $result = $stmt->get_result();
     $user = $result->fetch_assoc();
 
+    // Validation checks for logging in user
     if ($user) {
         if (password_verify($password, $user["password"])) {
             session_start();

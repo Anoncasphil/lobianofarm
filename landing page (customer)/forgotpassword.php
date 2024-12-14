@@ -7,8 +7,9 @@ include '../db_connection.php';
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Forgot Password?</title>
-    <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="normal.css">
+    <link rel="stylesheet" href="../styles/styles.css">
+    <link rel="stylesheet" href="../styles/normal.css">
+    <link rel="icon" href="../src/images/logo.png" type="image/x-icon">
 </head>
 <body class="flex overflow-hidden flex-row items-center justify-between m-0">
 
