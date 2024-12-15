@@ -75,7 +75,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Check if email already exists
     if (empty($errors)) {
-        require_once "/../db_connection.php";
+        require_once "../db_connection.php";
 
         try {
             $stmt = $conn->prepare("SELECT * FROM user_tbl WHERE email = ?");

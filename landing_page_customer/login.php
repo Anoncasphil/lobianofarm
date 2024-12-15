@@ -67,12 +67,12 @@ if (isset($_POST["logme"])) {
             <div id="email_container" class="flex flex-col justify-start items-start w-[80%] px-6 mt-10">
                 <div class="relative flex flex-row justify-between w-full">
                     <label for="email_input" class="text-left w-[50%] mb-2">
-                        Email Address or Username:
+                        Email Address:
                     </label>
                 </div>
                 <div class="relative w-full">
                     <i class="fa-solid fa-envelope absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500"></i>
-                    <input type="text" id="email_input" name="email" placeholder="Enter your Email Address or Username" 
+                    <input type="text" id="email_input" name="email" placeholder="Email Address:" 
                            class="w-full border border-gray-500 rounded-lg p-2 pl-10" required autocomplete="off">
                 </div>
             </div>
