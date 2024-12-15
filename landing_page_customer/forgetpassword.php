@@ -6,7 +6,7 @@ include '../db_connection.php';
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Forgot Password?</title>
+    <title>888 Lobiano's Farm</title>
     <link rel="stylesheet" href="../styles/styles.css">
     <link rel="stylesheet" href="../styles/normal.css">
     <link rel="icon" href="../src/images/logo.png" type="image/x-icon">

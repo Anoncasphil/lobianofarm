@@ -1,22 +1,27 @@
+<?php
+// Include your database connection file
+include '../db_connection.php';
+?>
 <!DOCTYPE html>
 <html lang="en" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>888 Lobiano's Farm</title>
     <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.6.5/datepicker.min.js"></script> -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.6.5/datepicker.min.css" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="/src/styles.css">
-    <link rel="stylesheet" href="/src/main_page.css">
+    <link rel="stylesheet" href="../styles/styles.css">
+    <link rel="stylesheet" href="../styles/main_page.css">
+    <link rel="icon" href="../src/images/logo.png" type="image/x-icon">
 </head>
 <body id="top_section" class="flex flex-col">
-    <section id="header_section" class="flex flex-col justify-self-center self-center h-[100vh] sm:h-[100vh] w-full mb-[5%] bg-[url('/images/main_bg.jpg')] bg-center bg-no-repeat bg-cover overflow-hidden z-20">
+    <section id="header_section" class="flex flex-col justify-self-center self-center h-[100vh] sm:h-[100vh] w-full mb-[5%] bg-[url('../src/images/main_bg.jpg')] bg-center bg-no-repeat bg-cover overflow-hidden z-20">
         <!-- HEADER -->
         <div id="header_option" class="flex flex-row h-per10 w-full bg-green-400 justify-between items-center bg-transparent mt-5 px-[2%]">
             <div id="logo_container" class="flex flex-row ml-5">
                 <a class="text-white text-xl flex items-center gap-2">
-                    <img src="/images/logo.png" class="w-10 h-10" alt="Logo">
+                    <img src="../src/images/logo.png" class="w-10 h-10" alt="Logo">
                     888 Lobiano's Farm
                 </a>
                 
@@ -96,7 +101,7 @@
 
             <div id="event_card" class="flex flex-col w-[25%] h-[50%] sm:h-[100%]">
                 <div id="event_picture" class="w-full h-[90%] rounded-2xl overflow-hidden">
-                    <img src="/images/bday.jpg" class="w-full h-full object-cover drop-shadow-2xl">
+                    <img src="../src/images/bday.jpg" class="w-full h-full object-cover drop-shadow-2xl">
                 </div>
                 
                 <div id="event_title" class="flex justify-center items-center h-[10%]">
@@ -107,7 +112,7 @@
 
             <div id="event_card" class="flex flex-col w-[25%] h-[50%] sm:h-[100%]">
                 <div id="event_picture" class="w-full h-[90%] rounded-2xl overflow-hidden">
-                    <img src="/images/party.jpg" class="w-full h-full object-cover drop-shadow-2xl">
+                    <img src="../src/images/party.jpg" class="w-full h-full object-cover drop-shadow-2xl">
                 </div>
                 
                 <div id="event_title" class="flex justify-center items-center h-[10%]">
@@ -118,7 +123,7 @@
             
             <div id="event_card" class="flex flex-col w-[25%] h-[50%] sm:h-[100%]">
                 <div id="event_picture" class="w-full h-[90%] rounded-2xl overflow-hidden">
-                    <img src="/images/team building.jpg" class="w-full h-full object-cover drop-shadow-2xl">
+                    <img src="../src/images/team building.jpg" class="w-full h-full object-cover drop-shadow-2xl">
                 </div>
                 
                 <div id="event_title" class="flex justify-center items-center h-[10%]">
@@ -129,7 +134,7 @@
             
             <div id="event_card" class="flex flex-col w-[25%] h-[50%] sm:h-[100%]">
                 <div id="event_picture" class="w-full h-[90%] rounded-2xl overflow-hidden">
-                    <img src="/images/wedding.jpeg" class="w-full h-full object-cover drop-shadow-2xl">
+                    <img src="../src/images/wedding.jpeg" class="w-full h-full object-cover drop-shadow-2xl">
                 </div>
                 
                 <div id="event_title" class="flex justify-center items-center h-[10%]">
@@ -152,7 +157,7 @@
                     
                     <div id="rate_card" class="flex flex-col justify-center items-center w-[35%] sm:w-[25%] h-[95%] shrink-0">
                         <div id="rate_card_pic" class="flex items-center justify-center relative w-full h-[30%] sm:h-[60%] rounded-xl">
-                            <img src="/images/RP1.jpg" class="sm:w-full h-full rounded-xl">
+                            <img src="../src/images/RP1.jpg" class="sm:w-full h-full rounded-xl">
                         </div>
                         <div id="rate_description" class="flex flex-col w-full h-[40%]">
                             <h1 id="rates_name" class="text-xl font-bold">Standard Stay</h1>
@@ -167,7 +172,7 @@
 
                     <div id="rate_card" class="flex flex-col justify-center items-center w-[35%] sm:w-[25%] h-[95%] shrink-0">
                         <div id="rate_card_pic" class="flex items-center justify-center relative w-full h-[30%] sm:h-[60%] rounded-xl">
-                            <img src="/images/RP1.jpg" class="sm:w-full h-full rounded-xl">
+                            <img src="../src/images/RP1.jpg" class="sm:w-full h-full rounded-xl">
                         </div>
                         <div id="rate_description" class="flex flex-col w-full h-[40%]">
                             <h1 id="rates_name" class="text-xl font-bold">Standard Stay</h1>
@@ -182,7 +187,7 @@
 
                     <div id="rate_card" class="flex flex-col justify-center items-center w-[35%] sm:w-[25%] h-[95%] shrink-0">
                         <div id="rate_card_pic" class="flex items-center justify-center relative w-full h-[30%] sm:h-[60%] rounded-xl">
-                            <img src="/images/RP1.jpg" class="sm:w-full h-full rounded-xl">
+                            <img src="../src/images/RP1.jpg" class="sm:w-full h-full rounded-xl">
                         </div>
                         <div id="rate_description" class="flex flex-col w-full h-[40%]">
                             <h1 id="rates_name" class="text-xl font-bold">Standard Stay</h1>
@@ -197,7 +202,7 @@
 
                     <div id="rate_card" class="flex flex-col justify-center items-center w-[35%] sm:w-[25%] h-[95%] shrink-0">
                         <div id="rate_card_pic" class="flex items-center justify-center relative w-full h-[30%] sm:h-[60%] rounded-xl">
-                            <img src="/images/RP1.jpg" class="sm:w-full h-full rounded-xl">
+                            <img src="../src/images/RP1.jpg" class="sm:w-full h-full rounded-xl">
                         </div>
                         <div id="rate_description" class="flex flex-col w-full h-[40%]">
                             <h1 id="rates_name" class="text-xl font-bold">Standard Stay</h1>
@@ -217,7 +222,7 @@
         </section>
     </div>
 
-    <!-- START AMENITIES
+    <!-- START AMENITIES -->
 
     <section id="amenities_section" class="flex flex-col self-center w-[80%] h-[75vh]">    
         <div id="amenities_header" class=" w-full h-[13%] mt-[3%] mb-8">
@@ -230,7 +235,7 @@
                 
                 <div id="amenities_card" class="flex flex-col justify-center items-center w-[35%] sm:w-[25%] h-[85%] shrink-0">
                     <div id="amenities_card_pic" class="flex items-center justify-center relative w-full h-[30%] sm:h-[60%] rounded-xl">
-                        <img src="/images/RP1.jpg" class="sm:w-full h-full rounded-xl">
+                        <img src="../src/images/RP1.jpg" class="sm:w-full h-full rounded-xl">
                     </div>
                     <div id="amenities_description" class="flex flex-col w-full h-[40%]">
                         <h1 id="amenities_name" class="text-xl font-bold">Standard Stay</h1>
@@ -247,7 +252,7 @@
     </section>
 
 
-    END AMENITIES -->
+    <!-- END AMENITIES -->
 
 
     <!-- START VIDEO TOUR -->
