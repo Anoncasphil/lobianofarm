@@ -16,7 +16,7 @@ include('../db_connection.php');
 
     <div id="slogan_container" class="flex h-2/5 w-3/5 items-center justify-center flex-col text-center m-0 text-white">
         <div id="main_slogan" class="flex w-[full] flex-row ">
-            <img src="logo.png" class="w-10 h-10" alt="Logo"><h2 class="text-[30px]">888 Lobiano's Farm</h2>
+            <img src="../src/imageslogo.png" class="w-10 h-10" alt="Logo"><h2 class="text-[30px]">888 Lobiano's Farm</h2>
         </div>
         <div id="slogan">
             <h1 class="text-[50px] ">Swim In Style,<br>Customized For<br>Your Comfort</h1>
