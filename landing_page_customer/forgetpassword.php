@@ -6,15 +6,16 @@ include '../db_connection.php';
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Forgot Password?</title>
-    <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="normal.css">
+    <title>888 Lobiano's Farm</title>
+    <link rel="stylesheet" href="../styles/styles.css">
+    <link rel="stylesheet" href="../styles/normal.css">
+    <link rel="icon" href="../src/images/logo.png" type="image/x-icon">
 </head>
 <body class="flex overflow-hidden flex-row items-center justify-between m-0">
 
     <div id="slogan_container" class="flex h-2/5 w-3/5 items-center justify-center flex-col text-center m-0 text-white">
         <div id="main_slogan" class="flex w-[full] flex-row ">
-            <img src="logo.png" class="w-10 h-10" alt="Logo"><h2 class="text-[30px]">888 Lobiano's Farm</h2>
+            <img src="../src/images/logo.png" class="w-10 h-10" alt="Logo"><h2 class="text-[30px]">888 Lobiano's Farm</h2>
         </div>
         <div id="slogan">
             <h1 class="text-[50px] ">Swim In Style,<br>Customized For<br>Your Comfort</h1>
@@ -41,7 +42,7 @@ include '../db_connection.php';
                 <div class="relative w-full">
                     <i class="fa-solid fa-envelope absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500"></i>
                     <input type="email" id="email_input" name="email" placeholder="Enter your Email Address" 
-                           class="w-full border border-gray-500 rounded-lg p-2 pl-10">
+                           class="w-full border border-gray-500 rounded-lg p-2 pl-10" required autocomplete="off">
                 </div>
             </div>
             

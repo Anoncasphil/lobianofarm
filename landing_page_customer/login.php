@@ -16,7 +16,7 @@ include '../db_connection.php';
 
     <div id="slogan_container" class="flex h-2/5 w-3/5 items-center justify-center flex-col text-center m-0 text-white">
         <div id="main_slogan" class="flex w-[full] flex-row ">
-            <img src="logo.png" class="w-10 h-10" alt="Logo"><h2 class="text-[30px]">888 Lobiano's Farm</h2>
+            <img src="../src/images/logo.png" class="w-10 h-10" alt="Logo"><h2 class="text-[30px]">888 Lobiano's Farm</h2>
         </div>
         <div id="slogan">
             <h1 class="text-[50px] ">Swim In Style,<br>Customized For<br>Your Comfort</h1>
@@ -29,23 +29,23 @@ include '../db_connection.php';
 
 <?php
 if (isset($_POST["logme"])) {
-    $input = $_POST["email"]; // This will now be used for both email or username
+    $input = $_POST["email"];
     $password = $_POST["password"];
-    require_once "db_connection.php";
+    require_once "../db_connection.php";
 
     // SQL query to check both email and username
-    $stmt = $conn->prepare("SELECT * FROM user_tbl WHERE email = ? OR username = ?");
-    $stmt->bind_param("ss", $input, $input);
+    $stmt = $conn->prepare("SELECT * FROM user_tbl WHERE email = ?");
+    $stmt->bind_param("s", $input,);
     $stmt->execute();
     $result = $stmt->get_result();
     $user = $result->fetch_assoc();
 
+    // Validation checks for logging in user
     if ($user) {
         if (password_verify($password, $user["password"])) {
             session_start();
             $_SESSION["user_id"] = $user["id"];
             $_SESSION["user_email"] = $user["email"];
-            $_SESSION["user_username"] = $user["username"];
             header("Location: homepage.php");
             exit();
         } else {
@@ -66,12 +66,12 @@ if (isset($_POST["logme"])) {
             <div id="email_container" class="flex flex-col justify-start items-start w-[80%] px-6 mt-10">
                 <div class="relative flex flex-row justify-between w-full">
                     <label for="email_input" class="text-left w-[50%] mb-2">
-                        Email Address or Username:
+                        Email Address:
                     </label>
                 </div>
                 <div class="relative w-full">
                     <i class="fa-solid fa-envelope absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500"></i>
-                    <input type="text" id="email_input" name="email" placeholder="Enter your Email Address or Username" 
+                    <input type="text" id="email_input" name="email" placeholder="Email Address:" 
                            class="w-full border border-gray-500 rounded-lg p-2 pl-10" required autocomplete="off">
                 </div>
             </div>
@@ -93,7 +93,7 @@ if (isset($_POST["logme"])) {
             
             <!-- submit button -->
             <button type="submit" name="logme" class="text-white w-[50%] h-[10%] mt-[10%] bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-lg px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">Login</button>
-            <p>Don't have an account? <span><a href="register.php" class="underline text-blue-600 hover:underline">Create Account</a></span></p>
+            <p>Don't have an account? <span><a href="main_page_logged.php" class="underline text-blue-600 hover:underline">Create Account</a></span></p>
 
 
 
