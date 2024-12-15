@@ -12,11 +12,11 @@ include('../db_connection.php');
     <link rel="stylesheet" href="../styles/normal.css">
     <link rel="icon" href="../src/images/logo.png" type="image/x-icon">
 </head>
-<body class="flex flex-row items-center h-full justify-between m-0 overflow-y-auto">
+<body class="flex flex-row items-center w-full justify-between m-0 overflow-y-auto">
 
     <div id="slogan_container" class="flex h-2/5 w-3/5 items-center justify-center flex-col text-center m-0 text-white">
         <div id="main_slogan" class="flex w-[full] flex-row ">
-            <img src="../src/imageslogo.png" class="w-10 h-10" alt="Logo"><h2 class="text-[30px]">888 Lobiano's Farm</h2>
+            <img src="../src/images/logo.png" class="w-10 h-10" alt="Logo"><h2 class="text-[30px]">888 Lobiano's Farm</h2>
         </div>
         <div id="slogan">
             <h1 class="text-[50px] ">Swim In Style,<br>Customized For<br>Your Comfort</h1>
@@ -26,7 +26,7 @@ include('../db_connection.php');
 
 
     <!-- login -->
-    <div id="login_form" class="flex flex-col justify-center rounded-tl-3xl rounded-bl-3xl w-[40%] bg-white overflow-y-auto">
+    <div id="login_form" class="flex flex-col justify-center rounded-tl-3xl rounded-bl-3xl h-full w-[40%] bg-white overflow-y-auto">
 
     <!-- php registration -->
     <?php
@@ -115,7 +115,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 ?>
 
     <!-- inside the form -->
-        <form action="register.php" autocomplete="off" method="post" class="flex flex-col justify-center items-center w-full h-[120vh] overflow-y-auto">
+        <form action="register.php" autocomplete="off" method="post" class="flex flex-col justify-center items-center w-full h-full overflow-y-auto">
             <h2 id="login_tag" class="text-3xl mb-5 font-bold mt-5">Create an Account</h2>
             <p id="input_tag" class="tracking-wide text-base mb-5">Create a account to continue</p>
 
@@ -219,7 +219,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </div>
         
             <!-- submit button -->
-            <button type="submit" name="regisme"class="text-white w-[50%] h-[10%] mt-[3%] bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-lg px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">Sign Up</button>
+            <button type="submit" name="regisme"class="text-white w-[50%] h-[35px] mt-[3%] bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-lg px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">Sign Up</button>
             <p class="mb-5">Have an account already? <span><a href="login.php" class="underline text-blue-600 hover:underline">Login</a></span></p>
 
         </form>
