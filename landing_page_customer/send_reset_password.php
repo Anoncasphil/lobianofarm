@@ -27,7 +27,7 @@ if ($mysqli->affected_rows) {
     $mail->Subject = "Password Reset";
     $mail->Body = <<<END
 
-     Click <a href="https://localhost/Login register (working)/888 Lobianos/public/reset-password.php?token=$token">here</a> to reset your password.
+     Click <a href="https://localhost/lobianofarm/landing_page_customer/reset-password.php?token=$token">here</a> to reset your password.
 
 
     END;
