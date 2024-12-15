@@ -31,8 +31,7 @@ include('../db_connection.php');
     <!-- php registration -->
     <?php
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $email = trim($_POST['email']); 
-    $username = trim($_POST['username']); 
+    $email = trim($_POST['email']);  
     $firstname = trim($_POST['firstname']);
     $middlename = trim($_POST['middlename']);
     $lastname = trim($_POST['lastname']);
@@ -48,12 +47,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $errors[] = "Email is required.";
     } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         $errors[] = "Invalid email format.";
-    }
-
-    if (empty($username)) {
-        $errors[] = "Username is required.";
-    } elseif (strlen($username) < 3) {
-        $errors[] = "Username must be at least 3 characters.";
     }
 
     if (empty($firstname)) {

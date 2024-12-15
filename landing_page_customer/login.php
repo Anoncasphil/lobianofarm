@@ -34,7 +34,7 @@ if (isset($_POST["logme"])) {
     require_once "../db_connection.php";
 
     // SQL query to check both email and username
-    $stmt = $conn->prepare("SELECT * FROM user_tbl WHERE email = ? OR username = ?");
+    $stmt = $conn->prepare("SELECT * FROM user_tbl WHERE email = ?");
     $stmt->bind_param("ss", $input, $input);
     $stmt->execute();
     $result = $stmt->get_result();
