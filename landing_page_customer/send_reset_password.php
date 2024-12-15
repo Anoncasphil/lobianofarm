@@ -1,21 +1,25 @@
 <?php
+// Include the database connection
+require __DIR__ . "/../db_connection.php";
 
 $email = $_POST["email"];
-
-$token= bin2hex(random_bytes(16));
-
+$token = bin2hex(random_bytes(16));
 $token_hash = hash("sha256", $token);
-
 $expiry = date("Y-m-d H:i:s", time() + 60 * 30);
 
-$mysqli = require __DIR__ . "/../db_connection.php";
+// Verify that $conn is a valid connection
+if (!$conn instanceof mysqli) {
+    die("Database connection failed.");
+}
 
 $sql = "UPDATE user_tbl SET reset_token_hash = ?, reset_token_expires_at = ? WHERE email = ?";
+$stmt = $conn->prepare($sql);
 
-$stmt = $mysqli->prepare($sql);
+if (!$stmt) {
+    die("Prepare failed: " . $conn->error);
+}
 
 $stmt->bind_param("sss", $token_hash, $expiry, $email);
-
 $stmt->execute();
 
 if ($mysqli->affected_rows) {
