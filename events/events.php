@@ -6,9 +6,9 @@
 	<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 	<link href='https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css' rel='stylesheet'>
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/all.min.css" integrity="sha512-5Hs3dF2AEPkpNAR7UiOHba+lRSJNeM2ECkwxUIxC1Q/FLycGTbNapWXB4tP889k5T5Ju8fs4b1P5z/iB4nMfSQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <script src="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"></script>
 	<link rel="stylesheet" href="../styles/style.css">
-    <script src="https://cdn.jsdelivr.net/npm/flowbite@2.5.2/dist/flowbite.min.js"></script>
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+
 	
 	<title>AdminSite</title>
 </head>
@@ -93,61 +93,80 @@
 		
         <main class="relative">
 
-        <?php
-            // Include the database connection file
-            include('../db_connection.php');
-
-            // Fetch events from the database
-            $sql = "SELECT id, name, description, picture, date, status FROM events WHERE status = 'active' ORDER BY created_at DESC";
-            $result = $conn->query($sql);
-
-            if ($result->num_rows > 0) {
-                // Loop through each event and display it in a card
-                while ($row = $result->fetch_assoc()) {
-                    // Prepare event details
-                    $eventId = $row['id'];
-                    $eventName = $row['name'];
-                    $eventDescription = $row['description'];
-                    $eventDate = $row['date'];
-                    $eventPicture = $row['picture'] ? 'data:image/jpeg;base64,' . base64_encode($row['picture']) : 'default-image.jpg';
-                    ?>
-                    
-                    <div class="w-80 h-96 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 flex flex-col">
-                        <a href="#">
-                            <img class="h-48 w-full object-cover rounded-t-lg" src="<?php echo $eventPicture; ?>" alt="Event Image" />
-                        </a>
-                        <div class="p-5 flex flex-col items-center text-center flex-grow">
-                            <a href="#">
-                                <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white"><?php echo $eventName; ?></h5>
-                            </a>
-                            <p class="mb-4 text-sm text-gray-700 dark:text-gray-400"><?php echo $eventDescription; ?></p>
-                            <p class="mb-4 text-sm text-gray-700 dark:text-gray-400"><?php echo date('F d, Y', strtotime($eventDate)); ?></p>
-
-                            <div class="flex space-x-2 mt-auto">
-                                <!-- Update Event Button -->
-                                <button type="button" onclick="toggleUpdateEventModal(<?php echo $eventId; ?>)" class="text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700">
-                                    <i class="fa-solid fa-pen-to-square"></i>
-                                </button>
-
-                                <!-- Archive Event Button -->
-                                <button type="button" onclick="archiveEvent(<?php echo $eventId; ?>)" class="text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700">
-                                    <i class="fa-solid fa-box-archive"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <?php
-                }
-            } else {
-                echo "<p>No events found.</p>";
-            }
-
-            // Close the database connection
-            $conn->close();
-        ?>
+		<header class="mb-6">
+			<h1 class="text-2xl font-bold text-gray-700">Events</h1>
+		</header>
 
 
+		<div class="event-container rounded-lg p-4">
+			<div class="flex justify-between items-center mb-4">
+				<div class="flex justify-end w-full">
+				<button type="button" onclick="toggleAddEventModal()" class="text-white bg-blue-500 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2">
+					<i class="fa-solid fa-plus"></i> Add Event
+				</button>
+				</div>
+			</div>
+		</div>
+
+
+		<?php
+			// Include the database connection file
+			include('../db_connection.php');
+
+			// Fetch events from the database
+			$sql = "SELECT id, name, picture, date, status FROM events WHERE status = 'active' ORDER BY created_at DESC";
+			$result = $conn->query($sql);
+
+			if ($result->num_rows > 0) {
+				echo '<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">'; // Corrected gap placement
+				// Loop through each event and display it in a card
+				while ($row = $result->fetch_assoc()) {
+					// Prepare event details
+					$eventId = $row['id'];
+					$eventName = $row['name'];
+					$eventDate = $row['date'];
+
+					// Check if there is a picture file and assign the path accordingly
+					if (!empty($row['picture'])) {
+						$eventPicture = '../src/uploads/events/' . $row['picture'];
+					} else {
+						// Use a default image if no picture is found
+						$eventPicture = 'default-image.jpg';
+					}
+					?>
+					<div class="w-full sm:w-55 h-96 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 flex flex-col mb-6"> <!-- Adjusted margin-bottom -->
+						<a href="#">
+							<img class="h-48 w-full object-cover rounded-t-lg" src="<?php echo $eventPicture; ?>" alt="Event Image" />
+						</a>
+						<div class="p-5 flex flex-col items-center text-center flex-grow">
+							<a href="#">
+								<h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white"><?php echo $eventName; ?></h5>
+							</a>
+							<p class="mb-4 text-sm text-gray-700 dark:text-gray-400"><?php echo date('F d, Y', strtotime($eventDate)); ?></p>
+
+							<div class="flex space-x-2 mt-auto">
+								<!-- Update Event Button -->
+								<button type="button" onclick="toggleUpdateEventModal(<?php echo $eventId; ?>); openUpdateEventModal()" class="text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700">
+									<i class="fa-solid fa-pen-to-square"></i>
+								</button>
+
+								<!-- Archive Event Button -->
+								<button type="button" onclick="archiveEvent(<?php echo $eventId; ?>)" class="text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700">
+									<i class="fa-solid fa-box-archive"></i>
+								</button>
+							</div>
+						</div>
+					</div>
+					<?php
+				}
+				echo '</div>'; // End the grid container
+			} else {
+				echo "<p>No events found.</p>";
+			}
+
+			// Close the database connection
+			$conn->close();
+		?>
 
     <!-- Add Event Main modal -->
 		<div id="add-event-modal" tabindex="-1" aria-hidden="true" class="hidden fixed inset-0 z-50 flex justify-center items-center">
@@ -169,24 +188,21 @@
 					<!-- Modal body -->
 					<form class="p-4 md:p-5" action="add-event.php" method="POST" enctype="multipart/form-data">
 						<div class="grid gap-4 mb-4 grid-cols-2">
+
 							<div class="col-span-2">
 								<label for="name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Name</label>
-								<input type="text" name="name" id="name" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Type product name" required="">
+								<input type="text" name="name" id="name" autocomplete="off" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" required="">
 							</div>
 
-                            <div class="relative w-full max-w-sm ">
-
-                                <label for="name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Date</label>
-                                <input datepicker id="default-datepicker" type="text" name="date" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Select date">
-                            </div>
-
+							<div class="relative max-w-sm">
+								<label for="name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Date</label>
+							<input id="date" name="date" autocomplete="off" datepicker datepicker-title="" type="text" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Select date">
+							</div>
 
 							<div class="col-span-2">
 								<label for="description" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Event Description</label>
-								<textarea id="description" name="description" rows="4" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Write product description here"></textarea>
+								<textarea id="description" name="description" autocomplete="off" rows="4" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"></textarea>
 							</div>
-
-                        
 
                             <div class="col-span-2">
 								<label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white" for="file">Upload file</label>
@@ -199,12 +215,88 @@
 								</div>
 							</div>
 
+						</div>
+						<div class="flex justify-end">
+							<button type="submit" class="text-white inline-flex items-center bg-blue-500 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+								<svg class="me-1 -ms-1 w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+								<path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd"></path>
+								</svg>
+								Add
+							</button>
+						</div>
+
+					</form>
+				</div>
+			</div>
+		</div>
+
+
+		 <!-- Update Event Main modal -->
+		 <div id="update-event-modal" tabindex="-1" aria-hidden="true" class="hidden fixed inset-0 z-50 flex justify-center items-center">
+			<div class="relative p-4 w-full max-w-md max-h-full">
+				<!-- Modal content -->
+				<div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+					<!-- Modal header -->
+					<div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
+						<h3 class="text-lg font-semibold text-gray-900 dark:text-white">
+							Update Event
+						</h3>
+						<button type="button" onclick="closeUpdateEventModal()" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-toggle="update-event-modal">
+							<svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+								<path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+							</svg>
+							<span class="sr-only">Close modal</span>
+						</button>
+					</div>
+					<!-- Modal body -->
+					<form class="p-4 md:p-5" action="update-event.php" method="POST" enctype="multipart/form-data">
+						<div class="grid gap-4 mb-4 grid-cols-2">
+
+						<input type="hidden" name="eventId" id="eventId">
+
+							<div class="col-span-2">
+								<label for="name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Name</label>
+								<input type="text" name="updateName" id="updateName" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" required="">
+							</div>
+
+							<div class="relative max-w-sm">
+								<label for="name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Date</label>
+							<input id="updateDate" name="updateDate" autocomplete="off" datepicker datepicker-title="" type="text" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Select date">
+							</div>
+
+
+							<div class="col-span-2">
+								<label for="description" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Event Description</label>
+								<textarea id="updateDescription" name="updateDescription" rows="4" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"></textarea>
+							</div>
+
+                            <div class="col-span-2">
+								<label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white" for="file">Upload file</label>
+								<input class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
+									aria-describedby="file_input_help" id="updatefile_input" name="updatePicture" type="file" accept="image/png, image/jpeg" onchange="previewImage(event)">
+								<p class="mt-1 text-sm text-gray-500 dark:text-gray-300" id="file_input_help">PNG or JPG (MAX. 800x400px).</p>
+								
+								<div class="mt-2" id="image-preview-from-db">
+									<img id="updateImagePreviewFromDb" class="w-full h-auto object-cover rounded-lg img-zoom-out" />
+								</div>
+    
+								<!-- Preview container for the new uploaded image -->
+								<div class="mt-2 hidden" id="image-preview-new">
+									<img id="updateImagePreviewNew" class="w-full h-auto object-cover rounded-lg img-zoom-out" />
+								</div>
+							</div>
+
 
 						</div>
-						<button type="submit" class="text-white inline-flex items-center bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-							<svg class="me-1 -ms-1 w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd"></path></svg>
-							Add
-						</button>
+						<div class="flex justify-end">
+							<button type="submit" class="text-white inline-flex items-center bg-blue-500 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+								<svg class="me-1 -ms-1 w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+								<path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd"></path>
+								</svg>
+								Update
+							</button>
+						</div>
+
 					</form>
 				</div>
 			</div>
@@ -212,11 +304,12 @@
 </main>
 
 </section>
-
+	<script src="../scripts/event.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/flowbite@2.5.2/dist/flowbite.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"></script>
+	<script src="../path/to/flowbite/dist/flowbite.min.js"></script>
 	<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 	<script src="../scripts/script.js"></script>
-	<script src="event.js"></script>
-
 
 </body>
 </html>
