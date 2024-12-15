@@ -7,11 +7,13 @@
     $sql_rates = "SELECT * FROM rates WHERE status='active'";
     $result_rates = $conn->query($sql_rates);
     
-    $sql_amenities = "SELECT * FROM addons WHERE status='active'";
-    $result_amenities = $conn->query($sql_amenities);
+    $sql_addons = "SELECT * FROM addons WHERE status='active'";
+    $result_addons = $conn->query($sql_addons);
 
     if (isset($_POST['Book_me_now_pls'])) {
         // Sanitize and assign form input to variables
+        $rate_id = $_POST['rate_id'];
+        $addons_id = $_POST['addons_id'];
         $first_name = $_POST['first_name'];
         $last_name = $_POST['last_name'];
         $email = $_POST['email'];
@@ -20,6 +22,9 @@
         $reservation_check_in_date = $_POST['reservation_check_in_date'];
         $reservation_check_out_date = $_POST['reservation_check_out_date'];
 
+
+
+
         //Mobile Number Error Handler
         if (!is_numeric($mobile_number)) {
             echo "<script>alert('Invalid mobile number. Please enter numbers only.');</script>";
@@ -27,8 +32,8 @@
         }
 
         
-        $stmt = $conn->prepare("INSERT INTO reservation (first_name, last_name, email, mobile_number, total_amount, reservation_check_in_date, reservation_check_out_date) 
-        VALUES (?, ?, ?, ?, ?, ?, ?)");
+        $stmt = $conn->prepare("INSERT INTO reservation (rate_id,addons_id,first_name, last_name, email, mobile_number, total_amount, reservation_check_in_date, reservation_check_out_date) 
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
         // Check if the statement was prepared successfully
         if (!$stmt) {
@@ -37,7 +42,9 @@
 
         // Bind parameters to the prepared statement
         $stmt->bind_param(
-            "sssssss", // "s" for string, "i" for integer, "d" for double, etc.
+            "iisssssss", // Add "i" for the integer `rate_id`
+            $rate_id,
+            $addons_id,
             $first_name,
             $last_name,
             $email,
@@ -50,7 +57,7 @@
         // Execute the prepared statement
         if ($stmt->execute()) {
             echo "<script>alert('Reservation has been successfully created!');</script>";
-            header("Location: ../landing page (customer)/send_payment.php");
+            header("Location: ../landing_page_customer/send_payment.php");
             exit();
         } else {
             echo "Error: " . $stmt->error;
@@ -101,9 +108,6 @@
                     </div>
                 </div>
                 <!-- Name Input End -->
-
-
-
             
                 <!-- Electronic Inputs Start -->
                 <div id="electronic_input" class="flex justify-between w-full h-[50%] gap-5 mt-3">
@@ -122,7 +126,7 @@
        
 
             <!-- Rates and Amenities Container -->
-            <div id="rates_amenities_container" class="w-full">
+            <div id="rates_addons_container" class="w-full">
                 <div id="scroll_rates_container" class="w-full h-[110vh]">
 
                     <!-- Rates Container Start -->
@@ -135,8 +139,6 @@
                            // Fetch and encode image data as base64
                             $imageData = base64_encode($rate['picture']);
                         ?>
-
-
                             <!-- RATES CARD START -->
                             <div id="rates_card" class="flex flex-col justify-center items-center w-[35%] sm:w-[25%] h-[90%] shrink-0 shadow-lg rounded-2xl">
                                 <div id="rates_card_pic" class="flex items-center justify-center relative w-full h-[30%] sm:h-[60%] rounded-xl">
@@ -153,8 +155,8 @@
                                 </div>
 
                                 <div class="flex w-full h-[30%] justify-center items-center">
-                                    <button id="select_btn" class="w-[80%] h-[70%] bg-[#0092C0] rounded-lg">
-                                        Select
+                                    <button type="button" id="rate_btn" class="w-[80%] h-[70%] bg-[#0092C0] rounded-lg" data-rate-id="<?php echo $rate['id']; ?>">
+                                        Select Rate
                                     </button>
                                 </div>
                                 
@@ -170,28 +172,28 @@
                     
 
                     <!-- Amenities Container -->
-                    <div id="amenities_container" class="flex flex-col w-full h-[50%] mt-[3%]">
+                    <div id="addons_container" class="flex flex-col w-full h-[50%] mt-[3%]">
                         <h1 class="text-4xl">Amenities</h1>
-                        <div id="scroll_amenities_container" class="flex flex-row items-center w-full h-full overflow-y-auto gap-5">
-                        <?php while($amenity = $result_amenities->fetch_assoc()) { 
+                        <div id="scroll_addons_container" class="flex flex-row items-center w-full h-full overflow-y-auto gap-5">
+                        <?php while($addons = $result_addons->fetch_assoc()) { 
                             // Fetch and encode image data as base64
-                            $imageData = base64_encode($amenity['picture']); // Update column name here
+                            $imageData = base64_encode($addons['picture']); // Update column name here
                             ?>
                         <!-- AMENITIES CARD START -->
-                            <div id="amenities_card" class="flex flex-col justify-center items-center w-[35%] sm:w-[25%] h-[90%] shrink-0 shadow-lg rounded-2xl">
-                                <div id="amenities_card_pic" class="flex items-center justify-center relative w-full h-[30%] sm:h-[60%] rounded-xl">
+                            <div id="addons_card" class="flex flex-col justify-center items-center w-[35%] sm:w-[25%] h-[90%] shrink-0 shadow-lg rounded-2xl">
+                                <div id="addons_card_pic" class="flex items-center justify-center relative w-full h-[30%] sm:h-[60%] rounded-xl">
                                 <!-- Embed the Base64 image directly in the src -->
                                 <img src="data:image/jpeg;base64,<?php echo $imageData; ?>" loading="lazy" class="w-full h-[160px] rounded-xl" alt="Amenity Image">
                                 </div>
                                 <!-- Amenities Description(name, price, hours, tag) -->
-                                <div id="amenities_description" class="flex flex-col w-full h-[40%]">
-                                    <h1 id="amenities_name" class="text-xl font-bold"><?php echo $amenity['name']; ?></h1>
-                                    <p id="amenities_price" class="text-lg"><?php echo '₱' . number_format($amenity['price'], 2); ?></p>
-                                    <p id="amenities_tag" class="text-xs text-gray-500">Includes taxes & fees</p>
+                                <div id="addons_description" class="flex flex-col w-full h-[40%]">
+                                    <h1 id="addons_name" class="text-xl font-bold"><?php echo $addons['name']; ?></h1>
+                                    <p id="addons_price" class="text-lg"><?php echo '₱' . number_format($addons['price'], 2); ?></p>
+                                    <p id="addons_tag" class="text-xs text-gray-500">Includes taxes & fees</p>
                                 </div>
                                 <div class="flex w-full h-[30%] justify-center items-center">
-                                    <button id="select_btn" class="w-[80%] h-[70%] bg-[#0092C0] rounded-lg">
-                                        Select
+                                    <button type="button" id="addons_btn" class="w-[80%] h-[70%] bg-[#0092C0] rounded-lg" data-addons-id="<?php echo $addons['id']; ?>">
+                                        Select Addons
                                     </button>
                                 </div>
                             </div>
@@ -243,6 +245,9 @@
             <input type="hidden" name="reservation_check_in_date" id="reservation_check_in_date">
             <input type="hidden" name="reservation_check_out_date" id="reservation_check_out_date">
             <input type="hidden" name="total_amount" id="total_amount">
+            <input type="hidden" name="rate_id" id="rate_id">
+            <input type="hidden" name="addons_id" id="addons_id">
+
 
             
             <button type="submit" id="Booking" name="Book_me_now_pls" class="mx-10 w-[83%] h-11 rounded-xl bg-[#37863B] mt-[5%]">Book <i class="fa-sharp fa-solid fa-arrow-right ml-1"></i></button>
