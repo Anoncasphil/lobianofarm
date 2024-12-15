@@ -22,7 +22,7 @@ if (!$stmt) {
 $stmt->bind_param("sss", $token_hash, $expiry, $email);
 $stmt->execute();
 
-if ($mysqli->affected_rows) {
+if ($stmt->affected_rows) {
 
     $mail =  require __DIR__ . "/mailer.php";
 

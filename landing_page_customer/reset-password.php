@@ -1,39 +1,57 @@
 <?php
 
+// Get the token from the URL parameter
 $token = $_GET["token"];
 
+// Hash the token to match it in the database
 $token_hash = hash("sha256", $token);
 
+// Include the database connection (ensure this file returns a valid mysqli object)
 $mysqli = require __DIR__ . "/../db_connection.php";
 
+// Check if the connection is valid
+if (!$conn instanceof mysqli) {
+    die("Database connection failed.");
+}
+
+// Prepare the SQL query to fetch the user with the provided reset token hash
 $sql = "SELECT * FROM user_tbl WHERE reset_token_hash = ?";
 
-$stmt =$mysqli->prepare($sql);
+// Prepare the statement
+$stmt = $conn->prepare($sql);
+if (!$stmt) {
+    die("Prepare failed: " . $mysqli->error);
+}
 
+// Bind the parameter and execute the query
 $stmt->bind_param("s", $token_hash);
-
 $stmt->execute();
 
+// Get the result
 $result = $stmt->get_result();
-
 $user = $result->fetch_assoc();
 
+// Check if the user exists
 if ($user === null) {
-    echo "<Session not found.'); window.location.href = 'login.php';</script>";
+    echo "<script>alert('Session not found.'); window.location.href = 'login.php';</script>";
+    exit();
 }
 
+// Check if the reset token has expired
 if (strtotime($user["reset_token_expires_at"]) <= time()) {
     echo "<script>alert('This session has expired.'); window.location.href = 'login.php';</script>";
-
+    exit();
 }
+
 ?>
+>
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Forgot Password?</title>
+    <title>888 Lobiano's Farm</title>
     <link rel="stylesheet" href="../styles/styles.css">
     <link rel="stylesheet" href="../styles/normal.css">
     <link rel="icon" href="../src/images/logo.png" type="image/x-icon">
