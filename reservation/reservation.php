@@ -50,7 +50,7 @@
         // Execute the prepared statement
         if ($stmt->execute()) {
             echo "<script>alert('Reservation has been successfully created!');</script>";
-            header("Location: send_payment.php");
+            header("Location: ../landing page (customer)/send_payment.php");
             exit();
         } else {
             echo "Error: " . $stmt->error;
