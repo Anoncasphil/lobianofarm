@@ -60,6 +60,20 @@ if (isset($_SESSION['first_name'])) {
                         <input type="tel" value="<?php echo isset($mobile_number) ? htmlspecialchars($mobile_number) : ''; ?>" class="w-full h-10 rounded-md border border-gray-300 px-2 focus:outline-none focus:ring-2 focus:ring-blue-400">
                     </div>
                 </div>
+                <div id="checked_dates" class="flex justify-between w-full h-[50%] gap-5 mt-3">
+                    <div class="flex flex-col w-[48%]">
+                        <label class="mb-1 text-sm font-medium">Checked-In Date</label>
+                        <input type="text" value="<?php echo htmlspecialchars($reservation_check_in_date); ?>" 
+                            class="w-full h-10 rounded-md border border-gray-300 px-2 focus:outline-none focus:ring-2 focus:ring-blue-400 bg-gray-200 cursor-not-allowed" 
+                            disabled>
+                    </div>
+                    <div class="flex flex-col w-[48%]">
+                        <label class="mb-1 text-sm font-medium">Checked-Out Date</label>
+                        <input type="text" value="<?php echo htmlspecialchars($reservation_check_out_date); ?>" 
+                            class="w-full h-10 rounded-md border border-gray-300 px-2 focus:outline-none focus:ring-2 focus:ring-blue-400 bg-gray-200 cursor-not-allowed" 
+                            disabled>
+                    </div>
+                </div>
             </div>
 
             <!-- Payment container -->
@@ -90,9 +104,9 @@ if (isset($_SESSION['first_name'])) {
         </div>
 
         <!-- Calendar -->
-        <div id="calendar_side" class="flex flex-col w-[30%] h-full">
+        <div id="calendar_side" class="flex flex-col w-[30%]">
             <div id="calendar_container" class="flex justify-center w-full mt-[3%]">
-                <div id="calendar"></div>
+                          <!-- Removed calendar for the time being (ayaw magdisplay) -->
             </div>
             <div id="invoice_container" class="flex flex-col justify-self-center self-center w-[80%] mt-[3%] rounded-lg border-2 p-2">
                 <table id="invoice" class="w-[90%] px-10 mx-5">
@@ -112,11 +126,8 @@ if (isset($_SESSION['first_name'])) {
                         </tr>
                     </tfoot>
                 </table>
+                
             </div>
-
-            <!-- Hidden inputs -->
-            <input type="hidden" id="reservation_check_in_date" name="reservation_check_in_date" value="<?php echo htmlspecialchars($reservation_check_in_date); ?>">
-            <input type="hidden" id="reservation_check_out_date" name="reservation_check_out_date" value="<?php echo htmlspecialchars($reservation_check_out_date); ?>">
 
             <button id="confirm_btn" class="mx-10 w-[83%] h-11 rounded-xl bg-[#37863B] mt-[5%]">Book <i class="fa-sharp fa-solid fa-arrow-right ml-1"></i></button>
         </div>

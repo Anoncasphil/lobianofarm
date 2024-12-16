@@ -1,4 +1,5 @@
 <?php
+    session_start();
     include("../db_connection.php");
     if ($conn->connect_error) {
         die("Connection failed: " . $conn->connect_error);
@@ -21,6 +22,18 @@
         $reservation_check_out_date = $_POST['reservation_check_out_date'];
         $rate_ids = explode(',', $_POST['rate_id']); // Split multiple rate IDs
         $addons_id = explode(',', $_POST['addons_id']); // Split multiple addon ID
+
+        // Store the input data in session variables
+        $_SESSION['rate_id'] = $rate_id;
+        $_SESSION['addons_id'] = $addons_id;
+        $_SESSION['first_name'] = $first_name;
+        $_SESSION['last_name'] = $last_name;
+        $_SESSION['email'] = $email;
+        $_SESSION['mobile_number'] = $mobile_number;
+        $_SESSION['total_amount'] = $total_amount;
+        $_SESSION['reservation_check_in_date'] = $reservation_check_in_date;
+        $_SESSION['reservation_check_out_date'] = $reservation_check_out_date;
+
     
         if (!is_numeric($mobile_number)) {
             echo "<script>alert('Invalid mobile number. Please enter numbers only.');</script>";
@@ -62,7 +75,7 @@
 
         $conn->close();
         echo "<script>alert('Reservation successfully created!');</script>";
-        header("Location: send_payment.php");
+        header("Location: ../landing_page_customer/send_payment.php");
         exit();
     }
     
