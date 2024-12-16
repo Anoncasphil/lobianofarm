@@ -46,7 +46,7 @@ if (isset($_POST["logme"])) {
             session_start();
             $_SESSION["user_id"] = $user["id"];
             $_SESSION["user_email"] = $user["email"];
-            header("Location: homepage.php");
+            header("Location: main_page_logged.php");
             exit();
         } else {
             echo "<script>alert('Invalid credentials');</script>";

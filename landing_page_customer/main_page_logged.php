@@ -80,7 +80,7 @@ include '../db_connection.php';
         
             <!-- Book Link -->
             <div id="book_link" class="flex items-center bg-[#37863B] h-[42px] w-full sm:w-[25%] justify-center rounded-md">
-                <a href="reservation_test.html" class="text-white">Book <i class="fa-sharp fa-solid fa-arrow-right ml-1"></i></a>
+                <a href="../reservation/reservation.php" class="text-white">Book <i class="fa-sharp fa-solid fa-arrow-right ml-1"></i></a>
             </div>
         </div>
             

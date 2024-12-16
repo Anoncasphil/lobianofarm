@@ -24,8 +24,6 @@
         $addons_id = explode(',', $_POST['addons_id']); // Split multiple addon ID
 
         // Store the input data in session variables
-        $_SESSION['rate_id'] = $rate_id;
-        $_SESSION['addons_id'] = $addons_id;
         $_SESSION['first_name'] = $first_name;
         $_SESSION['last_name'] = $last_name;
         $_SESSION['email'] = $email;
@@ -75,7 +73,7 @@
 
         $conn->close();
         echo "<script>alert('Reservation successfully created!');</script>";
-        header("Location: ../landing_page_customer/send_payment.php");
+        header("Location: send_payment.php");
         exit();
     }
     
