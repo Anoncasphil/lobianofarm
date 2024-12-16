@@ -1,4 +1,5 @@
 <?php
+    session_start();
     include("../db_connection.php");
     if ($conn->connect_error) {
         die("Connection failed: " . $conn->connect_error);
@@ -22,14 +23,22 @@
         $reservation_check_in_date = $_POST['reservation_check_in_date'];
         $reservation_check_out_date = $_POST['reservation_check_out_date'];
 
-
-
-
         //Mobile Number Error Handler
         if (!is_numeric($mobile_number)) {
             echo "<script>alert('Invalid mobile number. Please enter numbers only.');</script>";
             exit();
         }
+
+        // Store the input data in session variables
+        $_SESSION['rate_id'] = $rate_id;
+        $_SESSION['addons_id'] = $addons_id;
+        $_SESSION['first_name'] = $first_name;
+        $_SESSION['last_name'] = $last_name;
+        $_SESSION['email'] = $email;
+        $_SESSION['mobile_number'] = $mobile_number;
+        $_SESSION['total_amount'] = $total_amount;
+        $_SESSION['reservation_check_in_date'] = $reservation_check_in_date;
+        $_SESSION['reservation_check_out_date'] = $reservation_check_out_date;
 
         
         $stmt = $conn->prepare("INSERT INTO reservation (rate_id,addons_id,first_name, last_name, email, mobile_number, total_amount, reservation_check_in_date, reservation_check_out_date) 
@@ -68,8 +77,6 @@
         $conn->close();
     }
 ?>
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -77,9 +84,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Testing</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-    <link rel="stylesheet" href="../src/calendar.css">
+    <link rel="stylesheet" href="../styles/calendar.css">
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="../src/styles.css">
+    <link rel="stylesheet" href="../styles/styles.css">
     <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" />
 </head>
@@ -169,8 +176,7 @@
 
                     </div>
                     <!-- Rates Container End -->
-                    
-
+                
                     <!-- Amenities Container -->
                     <div id="addons_container" class="flex flex-col w-full h-[50%] mt-[3%]">
                         <h1 class="text-4xl">Amenities</h1>
@@ -202,25 +208,18 @@
                         </div>
                     </div>
                     <!-- AMENITIES CARD END -->
-
-
                 </div>
             </div>
             <?php
             $conn->close();
             ?>
         </div>
-
         <!-- Right side -->
         <!-- Calendar Side -->
         <div id="calendar_side" class="flex flex-col w-[30%] h-full">
             <div id="calendar_container" class="flex justify-center w-full mt-[3%]">
                     <div id="calendar"></div>
             </div>
-            
-
-
-
             <!-- INVOICE CONTAINER -->
             <div id="invoice_container" class="flex flex-col justify-self-center self-center w-[80%] mt-[3%] rounded-lg border-2 p-2">
                 <table id="invoice" class="w-[90%] px-10 mx-5">

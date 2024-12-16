@@ -1,8 +1,25 @@
 <?php
-  include("../db_connection.php");
-  if ($conn->connect_error) {
-      die("Connection failed: " . $conn->connect_error);
-  }
+session_start();
+include("../db_connection.php");
+
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+
+if (isset($_SESSION['first_name'])) {
+    $rate_id = $_SESSION['rate_id'];
+    $addons_id = $_SESSION['addons_id'];
+    $first_name = $_SESSION['first_name'];
+    $last_name = $_SESSION['last_name'];
+    $email = $_SESSION['email'];
+    $mobile_number = $_SESSION['mobile_number'];
+    $total_amount = $_SESSION['total_amount'];
+    $reservation_check_in_date = $_SESSION['reservation_check_in_date'];
+    $reservation_check_out_date = $_SESSION['reservation_check_out_date'];
+} else {
+    echo "No reservation data found!";
+    exit();
+}
 ?>
 
 <!DOCTYPE html>
@@ -10,7 +27,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Testing</title>
+    <title>Payment</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <link rel="stylesheet" href="../styles/calendar.css">
     <script src="https://cdn.tailwindcss.com"></script>
@@ -20,39 +37,36 @@
 
     <div id="main_container" class="flex flex-row justify-self-center w-[95%] h-[95%]">
         <div id="input_container" class="flex flex-col h-full w-[70%] items-center">
+            <!-- Customer details form -->
             <div id="customer_details_input" class="flex flex-col w-[80%] h-[20%] mt-[3%] mb-[2%]">
-                <!-- Name Inputs -->
                 <div id="name_input" class="flex justify-between w-full gap-5">
                     <div class="flex flex-col w-[48%]">
                         <label class="mb-1 text-sm font-medium">First Name</label>
-                        <input type="text" class="w-full h-10 rounded-md border border-gray-300 px-2 focus:outline-none focus:ring-2 focus:ring-blue-400">
+                        <input type="text" value="<?php echo isset($first_name) ? htmlspecialchars($first_name) : ''; ?>" class="w-full h-10 rounded-md border border-gray-300 px-2 focus:outline-none focus:ring-2 focus:ring-blue-400">
                     </div>
                     <div class="flex flex-col w-[48%]">
                         <label class="mb-1 text-sm font-medium">Last Name</label>
-                        <input type="text" class="w-full h-10 rounded-md border border-gray-300 px-2 focus:outline-none focus:ring-2 focus:ring-blue-400">
+                        <input type="text" value="<?php echo isset($last_name) ? htmlspecialchars($last_name) : ''; ?>" class="w-full h-10 rounded-md border border-gray-300 px-2 focus:outline-none focus:ring-2 focus:ring-blue-400">
                     </div>
                 </div>
-            
-                <!-- Electronic Inputs -->
+
                 <div id="electronic_input" class="flex justify-between w-full h-[50%] gap-5 mt-3">
                     <div class="flex flex-col w-[48%]">
                         <label class="mb-1 text-sm font-medium">Email</label>
-                        <input type="email" class="w-full h-10 rounded-md border border-gray-300 px-2 focus:outline-none focus:ring-2 focus:ring-blue-400">
+                        <input type="email" value="<?php echo isset($email) ? htmlspecialchars($email) : ''; ?>" class="w-full h-10 rounded-md border border-gray-300 px-2 focus:outline-none focus:ring-2 focus:ring-blue-400">
                     </div>
                     <div class="flex flex-col w-[48%]">
                         <label class="mb-1 text-sm font-medium">Mobile Number</label>
-                        <input type="tel" class="w-full h-10 rounded-md border border-gray-300 px-2 focus:outline-none focus:ring-2 focus:ring-blue-400">
+                        <input type="tel" value="<?php echo isset($mobile_number) ? htmlspecialchars($mobile_number) : ''; ?>" class="w-full h-10 rounded-md border border-gray-300 px-2 focus:outline-none focus:ring-2 focus:ring-blue-400">
                     </div>
                 </div>
             </div>
-            
+
+            <!-- Payment container -->
             <div id="payment_container" class="w-[80%] h-full">
-                
                 <div id="proof_payment_container" class="flex flex-row w-full h-[60%]">
                     <div id="attach_picture" class="flex flex-col justify-center w-[50%] h-full">
-                        
                         <p class="mb-1">Attach the proof of payment*</p>
-
                         <div class="flex items-center justify-center w-full">
                             <label for="dropzone-file" class="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-gray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 ">
                                 <div class="flex flex-col items-center justify-center pt-5 pb-6">
@@ -64,33 +78,18 @@
                                 </div>
                                 <input id="dropzone-file" type="file" class="hidden" />
                             </label>
-                        </div> 
-
+                        </div>
                     </div>
 
                     <div id="qr_code" class="flex flex-col text-left bottom-0 items-center justify-center w-[50%] h-full">
                         <p class="mb-1 flex mr-[]">Scan the attached QR*</p>
                         <img src="../src/images/qr_sample.png" class="w-[70%] h-64">
                     </div>
-                    
-                    
                 </div>
             </div>
         </div>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+        <!-- Calendar -->
         <div id="calendar_side" class="flex flex-col w-[30%] h-full">
             <div id="calendar_container" class="flex justify-center w-full mt-[3%]">
                 <div id="calendar"></div>
@@ -104,18 +103,22 @@
                         </tr>
                     </thead>
                     <tbody>
-
+                        <!-- Additional invoice rows can go here -->
                     </tbody>
                     <tfoot>
                         <tr>
                             <td>Total</td>
-                            <td id="totalPrice">₱0.00</td>
+                            <td id="totalPrice">₱<?php echo number_format($total_amount, 2); ?></td>
                         </tr>
                     </tfoot>
                 </table>
             </div>
-            <button id="select_btn" class="mx-10 w-[83%] h-11 rounded-xl bg-[#37863B] mt-[5%]">Book <i class="fa-sharp fa-solid fa-arrow-right ml-1"></i></button>
 
+            <!-- Hidden inputs -->
+            <input type="hidden" id="reservation_check_in_date" name="reservation_check_in_date" value="<?php echo htmlspecialchars($reservation_check_in_date); ?>">
+            <input type="hidden" id="reservation_check_out_date" name="reservation_check_out_date" value="<?php echo htmlspecialchars($reservation_check_out_date); ?>">
+
+            <button id="confirm_btn" class="mx-10 w-[83%] h-11 rounded-xl bg-[#37863B] mt-[5%]">Book <i class="fa-sharp fa-solid fa-arrow-right ml-1"></i></button>
         </div>
     </div>
 
