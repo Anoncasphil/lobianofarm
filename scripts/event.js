@@ -135,30 +135,29 @@ function previewImage(event) {
     }
 }
 
-function archiveEvent(eventId) {
-    var xhr = new XMLHttpRequest();
-    xhr.open("POST", "archive-event.php", true);
-    xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-
-    xhr.onreadystatechange = function() {
-        if (xhr.readyState == 4 && xhr.status == 200) {
-            if (xhr.responseText === 'success') {
-                var row = document.getElementById('event-' + eventId);
-                row.style.display = 'none'; // Hide the event row
-                showModal('successModal', 'The event has been successfully archived.');
-
-                // Redirect the page after a short delay
-                setTimeout(function() {
-                    window.location.href = 'events.php'; // Client-side redirect
-                }, 1500); // 1.5-second delay
-            } else {
-                showModal('errorModal', 'Failed to archive the event. Please try again.');
+function openEventModal(eventId) {
+    // Fetch event details using AJAX
+    fetch(`fetch_event_details.php?id=${eventId}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.error) {
+                console.error(data.error);
+                return;
             }
-        }
-    };
 
-    xhr.send("id=" + eventId);
+            // Populate the modal with event details
+            document.getElementById('eventName').innerText = data.name;
+            document.getElementById('eventDate').innerText = new Date(data.date).toLocaleDateString();
+            document.getElementById('eventImage').src = `../src/uploads/events/${data.picture}`;
+            document.getElementById('eventDescription').innerText = data.description;
+
+            // Show the modal
+            document.getElementById('eventModal').classList.remove('hidden');
+        })
+        .catch(error => console.error('Error:', error));
 }
 
-
-
+// Close modal when clicking the close button
+document.querySelector('.close-modal').addEventListener('click', () => {
+    document.getElementById('eventModal').classList.add('hidden');
+});

@@ -1,0 +1,31 @@
+#albumContainer .flex {
+    display: flex;
+    justify-content: flex-start; /* Align everything to the left */
+    background-color: #fbfbfb; /* Light gray background for the container */
+    padding: 10px;
+    border-radius: 8px;
+}
+
+.select-picture-checkbox {
+    margin-right: 10px; /* Space between checkbox and picture */
+}
+
+#albumContainer .text-left {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    width: 100%; /* Ensure text container spans the remaining space */
+    margin-left: 15px; /* Adds margin to the left for better spacing */
+}
+
+#albumContainer img {
+    width: 300px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-right: 20px;
+}
+
+#albumContainer p {
+    margin: 0;
+}

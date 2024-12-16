@@ -1,0 +1,48 @@
+.event-list-item img {
+    width: 200px;
+    height: 100px;
+    object-fit: cover; /* Ensures the image covers the specified dimensions without distorting */
+    border-radius: 8px; /* Optional: Adds rounded corners to the image */
+}
+
+/* Modal Styles */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+    padding-top: 100px;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+}
+
+.modal-content {
+    position: relative;
+    margin: auto;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    width: 80%;
+    max-width: 600px;
+}
+
+.close-modal {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 20px;
+    color: #aaa;
+    cursor: pointer;
+}
+
+.close-modal:hover {
+    color: #000;
+}
+
+
+.modal.show {
+    display: flex;
+}
+
