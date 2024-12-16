@@ -1,5 +1,4 @@
 <?php
-    session_start();
     include("../db_connection.php");
     if ($conn->connect_error) {
         die("Connection failed: " . $conn->connect_error);
@@ -12,9 +11,7 @@
     $result_addons = $conn->query($sql_addons);
 
     if (isset($_POST['Book_me_now_pls'])) {
-        // Sanitize and assign form input to variables
-        $rate_id = $_POST['rate_id'];
-        $addons_id = $_POST['addons_id'];
+        // Sanitize and assign form input
         $first_name = $_POST['first_name'];
         $last_name = $_POST['last_name'];
         $email = $_POST['email'];
@@ -22,61 +19,51 @@
         $total_amount = $_POST['total_amount'];
         $reservation_check_in_date = $_POST['reservation_check_in_date'];
         $reservation_check_out_date = $_POST['reservation_check_out_date'];
-
-        //Mobile Number Error Handler
+        $rate_ids = explode(',', $_POST['rate_id']); // Split multiple rate IDs
+        $addons_id = $_POST['addons_id'];
+    
         if (!is_numeric($mobile_number)) {
             echo "<script>alert('Invalid mobile number. Please enter numbers only.');</script>";
             exit();
         }
-
-        // Store the input data in session variables
-        $_SESSION['rate_id'] = $rate_id;
-        $_SESSION['addons_id'] = $addons_id;
-        $_SESSION['first_name'] = $first_name;
-        $_SESSION['last_name'] = $last_name;
-        $_SESSION['email'] = $email;
-        $_SESSION['mobile_number'] = $mobile_number;
-        $_SESSION['total_amount'] = $total_amount;
-        $_SESSION['reservation_check_in_date'] = $reservation_check_in_date;
-        $_SESSION['reservation_check_out_date'] = $reservation_check_out_date;
-
-        
-        $stmt = $conn->prepare("INSERT INTO reservation (rate_id,addons_id,first_name, last_name, email, mobile_number, total_amount, reservation_check_in_date, reservation_check_out_date) 
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
-
-        // Check if the statement was prepared successfully
-        if (!$stmt) {
-            die("Prepare failed: " . $conn->error);
+    
+        foreach ($rate_ids as $rate_id) {
+            $stmt = $conn->prepare("INSERT INTO reservation (first_name, last_name, email, mobile_number, total_amount, reservation_check_in_date, reservation_check_out_date, rate_id, addons_id) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+    
+            if (!$stmt) {
+                die("Prepare failed: " . $conn->error);
+            }
+    
+            $stmt->bind_param(
+                "sssssssii",
+                $first_name,
+                $last_name,
+                $email,
+                $mobile_number,
+                $total_amount,
+                $reservation_check_in_date,
+                $reservation_check_out_date,
+                $rate_id,
+                $addons_id
+            );
+    
+            if (!$stmt->execute()) {
+                echo "Error: " . $stmt->error;
+            }
+    
+            $stmt->close();
         }
-
-        // Bind parameters to the prepared statement
-        $stmt->bind_param(
-            "iisssssss", // Add "i" for the integer `rate_id`
-            $rate_id,
-            $addons_id,
-            $first_name,
-            $last_name,
-            $email,
-            $mobile_number,
-            $total_amount,
-            $reservation_check_in_date,
-            $reservation_check_out_date
-        );
-
-        // Execute the prepared statement
-        if ($stmt->execute()) {
-            echo "<script>alert('Reservation has been successfully created!');</script>";
-            header("Location: ../landing_page_customer/send_payment.php");
-            exit();
-        } else {
-            echo "Error: " . $stmt->error;
-        }
-
-        // Close the statement and connection
-        $stmt->close();
+    
         $conn->close();
+        echo "<script>alert('Reservation successfully created!');</script>";
+        header("Location: ../landing_page_customer/send_payment.php");
+        exit();
     }
+    
 ?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -84,9 +71,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Testing</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-    <link rel="stylesheet" href="../styles/calendar.css">
+    <link rel="stylesheet" href="../src/calendar.css">
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="../styles/styles.css">
+    <link rel="stylesheet" href="../src/styles.css">
     <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" />
 </head>
@@ -162,7 +149,7 @@
                                 </div>
 
                                 <div class="flex w-full h-[30%] justify-center items-center">
-                                    <button type="button" id="rate_btn" class="w-[80%] h-[70%] bg-[#0092C0] rounded-lg" data-rate-id="<?php echo $rate['id']; ?>">
+                                    <button type="button" id="rate_btn" class="w-[80%] h-[70%] bg-[#0092C0] rounded-lg rate-btn" data-rate-id="<?php echo $rate['id']; ?>">
                                         Select Rate
                                     </button>
                                 </div>
@@ -176,7 +163,8 @@
 
                     </div>
                     <!-- Rates Container End -->
-                
+                    
+
                     <!-- Amenities Container -->
                     <div id="addons_container" class="flex flex-col w-full h-[50%] mt-[3%]">
                         <h1 class="text-4xl">Amenities</h1>
@@ -208,18 +196,25 @@
                         </div>
                     </div>
                     <!-- AMENITIES CARD END -->
+
+
                 </div>
             </div>
             <?php
             $conn->close();
             ?>
         </div>
+
         <!-- Right side -->
         <!-- Calendar Side -->
         <div id="calendar_side" class="flex flex-col w-[30%] h-full">
             <div id="calendar_container" class="flex justify-center w-full mt-[3%]">
                     <div id="calendar"></div>
             </div>
+            
+
+
+
             <!-- INVOICE CONTAINER -->
             <div id="invoice_container" class="flex flex-col justify-self-center self-center w-[80%] mt-[3%] rounded-lg border-2 p-2">
                 <table id="invoice" class="w-[90%] px-10 mx-5">

@@ -41,61 +41,64 @@ flatpickr("#calendar", {
 
 
 document.addEventListener('DOMContentLoaded', function () {
-    // Handle Rate Selection
     const rateButtons = document.querySelectorAll('#rate_btn');
+    const selectedRates = new Set();
+    const selectedAddons = new Set(); // Set to store selected addons
+
     rateButtons.forEach(button => {
         button.addEventListener('click', function (event) {
             event.preventDefault();
             const card = button.closest('#rates_card');
-            const name = card.querySelector('h1').textContent.trim();  
+            const name = card.querySelector('h1').textContent.trim();
             const price = card.querySelector('.text-lg').textContent.trim();
-            const rateId = button.getAttribute('data-rate-id'); // Get the selected rate ID
+            const rateId = button.getAttribute('data-rate-id');
 
             const existingRow = findRowByName(name);
-        
+
             if (existingRow) {
                 existingRow.remove();
+                selectedRates.delete(rateId);
                 button.textContent = "Select Rate";
             } else {
                 addItemToInvoice(name, price);
-                button.textContent = "Unselect Rate"; 
+                selectedRates.add(rateId);
+                button.textContent = "Unselect Rate";
             }
-        
-            updateInvoiceTotal();
 
-            // Store the selected rate ID in the hidden input field
-            document.getElementById('rate_id').value = rateId;  // Store rate_id
+            document.getElementById('rate_id').value = Array.from(selectedRates).join(',');
+            updateInvoiceTotal();
         });
     });
 
-    // Handle Addson Selection
+    // Handle Addon Selection
     const addonsButtons = document.querySelectorAll('#addons_btn');
     addonsButtons.forEach(button => {
         button.addEventListener('click', function (event) {
-            event.preventDefault(); 
+            event.preventDefault();
             const card = button.closest('#addons_card');
-            const name = card.querySelector('h1').textContent.trim();  
+            const name = card.querySelector('h1').textContent.trim();
             const price = card.querySelector('.text-lg').textContent.trim();
-            const addonsId = button.getAttribute('data-addons-id'); // Get the selected amenity ID
+            const addonsId = button.getAttribute('data-addons-id');
             
             const existingRow = findRowByName(name);
-        
+
             if (existingRow) {
                 existingRow.remove();
+                selectedAddons.delete(addonsId); // Remove from selected addons
                 button.textContent = "Select Addons";
             } else {
                 addItemToInvoice(name, price);
-                button.textContent = "Unselect Addons"; 
+                selectedAddons.add(addonsId); // Add to selected addons
+                button.textContent = "Unselect Addons";
             }
-        
-            updateInvoiceTotal();
 
-            // Store the selected amenity ID in the hidden input field
-            document.getElementById('addons_id').value = addonsId;  // Store addons_id
+            // Update hidden input with all selected addon IDs (comma-separated)
+            document.getElementById('addons_id').value = Array.from(selectedAddons).join(',');
+            updateInvoiceTotal();
         });
     });
 
-    // Add an item to the invoice
+    // Function to add item to the invoice
     function addItemToInvoice(name, price) {
         const invoiceBody = document.querySelector('#invoice tbody');
         const newRow = document.createElement('tr');
@@ -106,28 +109,54 @@ document.addEventListener('DOMContentLoaded', function () {
         invoiceBody.appendChild(newRow);
     }
 
-    // Find an existing row by item name
+    // Function to find an existing row by item name
     function findRowByName(name) {
         const rows = document.querySelectorAll('#invoice tbody tr');
         return Array.from(rows).find(row => row.querySelector('td').textContent.trim() === name);
     }
 
-    // Update the total amount on the invoice
+    // Function to update the total price in the invoice
     function updateInvoiceTotal() {
         let total = 0;
         const rows = document.querySelectorAll('#invoice tbody tr');
         rows.forEach(row => {
             const priceText = row.querySelector('td:last-child').textContent;
             const price = parseFloat(priceText.replace('₱', '').replace(',', ''));
-            total += isNaN(price) ? 0 : price; // Sum the prices, ensuring valid price format
+            total += isNaN(price) ? 0 : price;
         });
 
-        // Update total in the footer
         const totalElement = document.querySelector('#invoice tfoot #totalPrice');
         totalElement.textContent = `₱${total.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 
-        // Update the hidden input for total_amount
         const totalAmountInput = document.querySelector('#total_amount');
         totalAmountInput.value = total;
     }
+
+    // Form submission validation
+    const bookingButton = document.querySelector('button[name="Book_me_now_pls"]');
+    bookingButton.addEventListener('click', function (event) {
+        const rateId = document.getElementById('rate_id').value;
+        const addonsId = document.getElementById('addons_id').value;
+        const checkInDate = document.getElementById('reservation_check_in_date').value;
+        const checkOutDate = document.getElementById('reservation_check_out_date').value;
+
+        if (!rateId) {
+            alert('Please select at least one rate.');
+            event.preventDefault(); // Prevent form submission
+            return;
+        }
+
+        if (!addonsId) {
+            alert('Please select at least one addon.');
+            event.preventDefault(); // Prevent form submission
+            return;
+        }
+
+        if (!checkInDate || !checkOutDate) {
+            alert('Please select a check-in and check-out date before proceeding.');
+            event.preventDefault(); // Prevent form submission
+            return;
+        }
+
+    });
 });
