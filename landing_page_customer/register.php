@@ -12,7 +12,7 @@ include('../db_connection.php');
     <link rel="stylesheet" href="../styles/normal.css">
     <link rel="icon" href="../src/images/logo.png" type="image/x-icon">
 </head>
-<body class="flex flex-row items-center w-full justify-between m-0 overflow-y-auto">
+<body class="flex flex-row items-center w-full h-full justify-between m-0 overflow-y-auto">
 
     <div id="slogan_container" class="flex h-2/5 w-3/5 items-center justify-center flex-col text-center m-0 text-white">
         <div id="main_slogan" class="flex w-[full] flex-row ">
@@ -116,7 +116,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     <!-- inside the form -->
         <form action="register.php" autocomplete="off" method="post" class="flex flex-col justify-center items-center w-full h-full overflow-y-auto">
-            <h2 id="login_tag" class="text-3xl mb-5 font-bold mt-5">Create an Account</h2>
+            <h2 id="login_tag" class="text-3xl mb-5 mt-5 font-bold">Create an Account</h2>
             <p id="input_tag" class="tracking-wide text-base mb-5">Create a account to continue</p>
 
             <!-- email -->
