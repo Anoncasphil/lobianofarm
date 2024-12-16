@@ -36,22 +36,22 @@ if (isset($_FILES['file_farm'])) {
                         echo "<script>alert('File uploaded successfully and payment proof saved!'); window.location.href='send_payment.php';</script>";
                         exit();
                     } else {
-                        echo "<script>alert('Failed to save payment proof in the database.');</script>";
+                        echo "<script>alert('Failed to save payment proof in the database.'); window.location.href='send_payment.php';</script>";
                     }
                     $stmt->close();
                 } else {
-                    echo "<script>alert('Failed to move the uploaded file.');</script>";
+                    echo "<script>alert('Failed to move the uploaded file.'); window.location.href='send_payment.php';</script>";
                 }
             } else {
-                echo "<script>alert('Your file is too big!');</script>";
+                echo "<script>alert('Your file is too big!'); window.location.href='send_payment.php';</script>";
             }
         } else {
-            echo "<script>alert('There was an error uploading your file!');</script>";
+            echo "<script>alert('There was an error uploading your file!'); window.location.href='send_payment.php';</script>";
         }
     } else {
-        echo "<script>alert('You cannot upload files of this type!');</script>";
+        echo "<script>alert('You cannot upload files of this type!'); window.location.href='send_payment.php';</script>";
     }
 } else {
-    echo "<script>alert('No file was uploaded.');</script>";
+    echo "<script>alert('No file was uploaded.'); window.location.href='send_payment.php';</script>";
 }
 ?>
