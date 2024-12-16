@@ -98,9 +98,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } else {
         // Insert values into the database
         try {
-            $stmt = $conn->prepare("INSERT INTO user_tbl (email, username, password, first_name, middle_name, last_name, contact_no) VALUES (?, ?, ?, ?, ?, ?, ?)");
-            $stmt->bind_param("sssssss", $email, $username, $passwordHash, $firstname, $middlename, $lastname, $contact_no);
-
+            $stmt = $conn->prepare(
+                "INSERT INTO user_tbl (email, password, first_name, middle_name, last_name, contact_no, role) 
+                 VALUES (?, ?, ?, ?, ?, ?, ?)"
+            );
+            $defaultRole = 'customer'; // Set the default role
+            $stmt->bind_param("sssssss", $email, $passwordHash, $firstname, $middlename, $lastname, $contact_no, $defaultRole);
+        
             if ($stmt->execute()) {
                 echo "<script>alert('User has registered successfully.'); window.location.href = 'login.php';</script>";
             } else {
