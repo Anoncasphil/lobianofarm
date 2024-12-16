@@ -26,6 +26,7 @@
 			<li><a href="../addons/addons.php"><i class='bx bxs-widget icon' ></i> Add-ons</a></li>
 			<li><a href="../events/events.php"><i class='bx bxs-widget icon' ></i> Events</a></li>
 			<li><a href="../album/album.php"><i class='bx bxs-widget icon' ></i> Album</a></li>
+			<li><a href="../team/team.php"><i class='bx bxs-widget icon' ></i> Team</a></li>
 
 			<li class="divider" data-text="table and forms">Table and forms</li>
 			<li><a href="#"><i class='bx bx-table icon' ></i> Tables</a></li>
