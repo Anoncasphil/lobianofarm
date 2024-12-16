@@ -1,7 +1,15 @@
 document.addEventListener('DOMContentLoaded', function () {
     const modal = document.getElementById('dateModal');
     const closeModal = document.getElementById('closeModal');
+    const approveButton = document.querySelector('.approve-button');
 
+    if (approveButton) {
+        approveButton.addEventListener('click', function() {
+            console.log("Reserved");
+            modal.style.display = 'none';
+        });
+    }
+    
     const modalName = document.getElementById('modal-name');
     const modalReservationDate = document.getElementById('modal-reservation-date');
     const modalDesiredDate = document.getElementById('modal-desired-date');
@@ -10,25 +18,16 @@ document.addEventListener('DOMContentLoaded', function () {
     const calendarEl = document.getElementById('calendar');
     const calendar = new FullCalendar.Calendar(calendarEl, {
         initialView: 'dayGridMonth',
-        dateClick: function (info) {
-            const exampleData = {
-                name: 'Jane Doe',
-                reservationDate: info.dateStr,
-                desiredDate: '2024-12-20',
-                qrCodeUrl: 'https://via.placeholder.com/150'
-            };
-
-            modalName.textContent = exampleData.name;
-            modalReservationDate.textContent = exampleData.reservationDate;
-            modalDesiredDate.textContent = exampleData.desiredDate;
-            modalQR.src = exampleData.qrCodeUrl;
-
+        events: '../calendar/get-reservations.php', // Load events from PHP
+        eventClick: function(info) {
+            // Display reservation details in modal when event is clicked
+            modalName.textContent = info.event.title;
+            modalReservationDate.textContent = info.event.start.toISOString().slice(0, 10);
+            modalDesiredDate.textContent = info.event.end.toISOString().slice(0, 10);
+            
+            // Display the modal
             modal.style.display = 'flex';
-        },
-        events: [
-            { title: 'Pending', start: '2024-12-08', end: '2024-12-10' },
-            { title: 'Reserved', start: '2024-12-11', end: '2024-12-13' },
-        ]
+        }
     });
 
     calendar.render();

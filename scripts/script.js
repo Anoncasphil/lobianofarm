@@ -1,26 +1,34 @@
 // SIDEBAR DROPDOWN
-const allDropdown = document.querySelectorAll('#sidebar .side-dropdown');
-const sidebar = document.getElementById('sidebar');
+try {
+    const sidebar = document.getElementById('sidebar');
+    if (sidebar) {
+        const allDropdown = document.querySelectorAll('#sidebar .side-dropdown');
+        
+        allDropdown.forEach(item => {
+            const a = item?.parentElement?.querySelector('a:first-child');
+            if (a) {
+                a.addEventListener('click', function (e) {
+                    e.preventDefault();
 
-allDropdown.forEach(item=> {
-	const a = item.parentElement.querySelector('a:first-child');
-	a.addEventListener('click', function (e) {
-		e.preventDefault();
+                    if (this.classList && !this.classList.contains('active')) {
+                        allDropdown.forEach(i => {
+                            const aLink = i?.parentElement?.querySelector('a:first-child');
+                            if (aLink && aLink.classList) {
+                                aLink.classList.remove('active');
+                                i.classList?.remove('show');
+                            }
+                        });
+                    }
 
-		if(!this.classList.contains('active')) {
-			allDropdown.forEach(i=> {
-				const aLink = i.parentElement.querySelector('a:first-child');
-
-				aLink.classList.remove('active');
-				i.classList.remove('show');
-			})
-		}
-
-		this.classList.toggle('active');
-		item.classList.toggle('show');
-	})
-})
-
+                    this.classList?.toggle('active');
+                    item.classList?.toggle('show');
+                });
+            }
+        });
+    }
+} catch (error) {
+    console.error('Error in sidebar dropdown:', error);
+}
 
 // Dropdown Profile
 document.querySelector('.profile').addEventListener('click', function() {
@@ -199,4 +207,3 @@ tooltip: {
 
 var chart = new ApexCharts(document.querySelector("#chart"), options);
 chart.render();
-

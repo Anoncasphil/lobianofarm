@@ -101,9 +101,9 @@
                 <div class="modal-content">
                     <span class="close" id="closeModal">&times;</span>
                     <h2>Reservation Details</h2>
-                    <p><strong>Name:</strong> <span id="modal-name">John Doe</span></p>
-                    <p><strong>Reservation Date:</strong> <span id="modal-reservation-date">2024-12-11</span></p>
-                    <p><strong>Desired Date:</strong> <span id="modal-desired-date">2024-12-15</span></p>
+                    <p><strong>Guest Name:</strong> <span id="modal-name"></span></p>
+                    <p><strong>Check-in Date:</strong> <span id="modal-reservation-date"></span></p>
+                    <p><strong>Check-out Date:</strong> <span id="modal-desired-date"></span></p>
                     <div class="qr-code">
                         <img id="modal-qr" src="https://via.placeholder.com/150" alt="QR Code">
                     </div>
