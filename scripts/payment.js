@@ -70,7 +70,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
-    // Handle Addon Selection
+    // Handle Addon Selection (allow multiple addons)
     const addonsButtons = document.querySelectorAll('#addons_btn');
     addonsButtons.forEach(button => {
         button.addEventListener('click', function (event) {
@@ -140,23 +140,25 @@ document.addEventListener('DOMContentLoaded', function () {
         const checkInDate = document.getElementById('reservation_check_in_date').value;
         const checkOutDate = document.getElementById('reservation_check_out_date').value;
 
+        // Validate that at least one rate is selected
         if (!rateId) {
             alert('Please select at least one rate.');
             event.preventDefault(); // Prevent form submission
             return;
         }
 
+        // Validate that at least one addon is selected
         if (!addonsId) {
             alert('Please select at least one addon.');
             event.preventDefault(); // Prevent form submission
             return;
         }
 
+        // Validate that check-in and check-out dates are selected
         if (!checkInDate || !checkOutDate) {
             alert('Please select a check-in and check-out date before proceeding.');
             event.preventDefault(); // Prevent form submission
             return;
         }
-
     });
 });
