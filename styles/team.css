@@ -1,0 +1,8 @@
+#togglePassword {
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+#togglePassword:hover {
+    transform: scale(1.1);
+}
