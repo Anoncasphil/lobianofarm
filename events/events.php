@@ -21,14 +21,14 @@
 		<ul class="side-menu">
 			<li><a href="../index.php"><i class='bx bxs-dashboard icon' ></i> Dashboard</a></li>
 
-            <li class="divider" data-text="management">Management</li>
-			<li><a href="../reservation/reservation.php"><i class='bx bxs-widget icon' ></i> Reservations</a></li>
-            <li><a href="../calendar/calendar.php"><i class='bx bxs-widget icon' ></i> Calendar</a></li>
-			<li><a href="../rates/rates.php"><i class="bx bxs-chart icon min-w-[48px] flex justify-center items-center mr-2"></i>Rates</a></li>
-			<li><a href="../addons/addons.php"><i class='bx bxs-widget icon' ></i> Add-ons</a></li>
-			<li><a href="../events/events.php" class="active"><i class='bx bxs-widget icon' ></i> Events</a></li>
-			<li><a href="../album/album.php"><i class='bx bxs-widget icon' ></i> Album</a></li>
-			<li><a href="../team/team.php"><i class='bx bxs-widget icon' ></i> Team</a></li>
+			<li class="divider" data-text="management">Management</li>
+			<li><a href="../reservation/reservation.php"><i class='bx bx-list-ol icon' ></i> Reservations</a></li>
+            <li><a href="../calendar/calendar.php"><i class='bx bxs-calendar icon' ></i> Calendar</a></li>
+			<li><a href="../rates/rates.php"><i class="bx bxs-star icon min-w-[48px] flex justify-center items-center mr-2"></i>Rates</a></li>
+			<li><a href="../addons/addons.php"><i class='bx bxs-cart-add icon' ></i> Add-ons</a></li>
+			<li><a href="../events/events.php" class="active"><i class='bx bxs-calendar-event icon' ></i> Events</a></li>
+			<li><a href="../album/album.php"><i class='bx bxs-photo-album icon' ></i> Album</a></li>
+			<li><a href="../team/team.php"><i class='bx bxs-buildings icon' ></i> Team</a></li>
 
 			<li class="divider" data-text="table and forms">Table and forms</li>
 			<li><a href="#"><i class='bx bx-table icon' ></i> Tables</a></li>
