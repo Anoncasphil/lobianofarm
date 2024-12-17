@@ -94,26 +94,26 @@
 		<!-- NAVBAR -->
 
 		<!-- MAIN -->
-		<main>
-        <div id="calendar"></div>
+			<main>
+			<div id="calendar"></div>
 
-            <div id="dateModal" class="modal">
-                <div class="modal-content">
-                    <span class="close" id="closeModal">&times;</span>
-                    <h2>Reservation Details</h2>
-                    <p><strong>Guest Name:</strong> <span id="modal-name"></span></p>
-                    <p><strong>Check-in Date:</strong> <span id="modal-reservation-date"></span></p>
-                    <p><strong>Check-out Date:</strong> <span id="modal-desired-date"></span></p>
-                    <div class="qr-code">
-                        <img id="modal-qr" src="https://via.placeholder.com/150" alt="QR Code">
-                    </div>
-                    <div class="modal-buttons">
-                        <button class="approve-button">Approve</button>
-                        <button class="decline-button">Decline</button>
-                    </div>
-                </div>
-            </div>
-		</main>
+				<div id="dateModal" class="modal">
+					<div class="modal-content">
+						<span class="close" id="closeModal">&times;</span>
+						<h2>Reservation Details</h2>
+						<p><strong>Guest Name:</strong> <span id="modal-name"></span></p>
+						<p><strong>Check-in Date:</strong> <span id="modal-reservation-date"></span></p>
+						<p><strong>Check-out Date:</strong> <span id="modal-desired-date"></span></p>
+						<div class="qr-code">
+							<img id="modal-qr" src="https://via.placeholder.com/150" alt="QR Code">
+						</div>
+						<div class="modal-buttons">
+							<button class="approve-button">Approve</button>
+							<button class="decline-button">Decline</button>
+						</div>
+					</div>
+				</div>
+			</main>
 		<!-- MAIN -->
 	</section>
 	<!-- NAVBAR -->

@@ -148,11 +148,11 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         // Validate that at least one addon is selected
-        if (!addonsId) {
-            alert('Please select at least one addon.');
-            event.preventDefault(); // Prevent form submission
-            return;
-        }
+        // if (!addonsId) {
+        //     alert('Please select at least one addon.');
+        //     event.preventDefault(); // Prevent form submission
+        //     return;
+        // }
 
         // Validate that check-in and check-out dates are selected
         if (!checkInDate || !checkOutDate) {

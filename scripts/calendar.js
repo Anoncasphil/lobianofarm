@@ -1,39 +1,55 @@
 document.addEventListener('DOMContentLoaded', function () {
+    // Constants and Variables
     const modal = document.getElementById('dateModal');
     const closeModal = document.getElementById('closeModal');
     const approveButton = document.querySelector('.approve-button');
-    let currentReservation = null; // Add at top of file with other constants
+    let currentReservation = null; // Holds data for the currently selected reservation
 
+    const modalName = document.getElementById('modal-name');
+    const modalReservationDate = document.getElementById('modal-reservation-date');
+    const modalDesiredDate = document.getElementById('modal-desired-date');
+
+    // Initialize FullCalendar
     const calendarEl = document.getElementById('calendar');
     const calendar = new FullCalendar.Calendar(calendarEl, {
         initialView: 'dayGridMonth',
-        events: '../calendar/get-reservations.php', // Load events from PHP
-        eventClick: function(info) {
+        events: '../calendar/get-reservations.php', // Endpoint to fetch events
+        eventClick: function (info) {
+            // Populate the currentReservation object
             currentReservation = {
                 firstName: info.event.extendedProps.firstName,
                 lastName: info.event.extendedProps.lastName,
-                checkInDate: info.event.start.toISOString().slice(0, 10)
+                checkInDate: info.event.start.toISOString().slice(0, 10),
             };
             console.log('Stored reservation data:', currentReservation); // Debug log
-            // Display reservation details in modal when event is clicked
-            modalName.textContent = info.event.title;
-            modalReservationDate.textContent = info.event.start.toISOString().slice(0, 10);
-            modalDesiredDate.textContent = info.event.end.toISOString().slice(0, 10);
-            
-            // Display the modal
+
+            // Populate modal fields
+            modalName.textContent = currentReservation.firstName;
+            modalReservationDate.textContent = currentReservation.checkInDate;
+            modalDesiredDate.textContent = info.event.end
+                ? info.event.end.toISOString().slice(0, 10)
+                : "N/A";
+
+            // Show the modal
             modal.style.display = 'flex';
-        }
+        },
     });
 
+    // Approve Button Handler
     if (approveButton) {
-        approveButton.addEventListener('click', async function() {
+        approveButton.addEventListener('click', async function () {
             try {
-                console.log('Sending data:', currentReservation); // Debug data being sent
-                
+                if (!currentReservation) {
+                    alert('No reservation selected!');
+                    return;
+                }
+
+                console.log('Sending data:', currentReservation); // Debug sent data
+
                 // Define the new title for the reservation
-                const newTitle = "Approved";
-        
-                // Send updated title and reservation details to the server
+                const newTitle = 'Approved';
+
+                // Send update request to the server
                 const response = await fetch('../calendar/update_status.php', {
                     method: 'POST',
                     headers: {
@@ -43,44 +59,41 @@ document.addEventListener('DOMContentLoaded', function () {
                         firstName: currentReservation.firstName,
                         lastName: currentReservation.lastName,
                         checkInDate: currentReservation.checkInDate,
-                        title: newTitle // Send the new title
-                    })
+                        title: newTitle, // Send the new title
+                    }),
                 });
-        
+
                 const result = await response.json();
                 console.log('Response from server:', result); // Debug server response
+
                 if (result.success) {
-                    console.log("Approved");
-                    
-                    // Find the event in the calendar
-                    const event = calendar.getEvents().find(ev => 
-                        ev.extendedProps.firstName === currentReservation.firstName &&
-                        ev.extendedProps.lastName === currentReservation.lastName &&
-                        ev.start.toISOString().slice(0, 10) === currentReservation.checkInDate
+                    alert('Reservation approved successfully!');
+
+                    // Update the calendar event title
+                    const event = calendar.getEvents().find(
+                        (ev) =>
+                            ev.extendedProps.firstName === currentReservation.firstName &&
+                            ev.extendedProps.lastName === currentReservation.lastName &&
+                            ev.start.toISOString().slice(0, 10) === currentReservation.checkInDate
                     );
-        
+
                     if (event) {
-                        // Update the title of the event
-                        event.setProp('title', newTitle);
+                        event.setProp('title', newTitle); // Update the title on the calendar
                     }
-        
+
                     // Close the modal
                     modal.style.display = 'none';
+                } else {
+                    alert(result.message || 'Failed to approve reservation.');
                 }
             } catch (error) {
                 console.error('Error:', error);
+                alert('An error occurred while approving the reservation.');
             }
         });
-        
     }
-    
-    const modalName = document.getElementById('modal-name');
-    const modalReservationDate = document.getElementById('modal-reservation-date');
-    const modalDesiredDate = document.getElementById('modal-desired-date');
-    const modalQR = document.getElementById('modal-qr');
 
-    calendar.render();
-
+    // Modal Close Handlers
     closeModal.onclick = function () {
         modal.style.display = 'none';
     };
@@ -90,4 +103,7 @@ document.addEventListener('DOMContentLoaded', function () {
             modal.style.display = 'none';
         }
     };
+
+    // Render the calendar
+    calendar.render();
 });
