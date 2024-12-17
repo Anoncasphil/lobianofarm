@@ -5,6 +5,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const approveButton = document.querySelector('.approve-button');
     let currentReservation = null; // Holds data for the currently selected reservation
 
+    const modalId = document.getElementById('modal-id'); // Reference for modal-id
     const modalName = document.getElementById('modal-name');
     const modalReservationDate = document.getElementById('modal-reservation-date');
     const modalDesiredDate = document.getElementById('modal-desired-date');
@@ -15,20 +16,23 @@ document.addEventListener('DOMContentLoaded', function () {
         initialView: 'dayGridMonth',
         events: '../calendar/get-reservations.php', // Endpoint to fetch events
         eventClick: function (info) {
-            // Populate the currentReservation object
+            // Populate the currentReservation object with all necessary details
             currentReservation = {
+                id: info.event.extendedProps.id,
                 firstName: info.event.extendedProps.firstName,
                 lastName: info.event.extendedProps.lastName,
                 checkInDate: info.event.start.toISOString().slice(0, 10),
+                checkOutDate: info.event.end
+                    ? info.event.end.toISOString().slice(0, 10)
+                    : "N/A"
             };
             console.log('Stored reservation data:', currentReservation); // Debug log
 
             // Populate modal fields
-            modalName.textContent = currentReservation.firstName;
+            modalId.textContent = currentReservation.id; // Display reservation ID
+            modalName.textContent = `${currentReservation.firstName} ${currentReservation.lastName}`;
             modalReservationDate.textContent = currentReservation.checkInDate;
-            modalDesiredDate.textContent = info.event.end
-                ? info.event.end.toISOString().slice(0, 10)
-                : "N/A";
+            modalDesiredDate.textContent = currentReservation.checkOutDate;
 
             // Show the modal
             modal.style.display = 'flex';

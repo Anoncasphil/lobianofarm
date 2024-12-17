@@ -15,7 +15,7 @@ try {
             WHERE first_name = ? 
             AND last_name = ? 
             AND reservation_check_in_date = ? 
-            AND title = 'Pending'"; // Make sure you're only updating pending reservations
+            AND title = 'Pending'";
 
     // Prepare the statement
     $stmt = $conn->prepare($sql);
