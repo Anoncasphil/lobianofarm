@@ -1,6 +1,6 @@
 <?php
-// Include your database connection file
-include '../db_connection.php';
+    include('../db_connection.php');
+    session_start();
 ?>
 <!DOCTYPE html>
 <html lang="en" class="scroll-smooth">
@@ -35,14 +35,25 @@ include '../db_connection.php';
                     <div
                         id="menu_container"
                         class="hidden absolute top-12 right-0 bg-white rounded-md shadow-md w-[150px]">
-                        <ul class="flex flex-col text-center">
-                            <li class="p-2">
-                                <a href="login.html" class="text-black hover:text-blue-500">Login</a>
-                            </li>
-                            <li class="p-2">
-                                <a href="register.html" class="text-black hover:text-blue-500">Register</a>
-                            </li>
-                        </ul>
+                        <?php error_log("Session data: " . print_r($_SESSION, true)); ?>
+                            <!-- ...existing code... -->
+                            <ul class="flex flex-col text-center">
+                                <?php if(isset($_SESSION['user_id'])): ?>
+                                    <li class="p-2">
+                                        <a href="profile.php" class="text-black hover:text-blue-500">Profile</a>
+                                    </li>
+                                    <li class="p-2">
+                                        <a href="logout.php" class="text-black hover:text-blue-500">Logout</a>
+                                    </li>
+                                <?php else: ?>
+                                    <li class="p-2">
+                                        <a href="login.php" class="text-black hover:text-blue-500">Login</a>
+                                    </li>
+                                    <li class="p-2">
+                                        <a href="register.php" class="text-black hover:text-blue-500">Register</a>
+                                    </li>
+                        <?php endif; ?>
+                            </ul>
                     </div>
                 </div>
             </div>
@@ -411,7 +422,7 @@ include '../db_connection.php';
     <!-- SCRIPT -->
     <script src="https://cdn.jsdelivr.net/npm/flowbite@2.5.2/dist/flowbite.min.js"></script>
     <script src="https://kit.fontawesome.com/26528a6def.js" crossorigin="anonymous"></script>
-    <script src="/js/main_page.js"></script>
+    <script src="../scripts/main_page.js"></script>
     <!-- END SCRIPT -->
 </body>
 </html>

@@ -1,5 +1,4 @@
 <?php
-// Include your database connection file
 include '../db_connection.php';
 ?>
 <!DOCTYPE html>
@@ -27,34 +26,41 @@ include '../db_connection.php';
     <!-- login -->
     <div id="login_form" class="flex flex-col justify-center rounded-tl-3xl rounded-bl-3xl w-[40%] h-full bg-white">
 
-<?php
-if (isset($_POST["logme"])) {
-    $input = $_POST["email"];
-    $password = $_POST["password"];
-    require_once "../db_connection.php";
+    <?php
+        session_start(); // Move session_start() to top of file
+        include '../db_connection.php';
 
-    // SQL query to check both email and username
-    $stmt = $conn->prepare("SELECT * FROM user_tbl WHERE email = ?");
-    $stmt->bind_param("s", $input,);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    $user = $result->fetch_assoc();
+        if (isset($_POST["logme"])) {
+            $input = $_POST["email"];
+            $password = $_POST["password"];
 
-    // Validation checks for logging in user
-    if ($user) {
-        if (password_verify($password, $user["password"])) {
-            session_start();
-            $_SESSION["user_id"] = $user["id"];
-            $_SESSION["user_email"] = $user["email"];
-            header("Location: main_page_logged.php");
-            exit();
-        } else {
-            echo "<script>alert('Invalid credentials');</script>";
+            // Debug incoming data
+            error_log("Login attempt - Email: " . $input);
+
+            $stmt = $conn->prepare("SELECT user_id, email, password, first_name, last_name FROM user_tbl WHERE email = ?");
+            $stmt->bind_param("s", $input);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            $user = $result->fetch_assoc();
+
+            // Debug user data
+            error_log("User data found: " . print_r($user, true));
+
+            if ($user && password_verify($password, $user["password"])) {
+                $_SESSION["user_id"] = $user["user_id"];
+                $_SESSION["user_email"] = $user["email"];
+                $_SESSION["first_name"] = $user["first_name"];
+                $_SESSION["last_name"] = $user["last_name"];
+                
+                // Debug session data
+                error_log("Session data set: " . print_r($_SESSION, true));
+                
+                header("Location: main_page_logged.php");
+                exit();
+            } else {
+                echo "<script>alert('Invalid credentials');</script>";
+            }
         }
-    } else {
-        echo "<script>alert('Invalid credentials');</script>";
-    }
-}
 ?>
 
     <!-- php logging in -->

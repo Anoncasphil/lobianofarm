@@ -1,6 +1,12 @@
 <?php
     session_start();
     include("../db_connection.php");
+    
+    // Check if user is logged in
+    if (!isset($_SESSION['user_id'])) {
+        header("Location: ../landing_page_customer/login.php");
+        exit();
+    }
     if ($conn->connect_error) {
         die("Connection failed: " . $conn->connect_error);
     }
@@ -94,11 +100,23 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" />
 </head>
 <body class="flex justify-center items-center">
-    <a href="main_page_logged.html" class="absolute top-10 left-10 text-gray-700 hover:text-gray-900 text-lg">
+    <a href="../landing_page_customer/main_page_logged.php" class="absolute top-10 left-10 text-gray-700 hover:text-gray-900 text-lg">
         <i class="fa-solid fa-arrow-left"></i>
       </a>
       
-
+        <div id="reservationChoiceModal" class="fixed inset-0 z-40 bg-gray-600 bg-opacity-50 flex items-center justify-center">
+            <div class="bg-white p-8 rounded-lg shadow-xl">
+                <h2 class="text-xl font-bold mb-4">Who are you making this reservation for?</h2>
+                <div class="flex justify-center gap-4">
+                    <button type="button" id="selfReservation" class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
+                        For Myself
+                    </button>
+                    <button type="button" id="otherReservation" class="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600">
+                        For Someone Else
+                    </button>
+                </div>
+            </div>
+        </div>
 
 <div id="form_wrapper" class="w-[95%] h-[95%] flex justify-center">
     <form action="" method="post" class="flex flex-col w-full h-full">
@@ -272,7 +290,8 @@
     <div class="h-[20%] flex bg-red-400"></div>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="../scripts/payment.js"></script>
-    <script src="https://kit.fontawesome.com/26528a6def.js" crossorigin="anonymous"></script>
+    <script src="../scripts/reservation.js"></script>
+        <script src="https://kit.fontawesome.com/26528a6def.js" crossorigin="anonymous"></script>
 
 </body>
 </html>
