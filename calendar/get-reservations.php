@@ -12,7 +12,10 @@ while($row = $result->fetch_assoc()) {
         'firstName' => $row['first_name'],
         'lastName' => $row['last_name'],
         'start' => $row['reservation_check_in_date'],
-        'end' => $row['reservation_check_out_date']
+        'end' => $row['reservation_check_out_date'],
+        'status' => $row['title'],
+        'backgroundColor' => $row['title'] === 'Pending' ? '#FFA500' : '#008000'
+
     );
 }
 
