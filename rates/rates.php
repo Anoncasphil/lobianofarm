@@ -9,13 +9,13 @@
     <script src="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"></script>
 	<link rel="stylesheet" href="../styles/style.css">
 	
-	<title>AdminSite</title>
+	<title>Admin</title>
 </head>
 <body>
 	
 	<!-- SIDEBAR -->
 	<section id="sidebar">
-		<a href="#" class="brand"><i class='bx bxs-smile icon'></i> AdminSite</a>
+		<a href="#" class="brand"><i class='bx bxs-smile icon'></i> Admin</a>
 		<ul class="side-menu">
 			<li><a href="../index.php"><i class='bx bxs-dashboard icon' ></i> Dashboard</a></li>
 

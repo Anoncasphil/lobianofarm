@@ -10,14 +10,14 @@
 	<link rel="stylesheet" href="../styles/style.css">
     <link rel="stylesheet" href="calendar.css">
 	
-	<title>Admin Dashboard</title>
+	<title>Admin</title>
 </head>
 <body>
 	
 	<!-- SIDEBAR -->
 	<section id="sidebar">
 
-	<a href="#" class="brand"><i class='bx bxs-smile icon'></i>Ad</a>
+	<a href="#" class="brand"><i class='bx bxs-smile icon'></i>Admin</a>
 
 		<ul class="side-menu">
 			<li><a href="../index.php"><i class='bx bxs-dashboard icon' ></i> Dashboard</a></li>
