@@ -36,7 +36,6 @@
                         id="menu_container"
                         class="hidden absolute top-12 right-0 bg-white rounded-md shadow-md w-[150px]">
                         <?php error_log("Session data: " . print_r($_SESSION, true)); ?>
-                            <!-- ...existing code... -->
                             <ul class="flex flex-col text-center">
                                 <?php if(isset($_SESSION['user_id'])): ?>
                                     <li class="p-2">
