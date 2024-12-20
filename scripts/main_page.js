@@ -85,3 +85,58 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 });
+
+document.addEventListener('DOMContentLoaded', function() {
+    const reviewModal = document.getElementById('reviewModal');
+    const submitReviewBtn = document.getElementById('submitReview');
+    const closeReviewModalBtn = document.getElementById('closeReviewModal');
+    const reviewText = document.getElementById('reviewText');
+
+    document.querySelectorAll('a[href="submit_review.php"]').forEach(button => {
+        button.addEventListener('click', function(event) {
+            event.preventDefault();
+            reviewModal.classList.remove('hidden');
+            reviewModal.classList.add('flex');
+        });
+    });
+
+    closeReviewModalBtn.addEventListener('click', function() {
+        reviewModal.classList.add('hidden');
+        reviewModal.classList.remove('flex');
+    });
+
+    reviewModal.addEventListener('click', function(e) {
+        if (e.target === reviewModal) {
+            reviewModal.classList.add('hidden');
+            reviewModal.classList.remove('flex');
+        }
+    });
+
+    submitReviewBtn.addEventListener('click', function() {
+        const reviewContent = reviewText.value;
+        if (reviewContent.trim() === '') {
+            alert('Please write a review before submitting.');
+            return;
+        }
+
+        // Submit review via AJAX or form submission
+        // Example:
+        // fetch('submit_review.php', {
+        //     method: 'POST',
+        //     body: JSON.stringify({ review: reviewContent }),
+        //     headers: { 'Content-Type': 'application/json' }
+        // }).then(response => response.json()).then(data => {
+        //     if (data.success) {
+        //         alert('Review submitted successfully!');
+        //         reviewModal.classList.add('hidden');
+        //         reviewModal.classList.remove('flex');
+        //     } else {
+        //         alert('Error submitting review.');
+        //     }
+        // });
+
+        // For now, just close the modal
+        reviewModal.classList.add('hidden');
+        reviewModal.classList.remove('flex');
+    });
+});

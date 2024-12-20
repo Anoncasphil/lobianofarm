@@ -307,7 +307,10 @@
 
 
             <div id="sign_up" class="flex justify-center items-center w-[100%] sm:w-[35%] h-full">
-                <a href="register.html" class="p-3 bg-white rounded-md border-gray-300 border-2 hover:shadow-lg">Sign up</a>
+                <?php if(isset($_SESSION['user_id'])): ?>
+                    <a href="submit_review.php" class="p-3 bg-white rounded-md border-gray-300 border-2 hover:shadow-lg whitespace-nowrap">Submit a review</a>
+                <?php else: ?>
+                    <a href="register.php" class="p-3 bg-white rounded-md border-gray-300 border-2 hover:shadow-lg whitespace-nowrap">Sign up</a>                <?php endif; ?>
             </div>
         </div>
 
@@ -428,6 +431,14 @@
         </div>
     </div>
 
+    <div id="reviewModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+        <div class="bg-white w-[80%] max-w-4xl h-[80%] rounded-lg p-6 flex flex-col">
+            <h2 class="text-2xl font-bold mb-4">Leave a Review</h2>
+            <textarea id="reviewText" class="w-full h-2/3 p-4 border rounded-lg mb-4" placeholder="Write your review here..."></textarea>
+            <button id="submitReview" class="bg-blue-500 text-white px-4 py-2 rounded-lg self-end">Submit</button>
+            <button id="closeReviewModal" class="mt-2 bg-red-500 text-white px-4 py-2 rounded-lg self-end">Close</button>
+        </div>
+    </div>
 
 </body>
 </html>
