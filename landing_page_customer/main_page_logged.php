@@ -1,6 +1,12 @@
 <?php
     include('../db_connection.php');
     session_start();
+    $sql_rates = "SELECT * FROM rates WHERE status='active'";
+    $result_rates = $conn->query($sql_rates);
+
+    $sql_addons = "SELECT * FROM addons WHERE status='active'";
+    $result_addons = $conn->query($sql_addons);
+
 ?>
 <!DOCTYPE html>
 <html lang="en" class="scroll-smooth">
@@ -165,65 +171,34 @@
             <div id="rate_pic_container" class="flex flex-col w-full h-[80%] gap-y-2 sm:gap-x-5">
                 <div id="rate_container" class="flex flex-row w-full h-full overflow-x-auto gap-5 scroll-smooth scrollbar-hide sm:scrollbar-default">
                     
-                    <div id="rate_card" class="flex flex-col justify-center items-center w-[35%] sm:w-[25%] h-[95%] shrink-0">
-                        <div id="rate_card_pic" class="flex items-center justify-center relative w-full h-[30%] sm:h-[60%] rounded-xl">
-                            <img src="../src/images/RP1.jpg" class="sm:w-full h-full rounded-xl">
-                        </div>
-                        <div id="rate_description" class="flex flex-col w-full h-[40%]">
-                            <h1 id="rates_name" class="text-xl font-bold">Standard Stay</h1>
-                            <p id="rates_hour" class="text-sm"><i class="fa-solid fa-clock text-gray-500"></i> 12 hours</p>
-                            <p id="rates_price" class="text-lg">₱15,000</p>
-                            <p id="rates_tag" class="text-xs text-gray-500">Includes taxes & fees</p>
-                        </div>
+                <?php while($rate = $result_rates->fetch_assoc()) { 
+                           // Fetch and encode image data as base64
+                            $imageData = base64_encode($rate['picture']);
+                        ?>
+                            <!-- RATES CARD START -->
+                            <div id="rates_card" class="flex flex-col justify-center items-center w-[35%] sm:w-[25%] h-[90%] shrink-0 shadow-lg rounded-2xl">
+                                <div id="rates_card_pic" class="flex items-center justify-center relative w-full h-[30%] sm:h-[60%] rounded-xl">
+                                <!-- Embed the Base64 image directly in the src -->
+                                <img src="data:image/jpeg;base64,<?php echo $imageData; ?>" loading="lazy" class="w-full h-[160px] rounded-xl" alt="Rate Image">
+                                </div>
 
-                        <button id="book_btn" class="w-[80%] h-[15%] bg-[#37863B] rounded-lg hover:bg-[#307533] text-white">Book</button>
+                                <!-- RATES Description(name, price, hours, tag) -->
+                                <div id="rates_description" class="flex flex-col w-full h-[40%]">
+                                    <h1 id="rates_name" class="text-xl font-bold"><?php echo $rate['name']; ?></h1>
+                                    <p id="rates_hour" class="text-sm"><i class="fa-solid fa-clock text-gray-500"></i> <?php echo $rate['hoursofstay']; ?> hours</p>
+                                    <p id="rates_price" class="text-lg"><?php echo '₱' . number_format($rate['price'], 2); ?></p>
+                                    <p id="rates_tag" class="text-xs text-gray-500">Includes taxes & fees</p>
+                                </div>
 
-                    </div>
-
-                    <div id="rate_card" class="flex flex-col justify-center items-center w-[35%] sm:w-[25%] h-[95%] shrink-0">
-                        <div id="rate_card_pic" class="flex items-center justify-center relative w-full h-[30%] sm:h-[60%] rounded-xl">
-                            <img src="../src/images/RP1.jpg" class="sm:w-full h-full rounded-xl">
-                        </div>
-                        <div id="rate_description" class="flex flex-col w-full h-[40%]">
-                            <h1 id="rates_name" class="text-xl font-bold">Standard Stay</h1>
-                            <p id="rates_hour" class="text-sm"><i class="fa-solid fa-clock text-gray-500"></i> 12 hours</p>
-                            <p id="rates_price" class="text-lg">₱15,000</p>
-                            <p id="rates_tag" class="text-xs text-gray-500">Includes taxes & fees</p>
-                        </div>
-
-                        <button id="book_btn" class="w-[80%] h-[15%] bg-[#37863B] rounded-lg hover:bg-[#307533] text-white">Book</button>
-
-                    </div>
-
-                    <div id="rate_card" class="flex flex-col justify-center items-center w-[35%] sm:w-[25%] h-[95%] shrink-0">
-                        <div id="rate_card_pic" class="flex items-center justify-center relative w-full h-[30%] sm:h-[60%] rounded-xl">
-                            <img src="../src/images/RP1.jpg" class="sm:w-full h-full rounded-xl">
-                        </div>
-                        <div id="rate_description" class="flex flex-col w-full h-[40%]">
-                            <h1 id="rates_name" class="text-xl font-bold">Standard Stay</h1>
-                            <p id="rates_hour" class="text-sm"><i class="fa-solid fa-clock text-gray-500"></i> 12 hours</p>
-                            <p id="rates_price" class="text-lg">₱15,000</p>
-                            <p id="rates_tag" class="text-xs text-gray-500">Includes taxes & fees</p>
-                        </div>
-
-                        <button id="book_btn" class="w-[80%] h-[15%] bg-[#37863B] rounded-lg hover:bg-[#307533] text-white">Book</button>
-
-                    </div>
-
-                    <div id="rate_card" class="flex flex-col justify-center items-center w-[35%] sm:w-[25%] h-[95%] shrink-0">
-                        <div id="rate_card_pic" class="flex items-center justify-center relative w-full h-[30%] sm:h-[60%] rounded-xl">
-                            <img src="../src/images/RP1.jpg" class="sm:w-full h-full rounded-xl">
-                        </div>
-                        <div id="rate_description" class="flex flex-col w-full h-[40%]">
-                            <h1 id="rates_name" class="text-xl font-bold">Standard Stay</h1>
-                            <p id="rates_hour" class="text-sm"><i class="fa-solid fa-clock text-gray-500"></i> 12 hours</p>
-                            <p id="rates_price" class="text-lg">₱15,000</p>
-                            <p id="rates_tag" class="text-xs text-gray-500">Includes taxes & fees</p>
-                        </div>
-
-                        <button id="book_btn" class="w-[80%] h-[15%] bg-[#37863B] rounded-lg hover:bg-[#307533] text-white">Book</button>
-
-                    </div>
+                                <div class="flex w-full h-[30%] justify-center items-center">
+                                    <button type="button" id="view_details_btn" class="w-[80%] h-[70%] bg-[#37863B] rounded-lg" data-id="<?php echo $rate['id']; ?>" data-type="rate">
+                                        View Details
+                                    </button>
+                                </div>
+                                
+                            </div>
+                             <!-- RATES CARD END -->
+                        <?php } ?>
                 </div>
 
             </div>
@@ -243,17 +218,29 @@
         <div id="amenities_pic_container" class="flex flex-col w-full h-[80%] gap-y-2 sm:gap-x-5">
             <div id="amenities_container" class="flex flex-row w-full h-full overflow-x-auto gap-5 scroll-smooth scrollbar-hide sm:scrollbar-default">
                 
-                <div id="amenities_card" class="flex flex-col justify-center items-center w-[35%] sm:w-[25%] h-[85%] shrink-0">
-                    <div id="amenities_card_pic" class="flex items-center justify-center relative w-full h-[30%] sm:h-[60%] rounded-xl">
-                        <img src="../src/images/RP1.jpg" class="sm:w-full h-full rounded-xl">
-                    </div>
-                    <div id="amenities_description" class="flex flex-col w-full h-[40%]">
-                        <h1 id="amenities_name" class="text-xl font-bold">Standard Stay</h1>
-                        <p id="amenities_hour" class="text-sm"><i class="fa-solid fa-clock text-gray-500"></i> 12 hours</p>
-                        <p id="amenities_price" class="text-lg">₱15,000</p>
-                        <p id="amenities_tag" class="text-xs text-gray-500">Includes taxes & fees</p>
-                    </div>
-                </div>
+            <?php while($addons = $result_addons->fetch_assoc()) { 
+                            // Fetch and encode image data as base64
+                            $imageData = base64_encode($addons['picture']); // Update column name here
+                            ?>
+                        <!-- AMENITIES CARD START -->
+                            <div id="addons_card" class="flex flex-col justify-center items-center w-[35%] sm:w-[25%] h-[90%] shrink-0 shadow-lg rounded-2xl">
+                                <div id="addons_card_pic" class="flex items-center justify-center relative w-full h-[30%] sm:h-[60%] rounded-xl">
+                                <!-- Embed the Base64 image directly in the src -->
+                                <img src="data:image/jpeg;base64,<?php echo $imageData; ?>" loading="lazy" class="w-full h-[160px] rounded-xl" alt="Amenity Image">
+                                </div>
+                                <!-- Amenities Description(name, price, hours, tag) -->
+                                <div id="addons_description" class="flex flex-col w-full h-[40%]">
+                                    <h1 id="addons_name" class="text-xl font-bold"><?php echo $addons['name']; ?></h1>
+                                    <p id="addons_price" class="text-lg"><?php echo '₱' . number_format($addons['price'], 2); ?></p>
+                                    <p id="addons_tag" class="text-xs text-gray-500">Includes taxes & fees</p>
+                                </div>
+                                <div class="flex w-full h-[30%] justify-center items-center">
+                                    <button type="button" id="view_details_btn" class="w-[80%] h-[70%] bg-[#37863B] rounded-lg" data-id="<?php echo $addons['id']; ?>" data-type="addon">
+                                        View Details
+                                    </button>
+                                </div>
+                            </div>
+                        <?php } ?>
 
             </div>          
            
@@ -391,6 +378,8 @@
 
     <a href="#header_section" class="fixed flex item-center justify-center bottom-10 right-10 w-14 h-14 bg-black rounded-full z-20 "><i class="fa-solid fa-arrow-up text-white mt-[30%] text-2xl"></i></a>
 
+
+
     <footer class="flex justify-between w-full h-64 bg-gradient-to-r from-blue-500 to-cyan-500 z-30 mt-[5%]">
             <div id="left_side" class="flex flex-col w-[35%] h-full px-16 gap-4 ">
                 <div class="flex flex-col gap-4 mt-[10%]">
@@ -423,5 +412,22 @@
     <script src="https://kit.fontawesome.com/26528a6def.js" crossorigin="anonymous"></script>
     <script src="../scripts/main_page.js"></script>
     <!-- END SCRIPT -->
+
+        <!-- Add before closing body tag -->
+    <div id="detailsModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+        <div class="bg-white w-[80%] max-w-4xl h-[80%] rounded-lg p-6 flex">
+            <div class="w-1/2 pr-4">
+                <img id="modalImage" src="" class="w-full h-full object-cover rounded-lg">
+            </div>
+            <div class="w-1/2 pl-4 flex flex-col">
+                <h2 id="modalTitle" class="text-2xl font-bold mb-4"></h2>
+                <p id="modalPrice" class="text-xl mb-2"></p>
+                <p id="modalDescription" class="text-gray-600"></p>
+                <button id="closeModal" class="mt-auto bg-red-500 text-white px-4 py-2 rounded-lg self-end">Close</button>
+            </div>
+        </div>
+    </div>
+
+
 </body>
 </html>
