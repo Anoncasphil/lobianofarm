@@ -420,7 +420,7 @@
                 <img id="modalImage" src="" class="w-full h-full object-cover rounded-lg">
             </div>
             <div class="w-1/2 pl-4 flex flex-col">
-                <h2 id="modalTitle" class="text-2xl font-bold mb-4"></h2>
+                <h2 id="modalTitle" class="text-2xl font-bold mb-4 border-b-2 pb-3"></h2>
                 <p id="modalPrice" class="text-xl mb-2"></p>
                 <p id="modalDescription" class="text-gray-600"></p>
                 <button id="closeModal" class="mt-auto bg-red-500 text-white px-4 py-2 rounded-lg self-end">Close</button>
