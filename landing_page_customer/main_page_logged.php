@@ -434,9 +434,18 @@
     <div id="reviewModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
         <div class="bg-white w-[80%] max-w-4xl h-[80%] rounded-lg p-6 flex flex-col">
             <h2 class="text-2xl font-bold mb-4">Leave a Review</h2>
+            <div id="starRating" class="flex mb-4">
+                <span class="star selected" data-value="1">&#9733;</span>
+                <span class="star" data-value="2">&#9733;</span>
+                <span class="star" data-value="3">&#9733;</span>
+                <span class="star" data-value="4">&#9733;</span>
+                <span class="star" data-value="5">&#9733;</span>
+            </div>
             <textarea id="reviewText" class="w-full h-2/3 p-4 border rounded-lg mb-4" placeholder="Write your review here..."></textarea>
-            <button id="submitReview" class="bg-blue-500 text-white px-4 py-2 rounded-lg self-end">Submit</button>
-            <button id="closeReviewModal" class="mt-2 bg-red-500 text-white px-4 py-2 rounded-lg self-end">Close</button>
+            <div class="flex flex-row gap-2 self-end">
+                <button id="submitReview" class="bg-blue-500 text-white px-4 py-2 rounded-lg">Submit</button>
+                <button id="closeReviewModal" class="bg-red-500 text-white px-4 py-2 rounded-lg">Close</button>
+            </div>
         </div>
     </div>
 

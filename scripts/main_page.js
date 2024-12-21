@@ -140,3 +140,23 @@ document.addEventListener('DOMContentLoaded', function() {
         reviewModal.classList.remove('flex');
     });
 });
+
+document.addEventListener('DOMContentLoaded', function() {
+    const stars = document.querySelectorAll('.star');
+    let currentRating = 1;
+
+    stars.forEach(star => {
+        star.addEventListener('click', function() {
+            const value = parseInt(this.dataset.value);
+            currentRating = value;
+            updateStars();
+        });
+    });
+
+    function updateStars() {
+        stars.forEach(star => {
+            const value = parseInt(star.dataset.value);
+            star.classList.toggle('selected', value <= currentRating);
+        });
+    }
+});
