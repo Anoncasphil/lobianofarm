@@ -12,7 +12,7 @@ include('../db_connection.php');
     <link rel="stylesheet" href="../styles/normal.css">
     <link rel="icon" href="../src/images/logo.png" type="image/x-icon">
 </head>
-<body class="flex flex-row items-center w-full h-full justify-between m-0 overflow-y-auto">
+<body class="flex overflow-hidden flex-row items-center justify-between m-0">
 
     <div id="slogan_container" class="flex h-2/5 w-3/5 items-center justify-center flex-col text-center m-0 text-white">
         <div id="main_slogan" class="flex w-[full] flex-row ">
