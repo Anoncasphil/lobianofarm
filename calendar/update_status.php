@@ -11,11 +11,13 @@ try {
 
     // Prepare the SQL query to update the title
     $sql = "UPDATE reservation 
-            SET title = 'Approved' 
-            WHERE first_name = ? 
-            AND last_name = ? 
-            AND reservation_check_in_date = ? 
-            AND title = 'Pending'";
+        SET title = 'Approved' 
+        WHERE reservation_id = ? 
+        AND first_name = ? 
+        AND last_name = ? 
+        AND reservation_check_in_date = ? 
+        AND title = 'Pending'";
+
 
     // Prepare the statement
     $stmt = $conn->prepare($sql);
@@ -25,7 +27,8 @@ try {
     }
 
     // Bind the parameters
-    $stmt->bind_param("sss", 
+    $stmt->bind_param("isss", 
+        $data['reservationId'], 
         $data['firstName'], 
         $data['lastName'], 
         $data['checkInDate']

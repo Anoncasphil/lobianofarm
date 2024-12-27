@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', function () {
         eventClick: function (info) {
             // Populate the currentReservation object with all necessary details
             currentReservation = {
-                id: info.event.extendedProps.id,
+                id: info.event.id,
                 firstName: info.event.extendedProps.firstName,
                 lastName: info.event.extendedProps.lastName,
                 checkInDate: info.event.start.toISOString().slice(0, 10),
@@ -60,6 +60,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify({
+                        reservationId: currentReservation.id,
                         firstName: currentReservation.firstName,
                         lastName: currentReservation.lastName,
                         checkInDate: currentReservation.checkInDate,
