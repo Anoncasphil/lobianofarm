@@ -86,6 +86,8 @@ document.addEventListener('DOMContentLoaded', function () {
                         event.setProp('title', newTitle); // Update the title on the calendar
                     }
 
+                    calendar.refetchEvents(); // Refresh the events
+
                     // Close the modal
                     modal.style.display = 'none';
                 } else {

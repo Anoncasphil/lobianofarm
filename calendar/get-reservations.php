@@ -18,13 +18,23 @@ $reservations = array();
 
 // Fetch each row and map it to the array
 while ($row = $result->fetch_assoc()) {
+    // Add 1 day to the check-in and check-out dates
+    $checkInDate = new DateTime($row['reservation_check_in_date']);
+    $checkOutDate = new DateTime($row['reservation_check_out_date']);
+    $checkInDate->modify('+1 day');
+    $checkOutDate->modify('+1 day');
+
+    // Format the new dates back to string
+    $checkInDateFormatted = $checkInDate->format('Y-m-d');
+    $checkOutDateFormatted = $checkOutDate->format('Y-m-d');
+
     $reservations[] = array(
         'id' => $row['reservation_id'], // Map reservation_id to id
         'title' => $row['title'],
         'firstName' => $row['first_name'],
         'lastName' => $row['last_name'],
-        'start' => $row['reservation_check_in_date'],
-        'end' => $row['reservation_check_out_date'],
+        'start' => $checkInDateFormatted,
+        'end' => $checkOutDateFormatted,
         'status' => $row['title'],
         'backgroundColor' => $row['title'] === 'Pending' ? '#FFA500' : '#008000' // Conditional color coding
     );
