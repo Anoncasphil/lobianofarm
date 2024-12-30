@@ -5,7 +5,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet">
 	<link href='https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css' rel='stylesheet'>
-	<link rel="stylesheet" href="styles/style.css">
+	<link rel="stylesheet" href="../styles/style.css">
 	
 	<title>Admin</title>
 </head>
@@ -17,10 +17,10 @@
 	<a href="#" class="brand"><i class='bx bxs-smile icon'></i>Admin</a>
 
 		<ul class="side-menu">
-			<li class="active"><a href="index.php" class="active"><i class='bx bxs-dashboard icon' ></i> Dashboard</a></li>
+			<li><a href="index.php"><i class='bx bxs-dashboard icon' ></i> Dashboard</a></li>
 
 			<li class="divider" data-text="management">Management</li>
-			<li><a href="reservation/reservation_admin.php"><i class='bx bx-list-ol icon' ></i> Reservations</a></li>
+			<li class="active"><a href="reservation/reservation_admin.php" class="active"><i class='bx bx-list-ol icon' ></i> Reservations</a></li>
             <li><a href="calendar/calendar.php"><i class='bx bxs-calendar icon' ></i> Calendar</a></li>
 			<li><a href="rates/rates.php"><i class="bx bxs-star icon min-w-[48px] flex justify-center items-center mr-2"></i>Rates</a></li>
 			<li><a href="addons/addons.php"><i class='bx bxs-cart-add icon' ></i> Add-ons</a></li>
@@ -93,72 +93,7 @@
 
 		<!-- MAIN -->
 		<main>
-			<h1 class="title">Dashboard</h1>
-			<ul class="breadcrumbs">
-				<li><a href="#">Home</a></li>
-				<li class="divider">/</li>
-				<li><a href="#" class="active">Dashboard</a></li>
-			</ul>
-			<div class="info-data">
-				<div class="card">
-					<div class="head">
-						<div>
-							<h2>1500</h2>
-							<p>Sales</p>
-						</div>
-						<i class='bx bx-trending-up icon' ></i>
-					</div>
-					<span class="progress" data-value="40%"></span>
-					<span class="label">40%</span>
-				</div>
-				<div class="card">
-					<div class="head">
-						<div>
-							<h2>234</h2>
-							<p>Sales</p>
-						</div>
-						<i class='bx bx-trending-down icon down' ></i>
-					</div>
-					<span class="progress" data-value="60%"></span>
-					<span class="label">60%</span>
-				</div>
-				<div class="card">
-					<div class="head">
-						<div>
-							<h2>465</h2>
-							<p>Pageviews</p>
-						</div>
-						<i class='bx bx-trending-up icon' ></i>
-					</div>
-					<span class="progress" data-value="30%"></span>
-					<span class="label">30%</span>
-				</div>
-				<div class="card">
-					<div class="head">
-						<div>
-							<h2>235</h2>
-							<p>Visitors</p>
-						</div>
-						<i class='bx bx-trending-up icon' ></i>
-					</div>
-					<span class="progress" data-value="80%"></span>
-					<span class="label">80%</span>
-				</div>
-			</div>
-			<div class="data">
-
-				<!-- sales graph -->
-				<div class="content-data">
-					<div class="head">
-						<h3>Sales Report</h3>
-					</div>
-					<div class="chart">
-						<div id="chart"></div>
-					</div>
-				</div>
-
-			<!-- Reservation Table -->
-			<div class="content-data">
+        <div class="content-data">
 				<div class="head">
 					<h3>Recent Reservations</h3>
 				</div>
@@ -182,83 +117,38 @@
 								</th>
 							</tr>
 						</thead>
-						<tbody>
-							<tr class="bg-gray-50 border-b dark:bg-gray-900 dark:border-gray-800">
-								<td class="px-6 py-4">
-									#001
-								</td>
-								<td class="px-6 py-4">
-									John Doe
-								</td>
-								<td class="px-6 py-4">
-									Dec 5, 2024
-								</td>
-								<td class="px-6 py-4 font-medium text-green-500 dark:text-green-400">
-									Reserved
-								</td>
-							</tr>
-							<tr class="bg-gray-50 border-b dark:bg-gray-900 dark:border-gray-800">
-								<td class="px-6 py-4">
-									#002
-								</td>
-								<td class="px-6 py-4">
-									Jane Smith
-								</td>
-								<td class="px-6 py-4">
-									Dec 10, 2024
-								</td>
-								<td class="px-6 py-4 font-medium text-orange-500 dark:text-orange-400">
-									Pending
-								</td>
-							</tr>
-							<tr class="bg-gray-50 border-b dark:bg-gray-900 dark:border-gray-800">
-								<td class="px-6 py-4">
-									#003
-								</td>
-								<td class="px-6 py-4">
-									Michael Brown
-								</td>
-								<td class="px-6 py-4">
-									Dec 12, 2024
-								</td>
-								<td class="px-6 py-4 font-medium text-blue-500 dark:text-blue-400">
-									Rescheduled
-								</td>
-							</tr>
-							<tr class="bg-gray-50 border-b dark:bg-gray-900 dark:border-gray-800">
-								<td class="px-6 py-4">
-									#004
-								</td>
-								<td class="px-6 py-4">
-									Alice Johnson
-								</td>
-								<td class="px-6 py-4">
-									Dec 15, 2024
-								</td>
-								<td class="px-6 py-4 font-medium text-orange-500 dark:text-orange-400">
-									Pending
-								</td>
-							</tr>
-							<tr class="bg-gray-50 dark:bg-gray-900">
-								<td class="px-6 py-4">
-									#005
-								</td>
-								<td class="px-6 py-4">
-									Robert Lee
-								</td>
-								<td class="px-6 py-4">
-									Dec 20, 2024
-								</td>
-								<td class="px-6 py-4 font-medium text-green-500 dark:text-green-400">
-									Reserved
-								</td>
-							</tr>
-						</tbody>
+						<?php include('get_reservations.php'); ?>
+                            <tbody>
+                                <?php 
+                                $reservations = getReservations();
+                                foreach($reservations as $reservation) {
+                                    $statusColor = match($reservation['title']) {
+                                        'Approved' => 'text-green-500 dark:text-green-400',
+                                        'Pending' => 'text-orange-500 dark:text-orange-400',
+                                        'Rescheduled' => 'text-blue-500 dark:text-blue-400',
+                                        default => 'text-gray-500'
+                                    };
+                                ?>
+                                <tr class="bg-gray-50 border-b dark:bg-gray-900 dark:border-gray-800">
+                                    <td class="px-6 py-4">
+                                        #<?php echo str_pad($reservation['reservation_id'], 3, '0', STR_PAD_LEFT); ?>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <?php echo $reservation['first_name'] . ' ' . $reservation['last_name']; ?>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <?php echo $reservation['formatted_date']; ?>
+                                    </td>
+                                    <td class="px-6 py-4 font-medium <?php echo $statusColor; ?>">
+                                        <?php echo $reservation['title']; ?>
+                                    </td>
+                                </tr>
+                                <?php } ?>
+                            </tbody>
 					</table>
 				</div>
 				
 			</div>
-		</div>
 		</main>
 		<!-- MAIN -->
 	</section>
