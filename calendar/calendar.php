@@ -23,7 +23,7 @@
 			<li><a href="../index.php"><i class='bx bxs-dashboard icon' ></i> Dashboard</a></li>
 
 			<li class="divider" data-text="management">Management</li>
-			<li><a href="../reservation/reservation.php"><i class='bx bxs-widget icon' ></i> Reservations</a></li>
+			<li><a href="../reservation/reservation_admin.php"><i class='bx bxs-widget icon' ></i> Reservations</a></li>
             <li><a href="../calendar/calendar.php" class="active"><i class='bx bxs-widget icon active' ></i> Calendar</a></li>
 			<li><a href="../rates/rates.php"><i class="bx bxs-chart icon min-w-[48px] flex justify-center items-center mr-2"></i>Rates</a></li>
 			<li><a href="../addons/addons.php"><i class='bx bxs-widget icon' ></i> Add-ons</a></li>
