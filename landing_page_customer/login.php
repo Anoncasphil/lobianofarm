@@ -77,7 +77,7 @@ include '../db_connection.php';
                 </div>
                 <div class="relative w-full">
                     <i class="fa-solid fa-envelope absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500"></i>
-                    <input type="text" id="email_input" name="email" placeholder="Email Address:" 
+                    <input type="email" id="email_input" name="email" placeholder="Email Address:" 
                            class="w-full border border-gray-500 rounded-lg p-2 pl-10" required autocomplete="off">
                 </div>
             </div>
