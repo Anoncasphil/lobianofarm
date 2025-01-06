@@ -1,0 +1,49 @@
+/* Main calendar container */
+.flatpickr-calendar {
+    background-color: white !important;
+    border: 1px solid #e5e7eb !important;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Calendar months container */
+.flatpickr-months {
+    background-color: white !important;
+}
+
+/* Month/year labels */
+.flatpickr-month {
+    background-color: white !important;
+    color: #374151 !important;
+}
+
+/* Days container */
+.flatpickr-weekdays {
+    background-color: white !important;
+}
+
+/* Individual day cells */
+.flatpickr-days {
+    background-color: white !important;
+}
+
+.flatpickr-day {
+    background-color: white !important;
+    color: #374151 !important;
+}
+
+/* Selected date */
+.flatpickr-day.selected {
+    background-color: #37863B !important;
+    color: white !important;
+}
+
+/* Month navigation arrows */
+.flatpickr-prev-month,
+.flatpickr-next-month {
+    fill: #374151 !important;
+}
+
+/* Calendar background */
+.flatpickr-calendar.open {
+    background-color: white !important;
+}

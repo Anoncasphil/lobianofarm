@@ -1,4 +1,22 @@
 document.addEventListener('DOMContentLoaded', function() {
+    // Initialize calendar with minimum date set to today
+    flatpickr("#calendar", {
+        mode: "range",
+        dateFormat: "Y-m-d",
+        minDate: "today",
+        defaultDate: "today",
+        inline: true,
+        onChange: function(selectedDates, dateStr) {
+            if (selectedDates.length === 2) {
+                // Update hidden fields
+                document.getElementById('reservation_check_in_date').value = 
+                    flatpickr.formatDate(selectedDates[0], "Y-m-d");
+                document.getElementById('reservation_check_out_date').value = 
+                    flatpickr.formatDate(selectedDates[1], "Y-m-d");
+            }
+        }
+    });
+
     const modal = document.getElementById('reservationChoiceModal');
     const selfBtn = document.getElementById('selfReservation');
     const otherBtn = document.getElementById('otherReservation');

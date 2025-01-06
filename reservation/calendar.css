@@ -1,0 +1,108 @@
+.datepicker-picker {
+    background-color: white !important;
+}
+
+.datepicker-dropdown {
+    background-color: white !important;
+}
+
+.datepicker-cell:not(.selected):not(.focused) {
+    background-color: white !important;
+}
+
+.datepicker-header {
+    background-color: white !important;
+}
+
+.datepicker-footer {
+    background-color: white !important;
+}
+
+.datepicker-grid {
+    background-color: white !important;
+}
+
+.datepicker-view {
+    background-color: white !important;
+}
+
+/* Calendar popup container */
+.datepicker-picker {
+    background-color: white !important;
+    color: #374151 !important;
+}
+
+/* Calendar header */
+.datepicker-header {
+    background-color: white !important;
+}
+
+/* Calendar days */
+.datepicker-cell {
+    background-color: white !important;
+    color: #374151 !important;
+}
+
+/* Selected date */
+.datepicker-cell.selected {
+    background-color: #37863B !important;
+    color: white !important;
+}
+
+/* Hover state */
+.datepicker-cell:hover:not(.selected) {
+    background-color: #f3f4f6 !important;
+}
+
+/* Footer buttons */
+.datepicker-footer {
+    background-color: white !important;
+}
+
+/* View switch buttons */
+.datepicker-controls button {
+    background-color: white !important;
+    color: #374151 !important;
+}
+
+/* Calendar popup styles */
+.datepicker {
+    background-color: white !important;
+    border: 1px solid #e5e7eb !important;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1) !important;
+}
+
+.datepicker-picker, 
+.datepicker-dropdown,
+.datepicker-grid,
+.datepicker-view,
+.datepicker-main {
+    background-color: white !important;
+}
+
+.datepicker-header,
+.datepicker-footer {
+    background-color: white !important;
+    border-color: #e5e7eb !important;
+}
+
+.datepicker-cell {
+    background-color: white !important;
+    color: #374151 !important;
+}
+
+.datepicker-cell.selected {
+    background-color: #37863B !important;
+    color: white !important;
+}
+
+.datepicker-cell:hover:not(.selected) {
+    background-color: #f3f4f6 !important;
+}
+
+.datepicker-controls button,
+.datepicker-footer button {
+    background-color: white !important;
+    color: #374151 !important;
+    border: 1px solid #e5e7eb !important;
+}
