@@ -16,6 +16,11 @@ document.addEventListener('DOMContentLoaded', function () {
         initialView: 'dayGridMonth',
         events: '../calendar/get-reservations.php', // Endpoint to fetch events
         eventClick: function (info) {
+            
+            if (info.event.title === 'Approved') {
+                return; // Exit the handler
+            }
+
             // Populate the currentReservation object with all necessary details
             currentReservation = {
                 id: info.event.id,
