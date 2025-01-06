@@ -2,6 +2,9 @@
 session_start(); // Start the session to manage user login status
 include_once('db_connection.php'); // Include the database connection
 
+$error_message = ''; // Initialize error message variable
+
+// Check if the form is submitted
 if (isset($_POST['email']) && isset($_POST['password'])) {
     $email = $_POST['email'];
     $password = $_POST['password'];
@@ -26,8 +29,8 @@ if (isset($_POST['email']) && isset($_POST['password'])) {
             $_SESSION['role'] = $admin['role'];
 
             // Redirect to the admin dashboard or team page after login
-            header("Location: index.php");
-            exit();
+            header("Location: index.php"); // Redirect to index.php
+            exit(); // Ensure the script stops here after redirection
         } else {
             // Invalid password
             $error_message = "Invalid password!";

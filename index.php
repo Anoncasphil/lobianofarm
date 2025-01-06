@@ -1,3 +1,15 @@
+<?php
+session_start(); // Start the session
+
+// Check if the session is set for the user
+if (!isset($_SESSION['admin_id'])) {
+    // If not set, redirect to login page
+    header("Location: adlogin.php");
+    exit; // Ensure no further code is executed
+}
+?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
