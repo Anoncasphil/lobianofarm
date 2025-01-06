@@ -8,6 +8,7 @@
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/all.min.css" integrity="sha512-5Hs3dF2AEPkpNAR7UiOHba+lRSJNeM2ECkwxUIxC1Q/FLycGTbNapWXB4tP889k5T5Ju8fs4b1P5z/iB4nMfSQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 	<link rel="stylesheet" href="../styles/style.css">
 	<link rel="stylesheet" href="../styles/events.css">
+	<link rel="stylesheet" href="../styles/rate.css">
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 
 	
@@ -108,12 +109,38 @@
                 </button>
 
                 <!-- Delete Selected Button -->
-                <button type="button" onclick="deleteSelectedAdmins()" class="text-white bg-red-500 hover:bg-red-700 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2">
-                    <i class="fa-solid fa-trash"></i> Delete
+                <button type="button" onclick="deleteConfirmation()" class="text-white bg-red-500 hover:bg-red-700 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2">
+                    <i class="fa-solid fa-trash"></i> Remove
                 </button>
             </div>
         </div>
     </div>
+
+		<!-- Confirmation Modal -->
+	<div id="confirmationModal" class="fixed inset-0 z-50 flex items-center justify-center hidden bg-opacity-50">
+		<div class="bg-white rounded-lg shadow-lg p-6 w-full max-w-md">
+			<h2 class="text-lg font-medium text-gray-800">Are you sure you want to remove this user?</h2>
+			<div class="mt-4 flex justify-end space-x-4">
+				<button 
+					class="text-gray-700 bg-gray-200 hover:bg-gray-300 focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-4 py-2"
+					onclick="closeModal()">No</button>
+				<button 
+					id="confirmDelete" 
+					class="text-white bg-red-500 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-4 py-2"
+					onclick="deleteSelectedAdmins()">Yes</button>
+			</div>
+		</div>
+	</div>
+
+	<!-- Success Modal -->
+	<div id="successModal" class="fixed top-4 right-4 z-50 hidden bg-green-500 text-white rounded-lg px-4 py-3 shadow-lg">
+		<p class="modal-message">User removed successfully!</p>
+	</div>
+
+	<!-- Error Modal -->
+	<div id="errorModal" class="fixed top-4 right-4 z-50 hidden bg-red-500 text-white rounded-lg px-4 py-3 shadow-lg">
+		<p class="modal-message">An error occurred. Please try again.</p>
+	</div>
 
     <?php
         // Include your database connection
@@ -348,5 +375,18 @@
 	<script src="../scripts/team.js"></script>
 	<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 	<script src="../scripts/script.js"></script>
+	<script>
+		 // Show the confirmation modal
+		 function deleteConfirmation() {
+        document.getElementById("confirmationModal").classList.remove("hidden");
+    }
+
+    // Close the modal
+    function closeModal() {
+        document.getElementById("confirmationModal").classList.add("hidden");
+    }
+
+	
+	</script>
 </body>
 </html>

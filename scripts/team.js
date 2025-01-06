@@ -47,12 +47,31 @@ function deleteSelectedAdmins() {
         xhr.open("POST", "delete_admins.php", true);
         xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
         xhr.onload = function() {
+            // Hide the confirmation modal after the user confirmed
+            closeModal();
+
             if (xhr.status == 200) {
                 console.log("Admins deleted: " + xhr.responseText);
-                // Optionally, reload the page to reflect changes
-                location.reload();
+                // Show success modal
+                const successModal = document.getElementById("successModal");
+                successModal.classList.remove("hidden");
+
+                // Hide the success modal after 3 seconds
+                setTimeout(() => {
+                    successModal.classList.add("hidden");
+                    // Optionally, reload the page to reflect changes
+                    location.reload();
+                }, 3000);
             } else {
                 console.error("Failed to delete admins.");
+                // Show error modal
+                const errorModal = document.getElementById("errorModal");
+                errorModal.classList.remove("hidden");
+
+                // Hide the error modal after 3 seconds
+                setTimeout(() => {
+                    errorModal.classList.add("hidden");
+                }, 3000);
             }
         };
         xhr.send("admin_ids=" + JSON.stringify(adminIds));  // Send admin IDs as a JSON string
