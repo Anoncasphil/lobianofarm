@@ -100,17 +100,25 @@
 				<li><a href="#" class="active">Dashboard</a></li>
 			</ul>
 			<div class="info-data">
-				<div class="card">
-					<div class="head">
-						<div>
-							<h2>1500</h2>
-							<p>Sales</p>
-						</div>
-						<i class='bx bx-trending-up icon' ></i>
-					</div>
-					<span class="progress" data-value="40%"></span>
-					<span class="label">40%</span>
-				</div>
+			<div class="card">
+    <div class="head">
+			<div>
+				<h2>
+					<?php
+					// PHP connection and function to get reservation count
+					include('get_reservations.php');
+					$reservations = getReservations();
+					echo count($reservations); // Display the count of reservations
+					?>
+				</h2>
+				<p>Reservations</p>
+			</div>
+			<i class='bx bx-trending-up icon'></i>
+		</div>
+		<span class="progress" data-value="40%"></span>
+		<span class="label">40%</span>
+	</div>
+
 				<div class="card">
 					<div class="head">
 						<div>
@@ -165,96 +173,48 @@
 				
 
 				<div class="relative overflow-x-auto sm:rounded-lg">
-					<table class="w-full text-sm text-left rtl:text-right text-gray-700 dark:text-gray-300">
-						<thead class="text-xs text-gray-800 uppercase bg-gray-100 dark:bg-gray-800 dark:text-gray-300">
-							<tr>
-								<th scope="col" class="px-6 py-3">
-									Reservation ID
-								</th>
-								<th scope="col" class="px-6 py-3">
-									Name
-								</th>
-								<th scope="col" class="px-6 py-3">
-									Date
-								</th>
-								<th scope="col" class="px-6 py-3">
-									Status
-								</th>
-							</tr>
-						</thead>
-						<tbody>
-							<tr class="bg-gray-50 border-b dark:bg-gray-900 dark:border-gray-800">
-								<td class="px-6 py-4">
-									#001
-								</td>
-								<td class="px-6 py-4">
-									John Doe
-								</td>
-								<td class="px-6 py-4">
-									Dec 5, 2024
-								</td>
-								<td class="px-6 py-4 font-medium text-green-500 dark:text-green-400">
-									Reserved
-								</td>
-							</tr>
-							<tr class="bg-gray-50 border-b dark:bg-gray-900 dark:border-gray-800">
-								<td class="px-6 py-4">
-									#002
-								</td>
-								<td class="px-6 py-4">
-									Jane Smith
-								</td>
-								<td class="px-6 py-4">
-									Dec 10, 2024
-								</td>
-								<td class="px-6 py-4 font-medium text-orange-500 dark:text-orange-400">
-									Pending
-								</td>
-							</tr>
-							<tr class="bg-gray-50 border-b dark:bg-gray-900 dark:border-gray-800">
-								<td class="px-6 py-4">
-									#003
-								</td>
-								<td class="px-6 py-4">
-									Michael Brown
-								</td>
-								<td class="px-6 py-4">
-									Dec 12, 2024
-								</td>
-								<td class="px-6 py-4 font-medium text-blue-500 dark:text-blue-400">
-									Rescheduled
-								</td>
-							</tr>
-							<tr class="bg-gray-50 border-b dark:bg-gray-900 dark:border-gray-800">
-								<td class="px-6 py-4">
-									#004
-								</td>
-								<td class="px-6 py-4">
-									Alice Johnson
-								</td>
-								<td class="px-6 py-4">
-									Dec 15, 2024
-								</td>
-								<td class="px-6 py-4 font-medium text-orange-500 dark:text-orange-400">
-									Pending
-								</td>
-							</tr>
-							<tr class="bg-gray-50 dark:bg-gray-900">
-								<td class="px-6 py-4">
-									#005
-								</td>
-								<td class="px-6 py-4">
-									Robert Lee
-								</td>
-								<td class="px-6 py-4">
-									Dec 20, 2024
-								</td>
-								<td class="px-6 py-4 font-medium text-green-500 dark:text-green-400">
-									Reserved
-								</td>
-							</tr>
-						</tbody>
-					</table>
+				<table class="w-full text-sm text-left rtl:text-right text-gray-700 dark:text-gray-300">
+                <thead class="text-xs text-gray-800 uppercase bg-gray-100 dark:bg-gray-800 dark:text-gray-300">
+                    <tr>
+                        <th scope="col" class="px-6 py-3">
+                            Reservation ID
+                        </th>
+                        <th scope="col" class="px-6 py-3">
+                            Name
+                        </th>
+                        <th scope="col" class="px-6 py-3">
+                            Date
+                        </th>
+                        <th scope="col" class="px-6 py-3">
+                            Status
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php 
+                    $reservations = getReservations();
+                    if (!empty($reservations)) {
+                        foreach ($reservations as $reservation) {
+                            $statusColor = match($reservation['title']) {
+                                'Approved' => 'text-green-500 dark:text-green-400',
+                                'Pending' => 'text-orange-500 dark:text-orange-400',
+                                'Rescheduled' => 'text-blue-500 dark:text-blue-400',
+                                default => 'text-gray-500'
+                            };
+
+                            echo "<tr class='bg-gray-50 border-b dark:bg-gray-900 dark:border-gray-800'>";
+                            echo "<td class='px-6 py-4'>#" . str_pad($reservation['reservation_id'], 3, '0', STR_PAD_LEFT) . "</td>";
+                            echo "<td class='px-6 py-4'>" . htmlspecialchars($reservation['first_name']) . " " . htmlspecialchars($reservation['last_name']) . "</td>";
+                            echo "<td class='px-6 py-4'>" . htmlspecialchars($reservation['formatted_date']) . "</td>";
+                            echo "<td class='px-6 py-4 font-medium " . $statusColor . "'>" . htmlspecialchars($reservation['title']) . "</td>";
+                            echo "</tr>";
+                        }
+                    } else {
+                        echo "<tr><td colspan='4' class='px-6 py-4'>No reservations found</td></tr>";
+                    }
+                    ?>
+                </tbody>
+            </table>
 				</div>
 				
 			</div>

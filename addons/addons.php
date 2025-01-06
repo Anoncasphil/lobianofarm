@@ -8,6 +8,7 @@
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/all.min.css" integrity="sha512-5Hs3dF2AEPkpNAR7UiOHba+lRSJNeM2ECkwxUIxC1Q/FLycGTbNapWXB4tP889k5T5Ju8fs4b1P5z/iB4nMfSQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <script src="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"></script>
 	<link rel="stylesheet" href="../styles/style.css">
+    <link rel="stylesheet" href="../styles/rate.css">
 	
 	<title>Admin</title>
 </head>
@@ -194,13 +195,19 @@ if ($result->num_rows > 0) {
 
         echo "</td>";
         echo "<td class='py-2 px-4 border-b text-gray-700'>
+        <button 
+										type='button' 
+										class='text-white bg-blue-500 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2' 
+										onclick='showDetails(" . $row['id'] . ");'>
+										<i class='fa-solid fa-box-archive'></i> View
+									</button>
 								<button 
 									type='button' 
 									class='text-white bg-blue-500 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2' 
 									onclick='fetchAddonData(" . $row['id'] . "); toggleUpdateAddonModal();'>
 									<i class='fa-solid fa-pen-to-square'></i> Update
 								</button>
-            <button type='button' class='text-white bg-red-500 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2' onclick='archiveAddon(" . $row['id'] . ");'>
+            <button type='button' class='text-white bg-red-500 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2' onclick='archiveConfirmation(" . $row['id'] . ");'>
                 <i class='fa-solid fa-box-archive'></i> Archive
             </button>
         </td>";
@@ -215,6 +222,58 @@ if ($result->num_rows > 0) {
             </table>
         </div>
     </div>
+
+    <!-- Modal -->
+<div id="detailsModal" class="fixed inset-0 hidden bg-gray-900 bg-opacity-50 flex justify-center items-center z-50">
+    <div class="bg-white rounded-lg shadow-lg max-w-4xl w-full p-6 flex flex-col md:flex-row relative">
+        <!-- Left side: Image -->
+        <div class="flex-shrink-0 w-full md:w-1/3 mb-4 md:mb-0">
+            <img id="modalPicture" src="" alt="Image" class="object-cover w-full rounded-lg h-64 md:h-auto md:w-full" />
+        </div>
+
+        <!-- Right side: Details -->
+        <div class="flex flex-col justify-between p-4 leading-normal w-full md:w-2/3">
+            <h5 id="modalTitle" class="text-xl font-semibold text-gray-800 mb-2">Details</h5>
+            <p><strong class="text-sm text-gray-600">Price:</strong> <span id="modalPrice" class="text-gray-700"></span></p>
+            <p><strong class="text-sm text-gray-600">Description:</strong></p>
+            <p id="modalDescription" class="text-gray-700 mt-2"></p>
+        </div>
+
+        <!-- Close Button -->
+        <button onclick="closeModal()" class="absolute top-2 right-2 text-2xl text-gray-600 hover:text-gray-800 focus:outline-none">
+            &times;
+        </button>
+    </div>
+</div>
+
+<!-- Modal for Archiving Addon -->
+<div id="archiveModal" class="fixed inset-0 z-50 flex items-center justify-center hidden bg-opacity-50">
+    <div class="bg-white rounded-lg shadow-lg p-6 w-full max-w-md">
+        <h2 class="text-lg font-medium text-gray-800">Are you sure you want to archive this addon?</h2>
+        <div class="mt-4 flex justify-end space-x-4">
+            <button 
+                class="text-gray-700 bg-gray-200 hover:bg-gray-300 focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-4 py-2"
+                onclick="closeModal()">No</button>
+            <button 
+                id="confirmArchive" 
+                class="text-white bg-red-500 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-4 py-2">
+                Yes
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Success Modal -->
+<div id="successModal" class="fixed top-4 right-4 z-50 hidden bg-green-500 text-white rounded-lg px-4 py-3 shadow-lg">
+    <p class="modal-message"></p>
+</div>
+
+<!-- Error Modal -->
+<div id="errorModal" class="fixed top-4 right-4 z-50 hidden bg-red-500 text-white rounded-lg px-4 py-3 shadow-lg">
+    <p class="modal-message"></p>
+</div>
+
+
 
     <div id="add-addon-modal" tabindex="-1" aria-hidden="true" class="hidden fixed inset-0 z-50 flex justify-center items-center">
 			<div class="relative p-4 w-full max-w-md max-h-full">
@@ -339,6 +398,118 @@ if ($result->num_rows > 0) {
 	<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 	<script src="../scripts/script.js"></script>
 	<script src="addons.js"></script>
+    <script>
+ function showDetails(id) {
+    // Make an AJAX request to fetch the details
+    fetch(`fetch-details.php?id=${id}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.error) {
+                console.error(data.error); // Handle error
+            } else {
+                // Populate the modal with the data
+                document.getElementById('modalTitle').textContent = data.name;
+                document.getElementById('modalPrice').textContent = `$${data.price}`;
+                document.getElementById('modalDescription').textContent = data.description;
+
+                // If there is an image, display it; otherwise, keep it hidden
+                if (data.picture) {
+                    document.getElementById('modalPicture').src = data.picture;
+                    document.getElementById('modalPicture').style.display = 'block';
+                } else {
+                    document.getElementById('modalPicture').style.display = 'none';
+                }
+
+                // Show the modal
+                document.getElementById('detailsModal').classList.remove('hidden');
+            }
+        })
+        .catch(error => console.error('Error:', error));
+}
+
+function closeModal() {
+    // Hide the modal when closed
+    document.getElementById('detailsModal').classList.add('hidden');
+}
+
+function archiveConfirmation(addonId) {
+    // Show the modal and attach the addon ID to the confirm button
+    const modal = document.getElementById('archiveModal');
+    modal.classList.remove('hidden');
+    const confirmButton = document.getElementById('confirmArchive');
+    confirmButton.onclick = function () {
+        archiveAddon(addonId);
+        closeModal();
+    };
+}
+
+function archiveAddon(addonId) {
+    // Create a request to archive the addon
+    const xhr = new XMLHttpRequest();
+    xhr.open("POST", "archive-addon.php", true);
+    xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState === 4) {
+            console.log("Server Response: ", xhr.responseText);
+            if (xhr.status === 200 && xhr.responseText.trim() === 'success') {
+                const row = document.getElementById('addon-' + addonId);
+                if (row) {
+                    row.style.display = 'none';
+                }
+                showModal('successModal', 'The addon has been successfully archived.');
+            } else {
+                showModal('errorModal', 'Failed to archive the addon. Please try again.');
+            }
+        }
+    };
+
+    // Send the addon ID to the server to mark it as archived
+    xhr.send("id=" + addonId);
+}
+
+function closeModal() {
+    // Hide the modal
+    const modal = document.getElementById('archiveModal');
+    modal.classList.add('hidden');
+}
+
+function showModal(modalId, message) {
+    console.log(`Showing modal: ${modalId} with message: ${message}`);
+    
+    // Find the modal by ID
+    const modal = document.getElementById(modalId);
+    
+    // Make sure the modal exists and is not already visible
+    if (modal) {
+        const messageContainer = modal.querySelector('.modal-message');
+        
+        // Check if the modal message container exists and set the message
+        if (messageContainer) {
+            messageContainer.textContent = message;
+        }
+
+        // Remove the 'hidden' class to show the modal
+        modal.classList.remove('hidden');
+        
+        // Automatically hide the modal after 3 seconds
+        setTimeout(() => {
+            modal.classList.add('hidden');
+        }, 3000);
+    } else {
+        console.log(`Modal with ID ${modalId} not found.`);
+    }
+}
+
+function closeModal() {
+    // Hide the modal
+    const modal = document.getElementById('detailsModal');
+    modal.classList.add('hidden');
+}
+
+
+
+    </script>
 
 
 </body>

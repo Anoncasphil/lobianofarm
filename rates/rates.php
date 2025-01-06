@@ -8,6 +8,7 @@
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/all.min.css" integrity="sha512-5Hs3dF2AEPkpNAR7UiOHba+lRSJNeM2ECkwxUIxC1Q/FLycGTbNapWXB4tP889k5T5Ju8fs4b1P5z/iB4nMfSQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <script src="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"></script>
 	<link rel="stylesheet" href="../styles/style.css">
+	<link rel="stylesheet" href="../styles/rate.css">
 	
 	<title>Admin</title>
 </head>
@@ -201,17 +202,23 @@
 							echo "</td>";
 							echo "<td class='py-2 px-4 border-b text-gray-700'>
 								<button 
+										type='button' 
+										class='text-white bg-blue-500 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2' 
+										onclick='showDetails(" . $row['id'] . ");'>
+										<i class='fa-solid fa-box-archive'></i> View
+									</button>
+								<button 
 									type='button' 
 									class='text-white bg-blue-500 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2' 
 									onclick='fetchRateData(" . $row['id'] . "); toggleUpdateRateModal();'>
 									<i class='fa-solid fa-pen-to-square'></i> Update
 								</button>
-								<button 
-									type='button' 
-									class='text-white bg-red-500 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2' 
-									onclick='archiveRate(" . $row['id'] . ");'>
-									<i class='fa-solid fa-box-archive'></i> Archive
-								</button>
+									<button 
+										type='button' 
+										class='text-white bg-red-500 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2' 
+										onclick='archiveConfirmation(" . $row['id'] . ");'>
+										<i class='fa-solid fa-box-archive'></i> Archive
+									</button>
 							</td>";
 							echo "</tr>";
 						}
@@ -226,6 +233,73 @@
 		</div>
 	</div>
 
+<!-- Modal -->
+<div id="detailsModal" class="fixed inset-0 hidden bg-gray-900 bg-opacity-50 flex justify-center items-center z-50">
+    <div class="bg-white rounded-lg shadow-lg max-w-4xl w-full p-6 flex flex-col md:flex-row relative">
+        <!-- Left side: Image -->
+        <div class="flex-shrink-0 w-full md:w-1/3 mb-4 md:mb-0">
+            <img id="modalPicture" src="" alt="Image" class="object-cover w-full rounded-lg h-64 md:h-auto md:w-full" />
+        </div>
+
+        <!-- Right side: Details -->
+        <div class="flex flex-col justify-between p-4 leading-normal w-full md:w-2/3">
+            <h5 id="modalTitle" class="text-xl font-semibold text-gray-800 mb-2">Details</h5>
+            <p><strong class="text-sm text-gray-600">Price:</strong> <span id="modalPrice" class="text-gray-700"></span></p>
+            <p><strong class="text-sm text-gray-600">Hours of Stay:</strong> <span id="modalHoursOfStay" class="text-gray-700"></span></p>
+            <p><strong class="text-sm text-gray-600">Description:</strong></p>
+            <p id="modalDescription" class="text-gray-700 mt-2"></p>
+        </div>
+
+        <!-- Close Button -->
+        <button onclick="closeModal()" class="absolute top-2 right-2 text-2xl text-gray-600 hover:text-gray-800 focus:outline-none">
+            &times;
+        </button>
+    </div>
+</div>
+
+
+
+		<div id="rateModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+			<div class="bg-white rounded-lg p-6 w-96">
+				<h2 id="modalTitle" class="text-lg font-semibold mb-2"></h2>
+				<p id="modalDescription" class="text-gray-700 mb-4"></p>
+				<p id="modalPrice" class="text-gray-700 mb-4"></p>
+				<p id="modalHours" class="text-gray-700 mb-4"></p>
+				<img id="modalImage" class="w-40 h-auto rounded-lg mb-4 hidden">
+				<button onclick="closeModal()" class="bg-red-500 text-white px-4 py-2 rounded-lg">Close</button>
+			</div>
+		</div>
+
+		<!-- Modal -->
+		<div id="archiveModal" class="fixed inset-0 z-50 flex items-center justify-center hidden bg-opacity-50">
+			<div class="bg-white rounded-lg shadow-lg p-6 w-full max-w-md">
+				<h2 class="text-lg font-medium text-gray-800">Are you sure you want to archive this event?</h2>
+				<div class="mt-4 flex justify-end space-x-4">
+					<button 
+						class="text-gray-700 bg-gray-200 hover:bg-gray-300 focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-4 py-2"
+						onclick="closeModal()">No</button>
+					<button 
+						id="confirmArchive" 
+						class="text-white bg-red-500 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-4 py-2">
+						Yes
+					</button>
+				</div>
+			</div>
+		</div>
+
+		<!-- Success Modal -->
+		<div id="successModal" class="fixed top-4 right-4 z-50 hidden bg-green-500 text-white rounded-lg px-4 py-3 shadow-lg">
+			<p class="modal-message"></p>
+		</div>
+
+
+		<!-- Error Modal -->
+		<div id="errorModal" class="fixed top-4 right-4 z-50 hidden bg-red-500 text-white rounded-lg px-4 py-3 shadow-lg">
+			<p class="modal-message"></p>
+		</div>
+
+
+				
 		<!-- Add Rate Main modal -->
 		<div id="add-rate-modal" onsubmit="addRate(event)" tabindex="-1" aria-hidden="true" class="hidden fixed inset-0 z-50 flex justify-center items-center">
 			<div class="relative p-4 w-full max-w-md max-h-full">
@@ -358,6 +432,30 @@
 	<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 	<script src="../scripts/script.js"></script>
 	<script src="../scripts/modalscript.js"></script>
+	<script>
+		function showDetails(id) {
+    // Fetch data from the database using AJAX
+    fetch('fetch-rate.php?id=' + id)
+        .then(response => response.json())
+        .then(data => {
+            // Populate modal fields with data
+            document.getElementById('modalTitle').textContent = data.name
+            document.getElementById('modalPrice').textContent = data.price;
+            document.getElementById('modalHoursOfStay').textContent = data.hoursofstay;
+            document.getElementById('modalDescription').textContent = data.description;
+            document.getElementById('modalPicture').src = data.picture;
+
+            // Show the modal
+            document.getElementById('detailsModal').classList.remove('hidden');
+        })
+        .catch(error => console.error('Error fetching data:', error));
+}
+
+function closeModal() {
+    // Hide the modal
+    document.getElementById('detailsModal').classList.add('hidden');
+}
+	</script>
 
 
 </body>

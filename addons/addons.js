@@ -134,3 +134,28 @@ function archiveAddon(addonId) {
 
     xhr.send("id=" + addonId);
 }
+
+function showDetails(id) {
+    // Create an AJAX request to fetch the data based on the ID
+    var xhr = new XMLHttpRequest();
+    xhr.open("GET", "fetch-addon.php?id=" + id, true);
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState == 4 && xhr.status == 200) {
+            var data = JSON.parse(xhr.responseText);
+            // Populate the modal with the data
+            document.getElementById('modalPicture').src = data.image;
+            document.getElementById('modalTitle').innerText = data.title;
+            document.getElementById('modalPrice').innerText = data.price;
+            document.getElementById('modalDescription').innerText = data.description;
+            // Show the modal
+            document.getElementById('detailsModal').classList.remove('hidden');
+        }
+    };
+    xhr.send();
+}
+
+function closeModal() {
+    // Hide the modal
+    document.getElementById('detailsModal').classList.add('hidden');
+}
+
