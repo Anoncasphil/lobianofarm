@@ -1,3 +1,14 @@
+<?php
+session_start(); // Start the session
+
+// Check if the session is set for the user
+if (!isset($_SESSION['admin_id'])) {
+    // If not set, redirect to login page
+    header("Location: ../adlogin.php");
+    exit; // Ensure no further code is executed
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -52,20 +63,56 @@
 			<i class='bx bx-menu toggle-sidebar' ></i>
 			<form action="#">
 			</form>
-			<a href="#" class="nav-link">
-				<i class='bx bxs-bell icon' ></i>
-				<span class="badge">5</span>
-			</a>
 			<span class="divider"></span>
-			<div class="relative">
-				<!-- Profile Dropdown Trigger -->
-				<div class="profile flex items-center space-x-4 cursor-pointer">
-					<img class="w-10 h-10 rounded-full" src="../src/images/profile.jpg" alt="Profile Picture">
-					<div>
-						<h4 class="text-sm font-medium text-gray-800 dark:text-gray-200">Antoine Philipp Ochea</h4>
-						<span class="text-xs text-gray-500 dark:text-gray-400">Admin</span>
+			<?php
+					include('../db_connection.php'); // Include your database connection file
+
+					// Check if the user is logged in
+					if (isset($_SESSION['admin_id'])) {
+						$admin_id = $_SESSION['admin_id']; // Get the logged-in user's ID
+
+						// Query to get the logged-in user's data from the admin_tbl
+						$query = "SELECT * FROM admin_tbl WHERE admin_id = ?";
+						$stmt = $conn->prepare($query);
+
+						if ($stmt === false) {
+							die('MySQL prepare error: ' . $conn->error);
+						}
+
+						$stmt->bind_param("i", $admin_id); // Bind the admin ID
+						$stmt->execute();
+
+						// Check if query executed successfully
+						$result = $stmt->get_result();
+
+						if ($result->num_rows > 0) {
+							$admin = $result->fetch_assoc();
+							$firstname = $admin['firstname'];
+							$lastname = $admin['lastname'];
+							$role = ucfirst($admin['role']); // Capitalize the first letter of the role
+							// Prepend the directory path to the profile picture
+						$profile_picture = '../src/uploads/team/' . $admin['profile_picture'];
+						} else {
+							// If no user found, redirect to login
+							header('Location: ../adlogin.php');
+							exit;
+						}
+					} else {
+						// If not logged in, redirect to login page
+						header('Location: ../adlogin.php');
+						exit;
+					}
+					?>
+
+					<!-- HTML to display the profile information -->
+					<div class="profile flex items-center space-x-4 cursor-pointer">
+						<img class="w-10 h-10 rounded-full" src="<?= htmlspecialchars($profile_picture) ?>" alt="Profile Picture">
+
+						<div>
+							<h4 class="text-sm font-medium text-gray-800 dark:text-gray-200"><?= htmlspecialchars($firstname) . ' ' . htmlspecialchars($lastname) ?></h4>
+							<span class="text-xs text-gray-500 dark:text-gray-400"><?= htmlspecialchars($role) ?></span>
+						</div>
 					</div>
-				</div>
 			
 				<!-- Profile Dropdown Menu -->
 				<ul class="profile-link absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-lg z-50 hidden">
