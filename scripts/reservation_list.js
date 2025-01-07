@@ -2,6 +2,14 @@ document.addEventListener("DOMContentLoaded", () => {
     const modal = document.getElementById("reservationModal");
     const closeModal = document.getElementById("closeModal");
     const viewButtons = document.querySelectorAll(".view-button");
+    const tabs = document.querySelectorAll(".tab-button");
+    const contents = document.querySelectorAll(".tab-content");
+
+    // Check if all elements exist
+    if (!modal || !closeModal || viewButtons.length === 0 || tabs.length === 0 || contents.length === 0) {
+        console.error("One or more required elements are missing.");
+        return;
+    }
 
     function openModal(reservationId) {
         if (!reservationId) {
@@ -19,34 +27,37 @@ document.addEventListener("DOMContentLoaded", () => {
                     return;
                 }
 
-                // Assuming `data.data` contains the reservation details
                 const reservation = data.data;
 
-                // Set reservation details in modal
+                // Update Reservation Details Tab
                 document.getElementById("modal-reservation-id").textContent = reservation.reservation_id;
                 document.getElementById("modal-name").textContent = `${reservation.first_name} ${reservation.last_name}`;
                 document.getElementById("modal-email").textContent = reservation.email;
                 document.getElementById("modal-phone-number").textContent = reservation.phone_number;
                 document.getElementById("modal-check-in").textContent = reservation.check_in_date;
                 document.getElementById("modal-check-out").textContent = reservation.check_out_date;
-                document.getElementById("modal-total-amount").textContent = `₱${parseFloat(reservation.total_amount).toFixed(2)}`;
+                document.getElementById("modal-total-amount").textContent = `₱${reservation.total_amount.toFixed(2)}`;
 
-                // Get rate and add-on names, prices
-                document.getElementById("modal-rate-name").textContent = reservation.rate_name || 'N/A';
-                document.getElementById("modal-addons-name").textContent = reservation.addons_name || 'N/A';
-                document.getElementById("modal-rate-price").textContent = `₱${parseFloat(reservation.rate_price).toFixed(2)}`;
-                document.getElementById("modal-addons-price").textContent = `₱${parseFloat(reservation.addons_price).toFixed(2)}`;
-                
+                // Update Invoice Tab (Rate and Addons)
+                document.getElementById("modal-rate-name").textContent = reservation.rate_name;
+                document.getElementById("modal-rate-price").textContent = `₱${reservation.rate_price.toFixed(2)}`;
 
-                // Calculate total price (Rate + Add-Ons)
-                const totalPrice = parseFloat(reservation.rate_price) + parseFloat(reservation.addons_price);
+                if (reservation.addons_name) {
+                    document.getElementById("modal-addons-name").textContent = reservation.addons_name;
+                    document.getElementById("modal-addons-price").textContent = `₱${reservation.addons_price.toFixed(2)}`;
+                } else {
+                    document.getElementById("modal-addons-name").textContent = "None";
+                    document.getElementById("modal-addons-price").textContent = "₱0.00";
+                }
+
+                // Update Total Price
+                const totalPrice = (reservation.rate_price + (reservation.addons_price || 0));
                 document.getElementById("modal-total-price").textContent = `₱${totalPrice.toFixed(2)}`;
 
-                // Set payment proof
-                document.getElementById("modal-payment-proof").src = reservation.payment_proof;
+                // Update Payment Tab
+                document.getElementById("modal-payment-proof").setAttribute('src', reservation.payment_proof);
 
-
-                // Show modal
+                // Open the modal
                 modal.classList.remove("hidden");
             })
             .catch(error => {
@@ -69,16 +80,13 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     // Handle tab switching inside the modal
-    const tabs = document.querySelectorAll(".tab-button");
-    const contents = document.querySelectorAll(".tab-content");
-
     tabs.forEach(tab => {
         tab.addEventListener("click", () => {
             tabs.forEach(t => t.classList.remove("active", "text-blue-500", "border-blue-500"));
             tab.classList.add("active", "text-blue-500", "border-blue-500");
 
             contents.forEach(content => content.classList.add("hidden"));
-            document.getElementById(tab.dataset.tab).classList.remove("hidden");
+            document.getElementById(tab.dataset.tab)?.classList.remove("hidden");
         });
     });
 });

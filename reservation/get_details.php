@@ -32,16 +32,16 @@ try {
         $rate_result = $rate_stmt->get_result();
         $rate = $rate_result->fetch_assoc();
 
-        // Prepare SQL to fetch addons details
-        $addons_sql = "SELECT * FROM addons WHERE id = ?";
-        $addons_stmt = $conn->prepare($addons_sql);
-        $addons_stmt->bind_param('i', $reservation['addons_id']);
-        $addons_stmt->execute();
-        $addons_result = $addons_stmt->get_result();
-        $addons = $addons_result->fetch_assoc();
-
-        // Calculate total price
-        $total_price = $rate['price'] + $addons['price'];
+        // Prepare SQL to fetch addons details (only if there's an addon)
+        $addons = null;
+        if ($reservation['addons_id']) {
+            $addons_sql = "SELECT * FROM addons WHERE id = ?";
+            $addons_stmt = $conn->prepare($addons_sql);
+            $addons_stmt->bind_param('i', $reservation['addons_id']);
+            $addons_stmt->execute();
+            $addons_result = $addons_stmt->get_result();
+            $addons = $addons_result->fetch_assoc();
+        }
 
         // Prepare the response data
         $response = [
@@ -54,12 +54,11 @@ try {
                 'phone_number' => $reservation['mobile_number'],
                 'check_in_date' => $reservation['reservation_check_in_date'],
                 'check_out_date' => $reservation['reservation_check_out_date'],
-                'total_amount' => $reservation['total_amount'],
+                'total_amount' => (float)$reservation['total_amount'], // Use total_amount directly
                 'rate_name' => $rate['name'],
-                'rate_price' => $rate['price'],
-                'addons_name' => $addons['name'],
-                'addons_price' => $addons['price'],
-                'total_price' => $total_price,
+                'rate_price' => (float)$rate['price'], // Rate price
+                'addons_name' => $addons ? $addons['name'] : null, // Addon name (if any)
+                'addons_price' => $addons ? (float)$addons['price'] : null, // Addon price (if any)
                 'payment_proof' => '../src/uploads/payment_proof/' . $reservation['payment_proof']
             ]
         ];
@@ -75,7 +74,7 @@ try {
 
     // Close the statements and connection
     $rate_stmt->close();
-    $addons_stmt->close();
+    if ($addons) $addons_stmt->close();
     $stmt->close();
     $conn->close();
 } catch (Exception $e) {

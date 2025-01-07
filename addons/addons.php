@@ -507,6 +507,12 @@ function closeModal() {
     modal.classList.add('hidden');
 }
 
+function closeModal() {
+    // Hide the modal
+    const modal = document.getElementById('archiveModal');
+    modal.classList.add('hidden');
+}
+
 
 
     </script>
