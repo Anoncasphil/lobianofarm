@@ -23,6 +23,26 @@
             bottom: -20px; /* Adjust this value as needed */
             left: 0;
         }
+        .input-wrapper {
+            position: relative;
+            margin-bottom: 0.5rem; /* Reduced from 1.5rem */
+        }
+        .error-message {
+            position: absolute;
+            left: 0;
+            top: 100%;
+            font-size: 0.875rem;
+            color: #f56565;
+            margin-top: 0.25rem;
+        }
+        .input-icon {
+            position: absolute;
+            left: 0.75rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #6b7280;
+            pointer-events: none;
+        }
     </style>
 </head>
 <body class="flex overflow-hidden flex-row items-center justify-between m-0">
@@ -144,7 +164,7 @@
         <p id="input_tag" class="tracking-wide text-base mb-5">Create a account to continue</p>
 
         <!-- email -->
-        <div id="email_container" class="flex flex-col justify-start items-start w-[80%] relative-container">
+        <div id="email_container" class="flex flex-col justify-start items-start w-[80%]">
             <div class="relative flex flex-row justify-between w-full">
                 <label for="email_input" class="text-left w-[50%] mb-2">
                     Email Address:
@@ -152,8 +172,10 @@
             </div>
             <div class="relative w-full">
                 <i class="fa-solid fa-envelope absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500"></i>
-                <input type="email" id="email_input" name="email" placeholder="Email Address" 
-                       class="w-full border border-gray-500 rounded-lg p-2 pl-10" required autocomplete="off">
+                <input type="email" id="email_input" name="email" 
+                    placeholder="Email Address" 
+                    class="w-full border border-gray-500 rounded-lg p-2 pl-10"
+                    required autocomplete="off">
                 <small id="email_error" class="text-red-500 mt-1 hidden error-message">Please enter a valid email address.</small>
             </div>
         </div>
@@ -259,7 +281,7 @@
 <script>
 document.addEventListener('DOMContentLoaded', function () {
     const emailInput = document.getElementById('email_input');
-    const emailError = document.getElementById('email_error');
+    const emailError = emailInput.nextElementSibling;
     const firstnameInput = document.getElementById('firstname_input');
     const firstnameError = document.getElementById('firstname_error');
     const lastnameInput = document.getElementById('lastname_input');
@@ -272,14 +294,33 @@ document.addEventListener('DOMContentLoaded', function () {
     const verifyPasswordError = document.getElementById('verify_password_error');
     const form = document.querySelector('form');
 
-    emailInput.addEventListener('input', function () {
-        // Validate email input
-        if (!validateEmail(emailInput.value)) {
-            emailInput.classList.add('border-red-500');
-            emailError.classList.remove('hidden');
+    emailInput.addEventListener('input', async function() {
+        if (validateEmail(emailInput.value)) {
+            try {
+                const response = await fetch('check_email.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: `email=${encodeURIComponent(emailInput.value)}`
+                });
+                const data = await response.json();
+                
+                if (data.exists) {
+                    emailInput.classList.add('border-red-500');
+                    emailError.textContent = "Email is already existing.";
+                    emailError.classList.remove('hidden');
+                } else {
+                    emailInput.classList.remove('border-red-500');
+                    emailError.classList.add('hidden');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            }
         } else {
-            emailInput.classList.remove('border-red-500');
-            emailError.classList.add('hidden');
+            emailInput.classList.add('border-red-500');
+            emailError.textContent = "Please enter a valid email address.";
+            emailError.classList.remove('hidden');
         }
     });
 
