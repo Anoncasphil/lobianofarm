@@ -121,6 +121,38 @@
         <!-- END CALENDAR BUTTON -->
     </section>
 
+    <section id="about_section" class="hidden sm:flex flex-row items-center justify-center self-center w-full h-screen bg-[#f4ece2]">
+        <div class="flex w-[90%] h-full" data-aos="zoom-in">
+            <div id="about_pic" class="flex justify-center w-[100%] sm:w-[45%] h-[80%] sm:mr-[5%] rounded-2xl self-center">
+                <img src="/images/RP1.jpg" class="h-full w-auto sm:rounded-2xl">
+            </div>
+    
+            <!-- About Us Text -->
+            <div id="about_us_txt" class="flex flex-col justify-center w-[100%] sm:w-[50%] h-full sm:h-[90%] rounded-xl p-6 sm:p-10">
+                <div id="about_us_tag" class="mb-5">
+                    <h1 class="text-2xl font-bold text-orange-500">About Us</h1>
+                </div>
+    
+                <div id="about_us_slogan" class="mb-5 text-black">
+                    <h1 class="text-4xl sm:text-6xl font-semibold leading-snug">Creating unforgettable memories...</h1>
+                </div>
+    
+                <div id="about_us_description" class="mb-5 text-black">
+                    <p class="text-base sm:text-lg leading-relaxed">
+                        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+                    </p>
+                </div>
+    
+                <!-- Fixed Button -->
+                <a 
+                href="about_us.html" 
+                id="about_us_link" 
+                class="bg-orange-400 hover:bg-[#766641] hover:drop-shadow-lg text-white font-medium py-2 px-4 rounded-lg self-start">
+                Learn more about us
+            </a>
+            </div>
+        </div>
+    </section>
     
     </div>
     <!--  END ALBUM -->
