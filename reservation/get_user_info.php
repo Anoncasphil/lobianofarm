@@ -9,7 +9,7 @@ try {
         throw new Exception('User not logged in');
     }
 
-    $stmt = $conn->prepare("SELECT first_name, last_name, email FROM user_tbl WHERE user_id = ?");
+    $stmt = $conn->prepare("SELECT first_name, last_name, email, contact_no AS mobile_number FROM user_tbl WHERE user_id = ?");
     $stmt->bind_param("i", $_SESSION['user_id']);
     $stmt->execute();
     $result = $stmt->get_result();

@@ -26,8 +26,9 @@
         $total_amount = $_POST['total_amount'];
         $reservation_check_in_date = $_POST['reservation_check_in_date'];
         $reservation_check_out_date = $_POST['reservation_check_out_date'];
-        $rate_ids = explode(',', $_POST['rate_id']);
-        $addons_id = explode(',', $_POST['addons_id']);
+        $rate_ids = explode(',', $_POST['rate_id']); // Split multiple rate IDs
+        $addons_id = explode(',', $_POST['addons_id']); // Split multiple addon IDs
+        $user_id = $_SESSION['user_id']; // Get user_id from session
 
         // Store the input data in session variables
         $_SESSION['first_name'] = $first_name;
@@ -48,8 +49,8 @@
             // Loop through each selected addon
             foreach ($addons_id as $addon_id) {
                 // Insert into the reservation table for each combination of rate and addon
-                $stmt = $conn->prepare("INSERT INTO reservation (first_name, last_name, email, mobile_number, total_amount, reservation_check_in_date, reservation_check_out_date, rate_id, addons_id) 
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                $stmt = $conn->prepare("INSERT INTO reservation (first_name, last_name, email, mobile_number, total_amount, reservation_check_in_date, reservation_check_out_date, rate_id, addons_id, user_id) 
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
                 if (!$stmt) {
                     die("Prepare failed: " . $conn->error);
@@ -57,7 +58,7 @@
 
                 // Bind the parameters and execute the statement
                 $stmt->bind_param(
-                    "sssssssii", 
+                    "sssssssiii", 
                     $first_name,
                     $last_name,
                     $email,
@@ -66,7 +67,8 @@
                     $reservation_check_in_date,
                     $reservation_check_out_date,
                     $rate_id,
-                    $addon_id
+                    $addon_id,
+                    $user_id
                 );
 
                 if (!$stmt->execute()) {
