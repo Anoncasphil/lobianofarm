@@ -113,7 +113,7 @@
             </div>
         
             <!-- Book Link -->
-            <div id="book_link" class="flex items-center bg-[#37863B] h-[42px] w-full sm:w-[25%] justify-center rounded-md">
+            <div id="book_link" class="flex items-center bg-green-500 h-[42px] w-full sm:w-[25%] justify-center rounded-md">
                 <a href="../reservation/reservation.php" class="text-white">Book <i class="fa-sharp fa-solid fa-arrow-right ml-1"></i></a>
             </div>
         </div>
@@ -121,38 +121,40 @@
         <!-- END CALENDAR BUTTON -->
     </section>
 
-    <section id="about_section" class="hidden sm:flex flex-row items-center justify-center self-center w-full h-screen bg-[#f4ece2]">
-        <div class="flex w-[90%] h-full" data-aos="zoom-in">
-            <div id="about_pic" class="flex justify-center w-[100%] sm:w-[45%] h-[80%] sm:mr-[5%] rounded-2xl self-center">
-                <img src="/images/RP1.jpg" class="h-full w-auto sm:rounded-2xl">
+    <section id="about_section" class="hidden sm:flex flex-row items-center justify-center self-center w-full h-screen bg-white">
+    <div class="flex w-[90%] h-full" data-aos="zoom-in">
+        <div id="about_pic" class="flex justify-center w-[100%] sm:w-[45%] h-[80%] sm:mr-[5%] rounded-2xl self-center">
+        <img src="../src/images/resort.png" class="h-full w-full object-contain sm:rounded-2xl">
+    </div>
+
+
+        <!-- About Us Text -->
+        <div id="about_us_txt" class="flex flex-col justify-center w-[100%] sm:w-[50%] h-full sm:h-[90%] rounded-xl p-6 sm:p-10">
+            <div id="about_us_tag" class="mb-5">
+                <h1 class="text-2xl font-bold text-green-500">About Us</h1>
             </div>
-    
-            <!-- About Us Text -->
-            <div id="about_us_txt" class="flex flex-col justify-center w-[100%] sm:w-[50%] h-full sm:h-[90%] rounded-xl p-6 sm:p-10">
-                <div id="about_us_tag" class="mb-5">
-                    <h1 class="text-2xl font-bold text-orange-500">About Us</h1>
-                </div>
-    
-                <div id="about_us_slogan" class="mb-5 text-black">
-                    <h1 class="text-4xl sm:text-6xl font-semibold leading-snug">Creating unforgettable memories...</h1>
-                </div>
-    
-                <div id="about_us_description" class="mb-5 text-black">
-                    <p class="text-base sm:text-lg leading-relaxed">
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-                    </p>
-                </div>
-    
-                <!-- Fixed Button -->
-                <a 
-                href="about_us.html" 
-                id="about_us_link" 
-                class="bg-orange-400 hover:bg-[#766641] hover:drop-shadow-lg text-white font-medium py-2 px-4 rounded-lg self-start">
+
+            <div id="about_us_slogan" class="mb-5 text-black">
+                <h1 class="text-4xl sm:text-6xl font-semibold leading-snug">Creating unforgettable memories...</h1>
+            </div>
+
+            <div id="about_us_description" class="mb-5 text-black">
+                <p class="text-base sm:text-lg leading-relaxed">
+                Escape to 888 Lobiano's Farm Resort, a serene retreat nestled in nature’s beauty. Our resort offers a perfect blend of relaxation and adventure, with cozy accommodations, scenic views, and a variety of activities for all. Whether you're looking to unwind, explore, or create lasting memories, we provide the ideal setting. Experience comfort, tranquility, and exceptional hospitality at 888 Lobiano's Farm Resort — your peaceful escape from the everyday.
+                </p>
+            </div>
+
+            <!-- Fixed Button -->
+            <a 
+            href="about_us.html" 
+            id="about_us_link" 
+            class="bg-green-500 text-white hover:bg-green-700 hover:drop-shadow-lg font-medium py-2 px-4 rounded-lg self-start">
                 Learn more about us
             </a>
-            </div>
         </div>
-    </section>
+    </div>
+</section>
+
     
     </div>
     <!--  END ALBUM -->
@@ -172,9 +174,9 @@ if (!$result) {
 ?>
 <!-- Event Section -->
 <section id="event_section" class="flex flex-col items-center w-full py-10 px-4">
-    <div id="event_header" class="text-center mt-10">
+    <div id="event_header" class="text-left mr-[720px] mt-10">
         <h1 class="text-3xl font-bold text-black">Events</h1>
-        <p class="mt-3 text-black">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+        <p class="mt-3 text-black">Join us for exciting events that make every moment at the resort unforgettable!</p>
     </div>
 
     <div id="event_pic_container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 w-full max-w-screen-xl mx-auto mt-8">
@@ -234,9 +236,9 @@ if (!$result_rates) {
 ?>
 <!-- Rates Section -->
 <section id="rates_section" class="flex flex-col items-center w-full py-10 px-4">
-    <div id="rates_header" class="text-center mt-10">
+    <div id="rates_header" class="text-left mr-[810px] mt-10">
         <h1 class="text-3xl font-bold text-black">Rates</h1>
-        <p class="mt-3 text-black">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+        <p class="mt-3 text-black">Explore our competitive rates for a memorable and affordable stay</p>
     </div>
 
     <div id="rate_pic_container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 w-full max-w-screen-xl mx-auto mt-8">
@@ -254,10 +256,9 @@ if (!$result_rates) {
                         <h1 class="text-xl font-semibold"><?php echo $rate['name']; ?></h1>
                         <p class="text-sm text-gray-500"><i class="fa-solid fa-clock"></i> <?php echo $rate['hoursofstay']; ?> hours</p>
                         <p class="text-lg font-bold"><?php echo '₱' . number_format($rate['price'], 2); ?></p>
-                        <p class="text-xs text-gray-500">Includes taxes & fees</p>
                     </div>
-                    <div class="flex justify-center items-center py-3 bg-[#37863B] text-white">
-                        <button type="button" id="view_details_btn" class="w-[80%] bg-[#37863B] rounded-lg text-sm" data-id="<?php echo $rate['id']; ?>" data-type="rate">
+                    <div class="flex justify-center items-center py-3 bg-green-500 text-white">
+                        <button type="button" id="view_details_btn" class="w-[80%] bg-green-500 rounded-lg text-sm" data-id="<?php echo $rate['id']; ?>" data-type="rate">
                             View Details
                         </button>
                     </div>
@@ -277,46 +278,60 @@ if (!$result_rates) {
 
 
 
-    <!-- START AMENITIES -->
+<?php
+// Assuming a database connection is already established
+$query = "SELECT name, picture, price, id FROM addons ORDER BY created_at DESC LIMIT 4"; // Limit to 4 add-ons
 
-    <section id="amenities_section" class="flex flex-col self-center w-[80%] h-[75vh]">    
-        <div id="amenities_header" class=" w-full h-[13%] mt-[3%] mb-8">
-            <h1 class="text-3xl font-bold">Add-Ons</h1>
-            <p class="mt-5">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua</p>
-        </div>
+// Execute the query
+$result_addons = mysqli_query($conn, $query);
 
-        <div id="amenities_pic_container" class="flex flex-col w-full h-[80%] gap-y-2 sm:gap-x-5">
-            <div id="amenities_container" class="flex flex-row w-full h-full overflow-x-auto gap-5 scroll-smooth scrollbar-hide sm:scrollbar-default">
-                
-            <?php while($addons = $result_addons->fetch_assoc()) { 
-                            // Fetch and encode image data as base64
-                            $imageData = base64_encode($addons['picture']); // Update column name here
-                            ?>
-                        <!-- AMENITIES CARD START -->
-                            <div id="addons_card" class="flex flex-col justify-center items-center w-[35%] sm:w-[25%] h-[90%] shrink-0 shadow-lg rounded-2xl">
-                                <div id="addons_card_pic" class="flex items-center justify-center relative w-full h-[30%] sm:h-[60%] rounded-xl">
-                                <!-- Embed the Base64 image directly in the src -->
-                                <img src="data:image/jpeg;base64,<?php echo $imageData; ?>" loading="lazy" class="w-full h-[160px] rounded-xl" alt="Amenity Image">
-                                </div>
-                                <!-- Amenities Description(name, price, hours, tag) -->
-                                <div id="addons_description" class="flex flex-col w-full h-[40%]">
-                                    <h1 id="addons_name" class="text-xl font-bold"><?php echo $addons['name']; ?></h1>
-                                    <p id="addons_price" class="text-lg"><?php echo '₱' . number_format($addons['price'], 2); ?></p>
-                                    <p id="addons_tag" class="text-xs text-gray-500">Includes taxes & fees</p>
-                                </div>
-                                <div class="flex w-full h-[30%] justify-center items-center">
-                                    <button type="button" id="view_details_btn" class="w-[80%] h-[70%] bg-[#37863B] rounded-lg" data-id="<?php echo $addons['id']; ?>" data-type="addon">
-                                        View Details
-                                    </button>
-                                </div>
-                            </div>
-                        <?php } ?>
+// Check for query execution error
+if (!$result_addons) {
+    echo "<script>console.error('Error executing query: " . mysqli_error($conn) . "');</script>";
+    die("Error executing query: " . mysqli_error($conn));
+}
+?>
+<!-- Add-Ons Section -->
+<section id="addons_section" class="flex flex-col items-center w-full py-10 px-4">
+    <div id="addons_header" class="text-left mr-[690px] mt-10">
+        <h1 class="text-3xl font-bold text-black">Add-Ons</h1>
+        <p class="mt-3 text-black">Enhance your stay with our exclusive add-ons designed for comfort and convenience.</p>
+    </div>
 
-            </div>          
-           
-        </div>
+    <div id="addons_pic_container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 w-full max-w-screen-xl mx-auto mt-8">
+        <?php
+        if (mysqli_num_rows($result_addons) > 0) {
+            while ($addon = mysqli_fetch_assoc($result_addons)) {
+                // Fetch and encode image data as base64
+                $imageData = base64_encode($addon['picture']);
+        ?>
+                <!-- ADD-ONS CARD START -->
+                <div id="addons_card" class="flex flex-col w-full bg-white rounded-lg shadow-md overflow-hidden mt-4">
+                    <div id="addons_card_pic" class="w-full h-[300px] bg-cover bg-center" style="background-image: url('data:image/jpeg;base64,<?php echo $imageData; ?>');">
+                    </div>
+                    <div class="flex flex-col items-center justify-center h-[100px] bg-white text-black px-4 py-2">
+                        <h1 class="text-xl font-semibold"><?php echo $addon['name']; ?></h1>
+                        <p class="text-lg font-bold"><?php echo '₱' . number_format($addon['price'], 2); ?></p>
+                    </div>
+                    <div class="flex justify-center items-center py-3 bg-green-500 text-white">
+                        <button type="button" id="view_details_btn" class="w-[80%] bg-green-500 rounded-lg text-sm" data-id="<?php echo $addon['id']; ?>" data-type="addon">
+                            View Details
+                        </button>
+                    </div>
+                </div>
+                <!-- ADD-ONS CARD END -->
+        <?php
+            }
+        } else {
+            echo '<p class="text-center text-white">No add-ons available.</p>';
+            echo "<script>console.error('No add-ons found in the database.');</script>";
+        }
+        ?>
+    </div>
+</section>
+<!-- END ADD-ONS -->
 
-    </section>
+
 
 
     <!-- END AMENITIES -->
@@ -458,7 +473,7 @@ if (!$result_rates) {
                 <div class="flex flex-col gap-4 mt-[10%]">
                     <p class="text-xl text-white">Make an Enquiry:</p>
                     <h1 class="text-3xl text-white">Contact us now to start your adventure</h1>
-                    <button id="reserve_button" class="bg-orange-400 hover:bg-[#766641] hover:drop-shadow-lg w-[30%] rounded-full p-3 text-white">Reserve now!</button>
+                    <button id="reserve_button" class="bg-green-400 hover:bg-green-800 hover:drop-shadow-lg w-[30%] rounded-full p-3 text-white">Reserve now!</button>
                 </div>
             </div>
         <div id="right_side" class="flex flex-roww-[40%] h-full text-white">
