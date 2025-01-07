@@ -16,10 +16,28 @@
     <title>888 Lobiano's Farm</title>
     <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.6.5/datepicker.min.js"></script> -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.6.5/datepicker.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
+    
     <link rel="stylesheet" href="../styles/styles.css">
     <link rel="stylesheet" href="../styles/main_page.css">
     <link rel="icon" href="../src/images/logo.png" type="image/x-icon">
+    <style>
+/* Hide the scrollbar */
+.hide-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+
+.hide-scrollbar {
+    -ms-overflow-style: none; /* IE 10+ */
+    scrollbar-width: none; /* Firefox */
+}
+
+/* Add smooth scrolling */
+#rate_pic_container {
+    scroll-behavior: smooth;
+}
+</style>
 </head>
 <body id="top_section" class="flex flex-col">
     <section id="header_section" class="flex flex-col justify-self-center self-center h-[100vh] sm:h-[100vh] w-full mb-[5%] bg-[url('../src/images/main_bg.jpg')] bg-center bg-no-repeat bg-cover overflow-hidden z-20">
@@ -107,105 +125,125 @@
     </div>
     <!--  END ALBUM -->
 
-    <section id="event_section" class="hidden sm:flex flex-col self-center w-[80%] h-screen ">    
-        <div id="event_header" class=" w-full h-[13%] mt-10">
-            <h1 class="text-3xl font-bold">Event</h1>
-            <p class="mt-5">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua</p>
-        </div>
+    <?php
+// Assuming a database connection is already established
+$query = "SELECT name, picture FROM events WHERE status = 'active' ORDER BY created_at DESC LIMIT 4";
 
-        <div id="event_pic_container" class="display sm:flex flex-row w-[100%] h-[80%] gap-2">
+// Execute the query
+$result = mysqli_query($conn, $query);
 
-            <div id="event_card" class="flex flex-col w-[25%] h-[50%] sm:h-[100%]">
-                <div id="event_picture" class="w-full h-[90%] rounded-2xl overflow-hidden">
-                    <img src="../src/images/bday.jpg" class="w-full h-full object-cover drop-shadow-2xl">
-                </div>
-                
-                <div id="event_title" class="flex justify-center items-center h-[10%]">
-                    <p class="text-center font-bold text-lg">Birthday Events</p>
-                </div>
-            </div>
-            
-
-            <div id="event_card" class="flex flex-col w-[25%] h-[50%] sm:h-[100%]">
-                <div id="event_picture" class="w-full h-[90%] rounded-2xl overflow-hidden">
-                    <img src="../src/images/party.jpg" class="w-full h-full object-cover drop-shadow-2xl">
-                </div>
-                
-                <div id="event_title" class="flex justify-center items-center h-[10%]">
-                    <p class="text-center font-bold text-lg">Party Events</p>
-                </div>
-            </div>
-
-            
-            <div id="event_card" class="flex flex-col w-[25%] h-[50%] sm:h-[100%]">
-                <div id="event_picture" class="w-full h-[90%] rounded-2xl overflow-hidden">
-                    <img src="../src/images/team building.jpg" class="w-full h-full object-cover drop-shadow-2xl">
-                </div>
-                
-                <div id="event_title" class="flex justify-center items-center h-[10%]">
-                    <p class="text-center font-bold text-lg">Team Building</p>
-                </div>
-            </div>
-
-            
-            <div id="event_card" class="flex flex-col w-[25%] h-[50%] sm:h-[100%]">
-                <div id="event_picture" class="w-full h-[90%] rounded-2xl overflow-hidden">
-                    <img src="../src/images/wedding.jpeg" class="w-full h-full object-cover drop-shadow-2xl">
-                </div>
-                
-                <div id="event_title" class="flex justify-center items-center h-[10%]">
-                    <p class="text-center font-bold text-lg">Wedding</p>
-                </div>
-            </div>
-            
-        </div>
-    </section>
-
-    <div class="flex justify-center w-full h-[100vh] bg-white">
-        <section id="rates_section" class="flex flex-col self-center w-[80%] h-[75vh] overflow-x-auto overflow-y-hide top-0">    
-            <div id="rates_header" class=" w-full h-[13%] mt-[5%] mb-8">
-                <h1 class="text-3xl font-bold">Rates</h1>
-                <p class="mt-5">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua</p>
-            </div>
-
-            <div id="rate_pic_container" class="flex flex-col w-full h-[80%] gap-y-2 sm:gap-x-5">
-                <div id="rate_container" class="flex flex-row w-full h-full overflow-x-auto gap-5 scroll-smooth scrollbar-hide sm:scrollbar-default">
-                    
-                <?php while($rate = $result_rates->fetch_assoc()) { 
-                           // Fetch and encode image data as base64
-                            $imageData = base64_encode($rate['picture']);
-                        ?>
-                            <!-- RATES CARD START -->
-                            <div id="rates_card" class="flex flex-col justify-center items-center w-[35%] sm:w-[25%] h-[90%] shrink-0 shadow-lg rounded-2xl">
-                                <div id="rates_card_pic" class="flex items-center justify-center relative w-full h-[30%] sm:h-[60%] rounded-xl">
-                                <!-- Embed the Base64 image directly in the src -->
-                                <img src="data:image/jpeg;base64,<?php echo $imageData; ?>" loading="lazy" class="w-full h-[160px] rounded-xl" alt="Rate Image">
-                                </div>
-
-                                <!-- RATES Description(name, price, hours, tag) -->
-                                <div id="rates_description" class="flex flex-col w-full h-[40%]">
-                                    <h1 id="rates_name" class="text-xl font-bold"><?php echo $rate['name']; ?></h1>
-                                    <p id="rates_hour" class="text-sm"><i class="fa-solid fa-clock text-gray-500"></i> <?php echo $rate['hoursofstay']; ?> hours</p>
-                                    <p id="rates_price" class="text-lg"><?php echo '₱' . number_format($rate['price'], 2); ?></p>
-                                    <p id="rates_tag" class="text-xs text-gray-500">Includes taxes & fees</p>
-                                </div>
-
-                                <div class="flex w-full h-[30%] justify-center items-center">
-                                    <button type="button" id="view_details_btn" class="w-[80%] h-[70%] bg-[#37863B] rounded-lg" data-id="<?php echo $rate['id']; ?>" data-type="rate">
-                                        View Details
-                                    </button>
-                                </div>
-                                
-                            </div>
-                             <!-- RATES CARD END -->
-                        <?php } ?>
-                </div>
-
-            </div>
-            
-
-        </section>
+// Check for query execution error
+if (!$result) {
+    echo "<script>console.error('Error executing query: " . mysqli_error($conn) . "');</script>";
+    die("Error executing query: " . mysqli_error($conn));
+}
+?>
+<!-- Event Section -->
+<section id="event_section" class="flex flex-col items-center w-full py-10 px-4">
+    <div id="event_header" class="text-center mt-10">
+        <h1 class="text-3xl font-bold text-black">Events</h1>
+        <p class="mt-3 text-black">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
     </div>
+
+    <div id="event_pic_container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 w-full max-w-screen-xl mx-auto mt-8">
+        <?php
+        if (mysqli_num_rows($result) > 0) {
+            while ($row = mysqli_fetch_assoc($result)) {
+                $name = $row['name'];
+                $picture = $row['picture']; // This should be the file name stored in the database
+
+                // Assuming the picture field contains the image filename
+                $imagePath = "../src/uploads/events/" . $picture;
+
+                // Check if the picture file exists
+                if (!empty($picture) && file_exists($imagePath)) {
+                    echo '
+                    <div class="flex flex-col w-full bg-white rounded-lg shadow-md overflow-hidden mt-4">
+                        <div class="w-full h-[300px] bg-cover bg-center" style="background-image: url(' . $imagePath . ');">
+                        </div>
+                        <div class="flex items-center justify-center h-[60px] bg-white text-black px-4 py-2">
+                            <p class="text-center text-xl font-semibold">' . $name . '</p>
+                        </div>
+                    </div>';
+                } else {
+                    // If no picture is available or the file doesn't exist, display a placeholder image
+                    echo '
+                    <div class="flex flex-col w-full bg-white rounded-lg shadow-md overflow-hidden mt-4">
+                        <div class="w-full h-[300px] bg-gray-300 flex justify-center items-center">
+                            <p class="text-gray-700">No Image Available</p>
+                        </div>
+                        <div class="flex items-center justify-center h-[60px] bg-white text-black px-4 py-2">
+                            <p class="text-center text-xl font-semibold">' . $name . '</p>
+                        </div>
+                    </div>';
+                    echo "<script>console.error('No image available for event: " . $name . "');</script>";
+                }
+            }
+        } else {
+            echo '<p class="text-center text-white">No events available.</p>';
+            echo "<script>console.error('No active events found in the database.');</script>";
+        }
+        ?>
+    </div>
+</section>
+
+<?php
+// Assuming a database connection is already established
+$query = "SELECT name, picture, hoursofstay, price, id FROM rates ORDER BY created_at DESC LIMIT 4"; // Limit to 4 rates
+
+// Execute the query
+$result_rates = mysqli_query($conn, $query);
+
+// Check for query execution error
+if (!$result_rates) {
+    echo "<script>console.error('Error executing query: " . mysqli_error($conn) . "');</script>";
+    die("Error executing query: " . mysqli_error($conn));
+}
+?>
+<!-- Rates Section -->
+<section id="rates_section" class="flex flex-col items-center w-full py-10 px-4">
+    <div id="rates_header" class="text-center mt-10">
+        <h1 class="text-3xl font-bold text-black">Rates</h1>
+        <p class="mt-3 text-black">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+    </div>
+
+    <div id="rate_pic_container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 w-full max-w-screen-xl mx-auto mt-8">
+        <?php
+        if (mysqli_num_rows($result_rates) > 0) {
+            while ($rate = mysqli_fetch_assoc($result_rates)) {
+                // Fetch and encode image data as base64
+                $imageData = base64_encode($rate['picture']);
+        ?>
+                <!-- RATES CARD START -->
+                <div id="rates_card" class="flex flex-col w-full bg-white rounded-lg shadow-md overflow-hidden mt-4">
+                    <div id="rates_card_pic" class="w-full h-[300px] bg-cover bg-center" style="background-image: url('data:image/jpeg;base64,<?php echo $imageData; ?>');">
+                    </div>
+                    <div class="flex flex-col items-center justify-center h-[100px] bg-white text-black px-4 py-2">
+                        <h1 class="text-xl font-semibold"><?php echo $rate['name']; ?></h1>
+                        <p class="text-sm text-gray-500"><i class="fa-solid fa-clock"></i> <?php echo $rate['hoursofstay']; ?> hours</p>
+                        <p class="text-lg font-bold"><?php echo '₱' . number_format($rate['price'], 2); ?></p>
+                        <p class="text-xs text-gray-500">Includes taxes & fees</p>
+                    </div>
+                    <div class="flex justify-center items-center py-3 bg-[#37863B] text-white">
+                        <button type="button" id="view_details_btn" class="w-[80%] bg-[#37863B] rounded-lg text-sm" data-id="<?php echo $rate['id']; ?>" data-type="rate">
+                            View Details
+                        </button>
+                    </div>
+                </div>
+                <!-- RATES CARD END -->
+        <?php
+            }
+        } else {
+            echo '<p class="text-center text-white">No rates available.</p>';
+            echo "<script>console.error('No rates found in the database.');</script>";
+        }
+        ?>
+    </div>
+</section>
+
+
+
+
 
     <!-- START AMENITIES -->
 
