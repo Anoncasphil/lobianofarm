@@ -296,3 +296,31 @@ function showModal(modalId, message) {
     }
 }
 
+function showDetails(id) {
+    // Fetch data from the database using AJAX
+    fetch('fetch-rate.php?id=' + id)
+        .then(response => response.json())
+        .then(data => {
+            // Populate modal fields with data
+            document.getElementById('modalTitle').textContent = data.name
+            document.getElementById('modalPrice').textContent = data.price;
+            document.getElementById('modalHoursOfStay').textContent = data.hoursofstay;
+            document.getElementById('modalDescription').textContent = data.description;
+            document.getElementById('modalPicture').src = data.picture;
+
+            // Show the modal
+            document.getElementById('detailsModal').classList.remove('hidden');
+        })
+        .catch(error => console.error('Error fetching data:', error));
+}
+
+function closeModal() {
+    // Hide the modal
+    document.getElementById('detailsModal').classList.add('hidden');
+}
+
+function closeModal() {
+    // Hide the modal
+    const modal = document.getElementById('archiveModal');
+    modal.classList.add('hidden');
+}

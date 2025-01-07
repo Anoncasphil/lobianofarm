@@ -240,7 +240,7 @@ if ($result->num_rows > 0) {
         </div>
 
         <!-- Close Button -->
-        <button onclick="closeModal()" class="absolute top-2 right-2 text-2xl text-gray-600 hover:text-gray-800 focus:outline-none">
+        <button onclick="closeDetailsModal()" class="absolute top-2 right-2 text-2xl text-gray-600 hover:text-gray-800 focus:outline-none">
             &times;
         </button>
     </div>
@@ -501,7 +501,7 @@ function showModal(modalId, message) {
     }
 }
 
-function closeModal() {
+function closeDetailsModal() {
     // Hide the modal
     const modal = document.getElementById('detailsModal');
     modal.classList.add('hidden');

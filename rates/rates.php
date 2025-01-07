@@ -234,7 +234,7 @@
 	</div>
 
 <!-- Modal -->
-<div id="detailsModal" class="fixed inset-0 hidden bg-gray-900 bg-opacity-50 flex justify-center items-center z-50">
+<div id="detailsModal" class="fixed inset-0 hidden bg-opacity-50 flex justify-center items-center z-50">
     <div class="bg-white rounded-lg shadow-lg max-w-4xl w-full p-6 flex flex-col md:flex-row relative">
         <!-- Left side: Image -->
         <div class="flex-shrink-0 w-full md:w-1/3 mb-4 md:mb-0">
@@ -251,7 +251,7 @@
         </div>
 
         <!-- Close Button -->
-        <button onclick="closeModal()" class="absolute top-2 right-2 text-2xl text-gray-600 hover:text-gray-800 focus:outline-none">
+        <button onclick="closeDetailsModal()" class="absolute top-2 right-2 text-2xl text-gray-600 hover:text-gray-800 focus:outline-none">
             &times;
         </button>
     </div>
@@ -431,9 +431,69 @@
 
 	<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 	<script src="../scripts/script.js"></script>
-	<script src="../scripts/modalscript.js"></script>
+	<script src="../scripts/modalscript.js" defer></script>
+
 	<script>
-		function showDetails(id) {
+		function archiveConfirmation(rateId) {
+    // Show the modal and attach the rate ID to the confirm button
+    const modal = document.getElementById('archiveModal');
+    modal.classList.remove('hidden');
+    const confirmButton = document.getElementById('confirmArchive');
+    confirmButton.onclick = function () {
+        archiveRate(rateId);
+        closeModal();
+    };
+}
+
+function archiveRate(rateId) {
+    // Create a request to archive the rate
+    const xhr = new XMLHttpRequest();
+    xhr.open("POST", "archive-rate.php", true);
+    xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+
+	xhr.onreadystatechange = function () {
+    if (xhr.readyState === 4) {
+        console.log("Server Response: ", xhr.responseText);
+        if (xhr.status === 200 && xhr.responseText.trim() === 'success') {
+            const row = document.getElementById('rate-' + rateId);
+            if (row) {
+                row.style.display = 'none';
+            }
+            showModal('successModal', 'The rate has been successfully archived.');
+        } else {
+            showModal('errorModal', 'Failed to archive the rate. Please try again.');
+        }
+    }
+};
+
+
+    // Send the rate ID to the server to mark it as inactive
+    xhr.send("id=" + rateId);
+}
+
+function closeModal() {
+    // Hide the modal
+    const modal = document.getElementById('archiveModal');
+    modal.classList.add('hidden');
+}
+
+function showModal(modalId, message) {
+    console.log(`Showing modal: ${modalId} with message: ${message}`);
+    const modal = document.getElementById(modalId);
+    if (modal) {
+        const messageContainer = modal.querySelector('.modal-message');
+        if (messageContainer) {
+            messageContainer.textContent = message;
+        }
+        modal.classList.remove('hidden');
+
+        setTimeout(() => {
+            modal.classList.add('hidden');
+        }, 3000);
+    }
+}
+
+function showDetails(id) {
     // Fetch data from the database using AJAX
     fetch('fetch-rate.php?id=' + id)
         .then(response => response.json())
@@ -451,18 +511,18 @@
         .catch(error => console.error('Error fetching data:', error));
 }
 
-function closeModal() {
+function closeDetailsModal() {
     // Hide the modal
     document.getElementById('detailsModal').classList.add('hidden');
 }
-
+wwa
 function closeModal() {
     // Hide the modal
     const modal = document.getElementById('archiveModal');
     modal.classList.add('hidden');
 }
-	</script>
 
+	</script>
 
 </body>
 </html>
