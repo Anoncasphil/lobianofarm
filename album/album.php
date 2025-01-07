@@ -39,9 +39,11 @@ if (!isset($_SESSION['admin_id'])) {
 			<li><a href="../addons/addons.php"><i class='bx bxs-cart-add icon' ></i> Add-ons</a></li>
 			<li><a href="../events/events.php"><i class='bx bxs-calendar-event icon' ></i> Events</a></li>
 			<li><a href="../album/album.php" class="active"><i class='bx bxs-photo-album icon' ></i> Album</a></li>
-			<li><a href="../team/team.php"><i class='bx bxs-buildings icon' ></i> Team</a></li>
+            <?php if ($_SESSION['role'] === 'superadmin'): ?>
+				<li><a href="../team/team.php"><i class='bx bxs-buildings icon'></i> Team</a></li>
+			<?php endif; ?>
 
-			<li class="divider" data-text="table and forms">Table and forms</li>
+			<!-- <li class="divider" data-text="table and forms">Table and forms</li>
 			<li><a href="#"><i class='bx bx-table icon' ></i> Tables</a></li>
 			<li>
 				<a href="#"><i class='bx bxs-notepad icon' ></i> Forms <i class='bx bx-chevron-right icon-right' ></i></a>
@@ -51,7 +53,7 @@ if (!isset($_SESSION['admin_id'])) {
 					<li><a href="#">Checkbox</a></li>
 					<li><a href="#">Radio</a></li>
 				</ul>
-			</li>
+			</li> -->
 		</ul>
 	</section>
 	<!-- SIDEBAR -->

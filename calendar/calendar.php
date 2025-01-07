@@ -34,15 +34,17 @@ if (!isset($_SESSION['admin_id'])) {
 			<li><a href="../index.php"><i class='bx bxs-dashboard icon' ></i> Dashboard</a></li>
 
 			<li class="divider" data-text="management">Management</li>
-			<li><a href="../reservation/reservation_admin.php"><i class='bx bxs-widget icon' ></i> Reservations</a></li>
-            <li><a href="../calendar/calendar.php" class="active"><i class='bx bxs-widget icon active' ></i> Calendar</a></li>
-			<li><a href="../rates/rates.php"><i class="bx bxs-chart icon min-w-[48px] flex justify-center items-center mr-2"></i>Rates</a></li>
-			<li><a href="../addons/addons.php"><i class='bx bxs-widget icon' ></i> Add-ons</a></li>
-			<li><a href="../events/events.php"><i class='bx bxs-widget icon' ></i> Events</a></li>
-			<li><a href="../album/album.php"><i class='bx bxs-widget icon' ></i> Album</a></li>
-			<li><a href="../team/team.php"><i class='bx bxs-buildings icon' ></i> Team</a></li>
+			<li><a href="../reservation/reservation_admin.php"><i class='bx bx-list-ol icon' ></i> Reservations</a></li>
+            <li><a href="../calendar/calendar.php" class="active"><i class='bx bxs-calendar icon' ></i> Calendar</a></li>
+			<li><a href="../rates/rates.php"><i class="bx bxs-star icon min-w-[48px] flex justify-center items-center mr-2"></i>Rates</a></li>
+			<li><a href="../addons/addons.php"><i class='bx bxs-cart-add icon' ></i> Add-ons</a></li>
+			<li><a href="../events/events.php"><i class='bx bxs-calendar-event icon' ></i> Events</a></li>
+			<li><a href="../album/album.php"><i class='bx bxs-photo-album icon' ></i> Album</a></li>
+            <?php if ($_SESSION['role'] === 'superadmin'): ?>
+				<li><a href="../team/team.php"><i class='bx bxs-buildings icon'></i> Team</a></li>
+			<?php endif; ?>
 
-			<li class="divider" data-text="table and forms">Table and forms</li>
+			<!-- <li class="divider" data-text="table and forms">Table and forms</li>
 			<li><a href="#"><i class='bx bx-table icon' ></i> Tables</a></li>
 			<li>
 				<a href="#"><i class='bx bxs-notepad icon' ></i> Forms <i class='bx bx-chevron-right icon-right' ></i></a>
@@ -52,7 +54,7 @@ if (!isset($_SESSION['admin_id'])) {
 					<li><a href="#">Checkbox</a></li>
 					<li><a href="#">Radio</a></li>
 				</ul>
-			</li>
+			</li> -->
 		</ul>
 	</section>
 	<!-- SIDEBAR -->
@@ -131,7 +133,7 @@ if (!isset($_SESSION['admin_id'])) {
 						</a>
 					</li>
 					<li>
-						<a href="#" class="flex items-center px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-red-100 dark:hover:bg-red-700">
+						<a href="../logout.php" class="flex items-center px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-red-100 dark:hover:bg-red-700">
 							<i class='bx bxs-log-out-circle text-xl mr-2'></i> 
 							Logout
 						</a>

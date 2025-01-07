@@ -38,7 +38,9 @@ if (!isset($_SESSION['admin_id'])) {
 			<li><a href="addons/addons.php"><i class='bx bxs-cart-add icon' ></i> Add-ons</a></li>
 			<li><a href="events/events.php"><i class='bx bxs-calendar-event icon' ></i> Events</a></li>
 			<li><a href="album/album.php"><i class='bx bxs-photo-album icon' ></i> Album</a></li>
-			<li><a href="team/team.php"><i class='bx bxs-buildings icon' ></i> Team</a></li>
+			<?php if ($_SESSION['role'] === 'superadmin'): ?>
+				<li><a href="team/team.php"><i class='bx bxs-buildings icon'></i> Team</a></li>
+			<?php endif; ?>
 
 			<!-- <li class="divider" data-text="table and forms">Table and forms</li>
 			<li><a href="#"><i class='bx bx-table icon' ></i> Tables</a></li>
@@ -66,54 +68,54 @@ if (!isset($_SESSION['admin_id'])) {
 			<div class="relative">
 				<!-- Profile Dropdown Trigger -->
 				<?php
-include('db_connection.php'); // Include your database connection file
+					include('db_connection.php'); // Include your database connection file
 
-// Check if the user is logged in
-if (isset($_SESSION['admin_id'])) {
-    $admin_id = $_SESSION['admin_id']; // Get the logged-in user's ID
+					// Check if the user is logged in
+					if (isset($_SESSION['admin_id'])) {
+						$admin_id = $_SESSION['admin_id']; // Get the logged-in user's ID
 
-    // Query to get the logged-in user's data from the admin_tbl
-    $query = "SELECT * FROM admin_tbl WHERE admin_id = ?";
-    $stmt = $conn->prepare($query);
+						// Query to get the logged-in user's data from the admin_tbl
+						$query = "SELECT * FROM admin_tbl WHERE admin_id = ?";
+						$stmt = $conn->prepare($query);
 
-    if ($stmt === false) {
-        die('MySQL prepare error: ' . $conn->error);
-    }
+						if ($stmt === false) {
+							die('MySQL prepare error: ' . $conn->error);
+						}
 
-    $stmt->bind_param("i", $admin_id); // Bind the admin ID
-    $stmt->execute();
+						$stmt->bind_param("i", $admin_id); // Bind the admin ID
+						$stmt->execute();
 
-    // Check if query executed successfully
-    $result = $stmt->get_result();
+						// Check if query executed successfully
+						$result = $stmt->get_result();
 
-    if ($result->num_rows > 0) {
-        $admin = $result->fetch_assoc();
-        $firstname = $admin['firstname'];
-        $lastname = $admin['lastname'];
-        $role = ucfirst($admin['role']); // Capitalize the first letter of the role
-        // Prepend the directory path to the profile picture
-       $profile_picture = 'src/uploads/team/' . $admin['profile_picture'];
-    } else {
-        // If no user found, redirect to login
-        header('Location: adlogin.php');
-        exit;
-    }
-} else {
-    // If not logged in, redirect to login page
-    header('Location: adlogin.php');
-    exit;
-}
-?>
+						if ($result->num_rows > 0) {
+							$admin = $result->fetch_assoc();
+							$firstname = $admin['firstname'];
+							$lastname = $admin['lastname'];
+							$role = ucfirst($admin['role']); // Capitalize the first letter of the role
+							// Prepend the directory path to the profile picture
+						$profile_picture = 'src/uploads/team/' . $admin['profile_picture'];
+						} else {
+							// If no user found, redirect to login
+							header('Location: adlogin.php');
+							exit;
+						}
+					} else {
+						// If not logged in, redirect to login page
+						header('Location: adlogin.php');
+						exit;
+					}
+					?>
 
-<!-- HTML to display the profile information -->
-<div class="profile flex items-center space-x-4 cursor-pointer">
-	<img class="w-10 h-10 rounded-full" src="<?= htmlspecialchars($profile_picture) ?>" alt="Profile Picture">
+					<!-- HTML to display the profile information -->
+					<div class="profile flex items-center space-x-4 cursor-pointer">
+						<img class="w-10 h-10 rounded-full" src="<?= htmlspecialchars($profile_picture) ?>" alt="Profile Picture">
 
-    <div>
-        <h4 class="text-sm font-medium text-gray-800 dark:text-gray-200"><?= htmlspecialchars($firstname) . ' ' . htmlspecialchars($lastname) ?></h4>
-        <span class="text-xs text-gray-500 dark:text-gray-400"><?= htmlspecialchars($role) ?></span>
-    </div>
-</div>
+						<div>
+							<h4 class="text-sm font-medium text-gray-800 dark:text-gray-200"><?= htmlspecialchars($firstname) . ' ' . htmlspecialchars($lastname) ?></h4>
+							<span class="text-xs text-gray-500 dark:text-gray-400"><?= htmlspecialchars($role) ?></span>
+						</div>
+					</div>
 
 
 
