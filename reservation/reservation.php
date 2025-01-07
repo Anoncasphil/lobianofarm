@@ -26,8 +26,8 @@
         $total_amount = $_POST['total_amount'];
         $reservation_check_in_date = $_POST['reservation_check_in_date'];
         $reservation_check_out_date = $_POST['reservation_check_out_date'];
-        $rate_ids = explode(',', $_POST['rate_id']); // Split multiple rate IDs
-        $addons_id = explode(',', $_POST['addons_id']); // Split multiple addon ID
+        $rate_ids = explode(',', $_POST['rate_id']);
+        $addons_id = explode(',', $_POST['addons_id']);
 
         // Store the input data in session variables
         $_SESSION['first_name'] = $first_name;
