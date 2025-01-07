@@ -205,76 +205,141 @@ if (!isset($_SESSION['admin_id'])) {
     <div class="main flex-1 p-6">
         <header class="mb-6">
             <h1 class="text-2xl font-bold text-gray-700">Add-ons</h1>
+            <ul class="breadcrumbs">
+				<li><a href="#">Home</a></li>
+				<li class="divider">/</li>
+				<li><a href="#">Management</a></li>
+				<li class="divider">/</li>
+				<li><a href="#" class="active">Rates</a></li>
+			</ul>
         </header>
 
         <div class="table-container bg-white shadow-md rounded-lg p-4">
-            <div class="flex justify-between items-center mb-4">
-                <h2 class="text-lg font-bold text-gray-700">Add-ons List</h2>
-                <button type="button" onclick="toggleAddAddonModal()" class="text-white bg-blue-500 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2">
-                    <i class="fa-solid fa-plus"></i> Add Add-on
-                </button>
-            </div>
-
-            <table class="table-auto w-full text-left border-collapse">
-                <thead class="bg-gray-100">
-                    <tr>
-                        <th class="py-3 px-4 border-b text-gray-600">ID</th>
-                        <th class="py-3 px-4 border-b text-gray-600">NAME</th>
-                        <th class="py-3 px-4 border-b text-gray-600">Price</th>
-                        <th class="py-3 px-4 border-b text-gray-600">Description</th>
-                        <th class="py-3 px-4 border-b text-gray-600">Image</th>
-                        <th class="py-3 px-4 border-b text-gray-600">Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-				<?php
-if ($result->num_rows > 0) {
-    while ($row = $result->fetch_assoc()) {
-        echo "<tr id='addon-" . $row['id'] . "'>";
-        echo "<td class='py-2 px-4 border-b text-gray-700'>" . $row['id'] . "</td>";
-        echo "<td class='py-2 px-4 border-b text-gray-700'>" . $row['name'] . "</td>";
-        echo "<td class='py-2 px-4 border-b text-gray-700'>₱" . number_format($row['price'], 2) . "</td>";
-        echo "<td class='py-2 px-4 border-b text-gray-700'>" . $row['description'] . "</td>";
-        echo "<td class='py-2 px-4 border-b text-gray-700'>";
-
-        if (!empty($row['picture'])) {
-            $base64Image = base64_encode($row['picture']);
-            $imageSrc = 'data:image/jpeg;base64,' . $base64Image;
-            echo "<img src='" . $imageSrc . "' alt='Addon Image' class='w-20 h-auto object-cover rounded-lg'>";
-        }
-
-        echo "</td>";
-        echo "<td class='py-2 px-4 border-b text-gray-700'>
-        <button 
-										type='button' 
-										class='text-white bg-blue-500 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2' 
-										onclick='showDetails(" . $row['id'] . ");'>
-										<i class='fa-solid fa-box-archive'></i> View
-									</button>
-								<button 
-									type='button' 
-									class='text-white bg-blue-500 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2' 
-									onclick='fetchAddonData(" . $row['id'] . "); toggleUpdateAddonModal();'>
-									<i class='fa-solid fa-pen-to-square'></i> Update
-								</button>
-            <button type='button' class='text-white bg-red-500 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2' onclick='archiveConfirmation(" . $row['id'] . ");'>
-                <i class='fa-solid fa-box-archive'></i> Archive
+    <div class="flex justify-between items-center mb-4">
+        <h2 class="text-lg font-bold text-gray-700">Add-ons List</h2>
+        <div class="flex space-x-2">
+            <button type="button" onclick="toggleAddAddonModal()" class="text-white bg-blue-500 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2">
+                <i class="fa-solid fa-plus"></i> Add Add-on
             </button>
-        </td>";
-        echo "</tr>";
-    }
-} else {
-    echo "<tr><td colspan='6' class='py-2 px-4 border-b text-gray-700'>No records found</td></tr>";
-}
-?>
-
-                </tbody>
-            </table>
+            <button id="toggleAddonsButton" type="button" onclick="toggleAddonsTableVisibility()" class="text-white bg-green-500 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2">
+                <i class="fa-solid fa-toggle-on"></i> Show Inactive Add-ons
+            </button>
         </div>
     </div>
 
+    <!-- Active Add-ons Table -->
+    <div id="activeAddonsTable" class="mb-4">
+        <table class="table-auto w-full text-left border-collapse">
+            <thead class="bg-gray-100">
+                <tr>
+                    <th class="py-3 px-4 border-b text-gray-600">ID</th>
+                    <th class="py-3 px-4 border-b text-gray-600">NAME</th>
+                    <th class="py-3 px-4 border-b text-gray-600">Price</th>
+                    <th class="py-3 px-4 border-b text-gray-600">Description</th>
+                    <th class="py-3 px-4 border-b text-gray-600">Image</th>
+                    <th class="py-3 px-4 border-b text-gray-600">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php
+                    $sql = "SELECT id, name, price, description, picture FROM addons WHERE status = 'active'";
+                    $result = $conn->query($sql);
+
+                    if ($result->num_rows > 0) {
+                        while ($row = $result->fetch_assoc()) {
+                            echo "<tr id='addon-" . $row['id'] . "'>";
+                            echo "<td class='py-2 px-4 border-b text-gray-700'>" . $row['id'] . "</td>";
+                            echo "<td class='py-2 px-4 border-b text-gray-700'>" . $row['name'] . "</td>";
+                            echo "<td class='py-2 px-4 border-b text-gray-700'>₱" . number_format($row['price'], 2) . "</td>";
+                            echo "<td class='py-2 px-4 border-b text-gray-700'>" . $row['description'] . "</td>";
+                            echo "<td class='py-2 px-4 border-b text-gray-700'>";
+
+                            if (!empty($row['picture'])) {
+                                $base64Image = base64_encode($row['picture']);
+                                $imageSrc = 'data:image/jpeg;base64,' . $base64Image;
+                                echo "<img src='" . $imageSrc . "' alt='Addon Image' class='w-20 h-auto object-cover rounded-lg'>";
+                            }
+
+                            echo "</td>";
+                            echo "<td class='py-2 px-4 border-b text-gray-700'>
+                                <button type='button' class='text-white bg-blue-500 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2' onclick='showDetails(" . $row['id'] . ");'>
+                                    <i class='fa-solid fa-box-archive'></i> View
+                                </button>
+                                <button type='button' class='text-white bg-blue-500 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2' onclick='fetchAddonData(" . $row['id'] . "); toggleUpdateAddonModal();'>
+                                    <i class='fa-solid fa-pen-to-square'></i> Update
+                                </button>
+                                <button type='button' class='text-white bg-red-500 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2' onclick='archiveConfirmation(" . $row['id'] . ");'>
+                                    <i class='fa-solid fa-box-archive'></i> Archive
+                                </button>
+                            </td>";
+                            echo "</tr>";
+                        }
+                    } else {
+                        echo "<tr><td colspan='6' class='py-2 px-4 border-b text-gray-700'>No records found</td></tr>";
+                    }
+                ?>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Inactive Add-ons Table -->
+    <div id="inactiveAddonsTable" class="hidden">
+        <table class="table-auto w-full text-left border-collapse">
+            <thead class="bg-gray-100">
+                <tr>
+                    <th class="py-3 px-4 border-b text-gray-600">ID</th>
+                    <th class="py-3 px-4 border-b text-gray-600">NAME</th>
+                    <th class="py-3 px-4 border-b text-gray-600">Price</th>
+                    <th class="py-3 px-4 border-b text-gray-600">Description</th>
+                    <th class="py-3 px-4 border-b text-gray-600">Image</th>
+                    <th class="py-3 px-4 border-b text-gray-600">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php
+                    $sql = "SELECT id, name, price, description, picture FROM addons WHERE status = 'inactive'";
+                    $result = $conn->query($sql);
+
+                    if ($result->num_rows > 0) {
+                        while ($row = $result->fetch_assoc()) {
+                            echo "<tr id='addon-" . $row['id'] . "'>";
+                            echo "<td class='py-2 px-4 border-b text-gray-700'>" . $row['id'] . "</td>";
+                            echo "<td class='py-2 px-4 border-b text-gray-700'>" . $row['name'] . "</td>";
+                            echo "<td class='py-2 px-4 border-b text-gray-700'>₱" . number_format($row['price'], 2) . "</td>";
+                            echo "<td class='py-2 px-4 border-b text-gray-700'>" . $row['description'] . "</td>";
+                            echo "<td class='py-2 px-4 border-b text-gray-700'>";
+
+                            if (!empty($row['picture'])) {
+                                $base64Image = base64_encode($row['picture']);
+                                $imageSrc = 'data:image/jpeg;base64,' . $base64Image;
+                                echo "<img src='" . $imageSrc . "' alt='Addon Image' class='w-20 h-auto object-cover rounded-lg'>";
+                            }
+
+                            echo "</td>";
+                            echo "<td class='py-2 px-4 border-b text-gray-700'>
+                                <button type='button' class='text-white bg-blue-500 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2' onclick='showDetails(" . $row['id'] . ");'>
+                                    <i class='fa-solid fa-box-archive'></i> View
+                                </button>
+                                <button type='button' class='text-white bg-blue-500 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2' onclick='fetchAddonData(" . $row['id'] . "); toggleUpdateAddonModal();'>
+                                    <i class='fa-solid fa-pen-to-square'></i> Update
+                                </button>
+                                <button type='button' class='text-white bg-green-500 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2' onclick='restoreAddon(" . $row['id'] . ");'>
+                                    <i class='fa-solid fa-undo'></i> Restore
+                                </button>
+                            </td>";
+                            echo "</tr>";
+                        }
+                    } else {
+                        echo "<tr><td colspan='6' class='py-2 px-4 border-b text-gray-700'>No records found</td></tr>";
+                    }
+                ?>
+            </tbody>
+        </table>
+    </div>
+</div>
+
     <!-- Modal -->
-<div id="detailsModal" class="fixed inset-0 hidden bg-gray-900 bg-opacity-50 flex justify-center items-center z-50">
+<div id="detailsModal" class="fixed inset-0 hidden bg-opacity-50 flex justify-center items-center z-50">
     <div class="bg-white rounded-lg shadow-lg max-w-4xl w-full p-6 flex flex-col md:flex-row relative">
         <!-- Left side: Image -->
         <div class="flex-shrink-0 w-full md:w-1/3 mb-4 md:mb-0">
@@ -562,6 +627,41 @@ function closeModal() {
     const modal = document.getElementById('archiveModal');
     modal.classList.add('hidden');
 }
+
+ // Function to toggle between active and inactive add-ons table visibility
+ function toggleAddonsTableVisibility() {
+        var activeAddonsTable = document.getElementById("activeAddonsTable");
+        var inactiveAddonsTable = document.getElementById("inactiveAddonsTable");
+        var toggleButton = document.getElementById("toggleAddonsButton");
+        
+        if (activeAddonsTable.style.display === "none") {
+            activeAddonsTable.style.display = "block";
+            inactiveAddonsTable.style.display = "none";
+            toggleButton.innerHTML = '<i class="fa-solid fa-toggle-off"></i> Show Inactive Add-ons'; // Change button text
+        } else {
+            activeAddonsTable.style.display = "none";
+            inactiveAddonsTable.style.display = "block";
+            toggleButton.innerHTML = '<i class="fa-solid fa-toggle-on"></i> Show Active Add-ons'; // Change button text
+        }
+    }
+
+    // Function to restore an addon
+function restoreAddon(addonId) {
+    // Send the request to restore the addon
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", "restore_addon.php", true);
+    xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+    xhr.onload = function() {
+        if (xhr.status == 200) {
+            // Reload the page immediately after the request succeeds
+            location.reload();
+        } else {
+            console.error("Request failed with status " + xhr.status);
+        }
+    };
+    xhr.send("addon_id=" + addonId);
+}
+
 
 
 

@@ -19,6 +19,7 @@ if (!isset($_SESSION['admin_id'])) {
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/all.min.css" integrity="sha512-5Hs3dF2AEPkpNAR7UiOHba+lRSJNeM2ECkwxUIxC1Q/FLycGTbNapWXB4tP889k5T5Ju8fs4b1P5z/iB4nMfSQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 	<link rel="stylesheet" href="../styles/style.css">
     <link rel="stylesheet" href="../styles/album.css">
+	<link rel="stylesheet" href="../styles/rate.css">
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 
 	
@@ -145,7 +146,16 @@ if (!isset($_SESSION['admin_id'])) {
         <main class="relative">
     <header class="mb-6">
         <h1 class="text-2xl font-bold text-gray-700">Album</h1>
+        <ul class="breadcrumbs">
+				<li><a href="#">Home</a></li>
+				<li class="divider">/</li>
+				<li><a href="#">Management</a></li>
+				<li class="divider">/</li>
+				<li><a href="#" class="active">Album</a></li>
+			</ul>
     </header>
+
+
 
     <div class="event-container rounded-lg p-4">
         <div class="flex justify-between items-center mb-4">
@@ -154,7 +164,7 @@ if (!isset($_SESSION['admin_id'])) {
                 <button type="button" onclick="toggleAddAlbumModal()" class="text-white bg-blue-500 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2">
                     <i class="fa-solid fa-plus"></i> Add Picture
                 </button>
-                <button type="button" class="text-white bg-red-500 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2" id="deleteSelectedButton" onclick="deleteSelectedPictures()">
+                <button type="button" class="text-white bg-red-500 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2" id="deleteSelectedButton" onclick="deleteConfirmation()">
                     <i class="fa-solid fa-trash"></i> Delete Selected
                 </button>
             </div>
@@ -188,6 +198,39 @@ if (!isset($_SESSION['admin_id'])) {
             ?>
         </div>
     </div>
+
+	<!-- Confirmation Modal -->
+<div id="deleteModal" class="fixed inset-0 z-50 flex items-center justify-center hidden bg-opacity-50">
+		<div class="bg-white rounded-lg shadow-lg p-6 w-full max-w-md">
+			<h2 class="text-lg font-medium text-gray-800">Are you sure you want to archive this event?</h2>
+			<div class="mt-4 flex justify-end space-x-4">
+				<button 
+					class="text-gray-700 bg-gray-200 hover:bg-gray-300 focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-4 py-2"
+					onclick="closeModal()">No</button>
+					<button 
+						id="confirmArchive" 
+						class="text-white bg-red-500 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-4 py-2"
+						onclick="deleteSelectedPictures();">
+						Yes
+					</button>
+
+			</div>
+		</div>
+	</div>
+
+<!-- Success Modal -->
+<div id="successModal" class="modal hidden">
+    <div class="modal-content">
+        <p class="modal-message"></p>
+    </div>
+</div>
+
+<!-- Error Modal -->
+<div id="errorModal" class="modal hidden">
+    <div class="modal-content">
+        <p class="modal-message"></p>
+    </div>
+</div>
 
     <!-- Add Picture Modal -->
     <div id="add-picture-modal" tabindex="-1" aria-hidden="true" class="hidden fixed inset-0 z-50 flex justify-center items-center">
@@ -238,6 +281,16 @@ if (!isset($_SESSION['admin_id'])) {
                 </div>
             </div>
         </div>
+
+		<div id="successModal" class="fixed top-4 right-4 z-50 hidden bg-green-500 text-white rounded-lg px-4 py-3 shadow-lg">
+			<p class="modal-message"></p>
+		</div>
+
+
+		<!-- Error Modal -->
+		<div id="errorModal" class="fixed top-4 right-4 z-50 hidden bg-red-500 text-white rounded-lg px-4 py-3 shadow-lg">
+			<p class="modal-message"></p>
+		</div>
         
 </main>
 
@@ -253,7 +306,77 @@ if (!isset($_SESSION['admin_id'])) {
 	<script src="../path/to/flowbite/dist/flowbite.min.js"></script>
 	<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 	<script src="../scripts/script.js"></script>
-	<script></script>
+	<script>
+// Function to handle delete confirmation
+document.getElementById("confirmArchive").addEventListener("click", function() {
+    deleteSelectedPictures(); // Call the function to delete pictures
+    // Hide the delete modal
+    document.getElementById("deleteModal").classList.add('hidden');
+});
+
+
+function deleteSelectedPictures() {
+    const selectedPictures = [];
+    const checkboxes = document.querySelectorAll('input[type="checkbox"]:checked');
+
+    // Collect the selected pictures' IDs
+    checkboxes.forEach(checkbox => {
+        selectedPictures.push(checkbox.getAttribute('data-id'));
+    });
+
+    if (selectedPictures.length > 0) {
+        // Send AJAX request to delete the selected pictures
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', 'delete_pictures.php', true);
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        xhr.onload = function () {
+            if (xhr.status === 200) {
+                try {
+                    // Try to parse the response as JSON
+                    const response = JSON.parse(xhr.responseText);
+                    if (response.status === 'success') {
+                        // Show success modal
+                        showSuccessModal(response.message);
+                        window.location.href = "album.php?status=success"; // Redirect immediately
+                    } else {
+                        showErrorModal(response.message); // Show error modal if deletion failed
+                    }
+                } catch (e) {
+                    console.error('Error parsing response:', e);
+                    console.log(xhr.responseText); // Log the raw response to see the actual output
+                }
+            } else {
+                showErrorModal('Request failed with status ' + xhr.status);
+            }
+        };
+        xhr.send('ids=' + selectedPictures.join(','));
+    } else {
+        showErrorModal('No pictures selected for deletion.');
+    }
+}
+
+// Function to show success modal
+function showSuccessModal(message) {
+    const successModal = document.getElementById('successModal');
+    successModal.querySelector('.modal-message').textContent = message;
+    successModal.classList.remove('hidden'); // Make the modal visible
+}
+
+
+
+
+// Function to show the delete confirmation modal
+function deleteConfirmation() {
+    // Show the confirmation modal
+    document.getElementById('deleteModal').classList.remove('hidden');
+}
+
+function closeModal() {
+    // Hide the modal
+    document.getElementById('deleteModal').classList.add('hidden');
+}
+
+	</script>
 
 </body>
 </html>

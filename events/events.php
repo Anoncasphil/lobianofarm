@@ -19,6 +19,7 @@ if (!isset($_SESSION['admin_id'])) {
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/all.min.css" integrity="sha512-5Hs3dF2AEPkpNAR7UiOHba+lRSJNeM2ECkwxUIxC1Q/FLycGTbNapWXB4tP889k5T5Ju8fs4b1P5z/iB4nMfSQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 	<link rel="stylesheet" href="../styles/style.css">
 	<link rel="stylesheet" href="../styles/events.css">
+	<link rel="stylesheet" href="../styles/rate.css">
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 
 	
@@ -147,67 +148,142 @@ if (!isset($_SESSION['admin_id'])) {
 
 		<header class="mb-6">
 			<h1 class="text-2xl font-bold text-gray-700">Events</h1>
+			<ul class="breadcrumbs">
+				<li><a href="#">Home</a></li>
+				<li class="divider">/</li>
+				<li><a href="#">Management</a></li>
+				<li class="divider">/</li>
+				<li><a href="#" class="active">Events</a></li>
+			</ul>
 		</header>
 
 
 		<div class="event-container rounded-lg p-4">
-			<div class="flex justify-between items-center mb-4">
-				<!-- Button Container -->
-				<div class="flex justify-end w-full space-x-2"> <!-- space-x-2 adds a gap between the buttons -->
-					<!-- Add Event Button -->
-					<button type="button" onclick="toggleAddEventModal()" class="text-white bg-blue-500 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2">
-						<i class="fa-solid fa-plus"></i> Add Event
-					</button>
+    <div class="flex justify-between items-center mb-4">
+        <!-- Button Container -->
+        <div class="flex justify-end w-full space-x-2"> <!-- space-x-2 adds a gap between the buttons -->
+            <!-- Add Event Button -->
+            <button type="button" onclick="toggleAddEventModal()" class="text-white bg-blue-500 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2">
+                <i class="fa-solid fa-plus"></i> Add Event
+            </button>
 
-					<!-- Archive Selected Button -->
-					<button type="button" onclick="archiveSelectedEvents()" class="text-white bg-gray-500 hover:bg-gray-700 focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2">
-						<i class="fa-solid fa-archive"></i> Archive Selected
-					</button>
-				</div>
-			</div>
-		</div>
+            <!-- Archive Selected Button -->
+			<button type="button" onclick="archiveConfirmation()" class="text-white bg-gray-500 hover:bg-gray-700 focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2">
+				<i class="fa-solid fa-archive"></i> Archive Selected
+			</button>
 
+            <!-- Toggle Button for Active/Inactive Events -->
+            <button id="toggleEventButton" type="button" onclick="toggleEventTableVisibility()" class="text-white bg-green-500 hover:bg-green-700 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2">
+                <i class="fa-solid fa-toggle-on"></i> Show Inactive Events
+            </button>
+        </div>
+    </div>
+</div>
 
+<!-- Active Events Table -->
+<div id="activeEventsTable">
+    <?php
+        // Include database connection
+        include('../db_connection.php');
 
-		<?php
-    // Include database connection
-    include('../db_connection.php');
+        // Fetch the active events from the database
+        $query = "SELECT id, name, picture, date, description FROM events WHERE status = 'active'";
+        $result = mysqli_query($conn, $query);
 
-    // Fetch the active events from the database
-    $query = "SELECT id, name, picture, date, description FROM events WHERE status = 'active'";
-    $result = mysqli_query($conn, $query);
+        // Check if data was fetched
+        if (mysqli_num_rows($result) > 0) {
+            // Loop through each row and display the event details
+            while ($row = mysqli_fetch_assoc($result)) {
+    ?>
+                <div class="event-list-item bg-white border border-gray-200 rounded-lg shadow-md p-4 mb-4 flex items-center space-x-4 cursor-pointer" onclick="openEventModal(<?php echo $row['id']; ?>)">
+                    <!-- Selection Box -->
+                    <input type="checkbox" class="delete-checkbox" value="<?php echo $row['id']; ?>" />
 
-    // Check if data was fetched
-    if (mysqli_num_rows($result) > 0) {
-        // Loop through each row and display the event details
-        while ($row = mysqli_fetch_assoc($result)) {
-            ?>
-            <div class="event-list-item bg-white border border-gray-200 rounded-lg shadow-md p-4 mb-4 flex items-center space-x-4 cursor-pointer" onclick="openEventModal(<?php echo $row['id']; ?>)">
-                <!-- Selection Box -->
-                <input type="checkbox" class="delete-checkbox" value="<?php echo $row['id']; ?>" />
+                    <!-- Event Picture -->
+                    <img src="../src/uploads/events/<?php echo $row['picture']; ?>" alt="Event Picture" class="w-20 h-20 object-cover rounded-lg">
 
-                <!-- Event Picture -->
-                <img src="../src/uploads/events/<?php echo $row['picture']; ?>" alt="Event Picture" class="w-20 h-20 object-cover rounded-lg">
+                    <!-- Event Name and Date -->
+                    <div class="event-details ml-4 flex-grow">
+                        <h3 class="text-xl font-semibold"><?php echo htmlspecialchars($row['name']); ?></h3>
+                        <p class="text-gray-500"><?php echo date('F d, Y', strtotime($row['date'])); ?></p>
+                    </div>
 
-                <!-- Event Name and Date -->
-                <div class="event-details ml-4 flex-grow">
-                    <h3 class="text-xl font-semibold"><?php echo htmlspecialchars($row['name']); ?></h3>
-                    <p class="text-gray-500"><?php echo date('F d, Y', strtotime($row['date'])); ?></p>
+                    <!-- Update Button Inside the Card -->
+                    <button type="button" onclick="toggleUpdateEventModal(<?php echo $row['id']; ?>); openUpdateEventModal()" class="text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700">
+                        <i class="fa-solid fa-pen-to-square"></i> Update
+                    </button>
                 </div>
-
-                <!-- Update Button Inside the Card -->
-                <button type="button" onclick="toggleUpdateEventModal(<?php echo $row['id']; ?>); openUpdateEventModal()" class="text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700">
-                    <i class="fa-solid fa-pen-to-square"></i> Update
-                </button>
-            </div>
-            <?php
+    <?php
+            }
+        } else {
+            echo "<p>No events found.</p>";
         }
-    } else {
-        echo "<p>No events found.</p>";
-    }
-?>
+    ?>
+</div>
 
+<!-- Inactive Events Table -->
+<div id="inactiveEventsTable" class="hidden">
+    <?php
+        // Fetch the inactive events from the database
+        $query = "SELECT id, name, picture, date, description FROM events WHERE status = 'inactive'";
+        $result = mysqli_query($conn, $query);
 
+        // Check if data was fetched
+        if (mysqli_num_rows($result) > 0) {
+            // Loop through each row and display the event details
+            while ($row = mysqli_fetch_assoc($result)) {
+    ?>
+                <div class="event-list-item bg-white border border-gray-200 rounded-lg shadow-md p-4 mb-4 flex items-center space-x-4 cursor-pointer" onclick="openEventModal(<?php echo $row['id']; ?>)">
+                    <!-- Selection Box -->
+                    <input type="checkbox" class="delete-checkbox" value="<?php echo $row['id']; ?>" />
+
+                    <!-- Event Picture -->
+                    <img src="../src/uploads/events/<?php echo $row['picture']; ?>" alt="Event Picture" class="w-20 h-20 object-cover rounded-lg">
+
+                    <!-- Event Name and Date -->
+                    <div class="event-details ml-4 flex-grow">
+                        <h3 class="text-xl font-semibold"><?php echo htmlspecialchars($row['name']); ?></h3>
+                        <p class="text-gray-500"><?php echo date('F d, Y', strtotime($row['date'])); ?></p>
+                    </div>
+
+                    <!-- Restore Button Inside the Card -->
+                    <button type="button" onclick="restoreEvent(<?php echo $row['id']; ?>);" class="text-white bg-green-500 hover:bg-green-700 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2">
+                        <i class="fa-solid fa-undo"></i> Restore
+                    </button>
+                </div>
+    <?php
+            }
+        } else {
+            echo "<p>No events found.</p>";
+        }
+    ?>
+</div>
+
+<!-- Modal -->
+<div id="archiveModal" class="fixed inset-0 z-50 flex items-center justify-center hidden bg-opacity-50">
+    <div class="bg-white rounded-lg shadow-lg p-6 w-full max-w-md">
+        <h2 class="text-lg font-medium text-gray-800">Are you sure you want to archive this event?</h2>
+        <div class="mt-4 flex justify-end space-x-4">
+            <button 
+                class="text-gray-700 bg-gray-200 hover:bg-gray-300 focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-4 py-2"
+                onclick="closeModal()">No</button>
+            <button 
+                id="confirmArchive" 
+                class="text-white bg-red-500 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-4 py-2"
+                onclick="archiveSelectedEvents()">Yes</button>
+        </div>
+    </div>
+</div>
+
+<!-- Success Modal -->
+<div id="successModal" class="fixed top-4 right-4 z-50 hidden bg-green-500 text-white rounded-lg px-4 py-3 shadow-lg">
+    <p class="modal-message"></p>
+</div>
+
+<!-- Error Modal -->
+<div id="errorModal" class="fixed top-4 right-4 z-50 hidden bg-red-500 text-white rounded-lg px-4 py-3 shadow-lg">
+    <p class="modal-message"></p>
+</div>
 
 
 
@@ -370,36 +446,95 @@ if (!isset($_SESSION['admin_id'])) {
 	<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 	<script src="../scripts/script.js"></script>
 	<script>
-    // Ensure the function is defined correctly
-    function archiveSelectedEvents() {
-        // Get all selected checkboxes
-        let selectedCheckboxes = document.querySelectorAll('.delete-checkbox:checked');
-        let eventIds = [];
+// Function to archive selected events
+function archiveSelectedEvents() {
+    // Get all selected checkboxes
+    const checkboxes = document.querySelectorAll('.delete-checkbox:checked');
+    const eventIds = [];
 
-        selectedCheckboxes.forEach(function(checkbox) {
-            eventIds.push(checkbox.value);
-        });
+    // Loop through the checkboxes and collect the selected event IDs
+    checkboxes.forEach(checkbox => {
+        eventIds.push(checkbox.value);
+    });
 
-        if (eventIds.length > 0) {
-            // Send selected event IDs to the server for archiving
-            let xhr = new XMLHttpRequest();
-            xhr.open("POST", "archive_events.php", true);
-            xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-            xhr.onload = function() {
-                if (xhr.status == 200) {
-                    console.log("Events archived: " + xhr.responseText);
-                    // Optionally, reload the page to reflect changes
-                    location.reload();
-                } else {
-                    console.error("Failed to archive events.");
-                }
-            };
-            xhr.send("event_ids=" + JSON.stringify(eventIds));
-        } else {
-            alert("Please select at least one event to archive.");
-        }
+    // If no events are selected, show a message
+    if (eventIds.length === 0) {
+        alert('Please select at least one event to archive.');
+        return;
     }
-	
+
+    // Prepare the data for the AJAX request
+    const data = {
+        event_ids: JSON.stringify(eventIds) // Sending event IDs as JSON
+    };
+
+    // Send AJAX request to the server to archive the selected events
+    fetch('archive_events.php', {  // Replace with your PHP file path for archiving events
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: new URLSearchParams(data)
+    })
+    .then(response => response.text()) // Get the response from the server
+    .then(() => {
+        // Reload the events list to reflect the updated data
+        location.reload(); // Reload after the task completion
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+}
+
+// Function to restore an event
+function restoreEvent(eventId) {
+    // Send the request to restore the event
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", "restore_event.php", true);
+    xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+    xhr.onload = function() {
+        if (xhr.status == 200) {
+            // Reload the page immediately after the request succeeds
+            location.reload();
+        } else {
+            console.error("Request failed with status " + xhr.status);
+        }
+    };
+    xhr.send("event_id=" + eventId);
+}
+
+
+// Function to toggle between active and inactive events table visibility
+function toggleEventTableVisibility() {
+    var activeEventsTable = document.getElementById("activeEventsTable");
+    var inactiveEventsTable = document.getElementById("inactiveEventsTable");
+    var toggleButton = document.getElementById("toggleEventButton");
+    
+    if (activeEventsTable.style.display === "none") {
+        activeEventsTable.style.display = "block";
+        inactiveEventsTable.style.display = "none";
+        toggleButton.innerHTML = '<i class="fa-solid fa-toggle-off"></i> Show Inactive Events'; // Change button text
+    } else {
+        activeEventsTable.style.display = "none";
+        inactiveEventsTable.style.display = "block";
+        toggleButton.innerHTML = '<i class="fa-solid fa-toggle-on"></i> Show Active Events'; // Change button text
+    }
+}
+
+// Step 1: Trigger the confirmation modal when "Archive Selected" is clicked
+function archiveConfirmation() {
+    // Show the confirmation modal
+    document.getElementById('archiveModal').classList.remove('hidden');
+}
+
+// Step 2: Close the modal when "No" is clicked
+function closeModal() {
+    // Hide the confirmation modal
+    document.getElementById('archiveModal').classList.add('hidden');
+}
+
+
+
 	
 </script>
 

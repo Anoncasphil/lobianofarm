@@ -151,7 +151,15 @@ if (!isset($_SESSION['admin_id'])) {
     <div class="main flex-1 p-6">
         <header class="mb-6">
             <h1 class="text-2xl font-bold text-gray-700">Recent Reservations</h1>
+            <ul class="breadcrumbs">
+				<li><a href="#">Home</a></li>
+				<li class="divider">/</li>
+				<li><a href="#">Management</a></li>
+				<li class="divider">/</li>
+				<li><a href="#" class="active">Rates</a></li>
+			</ul>
         </header>
+
 
         <div class="table-container bg-white shadow-md rounded-lg p-4">
             <div class="flex justify-between items-center mb-4">

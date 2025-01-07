@@ -204,29 +204,43 @@ if (!isset($_SESSION['admin_id'])) {
 	<div class="main flex-1 p-6">
 		<header class="mb-6">
 			<h1 class="text-2xl font-bold text-gray-700">Rates</h1>
+			<ul class="breadcrumbs">
+			<li><a href="#">Home</a></li>
+			<li class="divider">/</li>
+			<li><a href="#">Management</a></li>
+			<li class="divider">/</li>
+			<li><a href="#" class="active">Rates</a></li>
+		</ul>
 		</header>
 
 
 		<div class="table-container bg-white shadow-md rounded-lg p-4">
-			<div class="flex justify-between items-center mb-4">
-				<h2 class="text-lg font-bold text-gray-700">Rates List</h2>
-				<button type="button" onclick="toggleAddRateModal()" class="text-white bg-blue-500 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2">
-					<i class="fa-solid fa-plus"></i> Add Rate
-				</button>
-			</div>
+	<div class="flex justify-between items-center mb-4">
+		<h2 class="text-lg font-bold text-gray-700">Rates List</h2>
+		<div class="flex space-x-2">
+			<button type="button" onclick="toggleAddRateModal()" class="text-white bg-blue-500 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2">
+				<i class="fa-solid fa-plus"></i> Add Rate
+			</button>
+			<button id="toggleRatesButton" type="button" onclick="toggleTableVisibility()" class="text-white bg-green-500 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2">
+				<i class="fa-solid fa-toggle-on"></i> Show Inactive Rates
+			</button>
+		</div>
+	</div>
 
-			<table class="table-auto w-full text-left border-collapse">
-				<thead class="bg-gray-100">
-					<tr>
-						<th class="py-3 px-4 border-b text-gray-600">ID</th>
-						<th class="py-3 px-4 border-b text-gray-600">NAME</th>
-						<th class="py-3 px-4 border-b text-gray-600">Price</th>
-						<th class="py-3 px-4 border-b text-gray-600">Hours of Stay</th>
-						<th class="py-3 px-4 border-b text-gray-600">Image</th>
-						<th class="py-3 px-4 border-b text-gray-600">Action</th>
-					</tr>
-				</thead>
-				<tbody>
+	<!-- Active Rates Table -->
+	<div id="activeTable" class="mb-4">
+		<table class="table-auto w-full text-left border-collapse">
+			<thead class="bg-gray-100">
+				<tr>
+					<th class="py-3 px-4 border-b text-gray-600">ID</th>
+					<th class="py-3 px-4 border-b text-gray-600">NAME</th>
+					<th class="py-3 px-4 border-b text-gray-600">Price</th>
+					<th class="py-3 px-4 border-b text-gray-600">Hours of Stay</th>
+					<th class="py-3 px-4 border-b text-gray-600">Image</th>
+					<th class="py-3 px-4 border-b text-gray-600">Action</th>
+				</tr>
+			</thead>
+			<tbody>
 				<?php
 					$sql = "SELECT id, name, price, description, picture, hoursofstay FROM rates WHERE status = 'active'";
 					$result = $conn->query($sql);
@@ -240,49 +254,89 @@ if (!isset($_SESSION['admin_id'])) {
 							echo "<td class='py-2 px-4 border-b text-gray-700'>" . $row['hoursofstay'] . "</td>";
 							echo "<td class='py-2 px-4 border-b text-gray-700'>";
 							
-							// Check if picture exists and is not empty
 							if (!empty($row['picture'])) {
-								// Convert the LONGBLOB to base64
 								$base64Image = base64_encode($row['picture']);
 								$imageSrc = 'data:image/jpeg;base64,' . $base64Image;
-
 								echo "<img src='" . $imageSrc . "' alt='Rate Image' class='w-20 h-auto object-cover rounded-lg'>";
 							}
 
 							echo "</td>";
 							echo "<td class='py-2 px-4 border-b text-gray-700'>
-								<button 
-										type='button' 
-										class='text-white bg-blue-500 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2' 
-										onclick='showDetails(" . $row['id'] . ");'>
-										<i class='fa-solid fa-box-archive'></i> View
-									</button>
-								<button 
-									type='button' 
-									class='text-white bg-blue-500 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2' 
-									onclick='fetchRateData(" . $row['id'] . "); toggleUpdateRateModal();'>
+								<button type='button' class='text-white bg-blue-500 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2' onclick='showDetails(" . $row['id'] . ");'>
+									<i class='fa-solid fa-box-archive'></i> View
+								</button>
+								<button type='button' class='text-white bg-blue-500 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2' onclick='fetchRateData(" . $row['id'] . "); toggleUpdateRateModal();'>
 									<i class='fa-solid fa-pen-to-square'></i> Update
 								</button>
-									<button 
-										type='button' 
-										class='text-white bg-red-500 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2' 
-										onclick='archiveConfirmation(" . $row['id'] . ");'>
-										<i class='fa-solid fa-box-archive'></i> Archive
-									</button>
+								<button type='button' class='text-white bg-red-500 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2' onclick='archiveConfirmation(" . $row['id'] . ");'>
+									<i class='fa-solid fa-box-archive'></i> Archive
+								</button>
 							</td>";
 							echo "</tr>";
 						}
 					} else {
 						echo "<tr><td colspan='6' class='py-2 px-4 border-b text-gray-700'>No records found</td></tr>";
 					}
-					?>
-
-
-				</tbody>
-			</table>
-		</div>
+				?>
+			</tbody>
+		</table>
 	</div>
 
+	<!-- Inactive Rates Table -->
+	<div id="inactiveTable" class="hidden">
+		<table class="table-auto w-full text-left border-collapse">
+			<thead class="bg-gray-100">
+				<tr>
+					<th class="py-3 px-4 border-b text-gray-600">ID</th>
+					<th class="py-3 px-4 border-b text-gray-600">NAME</th>
+					<th class="py-3 px-4 border-b text-gray-600">Price</th>
+					<th class="py-3 px-4 border-b text-gray-600">Hours of Stay</th>
+					<th class="py-3 px-4 border-b text-gray-600">Image</th>
+					<th class="py-3 px-4 border-b text-gray-600">Action</th>
+				</tr>
+			</thead>
+			<tbody>
+				<?php
+					$sql = "SELECT id, name, price, description, picture, hoursofstay FROM rates WHERE status = 'inactive'";
+					$result = $conn->query($sql);
+
+					if ($result->num_rows > 0) {
+						while ($row = $result->fetch_assoc()) {
+							echo "<tr id='rate-" . $row['id'] . "'>";
+							echo "<td class='py-2 px-4 border-b text-gray-700'>" . $row['id'] . "</td>";
+							echo "<td class='py-2 px-4 border-b text-gray-700'>" . $row['name'] . "</td>";
+							echo "<td class='py-2 px-4 border-b text-gray-700'>₱" . number_format($row['price'], 2) . "</td>";
+							echo "<td class='py-2 px-4 border-b text-gray-700'>" . $row['hoursofstay'] . "</td>";
+							echo "<td class='py-2 px-4 border-b text-gray-700'>";
+							
+							if (!empty($row['picture'])) {
+								$base64Image = base64_encode($row['picture']);
+								$imageSrc = 'data:image/jpeg;base64,' . $base64Image;
+								echo "<img src='" . $imageSrc . "' alt='Rate Image' class='w-20 h-auto object-cover rounded-lg'>";
+							}
+
+							echo "</td>";
+							echo "<td class='py-2 px-4 border-b text-gray-700'>
+								<button type='button' class='text-white bg-blue-500 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2' onclick='showDetails(" . $row['id'] . ");'>
+									<i class='fa-solid fa-box-archive'></i> View
+								</button>
+								<button type='button' class='text-white bg-blue-500 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2' onclick='fetchRateData(" . $row['id'] . "); toggleUpdateRateModal();'>
+									<i class='fa-solid fa-pen-to-square'></i> Update
+								</button>
+								<button type='button' class='text-white bg-green-500 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2' onclick='restoreRate(" . $row['id'] . ");'>
+									<i class='fa-solid fa-undo'></i> Restore
+								</button>
+							</td>";
+							echo "</tr>";
+						}
+					} else {
+						echo "<tr><td colspan='6' class='py-2 px-4 border-b text-gray-700'>No records found</td></tr>";
+					}
+				?>
+			</tbody>
+		</table>
+	</div>
+</div>
 <!-- Modal -->
 <div id="detailsModal" class="fixed inset-0 hidden bg-opacity-50 flex justify-center items-center z-50">
     <div class="bg-white rounded-lg shadow-lg max-w-4xl w-full p-6 flex flex-col md:flex-row relative">
@@ -571,6 +625,41 @@ function closeModal() {
     const modal = document.getElementById('archiveModal');
     modal.classList.add('hidden');
 }
+
+// Function to toggle between active and inactive rates table visibility
+function toggleTableVisibility() {
+		var activeTable = document.getElementById("activeTable");
+		var inactiveTable = document.getElementById("inactiveTable");
+		var toggleButton = document.getElementById("toggleRatesButton");
+		
+		if (activeTable.style.display === "none") {
+			activeTable.style.display = "block";
+			inactiveTable.style.display = "none";
+			toggleButton.innerHTML = '<i class="fa-solid fa-toggle-on"></i> Show Inactive Rates'; // Change button text
+		} else {
+			activeTable.style.display = "none";
+			inactiveTable.style.display = "block";
+			toggleButton.innerHTML = '<i class="fa-solid fa-toggle-off"></i> Show Active Rates'; // Change button text
+		}
+	}
+
+	// Function to restore a rate
+function restoreRate(rateId) {
+    // Send the request to restore the rate
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", "restore_rate.php", true);
+    xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+    xhr.onload = function() {
+        if (xhr.status == 200) {
+            // Reload the page immediately after the request succeeds
+            location.reload();
+        } else {
+            console.error("Request failed with status " + xhr.status);
+        }
+    };
+    xhr.send("rate_id=" + rateId);
+}
+
 
 	</script>
 

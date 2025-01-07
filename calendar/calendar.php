@@ -146,7 +146,9 @@ if (!isset($_SESSION['admin_id'])) {
 
 		<!-- MAIN -->
 			<main>
+				
 			<div id="calendar"></div>
+
 
 				<div id="dateModal" class="modal">
 					<div class="modal-content">

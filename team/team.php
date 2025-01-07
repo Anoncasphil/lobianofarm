@@ -147,6 +147,13 @@ if (!isset($_SESSION['admin_id'])) {
         <main class="relative">
     <header class="mb-6">
         <h1 class="text-2xl font-bold text-gray-700">Team</h1>
+		<ul class="breadcrumbs">
+				<li><a href="#">Home</a></li>
+				<li class="divider">/</li>
+				<li><a href="#">Management</a></li>
+				<li class="divider">/</li>
+				<li><a href="#" class="active">Team</a></li>
+			</ul>
     </header>
 
     <div class="event-container rounded-lg p-4">

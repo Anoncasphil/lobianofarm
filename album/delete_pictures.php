@@ -27,9 +27,17 @@ if (isset($_POST['ids'])) {
     $deleteStmt->bind_param(str_repeat('i', count($idsArray)), ...$idsArray);
     $deleteStmt->execute();
 
-    echo 'Success';
+    // Return a JSON response with status
+    echo json_encode([
+        'status' => 'success',
+        'message' => 'Pictures deleted successfully.'
+    ]);
 } else {
-    echo 'Error: No pictures selected.';
+    echo json_encode([
+        'status' => 'error',
+        'message' => 'No pictures selected.'
+    ]);
 }
+
 $conn->close();
 ?>
