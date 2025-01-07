@@ -32,6 +32,9 @@ if (isset($_SESSION['first_name'])) {
     <link rel="stylesheet" href="../styles/styles.css">
 </head>
 <body class="flex justify-center items-center h-screen">
+<a href="reservation.php" class="absolute top-10 left-10 text-gray-700 hover:text-gray-900 text-lg">
+        <i class="fa-solid fa-arrow-left"></i>
+      </a>
 
     <div id="main_container" class="flex flex-row justify-self-center w-[95%] h-[95%]">
         <div id="input_container" class="flex flex-col h-full w-[70%] items-center">
