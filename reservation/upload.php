@@ -33,7 +33,7 @@ if (isset($_FILES['file_farm'])) {
                     $stmt->bind_param("ss", $fileNameNew, $email);
 
                     if ($stmt->execute()) {
-                        echo "<script>alert('File uploaded successfully and payment proof saved!'); window.location.href='send_payment.php';</script>";
+                        echo "<script>alert('File uploaded successfully and payment proof saved!'); window.location.href='../landing_page_customer/main_page_logged.php';</script>";
                         exit();
                     } else {
                         echo "<script>alert('Failed to save payment proof in the database.'); window.location.href='send_payment.php';</script>";

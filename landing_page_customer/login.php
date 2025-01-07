@@ -58,7 +58,7 @@ include '../db_connection.php';
                 header("Location: main_page_logged.php");
                 exit();
             } else {
-                echo "<script>alert('Invalid credentials');</script>";
+                $loginError = true;
             }
         }
 ?>
@@ -67,6 +67,9 @@ include '../db_connection.php';
         <form action="login.php" method="post" class="flex flex-col justify-center items-center w-full h-[80%]">
             <h2 id="login_tag" class="text-3xl mb-5 font-bold">Login to Account</h2>
             <p id="input_tag" class="tracking-wide text-base">Please enter your email and password to continue</p>
+            <?php if (isset($_POST["logme"]) && $loginError): ?>
+                <p class="text-red-600 text-md mt-2">Invalid credentials</p>
+            <?php endif; ?>
 
             <!-- email -->
             <div id="email_container" class="flex flex-col justify-start items-start w-[80%] px-6 mt-10">
