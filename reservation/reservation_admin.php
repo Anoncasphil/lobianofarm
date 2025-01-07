@@ -130,7 +130,7 @@
                                 default => 'text-gray-500'
                             };
                             echo "<tr class='bg-gray-50 border-b dark:bg-gray-900 dark:border-gray-800'>";
-                            echo "<td class='py-2 px-4 border-b text-gray-700'>#" . str_pad($reservation['reservation_id'], 3, '0', STR_PAD_LEFT) . "</td>";
+							echo "<td class='py-2 px-4 border-b text-gray-700'>" . $reservation['reservation_id'] . "</td>";
                             echo "<td class='py-2 px-4 border-b text-gray-700'>" . htmlspecialchars($reservation['first_name']) . " " . htmlspecialchars($reservation['last_name']) . "</td>";
                             echo "<td class='py-2 px-4 border-b text-gray-700'>" . htmlspecialchars($reservation['formatted_date']) . "</td>";
                             echo "<td class='py-2 px-4 border-b font-medium " . $statusColor . "'>" . htmlspecialchars($reservation['title']) . "</td>";
@@ -155,72 +155,70 @@
     </div>
 
     <!-- Modal -->
-    <div id="reservationModal" class="fixed inset-0 flex items-center justify-center bg-opacity-50 hidden">
-        <div class="bg-white rounded-lg shadow-lg w-3/4 max-w-4xl">
-            <div class="border-b px-4 py-2 flex justify-between items-center">
-                <h2 class="text-lg font-bold">Reservation Details</h2>
-                <button id="closeModal" class="text-gray-500 hover:text-gray-700">&times;</button>
+<div id="reservationModal" class="fixed inset-0 flex items-center justify-center bg-opacity-50 hidden">
+    <div class="bg-white rounded-lg shadow-lg w-3/4 max-w-4xl">
+        <div class="border-b px-4 py-2 flex justify-between items-center">
+            <h2 class="text-lg font-bold">Reservation Details</h2>
+            <button id="closeModal" class="text-gray-500 hover:text-gray-700">&times;</button>
+        </div>
+        <div class="p-4">
+            <!-- Tabs -->
+            <div class="tabs flex space-x-4 border-b mb-4">
+                <button class="tab-button active text-blue-500 border-b-2 border-blue-500" data-tab="details">Details</button>
+                <button class="tab-button text-gray-500 hover:text-blue-500" data-tab="invoice">Invoice</button>
+                <button class="tab-button text-gray-500 hover:text-blue-500" data-tab="payment">Payment</button>
+                <button class="tab-button text-gray-500 hover:text-blue-500" data-tab="reschedule">Reschedule</button>
             </div>
-            <div class="p-4">
-                <!-- Tabs -->
-                <div class="tabs flex space-x-4 border-b mb-4">
-                    <button class="tab-button active text-blue-500 border-b-2 border-blue-500" data-tab="details">Details</button>
-                    <button class="tab-button text-gray-500 hover:text-blue-500" data-tab="invoice">Invoice</button>
-                    <button class="tab-button text-gray-500 hover:text-blue-500" data-tab="payment">Payment</button>
-                    <button class="tab-button text-gray-500 hover:text-blue-500" data-tab="reschedule">Reschedule</button>
+
+            <!-- Tab Content -->
+            <div id="details" class="tab-content p-6 bg-white shadow-lg rounded-lg w-full">
+                <h3 class="font-bold text-xl text-gray-800 mb-6">Reservation Details</h3>
+                <div class="space-y-4">
+                    <p class="text-gray-700"><strong class="font-semibold text-gray-800">Reservation ID:</strong> <span id="modal-reservation-id" class="text-gray-600"></span></p>
+                    <p class="text-gray-700"><strong class="font-semibold text-gray-800">Name:</strong> <span id="modal-name" class="text-gray-600"></span></p>
+                    <p class="text-gray-700"><strong class="font-semibold text-gray-800">Email:</strong> <span id="modal-email" class="text-gray-600"></span></p>
+                    <p class="text-gray-700"><strong class="font-semibold text-gray-800">Phone Number:</strong> <span id="modal-phone-number" class="text-gray-600"></span></p>
+                    <p class="text-gray-700"><strong class="font-semibold text-gray-800">Check-In Date:</strong> <span id="modal-check-in" class="text-gray-600"></span></p>
+                    <p class="text-gray-700"><strong class="font-semibold text-gray-800">Check-Out Date:</strong> <span id="modal-check-out" class="text-gray-600"></span></p>
+                    <p class="text-gray-700"><strong class="font-semibold text-gray-800">Total Amount:</strong> <span id="modal-total-amount" class="text-gray-600"></span></p>
                 </div>
+            </div>
 
-                <!-- Tab Content -->
-                <div id="details" class="tab-content p-6 bg-white shadow-lg rounded-lg w-full max-w-lg mx-auto">
-					<h3 class="font-bold text-xl text-gray-800 mb-6">Reservation Details</h3>
-
-					<div class="space-y-4">
-						<p class="text-gray-700"><strong class="font-semibold text-gray-800">Reservation ID:</strong> <span id="modal-reservation-id" class="text-gray-600"></span></p>
-						<p class="text-gray-700"><strong class="font-semibold text-gray-800">Name:</strong> <span id="modal-name" class="text-gray-600"></span></p>
-						<p class="text-gray-700"><strong class="font-semibold text-gray-800">Email:</strong> <span id="modal-email" class="text-gray-600"></span></p>
-						<p class="text-gray-700"><strong class="font-semibold text-gray-800">Phone Number:</strong> <span id="modal-phone-number" class="text-gray-600"></span></p>
-						<p class="text-gray-700"><strong class="font-semibold text-gray-800">Check-In Date:</strong> <span id="modal-check-in" class="text-gray-600"></span></p>
-						<p class="text-gray-700"><strong class="font-semibold text-gray-800">Check-Out Date:</strong> <span id="modal-check-out" class="text-gray-600"></span></p>
-						<p class="text-gray-700"><strong class="font-semibold text-gray-800">Total Amount:</strong> <span id="modal-total-amount" class="text-gray-600"></span></p>
-					</div>
-				</div>
-
-
-				<div id="invoice" class="tab-content hidden p-6 bg-white shadow-lg rounded-lg w-full max-w-lg mx-auto">
-					<h3 class="font-bold text-xl text-gray-800 mb-4">Invoice</h3>
-					<div class="grid grid-cols-2 gap-4 mb-4 border-b border-gray-300 pb-4">
-						<div class="font-semibold text-gray-800">Name</div>
-						<div class="font-semibold text-gray-800">Price</div>
-					</div>
-					<div class="grid grid-cols-2 gap-4 mb-4">
-						<div class="font-semibold text-gray-700" id="modal-rate-name"></div>
-						<div class="text-gray-600" id="modal-rate-price"></div>
-					</div>
-					<div class="grid grid-cols-2 gap-4 mb-4">
-						<div class="font-semibold text-gray-700" id="modal-addons-name"></div>
-						<div class="text-gray-600" id="modal-addons-price"></div>
-					</div>
-					<div class="border-t border-gray-300 mt-4 pt-4">
-						<div class="grid grid-cols-2 gap-4 pt-2 mt-2">
-							<div class="font-semibold text-lg text-gray-800">Total</div>
-							<div class="text-lg text-gray-800" id="modal-total-price"></div>
-						</div>
-					</div>
-				</div>
-
-                <div id="payment" class="tab-content hidden">
-                    <h3 class="font-bold mb-2">Payment Proof</h3>
-                    <img id="modal-payment-proof" class="max-w-xs max-h-60 object-contain mx-auto" alt="Payment Proof" />
-
+            <div id="invoice" class="tab-content hidden p-6 bg-white shadow-lg rounded-lg w-full">
+                <h3 class="font-bold text-xl text-gray-800 mb-4">Invoice</h3>
+                <div class="grid grid-cols-2 gap-4 mb-4 border-b border-gray-300 pb-4">
+                    <div class="font-semibold text-gray-800">Name</div>
+                    <div class="font-semibold text-gray-800">Price</div>
                 </div>
-
-                <div id="reschedule" class="tab-content hidden">
-                    <h3 class="font-bold mb-2">Reschedule</h3>
-                    <p>Rescheduling options will go here.</p>
+                <div class="grid grid-cols-2 gap-4 mb-4">
+                    <div class="font-semibold text-gray-700" id="modal-rate-name"></div>
+                    <div class="text-gray-600" id="modal-rate-price"></div>
                 </div>
+                <div class="grid grid-cols-2 gap-4 mb-4">
+                    <div class="font-semibold text-gray-700" id="modal-addons-name"></div>
+                    <div class="text-gray-600" id="modal-addons-price"></div>
+                </div>
+                <div class="border-t border-gray-300 mt-4 pt-4">
+                    <div class="grid grid-cols-2 gap-4 pt-2 mt-2">
+                        <div class="font-semibold text-lg text-gray-800">Total</div>
+                        <div class="text-lg text-gray-800" id="modal-total-price"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="payment" class="tab-content hidden p-6 bg-white shadow-lg rounded-lg w-full">
+                <h3 class="font-bold mb-2">Payment Proof</h3>
+                <img id="modal-payment-proof" class="max-w-xs max-h-60 object-contain mx-auto" alt="Payment Proof" />
+            </div>
+
+            <div id="reschedule" class="tab-content hidden p-6 bg-white shadow-lg rounded-lg w-full">
+                <h3 class="font-bold mb-2">Reschedule</h3>
+                <p>Rescheduling options will go here.</p>
             </div>
         </div>
     </div>
+</div>
+
 </main>
 
 		<!-- MAIN -->
