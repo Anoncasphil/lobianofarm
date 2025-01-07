@@ -59,10 +59,24 @@ document.addEventListener('DOMContentLoaded', function () {
                 existingRow.remove();
                 selectedRates.delete(rateId);
                 button.textContent = "Select Rate";
+                // Make all rate buttons clickable again
+                rateButtons.forEach(btn => {
+                    btn.disabled = false;
+                    btn.style.pointerEvents = "auto";
+                    btn.style.opacity = "1";
+                });
             } else {
                 addItemToInvoice(name, price);
                 selectedRates.add(rateId);
                 button.textContent = "Unselect Rate";
+                // Make other rate buttons unclickable
+                rateButtons.forEach(btn => {
+                    if (btn !== button) {
+                        btn.disabled = true;
+                        btn.style.pointerEvents = "none";
+                        btn.style.opacity = "0.5";
+                    }
+                });
             }
 
             document.getElementById('rate_id').value = Array.from(selectedRates).join(',');
