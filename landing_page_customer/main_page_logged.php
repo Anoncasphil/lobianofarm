@@ -338,17 +338,25 @@ if (!$result_addons) {
 
 
     <!-- START VIDEO TOUR -->
-    <div class="flex justify-center bg-[#1e344b] text-white h-screen">
+    <div class="flex justify-center bg-white text-white h-screen">
         <section id="video_section" class="flex flex-col self-center w-[80%] h-[90vh]">
             <div id="video_header" class=" w-full h-[13%] mt-[3%] mb-8">
-                <h1 class="text-3xl font-bold">Video Tour</h1>
-                <p class="mt-5">Embark on a digital journey through our exclusive haven. Welcome to your virtual tour of luxury and leisure at our private pool resort.</p>
+                <h1 class="text-3xl text-black font-bold">Video Tour</h1>
+                <p class="mt-5 text-black">Embark on a digital journey through our exclusive haven. Welcome to your virtual tour of luxury and leisure at our private pool resort.</p>
             </div>
 
             <div id="video_container" class="w-full h-full">
-                <iframe width="420" height="345" class="w-full h-full" src="https://www.youtube.com/embed/tgbNymZ7vqY?playlist=tgbNymZ7vqY&loop=1">
-                </iframe>
-            </div>
+    <iframe 
+        width="420" 
+        height="345" 
+        class="w-full h-full" 
+        src="https://www.youtube.com/embed/mx4AFPTWoFo" 
+        frameborder="0" 
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+        allowfullscreen>
+    </iframe>
+</div>
+
         </section>
     </div>
     <!-- END VIDEO TOUR -->
