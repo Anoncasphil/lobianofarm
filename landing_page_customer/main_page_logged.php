@@ -7,6 +7,20 @@
     $sql_addons = "SELECT * FROM addons WHERE status='active'";
     $result_addons = $conn->query($sql_addons);
 
+    function updateReviewStats($conn) {
+        $sql = "SELECT 
+                COUNT(*) as total_reviews,
+                ROUND(AVG(rating), 1) as avg_rating
+                FROM reviews";
+        
+        $result = $conn->query($sql);
+        return $result->fetch_assoc();
+    }
+
+    // Get updated stats
+    $reviewStats = updateReviewStats($conn);
+    $avg_rating = $reviewStats['avg_rating'] ?? '0.0';
+    $total_reviews = $reviewStats['total_reviews'] ?? '0';
 ?>
 <!DOCTYPE html>
 <html lang="en" class="scroll-smooth">
@@ -51,7 +65,13 @@
                 
             </div>
 
-            <div id="button_container" class="flex mr-10">
+            <div id="button_container" class="flex items-center mr-10 gap-4">
+                <?php if(isset($_SESSION['first_name']) && isset($_SESSION['last_name'])): ?>
+                    <span class="text-white text-lg">
+                        <?php echo htmlspecialchars($_SESSION['first_name'] . ' ' . $_SESSION['last_name']); ?>
+                    </span>
+                <?php endif; ?>
+                
                 <div class="relative">
                     <button id="menu_toggle" class="block">
                         <i class="fa-solid fa-bars flex self-center text-2xl text-white"></i>
@@ -63,7 +83,10 @@
                             <ul class="flex flex-col text-center">
                                 <?php if(isset($_SESSION['user_id'])): ?>
                                     <li class="p-2">
-                                        <a href="profile.php" class="text-black hover:text-blue-500">Profile</a>
+                                        <a href="profile.php" class="text-black hover:text-blue-500">Settings</a>
+                                    </li>
+                                    <li class="p-2">
+                                        <a href="history.php" class="text-black hover:text-blue-500">History</a>
                                     </li>
                                     <li class="p-2">
                                         <a href="logout.php" class="text-black hover:text-blue-500">Logout</a>
@@ -373,7 +396,7 @@ if (!$result_addons) {
         <div id="overall_reviews" class="flex flex-row w-full sm:w-[30%] h-[10%]">
             <div id="reviews_num" class="flex flex-col w-[50%] h-full">
                 <div id="upper_left" class="flex flex-row w-[50%] h-[50%]">
-                    <h1 id="overall_ratings" class="text-2xl mr-3 font-bold">5.0</h1>
+                    <h1 id="overall_ratings" class="text-2xl mr-3 font-bold"><?php echo $avg_rating; ?></h1>
 
                     <div id="overall_stars" class="flex items-center">
                         <svg id="star" class="w-4 h-4 text-yellow-300 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 22 20">
@@ -395,7 +418,7 @@ if (!$result_addons) {
 
 
                 </div>
-                <p>Based on reviews: <span id="reviews_count">15</span></p>
+                <p>Based on reviews: <span id="reviews_count"><?php echo $total_reviews; ?></span></p>
             </div>
 
 
@@ -407,67 +430,43 @@ if (!$result_addons) {
             </div>
         </div>
 
-        <div id="review_card_container" class="block sm:flex flex-row justify-between w-full mt-[3%]">
-            <!-- REVIEW CARD START -->
-            <div id="review_card" class="flex flex-col w-full sm:w-[30%] mb-[5%] rounded-2xl shadow-xl bg-white h-min overflow-hidden">
-                <div id="review_text_container" class="w-full h-auto px-5">
-                    <p class="border-b-2 py-[3%]">Lorem ipsum dolor sit amet. Et repellat voluptas aut iste quia nam fugiat harum et nihil debitis! Aut fugiat rerum aut aperiam perferendis aut omnis laboriosam aut quos sint aut praesentium vero in excepturi assumenda ut voluptas aliquid.</p>
-                </div>
-                <div id="user_info_review" class="flex flex-row justify-between items-center h-[18%] p-5 w-full top-0">
-                    <p id="reviewer_name">ASTA DAMN</p>
-                    <div id="star_review" class="flex flex-row justify-center items-center">
-                        <p>5.0</p>
-                        <svg id="star" class="w-4 h-4 text-yellow-300 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 22 20">
-                            <path d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z"/>
-                        </svg>
+        <?php
+            // Add at top of file after session_start()
+            $stmt = $conn->prepare("SELECT r.*, u.first_name, u.last_name 
+                                FROM reviews r 
+                                JOIN user_tbl u ON r.user_id = u.user_id 
+                                ORDER BY r.created_at DESC");
+            $stmt->execute();
+            $reviews = $stmt->get_result();
+
+            // Calculate average rating
+            $stmt = $conn->prepare("SELECT AVG(rating) as avg_rating, COUNT(*) as total_reviews FROM reviews");
+            $stmt->execute();
+            $stats = $stmt->get_result()->fetch_assoc();
+            $avg_rating = number_format($stats['avg_rating'], 1);
+            $total_reviews = $stats['total_reviews'];
+            ?>
+
+            <!-- Replace static review cards with: -->
+            <div id="review_card_container" class="flex flex-row overflow-x-auto gap-8 w-full mt-[3%] pb-4">
+                <?php while($review = $reviews->fetch_assoc()): ?>
+                    <div id="review_card" class="flex-shrink-0 flex flex-col w-[350px] rounded-2xl shadow-xl bg-white min-h-fit">
+                        <div id="review_text_container" class="flex-grow w-full px-5 py-3">
+                            <h3 class="font-bold mt-3"><?php echo htmlspecialchars($review['title']); ?></h3>
+                            <p class="py-[3%] break-words min-h-fit"><?php echo htmlspecialchars($review['review_text']); ?></p>
+                        </div>
+                        <div id="user_info_review" class="flex flex-row justify-between items-center p-5 w-full border-t-2">
+                            <p id="reviewer_name"><?php echo htmlspecialchars($review['first_name'] . ' ' . $review['last_name']); ?></p>
+                            <div id="star_review" class="flex flex-row justify-center items-center">
+                                <p><?php echo $review['rating']; ?>.0</p>
+                                <svg id="star" class="w-4 h-4 text-yellow-300 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 22 20">
+                                    <path d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z"/>
+                                </svg>
+                            </div>
+                        </div>
                     </div>
-                </div>
+                <?php endwhile; ?>
             </div>
-
-            <div id="review_card" class="flex flex-col w-full sm:w-[30%] mb-[5%] rounded-2xl shadow-xl bg-white h-min overflow-hidden">
-                <div id="review_text_container" class="w-full h-auto px-5">
-                    <p class="border-b-2 py-[3%]">Lorem ipsum dolor sit amet. Et repellat voluptas aut iste quia nam fugiat harum et nihil debitis! Aut fugiat rerum aut aperiam perferendis aut omnis laboriosam aut quos sint aut praesentium vero in excepturi assumenda ut voluptas aliquid.</p>
-                </div>
-                <div id="user_info_review" class="flex flex-row justify-between items-center h-[18%] p-5 w-full top-0">
-                    <p id="reviewer_name">ASTA DAMN</p>
-                    <div id="star_review" class="flex flex-row justify-center items-center">
-                        <p>5.0</p>
-                        <svg id="star" class="w-4 h-4 text-yellow-300 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 22 20">
-                            <path d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z"/>
-                        </svg>
-                    </div>
-                </div>
-            </div>
-
-            <div id="review_card" class="flex flex-col w-full sm:w-[30%] mb-[5%] rounded-2xl shadow-xl bg-white h-min overflow-hidden">
-                <div id="review_text_container" class="w-full h-auto px-5">
-                    <p class="border-b-2 py-[3%]">Lorem ipsum dolor sit amet. Et repellat voluptas aut iste quia nam fugiat harum et nihil debitis! Aut fugiat rerum aut aperiam perferendis aut omnis laboriosam aut quos sint aut praesentium vero in excepturi assumenda ut voluptas aliquid.</p>
-                </div>
-                <div id="user_info_review" class="flex flex-row justify-between items-center h-[18%] p-5 w-full top-0">
-                    <p id="reviewer_name">ASTA DAMN</p>
-                    <div id="star_review" class="flex flex-row justify-center items-center">
-                        <p>5.0</p>
-                        <svg id="star" class="w-4 h-4 text-yellow-300 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 22 20">
-                            <path d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z"/>
-                        </svg>
-                    </div>
-                </div>
-            </div>
-
-            
-
-            <!-- REVIEW CARD END -->
-        </div>
-        
-        <div id="review_page_number" class="flex flex-row self-center justify-center mt-[1%]">
-            <div id="page_number_container" class="flex justify-between gap-3">
-                <a class="border-2 border-black px-2 py-2 rounded-lg" href="#">1</a>
-                <a class="border-2 border-black px-2 py-2 rounded-lg" href="#">2</a>
-                <a class="border-2 border-black px-2 py-2 rounded-lg" href="#">...</a>
-                <a class="border-2 border-black px-2 py-2 rounded-lg" href="#">5</a>
-            </div>
-        </div>
-
     </section>
 
     <!-- END REVIEWS -->
@@ -507,6 +506,7 @@ if (!$result_addons) {
     <script src="https://cdn.jsdelivr.net/npm/flowbite@2.5.2/dist/flowbite.min.js"></script>
     <script src="https://kit.fontawesome.com/26528a6def.js" crossorigin="anonymous"></script>
     <script src="../scripts/main_page.js"></script>
+    <script src="../scripts/reviews.js"></script>
     <!-- END SCRIPT -->
 
         <!-- Add before closing body tag -->
@@ -525,21 +525,23 @@ if (!$result_addons) {
     </div>
 
     <div id="reviewModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
-        <div class="bg-white w-[80%] max-w-4xl h-[80%] rounded-lg p-6 flex flex-col">
+        <form action="submit_review.php" method="POST" class="bg-white w-[80%] max-w-4xl h-[80%] rounded-lg p-6 flex flex-col">
             <h2 class="text-2xl font-bold mb-4">Leave a Review</h2>
             <div id="starRating" class="flex mb-4">
+                <input type="hidden" name="rating" id="ratingValue" value="1">
                 <span class="star selected" data-value="1">&#9733;</span>
                 <span class="star" data-value="2">&#9733;</span>
                 <span class="star" data-value="3">&#9733;</span>
                 <span class="star" data-value="4">&#9733;</span>
                 <span class="star" data-value="5">&#9733;</span>
             </div>
-            <textarea id="reviewText" class="w-full h-2/3 p-4 border rounded-lg mb-4" placeholder="Write your review here..."></textarea>
+            <input id="reviewTitle" name="title" type="text" class="w-full p-4 border rounded-lg mb-4" placeholder="Review Title" required>
+            <textarea id="reviewText" name="review_text" class="w-full h-2/3 p-4 border rounded-lg mb-4" placeholder="Write your review here..." required></textarea>
             <div class="flex flex-row gap-2 self-end">
-                <button id="submitReview" class="bg-blue-500 text-white px-4 py-2 rounded-lg">Submit</button>
-                <button id="closeReviewModal" class="bg-red-500 text-white px-4 py-2 rounded-lg">Close</button>
+                <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-lg">Submit</button>
+                <button type="button" id="closeReviewModal" class="bg-red-500 text-white px-4 py-2 rounded-lg">Close</button>
             </div>
-        </div>
+        </form>
     </div>
 
 </body>

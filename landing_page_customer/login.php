@@ -37,11 +37,21 @@ include '../db_connection.php';
             // Debug incoming data
             error_log("Login attempt - Email: " . $input);
 
-            $stmt = $conn->prepare("SELECT user_id, email, password, first_name, last_name FROM user_tbl WHERE email = ?");
+            $stmt = $conn->prepare("SELECT user_id, email, password, first_name, last_name, contact_no FROM user_tbl WHERE email = ?");
             $stmt->bind_param("s", $input);
-            $stmt->execute();
-            $result = $stmt->get_result();
-            $user = $result->fetch_assoc();
+            if ($stmt->execute()) {
+                $result = $stmt->get_result();
+                if ($result->num_rows === 1) {
+                    $user = $result->fetch_assoc();
+                    $_SESSION['user_id'] = $user['user_id'];
+                    $_SESSION['first_name'] = $user['first_name'];
+                    $_SESSION['last_name'] = $user['last_name'];
+                    $_SESSION['user_email'] = $user['email'];
+                    $_SESSION['contact_no'] = $user['contact_no']; // Add this line
+                    header("Location: main_page_logged.php");
+                    exit();
+                }
+            }
 
             // Debug user data
             error_log("User data found: " . print_r($user, true));
