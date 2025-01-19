@@ -68,7 +68,7 @@ document.addEventListener('DOMContentLoaded', function () {
             } else {
                 addItemToInvoice(name, price);
                 selectedRates.add(rateId);
-                button.textContent = "Unselect Rate";
+                button.textContent = "Selected Rate";
                 // Make other rate buttons unclickable
                 rateButtons.forEach(btn => {
                     if (btn !== button) {
@@ -103,7 +103,7 @@ document.addEventListener('DOMContentLoaded', function () {
             } else {
                 addItemToInvoice(name, price);
                 selectedAddons.add(addonsId); // Add to selected addons
-                button.textContent = "Unselect Addons";
+                button.textContent = "Selected Addons";
             }
 
             // Update hidden input with all selected addon IDs (comma-separated)

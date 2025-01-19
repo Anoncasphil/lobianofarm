@@ -46,36 +46,59 @@
         }
     
         foreach ($rate_ids as $rate_id) {
-            // Loop through each selected addon
-            foreach ($addons_id as $addon_id) {
-                // Insert into the reservation table for each combination of rate and addon
-                $stmt = $conn->prepare("INSERT INTO reservation (first_name, last_name, email, mobile_number, total_amount, reservation_check_in_date, reservation_check_out_date, rate_id, addons_id, user_id) 
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+            // Insert into the reservation table
+            $stmt = $conn->prepare("INSERT INTO reservation (first_name, last_name, email, mobile_number, total_amount, reservation_check_in_date, reservation_check_out_date, rate_id, user_id) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
-                if (!$stmt) {
+            if (!$stmt) {
+                die("Prepare failed: " . $conn->error);
+            }
+
+            // Bind the parameters and execute the statement
+            $stmt->bind_param(
+                "sssssssii", 
+                $first_name,
+                $last_name,
+                $email,
+                $mobile_number,
+                $total_amount,
+                $reservation_check_in_date,
+                $reservation_check_out_date,
+                $rate_id,
+                $user_id
+            );
+
+            if (!$stmt->execute()) {
+                echo "Error: " . $stmt->error;
+            }
+
+            $reservation_id = $stmt->insert_id; // Get the last inserted reservation ID
+            $_SESSION['reservation_id'] = $reservation_id; // Store reservation_id in session
+            $stmt->close();
+
+            // Loop through each selected addon and insert into reservation_addons table
+            foreach ($addons_id as $addon_id) {
+                // Fetch addon price
+                $stmt_price = $conn->prepare("SELECT price FROM addons WHERE id = ?");
+                $stmt_price->bind_param("i", $addon_id);
+                $stmt_price->execute();
+                $stmt_price->bind_result($addon_price);
+                $stmt_price->fetch();
+                $stmt_price->close();
+
+                $stmt_addon = $conn->prepare("INSERT INTO reservation_addons (reservation_id, addon_id, addon_price) VALUES (?, ?, ?)");
+    
+                if (!$stmt_addon) {
                     die("Prepare failed: " . $conn->error);
                 }
-
-                // Bind the parameters and execute the statement
-                $stmt->bind_param(
-                    "sssssssiii", 
-                    $first_name,
-                    $last_name,
-                    $email,
-                    $mobile_number,
-                    $total_amount,
-                    $reservation_check_in_date,
-                    $reservation_check_out_date,
-                    $rate_id,
-                    $addon_id,
-                    $user_id
-                );
-
-                if (!$stmt->execute()) {
-                    echo "Error: " . $stmt->error;
+    
+                $stmt_addon->bind_param("iid", $reservation_id, $addon_id, $addon_price);
+    
+                if (!$stmt_addon->execute()) {
+                    echo "Error: " . $stmt_addon->error;
                 }
-
-                $stmt->close();
+    
+                $stmt_addon->close();
             }
         }
 

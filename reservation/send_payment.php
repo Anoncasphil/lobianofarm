@@ -14,10 +14,33 @@ if (isset($_SESSION['first_name'])) {
     $total_amount = $_SESSION['total_amount'];
     $reservation_check_in_date = $_SESSION['reservation_check_in_date'];
     $reservation_check_out_date = $_SESSION['reservation_check_out_date'];
+    $reservation_id = $_SESSION['reservation_id']; // Ensure reservation_id is set
 } else {
     echo "<script>alert('No reservation data found!'); window.location.href='reservation.php';</script>";
     exit();
 }
+
+// Fetch rate details for the reservation
+$sql_rate = "SELECT rates.name, rates.price FROM reservation 
+             JOIN rates ON reservation.rate_id = rates.id 
+             WHERE reservation.reservation_id = ?";
+$stmt_rate = $conn->prepare($sql_rate);
+$stmt_rate->bind_param("i", $reservation_id);
+$stmt_rate->execute();
+$result_rate = $stmt_rate->get_result();
+$rate = $result_rate->fetch_assoc();
+$stmt_rate->close();
+
+// Fetch addons for the reservation
+$sql_addons = "SELECT addons.name, addons.price FROM reservation_addons 
+               JOIN addons ON reservation_addons.addon_id = addons.id 
+               WHERE reservation_addons.reservation_id = ?";
+$stmt_addons = $conn->prepare($sql_addons);
+$stmt_addons->bind_param("i", $reservation_id);
+$stmt_addons->execute();
+$result_addons = $stmt_addons->get_result();
+$addons = $result_addons->fetch_all(MYSQLI_ASSOC);
+$stmt_addons->close();
 ?>
 
 <!DOCTYPE html>
@@ -122,7 +145,18 @@ if (isset($_SESSION['first_name'])) {
                         </tr>
                     </thead>
                     <tbody>
-                        <!-- Additional invoice rows can go here -->
+                        <!-- Rate details -->
+                        <tr>
+                            <td><?php echo htmlspecialchars($rate['name']); ?></td>
+                            <td>₱<?php echo number_format($rate['price'], 2); ?></td>
+                        </tr>
+                        <!-- Addon details -->
+                        <?php foreach ($addons as $addon) { ?>
+                            <tr>
+                                <td><?php echo htmlspecialchars($addon['name']); ?></td>
+                                <td>₱<?php echo number_format($addon['price'], 2); ?></td>
+                            </tr>
+                        <?php } ?>
                     </tbody>
                     <tfoot>
                         <tr>
