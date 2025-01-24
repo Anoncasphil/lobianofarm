@@ -18,7 +18,6 @@
     $result_addons = $conn->query($sql_addons);
 
     if (isset($_POST['Book_me_now_pls'])) {
-        // Sanitize and assign form input
         $first_name = $_POST['first_name'];
         $last_name = $_POST['last_name'];
         $email = $_POST['email'];
