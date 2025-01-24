@@ -36,22 +36,6 @@
     <link rel="stylesheet" href="../styles/styles.css">
     <link rel="stylesheet" href="../styles/main_page.css">
     <link rel="icon" href="../src/images/logo.png" type="image/x-icon">
-    <style>
-/* Hide the scrollbar */
-.hide-scrollbar::-webkit-scrollbar {
-    display: none;
-}
-
-.hide-scrollbar {
-    -ms-overflow-style: none; /* IE 10+ */
-    scrollbar-width: none; /* Firefox */
-}
-
-/* Add smooth scrolling */
-#rate_pic_container {
-    scroll-behavior: smooth;
-}
-</style>
 </head>
 <body id="top_section" class="flex flex-col">
     <section id="header_section" class="flex flex-col justify-self-center self-center h-[100vh] sm:h-[100vh] w-full mb-[5%] bg-[url('../src/images/main_bg.jpg')] bg-center bg-no-repeat bg-cover overflow-hidden z-20">
