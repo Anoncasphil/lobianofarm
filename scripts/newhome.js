@@ -18,34 +18,29 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
 
-    // Initialize Flatpickr for check-in and check-out date pickers
+    // Initialize Flatpickr for the check-in date picker
     flatpickr("#check-in", {
       disable: disabledDates, // Disable reserved dates
       dateFormat: "Y-m-d", // Format for displaying selected dates
     });
 
-    flatpickr("#check-out", {
-      disable: disabledDates, // Disable reserved dates
-      dateFormat: "Y-m-d", // Format for displaying selected dates
+    // Book button click handler
+    const bookButton = document.getElementById("book-btn");
+    bookButton.addEventListener("click", () => {
+      const checkInDate = document.getElementById("check-in").value;
+
+      if (!checkInDate) {
+        alert("Please select a check-in date.");
+        return;
+      }
+
+      // Redirect to the booking page with the selected check-in date
+      const url = `/Admin/landing_page_customer/booking.php?checkin=${checkInDate}`;
+      window.location.href = url;
     });
-
-// Book button click handler
-const bookButton = document.getElementById("book-btn");
-bookButton.addEventListener("click", () => {
-  const checkInDate = document.getElementById("check-in").value;
-  const checkOutDate = document.getElementById("check-out").value;
-
-  if (!checkInDate || !checkOutDate) {
-    alert("Please select both check-in and check-out dates.");
-    return;
-  }
-
-  // Redirect to the booking page with selected dates
-  const url = `/Admin/landing_page_customer/booking.php?checkin=${checkInDate}&checkout=${checkOutDate}`;
-  window.location.href = url;
-});
   });
 
+  // Slideshow functionality
   document.addEventListener("DOMContentLoaded", () => {
     const slideshow = document.getElementById("slideshow");
     const slides = slideshow.children;

@@ -7,16 +7,17 @@
 
     <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link rel="stylesheet" href="../styles/newhome.css">
 
 </head>
 <body>
 
   <!-- Navbar -->
-  <nav class="bg-white border-gray-200 dark:bg-gray-900 fixed top-0 left-0 w-full z-50">
+  <nav class="bg-white border-blue-200 dark:bg-blue-900 fixed top-0 left-0 w-full z-50">
     <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
       <!-- Logo -->
       <a href="#" class="flex items-center space-x-3 rtl:space-x-reverse">
-        <img src="https://flowbite.com/docs/images/logo.svg" class="h-8" alt="Logo" />
+        <img src="../src/uploads/logo.svg" class="logo" alt="Logo" />
         <span class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white"></span>
       </a>
 
@@ -24,7 +25,7 @@
       <div class="flex items-center md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">
         <button type="button" class="flex text-sm bg-gray-800 rounded-full md:me-0 focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600">
           <span class="sr-only">Open user menu</span>
-          <img class="w-8 h-8 rounded-full" src="https://via.placeholder.com/40" alt="user photo">
+          <img class="w-8 h-8 rounded-full" src="../src/uploads/team/img_677c4eca1c8992.47415664.jpg" alt="user photo">
         </button>
         <!-- Hamburger menu -->
         <button data-collapse-toggle="navbar-user" type="button" class="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600" aria-controls="navbar-user" aria-expanded="false">
@@ -37,7 +38,7 @@
 
       <!-- Navigation Links -->
       <div class="items-center justify-between hidden w-full md:flex md:w-auto md:order-1" id="navbar-user">
-        <ul class="flex flex-col font-medium p-4 md:p-0 mt-4 border border-gray-100 rounded-lg bg-gray-50 md:flex-row md:space-x-8 rtl:space-x-reverse md:mt-0 md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700">
+        <ul class="flex flex-col font-medium p-4 md:p-0 mt-4 border border-gray-100 rounded-lg bg-gray-50 md:flex-row md:space-x-8 rtl:space-x-reverse md:mt-0 md:border-0 md:bg-white dark:bg-blue-800 md:dark:bg-blue-900">
           <li>
             <a href="#" class="block py-2 px-3 text-white bg-blue-700 rounded md:bg-transparent md:text-blue-700 md:p-0 md:dark:text-blue-500" aria-current="page">Home</a>
           </li>
@@ -56,18 +57,34 @@
   </nav>
 
 <!-- Hero Section -->
-<section id="home" class="bg-gray-50 dark:bg-gray-800 min-h-screen flex items-center justify-center pt-16">
-  <div class="text-center">
-    <h1 class="text-4xl font-extrabold text-gray-900 dark:text-white">Welcome to Our Website</h1>
-    <p class="mt-4 text-lg text-gray-600 dark:text-gray-400">Explore our services, discover amazing features, and connect with us to know more.</p>
-    <div class="mt-12">
-      <div class="inline-flex border border-gray-300 rounded-lg overflow-hidden shadow-sm dark:border-gray-600">
+<section
+  id="home"
+  class="bg-cover bg-center min-h-[50vh] pt-16 relative"
+  style="background-image: url('../src/uploads/album/resort.png');"
+>
+  <!-- Overlay -->
+  <div class="absolute inset-0 bg-blue-950 opacity-90"></div>
+
+  <div class="max-w-screen-xl mx-auto m-0 p-0 h-full flex flex-col justify-start relative z-10">
+    <!-- Left Section: Text -->
+    <div class="mt-30 text-left lg:mr-0 lg:w-1/2 ml-4 pl-0">
+      <h1 class="text-5xl font-extrabold text-gray-900 dark:text-white">
+        Welcome to Our Website
+      </h1>
+      <p class="mt-4 text-xl text-gray-600 dark:text-gray-400 max-w-96">
+        Explore our services, discover amazing features, and connect with us to know more.
+      </p>
+    </div>
+    
+    <!-- Check-In/Check-Out Form centered below the text -->
+    <div class="flex justify-center mt-15 mb-15 w-full">
+      <div class="inline-flex flex-col sm:flex-row border border-yellow-300 rounded-lg overflow-hidden shadow-sm dark:border-yellow-500">
         <!-- Check-In Date -->
         <input
           type="text"
           id="check-in"
           name="check-in"
-          class="px-4 py-2 w-40 border-r border-gray-300 focus:ring-2 focus:ring-blue-500 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+          class="px-6 py-3 w-56 sm:w-48 border-r-2 border-blue-950 focus:ring-2 focus:ring-blue-500 focus:outline-none dark:bg-white dark:text-black"
           placeholder="Check-In"
           required
         />
@@ -76,7 +93,7 @@
           type="text"
           id="check-out"
           name="check-out"
-          class="px-4 py-2 w-40 focus:ring-2 focus:ring-blue-500 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+          class="px-6 py-3 w-56 sm:w-48 border-l-2 border-blue-950 focus:ring-2 focus:ring-blue-500 focus:outline-none dark:bg-white dark:text-black"
           placeholder="Check-Out"
           required
         />
@@ -84,7 +101,7 @@
         <button
           type="submit"
           id="book-btn"
-          class="px-6 py-2 bg-blue-600 text-white font-semibold hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+          class="px-6 py-3 bg-blue-600 text-white font-semibold hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:outline-none"
         >
           Book
         </button>
@@ -94,6 +111,11 @@
 </section>
 
 
+
+
+
+ 
+
 <!-- About Us Section -->
 <section id="about" class="bg-white dark:bg-gray-900 min-h-screen flex items-center justify-center pt-16">
   <div class="text-center">
@@ -101,6 +123,8 @@
     <p class="mt-4 text-lg text-gray-600 dark:text-gray-400">Learn more about our mission, vision, and what makes us unique.</p>
   </div>
 </section>
+
+
 
 <section id="album" class="bg-gray-50 dark:bg-gray-800 py-16">
   <div class="max-w-screen-xl mx-auto text-center">
