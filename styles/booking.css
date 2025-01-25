@@ -1,0 +1,51 @@
+.logo {
+    height: 3rem; /* Adjust this as needed */
+    width: auto;
+    object-fit: contain;
+}
+
+/* Base styles for the modal */
+#modal {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.5);
+    opacity: 0; /* Start hidden */
+    pointer-events: none; /* Prevent interaction before it's visible */
+    transform: translateY(-50px); /* Initial position off-screen */
+    transition: opacity 0.3s ease, transform 0.3s ease; /* Smooth transition */
+  }
+  
+  /* When modal is visible */
+  #modal.show {
+    opacity: 1;
+    pointer-events: all; /* Allow interaction */
+    transform: translateY(0); /* Move to normal position */
+  }
+  
+  /* Style for the modal content */
+  #modal .bg-white {
+    background-color: white;
+    padding: 2rem;
+    border-radius: 12px;
+    max-width: 400px;
+    width: 100%;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Tailwind Custom Scrollbar */
+.scrollbar-none::-webkit-scrollbar {
+  width: 6px; /* Thin scrollbar */
+  height: 6px;
+}
+
+.scrollbar-none::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.2); /* Subtle thumb */
+  border-radius: 10px; /* Rounded thumb */
+}
+
+.scrollbar-none::-webkit-scrollbar-track {
+  background: transparent; /* No track background */
+}
