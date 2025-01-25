@@ -21,6 +21,8 @@ while ($row = $result->fetch_assoc()) {
     // Add 1 day to the check-in and check-out dates
     $checkInDate = new DateTime($row['reservation_check_in_date']);
     $checkOutDate = new DateTime($row['reservation_check_out_date']);
+    $checkInDate->modify('+1 day');
+    $checkOutDate->modify('+1 day'); // Add 1 day to the check-out date
 
     // Format the new dates back to string
     $checkInDateFormatted = $checkInDate->format('Y-m-d');
