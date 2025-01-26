@@ -1,3 +1,31 @@
+<?php
+session_start();
+require_once '../db_connection.php';
+
+// Fetch rates
+$rates_query = $conn->query("SELECT * FROM rates WHERE status = 'active'");
+$rates = $rates_query->fetch_all(MYSQLI_ASSOC);
+
+// Fetch addons
+$addons_query = $conn->query("SELECT * FROM addons WHERE status = 'active'");
+$addons = $addons_query->fetch_all(MYSQLI_ASSOC);
+
+// Calculate average rating and total reviews first
+$rating_query = $conn->prepare("SELECT AVG(rating) as avg_rating, COUNT(*) as total_reviews FROM reviews");
+$rating_query->execute();
+$stats = $rating_query->get_result()->fetch_assoc();
+$avg_rating = number_format($stats['avg_rating'] ?? 0, 1);
+$total_reviews = $stats['total_reviews'] ?? 0;
+
+// Then fetch reviews
+$reviews_query = $conn->prepare("SELECT r.*, u.first_name, u.last_name 
+                               FROM reviews r 
+                               JOIN user_tbl u ON r.user_id = u.user_id 
+                               ORDER BY r.created_at DESC");
+$reviews_query->execute();
+$reviews = $reviews_query->get_result();
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -153,19 +181,54 @@
 
 
 <!-- Rates Section -->
-<section id="rates" class="bg-gray-50 dark:bg-gray-800 min-h-screen flex items-center justify-center pt-16">
-  <div class="text-center">
-    <h2 class="text-3xl font-extrabold text-gray-900 dark:text-white">Our Rates</h2>
-    <p class="mt-4 text-lg text-gray-600 dark:text-gray-400">Check out our affordable pricing plans designed for everyone.</p>
-  </div>
-</section>
+  <section id="about" class="bg-white dark:bg-gray-900 min-h-screen flex flex-col items-center justify-center pt-16">
+    <div class="text-center">
+      <h2 class="text-3xl font-extrabold text-gray-900 dark:text-white">About Us</h2>
+      <p class="mt-4 text-lg text-gray-600 dark:text-gray-400">Learn more about our mission, vision, and what makes us unique.</p>
+    </div>
+    <div id="rate_pic_container" class="flex flex-row overflow-x-auto gap-8 w-full max-w-screen-xl mx-auto mt-8 pb-4">
+        <?php foreach($rates as $rate): ?>
+            <div id="rates_card" class="flex-shrink-0 flex flex-col w-[350px] rounded-lg shadow-md overflow-hidden">
+                <div id="rates_card_pic" class="w-full h-[300px] bg-cover bg-center" style="background-image: url('data:image/jpeg;base64,<?php echo base64_encode($rate['picture']); ?>');">
+                </div>
+                <div class="flex flex-col items-center justify-center h-[100px] bg-white text-black px-4 py-2">
+                    <h1 class="text-xl font-semibold"><?php echo $rate['name']; ?></h1>
+                    <p class="text-sm text-gray-500"><i class="fa-solid fa-clock"></i> <?php echo $rate['hoursofstay']; ?> hours</p>
+                    <p class="text-lg font-bold"><?php echo '₱' . number_format($rate['price'], 2); ?></p>
+                </div>
+                <div class="flex justify-center items-center py-3 bg-green-500 text-white">
+                    <button type="button" id="view_details_btn" class="w-[80%] bg-green-500 rounded-lg text-sm" data-id="<?php echo $rate['id']; ?>" data-type="rate">
+                        View Details
+                    </button>
+                </div>
+            </div>
+        <?php endforeach; ?>
+  </section>
 
 <!-- Add-ons Section -->
-<section id="addons" class="bg-white dark:bg-gray-900 min-h-screen flex items-center justify-center pt-16">
-  <div class="text-center">
-    <h2 class="text-3xl font-extrabold text-gray-900 dark:text-white">Add-ons</h2>
-    <p class="mt-4 text-lg text-gray-600 dark:text-gray-400">Explore our additional services to enhance your experience.</p>
-  </div>
+<section id="addons_section" class="flex flex-col dark:bg-gray-900 items-center w-full py-10 px-4">
+    <div class="text-center">
+      <h2 class="text-3xl font-extrabold text-gray-900 dark:text-white">About Us</h2>
+      <p class="mt-4 text-lg text-gray-600 dark:text-gray-400">Learn more about our mission, vision, and what makes us unique.</p>
+    </div>
+
+    <div id="addons_pic_container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 w-full max-w-screen-xl mx-auto mt-8">
+        <?php foreach($addons as $addon): ?>
+            <div id="addons_card" class="flex flex-col w-full bg-white rounded-lg shadow-md overflow-hidden mt-4">
+                <div id="addons_card_pic" class="w-full h-[300px] bg-cover bg-center" style="background-image: url('data:image/jpeg;base64,<?php echo base64_encode($addon['picture']); ?>');">
+                </div>
+                <div class="flex flex-col items-center justify-center h-[100px] bg-white text-black px-4 py-2">
+                    <h1 class="text-xl font-semibold"><?php echo $addon['name']; ?></h1>
+                    <p class="text-lg font-bold"><?php echo '₱' . number_format($addon['price'], 2); ?></p>
+                </div>
+                <div class="flex justify-center items-center py-3 bg-green-500 text-white">
+                    <button type="button" id="view_details_btn" class="w-[80%] bg-green-500 rounded-lg text-sm" data-id="<?php echo $addon['id']; ?>" data-type="addon">
+                        View Details
+                    </button>
+                </div>
+            </div>
+        <?php endforeach; ?>
+    </div>
 </section>
 
 <!-- Video Tour Section -->
@@ -180,30 +243,46 @@
 </section>
 
 <!-- Reviews Section -->
-<section id="reviews" class="bg-white dark:bg-gray-900 min-h-screen flex items-center justify-center pt-16">
-  <div class="text-center">
-    <h2 class="text-3xl font-extrabold text-gray-900 dark:text-white">Reviews</h2>
-    <p class="mt-4 text-lg text-gray-600 dark:text-gray-400">Hear from our satisfied customers about their experiences.</p>
-  </div>
+<section id="reviews_section" class="flex flex-col items-center w-full py-10 px-4">
+    <div id="review_header" class="w-full max-w-screen-xl mx-auto mb-8">
+        <h1 class="text-3xl font-bold">Reviews</h1>
+        <p class="mt-3">Discover what guests are saying.</p>
+    </div>
+
+    <div id="review_stats" class="flex justify-between items-center w-full max-w-screen-xl mx-auto mb-8">
+        <div class="flex items-center gap-4">
+            <h2 class="text-2xl font-bold"><?php echo $avg_rating; ?></h2>
+            <p>Based on <?php echo $total_reviews; ?> reviews</p>
+        </div>
+        <?php if(isset($_SESSION['user_id'])): ?>
+            <a href="submit_review.php" class="p-3 bg-white rounded-md border-gray-300 border-2 hover:shadow-lg">Submit a review</a>
+        <?php else: ?>
+            <a href="register.php" class="p-3 bg-white rounded-md border-gray-300 border-2 hover:shadow-lg">Sign up</a>
+        <?php endif; ?>
+    </div>
+
+    <div id="review_card_container" class="flex flex-row overflow-x-auto gap-8 w-full max-w-screen-xl mx-auto">
+        <?php while($review = $reviews->fetch_assoc()): ?>
+            <div id="review_card" class="flex-shrink-0 flex flex-col w-[350px] rounded-2xl shadow-xl bg-white min-h-fit">
+                <div id="review_text_container" class="flex-grow w-full px-5 py-3">
+                    <h3 class="font-bold mt-3"><?php echo htmlspecialchars($review['title']); ?></h3>
+                    <p class="py-[3%] break-words min-h-fit"><?php echo htmlspecialchars($review['review_text']); ?></p>
+                </div>
+                <div id="user_info_review" class="flex flex-row justify-between items-center p-5 w-full border-t-2">
+                    <p id="reviewer_name"><?php echo htmlspecialchars($review['first_name'] . ' ' . $review['last_name']); ?></p>
+                    <div id="star_review" class="flex flex-row justify-center items-center">
+                        <p><?php echo $review['rating']; ?>.0</p>
+                        <svg class="w-4 h-4 text-yellow-300 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 22 20">
+                            <path d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z"/>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+        <?php endwhile; ?>
+    </div>
 </section>
 
 <!-- Footer Section -->
 <footer class="bg-gray-900 dark:bg-gray-800 py-8">
   <div class="text-center">
-    <p class="text-sm text-gray-400">© 2025 Your Company. All Rights Reserved.</p>
-    <div class="mt-4 space-x-4">
-      <a href="#" class="text-gray-400 hover:text-white">Privacy Policy</a>
-      <a href="#" class="text-gray-400 hover:text-white">Terms of Service</a>
-      <a href="#" class="text-gray-400 hover:text-white">Contact Us</a>
-    </div>
-  </div>
-</footer>
-
-
-
-
-<script src="../scripts/newhome.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-    
-</body>
-</html>
+    <p class="text-sm text-gray-400">© 2025 Your Company. All
