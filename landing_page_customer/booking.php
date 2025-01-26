@@ -1,12 +1,65 @@
+<?php
+session_start(); // Start the session
+
+// Manually set the session for user_id 23
+$_SESSION['user_id'] = 23; 
+
+// Include the database connection
+include('../db_connection.php'); // Adjust the path if necessary
+
+// Check if the connection is established
+if (!$conn) {
+    die("Connection failed: " . mysqli_connect_error());
+}
+
+// Query to retrieve user info based on user_id
+$sql = "SELECT first_name, last_name, picture FROM user_tbl WHERE user_id = ?";
+$stmt = $conn->prepare($sql);
+
+// Check if prepare() failed
+if ($stmt === false) {
+    die("Error preparing the SQL statement: " . $conn->error);
+}
+
+// Bind the user_id to the query
+$stmt->bind_param("i", $_SESSION['user_id']);
+
+// Execute the query
+$stmt->execute();
+$stmt->store_result();
+
+// Bind the results to variables
+$stmt->bind_result($first_name, $last_name, $picture);
+
+// Check if user data is found
+if ($stmt->fetch()) {
+    // Combine first and last name
+    $full_name = $first_name . ' ' . $last_name;
+    // Use the picture if it exists, otherwise set a default
+    $user_picture = !empty($picture) ? 'userpicture/' . $picture : 'default-avatar.jpg'; // Adjust the path for the profile picture
+} else {
+    // If user not found, handle accordingly (e.g., redirect to login)
+    header("Location: ../adlogin.php");
+    exit;
+}
+
+$stmt->close();
+?>
+
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lobiano's Farm Resort</title>
+    <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <script src="../scripts/booking.js" defer></script>
     <link rel="stylesheet" href="../styles/booking.css">
     <link href="../dist/output.css" rel="stylesheet">
 
@@ -14,48 +67,67 @@
 <body>
 
   <!-- Navbar -->
-  <nav class="bg-white border-blue-200 dark:bg-blue-900 fixed top-0 left-0 w-full z-50">
-    <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
-      <!-- Logo -->
-      <a href="#" class="flex items-center space-x-3 rtl:space-x-reverse">
-        <img src="../src/uploads/logo.svg" class="logo" alt="Logo" />
-        <span class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white"></span>
-      </a>
+<nav class="bg-white border-blue-200 dark:bg-blue-900 fixed top-0 left-0 w-full z-50">
+  <div class="max-w-screen-xl flex items-center justify-between mx-auto p-4">
+    <!-- Logo -->
+    <a href="#" class="flex items-center space-x-3 rtl:space-x-reverse">
+      <img src="../src/uploads/logo.svg" class="logo" alt="Logo" />
+      <span class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white"></span>
+    </a>
 
-      <!-- Profile and Hamburger -->
-      <div class="flex items-center md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">
-        <button type="button" class="flex text-sm bg-gray-800 rounded-full md:me-0 focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600">
-          <span class="sr-only">Open user menu</span>
-          <img class="w-8 h-8 rounded-full" src="../src/uploads/team/img_677c4eca1c8992.47415664.jpg" alt="user photo">
-        </button>
-        <!-- Hamburger menu -->
-        <button data-collapse-toggle="navbar-user" type="button" class="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600" aria-controls="navbar-user" aria-expanded="false">
-          <span class="sr-only">Open main menu</span>
-          <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 17 14">
-              <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 1h15M1 7h15M1 13h15"/>
-          </svg>
-        </button>
-      </div>
+    <!-- Cart, Profile, and Hamburger -->
+    <div class="flex items-center md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">
 
-      <!-- Navigation Links -->
-      <div class="items-center justify-between hidden w-full md:flex md:w-auto md:order-1" id="navbar-user">
-        <ul class="flex flex-col font-medium p-4 md:p-0 mt-4 border border-gray-100 rounded-lg bg-gray-50 md:flex-row md:space-x-8 rtl:space-x-reverse md:mt-0 md:border-0 md:bg-white dark:bg-blue-800 md:dark:bg-blue-900">
-          <li>
-            <a href="#home" class="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">Home</a>
-          </li>
-          <li>
-            <a href="#about" class="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">About</a>
-          </li>
-          <li>
-            <a href="#" class="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">Services</a>
-          </li>
-          <li>
-            <a href="#" class="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">Contact</a>
-          </li>
-        </ul>
-      </div>
+    <button type="button" class="flex text-lg dark:bg-blue-900 rounded-lg md:me-0 px-4 py-4 p-2 hover:bg-white/10">
+      <span class="sr-only">Open cart</span>
+      <!-- Cart Icon using Google Material Icons with fixed size -->
+      <span class="material-icons text-white text-2xl bg-opacity-100 hover:bg-opacity-10">
+          shopping_cart
+      </span>
+    </button>
+
+    <!-- Profile button -->
+    <button type="button" class="flex items-center ml-2 space-x-3 text-sm dark:bg-blue-900 hover:bg-white/10 rounded-lg px-4 py-2">
+        <span class="sr-only">Open user menu</span>
+        <!-- Display user profile picture -->
+        <img class="w-10 h-10 rounded-full" src="../src/uploads/<?php echo htmlspecialchars($user_picture); ?>" alt="User Photo">
+        <!-- Display user first name and last name to the right -->
+        <span class="text-white font-medium"><?php echo htmlspecialchars($full_name); ?></span>
+    </button>
+
+
+      <!-- Hamburger menu -->
+      <button data-collapse-toggle="navbar-user" type="button" class="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-white rounded-lg md:hidden hover:bg-gray-100 dark:text-gray-400 hover:bg-white/10" aria-controls="navbar-user" aria-expanded="false">
+        <span class="sr-only">Open main menu</span>
+        <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 17 14">
+          <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 1h15M1 7h15M1 13h15"/>
+        </svg>
+      </button>
     </div>
-  </nav>
+
+    <!-- Navigation Links -->
+    <div class="items-center mr-110 justify-center hidden w-full md:flex md:w-auto md:order-1" id="navbar-user">
+      <ul class="flex flex-col font-medium p-4 md:p-0 mt-4 border border-gray-100 rounded-lg bg-gray-50 md:flex-row md:space-x-8 rtl:space-x-reverse md:mt-0 md:border-0 md:bg-white dark:bg-blue-800 md:dark:bg-blue-900">
+        <li>
+          <a href="#home" class="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">Home</a>
+        </li>
+        <li>
+          <a href="#about" class="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">About</a>
+        </li>
+        <li>
+          <a href="#album" class="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">Gallery</a>
+        </li>
+        <li>
+          <a href="#services" class="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">Services</a>
+        </li>
+        <li>
+          <a href="#reviews" class="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">Contact</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
 
   <section class="bg-gray-100 pt-16 px-6 md:px-8 min-h-screen">
   <div class="max-w-screen-xl mx-auto flex gap-8 mt-10">
@@ -67,29 +139,30 @@
         <p class="mt-2 text-gray-600">Please enter your basic details to proceed with your reservation.</p>
 
         <!-- First Name and Last Name -->
-        <div class="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div class="relative">
-            <input type="text" id="first-name" class="peer p-3 pt-5 w-full max-w-xs border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-transparent text-blue-950" placeholder=" " />
-            <label for="first-name" class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-600 text-sm font-medium transition-all duration-200">First Name</label>
-          </div>
-          <div class="relative">
-            <input type="text" id="last-name" class="peer p-3 pt-5 w-full max-w-xs border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-transparent text-blue-950" placeholder=" " />
-            <label for="last-name" class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-600 text-sm font-medium transition-all duration-200">Last Name</label>
-          </div>
+      <div class="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div class="relative">
+          <input type="text" id="first-name" class="peer font-semibold p-3 pt-5 w-full max-w-xs border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-transparent text-blue-950" placeholder=" " value="John" />
+          <label for="first-name" class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-600 text-sm font-medium transition-all duration-200">First Name</label>
         </div>
-
-        <!-- Email and Mobile Number -->
-        <div class="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div class="relative">
-            <input type="email" id="email" class="peer p-3 pt-5 w-full max-w-xs border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-transparent text-blue-950" placeholder=" " />
-            <label for="email" class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-600 text-sm font-medium transition-all duration-200">Email</label>
-          </div>
-          <div class="relative">
-            <input type="text" id="mobile-number" class="peer p-3 pt-5 w-full max-w-xs border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-transparent text-blue-950" placeholder=" " />
-            <label for="mobile-number" class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-600 text-sm font-medium transition-all duration-200">Mobile Number</label>
-          </div>
+        <div class="relative">
+          <input type="text" id="last-name" class="peer p-3 pt-5 font-semibold w-full max-w-xs border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-transparent text-blue-950" placeholder=" " value="Doe" />
+          <label for="last-name" class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-600 text-sm font-medium transition-all duration-200">Last Name</label>
         </div>
       </div>
+
+      <!-- Email and Mobile Number -->
+      <div class="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div class="relative">
+          <input type="email" id="email" class="peer p-3 pt-5 font-semibold w-full max-w-xs border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-transparent text-blue-950" placeholder=" " value="johndoe@example.com" />
+          <label for="email" class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-600 text-sm font-medium transition-all duration-200">Email</label>
+        </div>
+        <div class="relative">
+          <input type="text" id="mobile-number" class="peer p-3 pt-5 font-semibold w-full max-w-xs border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-transparent text-blue-950" placeholder=" " value="1234567890" />
+          <label for="mobile-number" class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-600 text-sm font-medium transition-all duration-200">Mobile Number</label>
+        </div>
+      </div>
+    </div>
+
 
 <!-- Rates -->
 <div id="rates" class="flex-4 bg-white p-6 rounded-3xl mt-5 shadow-lg">
@@ -97,76 +170,77 @@
   <p class="mt-2 text-gray-600">Please choose your preferred rate.</p>
 
   <!-- Card View Section with Minimalistic Scrollbar -->
-  <div class="pb-6 mt-6 overflow-x-auto flex space-x-6 scrollbar-none">
+  <div class=" mt-6 overflow-x-auto flex space-x-6 scrollbar-none">
     <!-- Card 1 -->
-    <div class="relative bg-gray-100 p-4 rounded-lg shadow-md w-1/3 flex-shrink-0">
-      <h3 class="text-xl font-semibold text-gray-800">Rate 1</h3>
-      <p class="text-gray-500">Description for Rate 1.</p>
-      <div class="mt-4">
-        <span class="text-lg font-bold text-gray-800">$50</span>
-        <p class="text-sm text-gray-400">per night</p>
-      </div>
-      <!-- Info Icon -->
-      <button onclick="openModal('rate1')" class="absolute top-2 right-2 text-gray-600 hover:text-blue-500">
-        <i class="fas fa-info-circle text-2xl"></i> <!-- Info Icon -->
-      </button>
-    </div>
+    <?php
+// Include database connection
+include '../db_connection.php';
 
-    <!-- Card 2 -->
-    <div class="relative bg-gray-100 p-4 rounded-lg shadow-md w-1/3 flex-shrink-0">
-      <h3 class="text-xl font-semibold text-gray-800">Rate 2</h3>
-      <p class="text-gray-500">Description for Rate 2.</p>
-      <div class="mt-4">
-        <span class="text-lg font-bold text-gray-800">$75</span>
-        <p class="text-sm text-gray-400">per night</p>
-      </div>
-      <!-- Info Icon -->
-      <button onclick="openModal('rate2')" class="absolute top-2 right-2 text-gray-600 hover:text-blue-500">
-        <i class="fas fa-info-circle text-2xl"></i> <!-- Info Icon -->
-      </button>
-    </div>
+// Fetch rates from the database
+$sql = "SELECT * FROM rates WHERE status = 'active'";
+$result = $conn->query($sql);
 
-    <!-- Card 3 -->
-    <div class="relative bg-gray-100 p-4 rounded-lg shadow-md w-1/3 flex-shrink-0">
-      <h3 class="text-xl font-semibold text-gray-800">Rate 3</h3>
-      <p class="text-gray-500">Description for Rate 3.</p>
-      <div class="mt-4">
-        <span class="text-lg font-bold text-gray-800">$100</span>
-        <p class="text-sm text-gray-400">per night</p>
+// Check if there are any results
+if ($result->num_rows > 0) {
+    // Add a wrapper with overflow-x-auto and flex to make the cards scrollable
+    echo "<div class='pb-6 overflow-x-auto flex space-x-6 scrollbar-hide scrollable-container'>"; // Apply scrollable-container class here
+    
+// Assuming the result from the database is already fetched into $result
+while ($row = $result->fetch_assoc()) {
+  $id = $row['id'];
+  $name = $row['name'];
+  $price = $row['price'];
+  $hours_of_stay = $row['hoursofstay'];
+  $picture = $row['picture'];
+  
+  // Generate the rate card with dynamic data and JavaScript functionality
+  echo "
+  <div class='flex-none max-w-sm bg-white border border-gray-200 rounded-lg shadow-sm relative rate-card' data-id='$id'>
+      <a href='#'>
+          <img class='rounded-t-lg w-full h-40 object-cover' src='../src/uploads/rates/$picture' alt='$name' />
+      </a>
+      <div class='p-5'>
+          <a href='#'>
+              <h5 class='mb-3 text-2xl font-semibold tracking-tight dark:text-blue-950'>$name</h5>
+          </a>
+          <div class='mb-2'>
+              <span class='text-lg font-medium text-gray-700'>₱$price</span>
+          </div>
+          <div class='mb-5'>
+              <span class='text-sm text-gray-600 mt-[-2]'>
+                  <i class='fas fa-clock'></i> $hours_of_stay hours
+              </span>
+          </div>
+          <button onclick='openModal(\"$id\")' class='absolute top-2 right-2 text-white hover:text-blue-500'>
+              <i class='fas fa-info-circle text-2xl'></i>
+          </button>
+          <div class='mt-4 text-center'>
+              <button onclick='selectRate(\"$id\", \"$name\", \"$price\")' class='select-button bg-blue-600 text-white w-full font-bold py-2 px-4 rounded-md hover:bg-blue-700 transition duration-200'>
+                  Select
+              </button>
+          </div>
       </div>
-      <!-- Info Icon -->
-      <button onclick="openModal('rate3')" class="absolute top-2 right-2 text-gray-600 hover:text-blue-500">
-        <i class="fas fa-info-circle text-2xl"></i> <!-- Info Icon -->
-      </button>
-    </div>
+  </div>
+  ";
+}
+  
+    
+    // Close the scrollable wrapper
+    echo "</div>";
+} else {
+    echo "No active rates available.";
+}
 
-    <!-- Card 4 -->
-    <div class="relative bg-gray-100 p-4 rounded-lg shadow-md w-1/3 flex-shrink-0">
-      <h3 class="text-xl font-semibold text-gray-800">Rate 4</h3>
-      <p class="text-gray-500">Description for Rate 4.</p>
-      <div class="mt-4">
-        <span class="text-lg font-bold text-gray-800">$125</span>
-        <p class="text-sm text-gray-400">per night</p>
-      </div>
-      <!-- Info Icon -->
-      <button onclick="openModal('rate4')" class="absolute top-2 right-2 text-gray-600 hover:text-blue-500">
-        <i class="fas fa-info-circle text-2xl"></i> <!-- Info Icon -->
-      </button>
-    </div>
+// Close the database connection
+$conn->close();
+?>
 
-    <!-- Card 5 -->
-    <div class="relative bg-gray-100 p-4 rounded-lg shadow-md w-1/3 flex-shrink-0">
-      <h3 class="text-xl font-semibold text-gray-800">Rate 5</h3>
-      <p class="text-gray-500">Description for Rate 5.</p>
-      <div class="mt-4">
-        <span class="text-lg font-bold text-gray-800">$150</span>
-        <p class="text-sm text-gray-400">per night</p>
-      </div>
-      <!-- Info Icon -->
-      <button onclick="openModal('rate5')" class="absolute top-2 right-2 text-gray-600 hover:text-blue-500">
-        <i class="fas fa-info-circle text-2xl"></i> <!-- Info Icon -->
-      </button>
-    </div>
+
+
+
+
+
+  
   </div>
 </div>
 
@@ -286,34 +360,45 @@
     </div>
   </div>
 
-  <!-- Item and Price Section -->
-  <div class="mt-6 p-4 border border-gray-300 rounded-md shadow-sm">
-    <h3 class="text-lg font-bold text-gray-700 mb-4">Summary</h3>
-    <div class="grid grid-cols-2 gap-4">
+<!-- Item and Price Section -->
+<div class="mt-6 p-4 border border-gray-300 rounded-md shadow-sm flex justify-center">
+  <div class="w-full max-w-xl">
+    <h3 class="text-lg font-bold text-gray-700 mb-4 text-center">Summary</h3>
+    <div class="grid grid-cols-2 gap-4 justify-center items-center">
       <!-- Item Column -->
-      <div>
-        <p class="text-gray-600 font-medium">Item</p>
-        <ul class="text-gray-700">
-          <li>Rate</li>
-          <li>Add-ons</li>
-          <li>Total</li>
-        </ul>
+      <div class="flex justify-center items-center">
+        <div>
+          <p class="text-gray-600 font-bold text-center">Item</p>
+          <ul id="selected-items" class="text-gray-700 text-center">
+            <!-- Selected items will be inserted here -->
+          </ul>
+        </div>
       </div>
       <!-- Price Column -->
-      <div class="text-right">
-        <p class="text-gray-600 font-medium">Price</p>
-        <ul class="text-gray-700">
-          <li>$50</li>
-          <li>$20</li>
-          <li class="font-bold">$70</li>
+      <div class="text-center">
+        <p class="text-gray-600 font-bold">Price</p>
+        <ul id="selected-prices" class="text-gray-700">
+          <!-- Selected prices will be inserted here -->
         </ul>
       </div>
     </div>
+
+        <!-- Total Below the Grid -->
+      <div class="mt-10 text-center">
+        <div class="grid grid-cols-2 gap-4 justify-items-center items-center">
+          <p class="text-gray-700 font-bold">Total</p>
+          <p id="total-price" class="text-gray-700 font-bold text-right">₱0</p>
+        </div>
+      </div>
+
   </div>
+</div>
+
+
 
 <!-- Proceed to Payment Button -->
 <div class="mt-6 flex justify-center">
-  <button class="bg-blue-600 text-white font-bold py-3 px-6 rounded-md shadow-lg hover:bg-blue-700 transition duration-200">
+  <button class="bg-blue-600 text-white font-bold py-3 w-full px-6 rounded-md shadow-lg hover:bg-blue-700 transition duration-200">
     Proceed to Payment
   </button>
 </div>
@@ -321,6 +406,7 @@
 
   </div>
 </section>
+
 
 <!-- Modal for displaying more details -->
 <div id="modal" class="fixed inset-0 flex items-center justify-center hidden">
@@ -335,8 +421,6 @@
   </div>
 </div>
 
-<script src="../scripts/booking.js"></script>
-<script src="https://unpkg.com/@tailwindcss/browser@4"></script>
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js"></script>

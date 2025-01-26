@@ -52,7 +52,6 @@ function previewImage(event) {
     }
 }
 
-// Fetch Rate Data for Updating
 function fetchRateData(id) {
     fetch(`../rates/fetch-rate.php?id=${id}`)
     .then(response => response.json())
@@ -60,10 +59,14 @@ function fetchRateData(id) {
         console.log('Data received:', data);
 
         // Populate fields with fetched data
-        document.getElementById('updatename').value = data.name;
-        document.getElementById('updateprice').value = data.price;
-        document.getElementById('updatedescription').value = data.description;
-        document.getElementById('updatehoursofstay').value = data.hoursofstay;
+        document.getElementById('updatename').value = data.name || ''; 
+        document.getElementById('updateprice').value = data.price || ''; 
+        document.getElementById('updatedescription').value = data.description || ''; 
+        document.getElementById('updatehoursofstay').value = data.hoursofstay || ''; 
+
+        // Ensure the check-in and check-out time inputs are correctly populated
+        document.getElementById('updatecheckin').value = data.checkin_time ? data.checkin_time.slice(0, 5) : ''; // Slice off seconds if needed
+        document.getElementById('updatecheckout').value = data.checkout_time ? data.checkout_time.slice(0, 5) : ''; // Slice off seconds if needed
 
         const updateRateIdElement = document.getElementById('updateRateId');
         if (updateRateIdElement) {
@@ -80,15 +83,23 @@ function fetchRateData(id) {
 
         if (data.picture) {
             const imgElementDb = document.createElement('img');
-            imgElementDb.src = data.picture;
+            imgElementDb.src = data.picture; // Use the correct picture path
             imgElementDb.className = "w-full h-auto object-cover rounded-lg img-zoom-out";
             imgElementDb.alt = "Rate Image from DB";
             imgElementDb.style.height = '100px';
             imagePreviewContainerDb.appendChild(imgElementDb);
+            imagePreviewContainerDb.classList.remove('hidden'); // Make sure it's visible
+        } else {
+            imagePreviewContainerDb.classList.add('hidden'); // Hide if no image exists
         }
+
+        // Make sure modal is displayed
+        document.getElementById("update-rate-modal").classList.remove('hidden');
     })
     .catch(error => console.error('Error fetching rate data:', error));
 }
+
+
 
 // Handle new file upload for update rate
 document.getElementById('updatefile_input').addEventListener('change', function(event) {
