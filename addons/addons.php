@@ -20,7 +20,9 @@ if (!isset($_SESSION['admin_id'])) {
     <script src="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"></script>
 	<link rel="stylesheet" href="../styles/style.css">
     <link rel="stylesheet" href="../styles/rate.css">
-	
+    <script src="../scripts/script.js"></script>
+	<script src="addonss.js"></script>
+
 	<title>Admin</title>
 </head>
 <body>
@@ -150,56 +152,6 @@ if (!isset($_SESSION['admin_id'])) {
     <?php
     // Include database connection
     include '../db_connection.php';
-
-    // Fetch data from the 'addons' table
-    $sql = "SELECT id, name, price, picture, description FROM addons WHERE status = 'active'";
-    $result = $conn->query($sql);
-
-    // Add add-on logic
-    if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['add_addon'])) {
-        // Get form data
-        $name = $_POST['name'];
-        $price = $_POST['price'];
-        $description = $_POST['description'];
-
-        // Handle the image upload
-        if (isset($_FILES['picture']) && $_FILES['picture']['error'] == 0) {
-            $file = $_FILES['picture'];
-
-            // Check file size and type
-            if ($file['error'] == 0) {
-                $fileTmp = $file['tmp_name'];
-                $fileName = $file['name'];
-                $fileSize = $file['size'];
-                $fileType = $file['type'];
-
-                // Check if file is a valid image (JPG, PNG, JPEG)
-                $allowedTypes = ['image/jpeg', 'image/png', 'image/jpg'];
-                if (in_array($fileType, $allowedTypes)) {
-                    // Read the image content as binary data
-                    $imageData = file_get_contents($fileTmp);
-                    $imageData = mysqli_real_escape_string($conn, $imageData);
-
-                    // Insert the image into the database
-                    $sql = "INSERT INTO addons (name, price, description, picture) VALUES (?, ?, ?, ?)";
-                    $stmt = $conn->prepare($sql);
-                    $stmt->bind_param('sdss', $name, $price, $description, $imageData);
-
-                    if ($stmt->execute()) {
-                        echo "New add-on added successfully.";
-                    } else {
-                        echo "Error: " . $stmt->error;
-                    }
-                    $stmt->close();
-                } else {
-                    echo "Invalid file type. Only JPG, PNG, and JPEG are allowed.";
-                }
-            } else {
-                echo "Error uploading the file.";
-            }
-        }
-    }
-
     ?>
 
     <div class="main flex-1 p-6">
@@ -244,39 +196,56 @@ if (!isset($_SESSION['admin_id'])) {
                 <?php
                     $sql = "SELECT id, name, price, description, picture FROM addons WHERE status = 'active'";
                     $result = $conn->query($sql);
-
+                    
                     if ($result->num_rows > 0) {
                         while ($row = $result->fetch_assoc()) {
                             echo "<tr id='addon-" . $row['id'] . "'>";
                             echo "<td class='py-2 px-4 border-b text-gray-700'>" . $row['id'] . "</td>";
                             echo "<td class='py-2 px-4 border-b text-gray-700'>" . $row['name'] . "</td>";
                             echo "<td class='py-2 px-4 border-b text-gray-700'>₱" . number_format($row['price'], 2) . "</td>";
-                            echo "<td class='py-2 px-4 border-b text-gray-700'>" . $row['description'] . "</td>";
+                            echo "<td class='py-2 px-4 max-w-md 30 border-b text-gray-700'>" . $row['description'] . "</td>";
                             echo "<td class='py-2 px-4 border-b text-gray-700'>";
-
+                    
                             if (!empty($row['picture'])) {
-                                $base64Image = base64_encode($row['picture']);
-                                $imageSrc = 'data:image/jpeg;base64,' . $base64Image;
-                                echo "<img src='" . $imageSrc . "' alt='Addon Image' class='w-20 h-auto object-cover rounded-lg'>";
+                                // Get the full image path based on the stored picture name
+                                $imagePath = '../src/uploads/addons/' . $row['picture'];
+                    
+                                // Check if the image file exists
+                                if (file_exists($imagePath)) {
+                                    // Get the image content
+                                    $imageData = file_get_contents($imagePath);
+                                    
+                                    // Encode the image content in base64
+                                    $base64Image = base64_encode($imageData);
+                                    
+                                    // Generate the image source in base64 format
+                                    $imageSrc = 'data:image/jpeg;base64,' . $base64Image;
+                    
+                                    // Display the image
+                                    echo "<img src='" . $imageSrc . "' alt='Addon Image' class='w-20 h-auto object-cover rounded-lg'>";
+                                } else {
+                                    echo "<span class='text-gray-500'>No image available or file not found.</span>";
+                                }
                             }
-
+                    
                             echo "</td>";
                             echo "<td class='py-2 px-4 border-b text-gray-700'>
-                                <button type='button' class='text-white bg-blue-500 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2' onclick='showDetails(" . $row['id'] . ");'>
-                                    <i class='fa-solid fa-box-archive'></i> View
-                                </button>
-                                <button type='button' class='text-white bg-blue-500 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2' onclick='fetchAddonData(" . $row['id'] . "); toggleUpdateAddonModal();'>
-                                    <i class='fa-solid fa-pen-to-square'></i> Update
-                                </button>
-                                <button type='button' class='text-white bg-red-500 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2' onclick='archiveConfirmation(" . $row['id'] . ");'>
-                                    <i class='fa-solid fa-box-archive'></i> Archive
-                                </button>
-                            </td>";
+                                    <button type='button' class='text-white bg-blue-500 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2' onclick='showDetails(" . $row['id'] . ");'>
+                                        <i class='fa-solid fa-box-archive'></i> View
+                                    </button>
+                                    <button type='button' class='text-white bg-blue-500 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2' onclick='fetchAddonData(" . $row['id'] . "); toggleUpdateAddonModal();'>
+                                        <i class='fa-solid fa-pen-to-square'></i> Update
+                                    </button>
+                                    <button type='button' class='text-white bg-red-500 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2' onclick='archiveConfirmation(" . $row['id'] . ");'>
+                                        <i class='fa-solid fa-box-archive'></i> Archive
+                                    </button>
+                                </td>";
                             echo "</tr>";
                         }
                     } else {
                         echo "<tr><td colspan='6' class='py-2 px-4 border-b text-gray-700'>No records found</td></tr>";
                     }
+                    
                 ?>
             </tbody>
         </table>
@@ -299,7 +268,7 @@ if (!isset($_SESSION['admin_id'])) {
                 <?php
                     $sql = "SELECT id, name, price, description, picture FROM addons WHERE status = 'inactive'";
                     $result = $conn->query($sql);
-
+                    
                     if ($result->num_rows > 0) {
                         while ($row = $result->fetch_assoc()) {
                             echo "<tr id='addon-" . $row['id'] . "'>";
@@ -308,14 +277,30 @@ if (!isset($_SESSION['admin_id'])) {
                             echo "<td class='py-2 px-4 border-b text-gray-700'>₱" . number_format($row['price'], 2) . "</td>";
                             echo "<td class='py-2 px-4 border-b text-gray-700'>" . $row['description'] . "</td>";
                             echo "<td class='py-2 px-4 border-b text-gray-700'>";
-
+                    
                             if (!empty($row['picture'])) {
-                                $base64Image = base64_encode($row['picture']);
-                                $imageSrc = 'data:image/jpeg;base64,' . $base64Image;
-                                echo "<img src='" . $imageSrc . "' alt='Addon Image' class='w-20 h-auto object-cover rounded-lg'>";
+                                // Get the full image path based on the stored picture name
+                                $imagePath = '../src/uploads/addons/' . $row['picture'];
+                    
+                                // Check if the image file exists
+                                if (file_exists($imagePath)) {
+                                    // Get the image content
+                                    $imageData = file_get_contents($imagePath);
+                                    
+                                    // Encode the image content in base64
+                                    $base64Image = base64_encode($imageData);
+                                    
+                                    // Generate the image source in base64 format
+                                    $imageSrc = 'data:image/jpeg;base64,' . $base64Image;
+                    
+                                    // Display the image
+                                    echo "<img src='" . $imageSrc . "' alt='Addon Image' class='w-20 h-auto object-cover rounded-lg'>";
+                                } else {
+                                    echo "<span class='text-gray-500'>No image available or file not found.</span>";
+                                }
                             }
-
-                            echo "</td>";
+                    
+                                                echo "</td>";
                             echo "<td class='py-2 px-4 border-b text-gray-700'>
                                 <button type='button' class='text-white bg-blue-500 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2' onclick='showDetails(" . $row['id'] . ");'>
                                     <i class='fa-solid fa-box-archive'></i> View
@@ -330,7 +315,7 @@ if (!isset($_SESSION['admin_id'])) {
                             echo "</tr>";
                         }
                     } else {
-                        echo "<tr><td colspan='6' class='py-2 px-4 border-b text-gray-700'>No records found</td></tr>";
+                        echo "<tr><td colspan='5' class='py-2 px-4 text-center'>No addons found.</td></tr>";
                     }
                 ?>
             </tbody>
@@ -509,164 +494,6 @@ if (!isset($_SESSION['admin_id'])) {
 </main>
 
 </section>
-
-	<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
-	<script src="../scripts/script.js"></script>
-	<script src="addons.js"></script>
-    <script>
- function showDetails(id) {
-    // Make an AJAX request to fetch the details
-    fetch(`fetch-details.php?id=${id}`)
-        .then(response => response.json())
-        .then(data => {
-            if (data.error) {
-                console.error(data.error); // Handle error
-            } else {
-                // Populate the modal with the data
-                document.getElementById('modalTitle').textContent = data.name;
-                document.getElementById('modalPrice').textContent = `$${data.price}`;
-                document.getElementById('modalDescription').textContent = data.description;
-
-                // If there is an image, display it; otherwise, keep it hidden
-                if (data.picture) {
-                    document.getElementById('modalPicture').src = data.picture;
-                    document.getElementById('modalPicture').style.display = 'block';
-                } else {
-                    document.getElementById('modalPicture').style.display = 'none';
-                }
-
-                // Show the modal
-                document.getElementById('detailsModal').classList.remove('hidden');
-            }
-        })
-        .catch(error => console.error('Error:', error));
-}
-
-function closeModal() {
-    // Hide the modal when closed
-    document.getElementById('detailsModal').classList.add('hidden');
-}
-
-function archiveConfirmation(addonId) {
-    // Show the modal and attach the addon ID to the confirm button
-    const modal = document.getElementById('archiveModal');
-    modal.classList.remove('hidden');
-    const confirmButton = document.getElementById('confirmArchive');
-    confirmButton.onclick = function () {
-        archiveAddon(addonId);
-        closeModal();
-    };
-}
-
-function archiveAddon(addonId) {
-    // Create a request to archive the addon
-    const xhr = new XMLHttpRequest();
-    xhr.open("POST", "archive-addon.php", true);
-    xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-
-    xhr.onreadystatechange = function () {
-        if (xhr.readyState === 4) {
-            console.log("Server Response: ", xhr.responseText);
-            if (xhr.status === 200 && xhr.responseText.trim() === 'success') {
-                const row = document.getElementById('addon-' + addonId);
-                if (row) {
-                    row.style.display = 'none';
-                }
-                showModal('successModal', 'The addon has been successfully archived.');
-            } else {
-                showModal('errorModal', 'Failed to archive the addon. Please try again.');
-            }
-        }
-    };
-
-    // Send the addon ID to the server to mark it as archived
-    xhr.send("id=" + addonId);
-}
-
-function closeModal() {
-    // Hide the modal
-    const modal = document.getElementById('archiveModal');
-    modal.classList.add('hidden');
-}
-
-function showModal(modalId, message) {
-    console.log(`Showing modal: ${modalId} with message: ${message}`);
-    
-    // Find the modal by ID
-    const modal = document.getElementById(modalId);
-    
-    // Make sure the modal exists and is not already visible
-    if (modal) {
-        const messageContainer = modal.querySelector('.modal-message');
-        
-        // Check if the modal message container exists and set the message
-        if (messageContainer) {
-            messageContainer.textContent = message;
-        }
-
-        // Remove the 'hidden' class to show the modal
-        modal.classList.remove('hidden');
-        
-        // Automatically hide the modal after 3 seconds
-        setTimeout(() => {
-            modal.classList.add('hidden');
-        }, 3000);
-    } else {
-        console.log(`Modal with ID ${modalId} not found.`);
-    }
-}
-
-function closeDetailsModal() {
-    // Hide the modal
-    const modal = document.getElementById('detailsModal');
-    modal.classList.add('hidden');
-}
-
-function closeModal() {
-    // Hide the modal
-    const modal = document.getElementById('archiveModal');
-    modal.classList.add('hidden');
-}
-
- // Function to toggle between active and inactive add-ons table visibility
- function toggleAddonsTableVisibility() {
-        var activeAddonsTable = document.getElementById("activeAddonsTable");
-        var inactiveAddonsTable = document.getElementById("inactiveAddonsTable");
-        var toggleButton = document.getElementById("toggleAddonsButton");
-        
-        if (activeAddonsTable.style.display === "none") {
-            activeAddonsTable.style.display = "block";
-            inactiveAddonsTable.style.display = "none";
-            toggleButton.innerHTML = '<i class="fa-solid fa-toggle-off"></i> Show Inactive Add-ons'; // Change button text
-        } else {
-            activeAddonsTable.style.display = "none";
-            inactiveAddonsTable.style.display = "block";
-            toggleButton.innerHTML = '<i class="fa-solid fa-toggle-on"></i> Show Active Add-ons'; // Change button text
-        }
-    }
-
-    // Function to restore an addon
-function restoreAddon(addonId) {
-    // Send the request to restore the addon
-    var xhr = new XMLHttpRequest();
-    xhr.open("POST", "restore_addon.php", true);
-    xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-    xhr.onload = function() {
-        if (xhr.status == 200) {
-            // Reload the page immediately after the request succeeds
-            location.reload();
-        } else {
-            console.error("Request failed with status " + xhr.status);
-        }
-    };
-    xhr.send("addon_id=" + addonId);
-}
-
-
-
-
-    </script>
-
 
 </body>
 </html>

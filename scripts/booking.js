@@ -119,71 +119,461 @@ function moveCarousel(direction) {
       .catch((error) => console.error("Error:", error));
   });
 
-  let selectedRate = null;  // To track the currently selected rate
-
-  function selectRate(rateId, rateName, ratePrice) {
-      const rateCard = document.querySelector(`[data-id='${rateId}']`);
-      const allRateCards = document.querySelectorAll('.rate-card');
-      const totalPriceElement = document.getElementById("total-price");
-      const itemList = document.getElementById("selected-items");
-      const priceList = document.getElementById("selected-prices");
-      const rateButton = rateCard.querySelector(".select-button");
+  let selectedRate = null;  // Track selected rate
+  let selectedAddons = {};  // Store selected addons
   
-      // If there's a previously selected rate, unselect it and restore all rate cards
-      if (selectedRate && selectedRate !== rateCard) {
-          // Deselect the previously selected rate
-          selectedRate.classList.remove('opacity-50', 'pointer-events-none');
-          selectedRate.querySelector(".select-button").classList.remove('bg-red-700', 'text-white', 'hover:bg-red-900');
-          selectedRate.querySelector(".select-button").classList.add('bg-blue-600', 'text-white', 'hover:bg-blue-700');  // Restore original button color and hover
-          selectedRate.querySelector(".select-button").textContent = 'Select';  // Change button text back to 'Select'
+  function selectRate(id, name, price) {
+      console.log(`Rate selected: ${id}, ${name}, ₱${price}`);  // Debugging log
+  
+      const selectedItems = document.getElementById("selected-items");
+      const selectedPrices = document.getElementById("selected-prices");
+      const allRateCards = document.getElementsByClassName('rate-card');
+  
+      let rateCard = null;
+      for (let card of allRateCards) {
+          if (card.getAttribute('data-id') === id.toString()) {
+              rateCard = card;
+              break;
+          }
       }
   
-      // If the same rate is clicked again, unselect it
-      if (selectedRate === rateCard) {
-          selectedRate = null;
-          rateCard.classList.remove('opacity-50', 'pointer-events-none');  // Remove the grey-out effect
-          itemList.innerHTML = '';
-          priceList.innerHTML = '';
-          totalPriceElement.textContent = '₱0.00';
+      if (!rateCard) {
+          console.error(`Rate card with id ${id} not found!`);
+          return;
+      }
   
-          // Reset button text and color
-          rateButton.textContent = 'Select';
-          rateButton.classList.remove('bg-red-700', 'text-white', 'hover:bg-red-900');
-          rateButton.classList.add('bg-blue-600', 'text-white', 'hover:bg-blue-700');
+      const selectButton = rateCard.getElementsByClassName('select-button')[0];
   
-          // Enable all rate cards when unselected
-          allRateCards.forEach(card => {
-              card.classList.remove('opacity-50', 'pointer-events-none');
-          });
+      // Deselect previous rate if any
+      if (selectedRate) {
+          const rateItem = document.querySelector(`#selected-items li[data-id='${selectedRate.id}']`);
+          const priceItem = document.querySelector(`#selected-prices li[data-id='${selectedRate.id}']`);
+          if (rateItem && priceItem) {
+              rateItem.remove();
+              priceItem.remove();
+          }
+          document.querySelector(`input[name="rate_id"][value="${selectedRate.id}"]`)?.remove();
+      }
+  
+      // If rate is already selected, unselect it
+      if (selectedRate && selectedRate.id === id) {
+          unselectRate(selectButton, id, allRateCards);
       } else {
-          // Select the new rate
-          selectedRate = rateCard;
-          rateCard.classList.add('opacity-50', 'pointer-events-none');  // Disable the selected card
-          rateButton.classList.remove('bg-blue-600');
-          rateButton.classList.add('bg-red-700', 'text-white', 'hover:bg-red-900');  // Change button color to red with hover effect
-          rateButton.textContent = 'Unselect';  // Change button text to 'Unselect'
+          selectedRate = { id, name, price };  // Set the selected rate correctly
   
-          // Add selected rate details to the summary
-          itemList.innerHTML = `<li>${rateName}</li>`;
-          priceList.innerHTML = `<li>₱${ratePrice}</li>`;
+          // Add rate to the summary
+          selectedItems.innerHTML += `<li data-id="${id}">${name} <button onclick="removeRate(${id})"></button></li>`;
+          selectedPrices.innerHTML += `<li data-id="${id}">₱${price}</li>`;
   
-          // Update the total price
-          totalPriceElement.textContent = `₱${ratePrice}`;
+          // Add hidden input for the selected rate
+          const hiddenInput = document.createElement("input");
+          hiddenInput.type = "hidden";
+          hiddenInput.name = "rate_id";
+          hiddenInput.value = id;
+          document.getElementById("summary-form").appendChild(hiddenInput);
   
-          // Disable all other rate cards when one is selected
-          allRateCards.forEach(card => {
-              if (card !== rateCard) {
-                  card.classList.add('opacity-50', 'pointer-events-none');  // Grey out non-selected cards
-              } else {
-                  card.classList.remove('opacity-50', 'pointer-events-none');  // Ensure the selected card is interactive
+          // Change button to 'Unselect'
+          selectButton.innerText = "Unselect";
+          selectButton.classList.remove('bg-blue-600');
+          selectButton.classList.add('bg-red-600');
+  
+          // Disable other rate cards
+          for (let card of allRateCards) {
+              if (card.getAttribute('data-id') !== id.toString()) {
+                  card.classList.add('opacity-50', 'cursor-not-allowed');
+                  const button = card.getElementsByClassName('select-button')[0];
+                  button.disabled = true;
               }
-          });
+          }
       }
+  
+      // Update the total price and store selections
+      updateTotalPrice();
+      storeSelections(); 
   }
   
-  // Open modal function for the Info button
-  function openModal(rateId) {
-      // Open your modal here
-      console.log("Open modal for rate id:", rateId);
+  function unselectRate(selectButton, id, allRateCards) {
+      // Reset selectedRate to null
+      selectedRate = null;
+      console.log(`Rate selected: ${id}`);  // Debugging log
+  
+      // Change button to 'Select'
+      selectButton.innerText = "Select";
+      selectButton.classList.remove('bg-red-600');
+      selectButton.classList.add('bg-blue-600');
+  
+      // Re-enable all rate cards
+      for (let card of allRateCards) {
+          card.classList.remove('opacity-50', 'cursor-not-allowed');
+          const button = card.getElementsByClassName('select-button')[0];
+          button.disabled = false; // Enable the button
+      }
+  
+      // Remove rate from the summary
+      const rateItem = document.querySelector(`#selected-items li[data-id='${id}']`);
+      const priceItem = document.querySelector(`#selected-prices li[data-id='${id}']`);
+      if (rateItem && priceItem) {
+          rateItem.remove();
+          priceItem.remove();
+      }
+  
+      // Remove hidden input for the unselected rate
+      document.querySelector(`input[name="rate_id"][value="${id}"]`)?.remove();
+  
+      // Clear the check-out date and times
+      document.getElementById("check-out-date").value = "";
+      document.getElementById("check-in-time").value = "";
+      document.getElementById("check-out-time").value = "";
+  
+      // Update the total price
+      updateTotalPrice();
+      storeSelections();  // Store selections in JSON
   }
+  
+  function removeRate(id) {
+      const selectedItems = document.getElementById("selected-items");
+      const selectedPrices = document.getElementById("selected-prices");
+  
+      // Remove the rate from the summary (both name and price)
+      const rateItem = document.querySelector(`#selected-items li[data-id='${id}']`);
+      const priceItem = document.querySelector(`#selected-prices li[data-id='${id}']`);
+      if (rateItem && priceItem) {
+          rateItem.remove();
+          priceItem.remove();
+      }
+  
+      // Remove hidden input for the removed rate
+      const hiddenInput = document.querySelector(`input[name="rate_id"][value="${id}"]`);
+      if (hiddenInput) {
+          hiddenInput.remove();
+      }
+  
+      // Re-enable the rate card
+      const rateCard = document.querySelector(`.rate-card[data-id='${id}']`);
+      const selectButton = rateCard.getElementsByClassName('select-button')[0];
+      selectButton.innerText = "Select";
+      selectButton.classList.remove('bg-red-600');
+      selectButton.classList.add('bg-blue-600');
+      rateCard.classList.remove('opacity-50', 'cursor-not-allowed');
+  
+      // Reset selectedRate
+      selectedRate = null;
+  
+      // Update the total price
+      updateTotalPrice();
+      storeSelections();  // Store selections in JSON
+  }
+  
+  function toggleAddonSelection(id, name, price) {
+      console.log(`Addon selected: ${id}, ${name}, ₱${price}`);  // Debugging log
+  
+      const addonCard = document.querySelector(`[data-id="${id}"]`);
+      const addonButton = addonCard ? addonCard.querySelector('.select-button') : null;
+  
+      // Check if addonCard exists
+      if (!addonCard || !addonButton) {
+          console.error(`Addon card or button with id ${id} not found!`);
+          return;
+      }
+  
+      if (selectedAddons[id]) {
+          // Deselect the addon
+          delete selectedAddons[id];
+          addonCard.classList.remove('bg-red-500');
+          addonButton.classList.remove('bg-red-600');
+          addonButton.innerText = "Select";
+          document.querySelector(`input[name="addon_id_${id}"]`)?.remove();
+      } else {
+          // Select the addon
+          selectedAddons[id] = { name, price };
+          addonCard.classList.add('bg-red-500');
+          addonButton.classList.add('bg-red-600');
+          addonButton.innerText = "Unselect";
+          const hiddenInput = document.createElement("input");
+          hiddenInput.type = "hidden";
+          hiddenInput.name = `addon_id_${id}`;
+          hiddenInput.value = id;
+          document.getElementById("summary-form").appendChild(hiddenInput);
+      }
+  
+      // Update the summary and total price
+      updateSummary();
+      storeSelections(); 
+  }
+  
+  function updateSummary() {
+      const itemsList = document.getElementById('selected-items');
+      const pricesList = document.getElementById('selected-prices');
+      const totalPriceElement = document.getElementById('total-price');
+      let total = 0;
+  
+      // Clear current summary
+      itemsList.innerHTML = '';
+      pricesList.innerHTML = '';
+  
+      // Add selected rate to the summary
+      if (selectedRate) {
+          itemsList.innerHTML += `<li data-id="${selectedRate.id}">${selectedRate.name}</li>`;
+          pricesList.innerHTML += `<li data-id="${selectedRate.id}">₱${selectedRate.price}</li>`;
+          total += parseFloat(selectedRate.price);
+      }
+  
+      // Add selected addons to the summary
+      for (let id in selectedAddons) {
+          const addon = selectedAddons[id];
+          itemsList.innerHTML += `<li>${addon.name}</li>`;
+          pricesList.innerHTML += `<li>₱${addon.price}</li>`;
+          total += parseFloat(addon.price);
+      }
+  
+      // Update total price
+      totalPriceElement.textContent = '₱' + total.toFixed(2);
+  
+      // Update hidden fields with the current selection
+      document.getElementById('rate-id-field').value = selectedRate ? selectedRate.id : '';
+      document.getElementById('addon-ids-field').value = Object.keys(selectedAddons).join(',');
+      console.log('Rate ID:', document.getElementById('rate-id-field').value);
+      console.log('Addon IDs:', document.getElementById('addon-ids-field').value);
+  }
+  
+  function storeSelections() {
+      // This function can store selections in JSON or other mechanisms for later use
+  }
+  
+  
+  // Function to update the total price
+  function updateTotalPrice() {
+      const totalPriceElement = document.getElementById('total-price');
+      let total = 0;
+  
+      // Add selected rate price to the total
+      if (selectedRate) {
+          total += parseFloat(selectedRate.price);
+      }
+  
+      // Add selected addon prices to the total
+      for (let id in selectedAddons) {
+          const addon = selectedAddons[id];
+          total += parseFloat(addon.price);
+      }
+  
+      // Update the total price display
+      totalPriceElement.textContent = '₱' + total.toFixed(2);
+  }
+  
+  function storeSelections() {
+    // Get the input values from the form
+    const firstName = document.getElementById('first-name').value;
+    const lastName = document.getElementById('last-name').value;
+    const email = document.getElementById('email').value;
+    const mobileNumber = document.getElementById('mobile-number').value;
+    const checkInDate = document.getElementById('check-in-date').value;
+    const checkOutDate = document.getElementById('check-out-date').value;
+    const checkInTime = document.getElementById('check-in-time').value;
+    const checkOutTime = document.getElementById('check-out-time').value;
+
+    // Capture rate ID from the hidden field in the form
+    const rateIdField = document.getElementById('rate-id-field');
+    const rateId = rateIdField ? rateIdField.value : ''; // Use rate ID from the hidden field
+    console.log('Rate ID:', rateId); // Debugging line to ensure it is correctly captured
+
+    // Capture selected add-on IDs from the hidden field in the form
+    const addonIdsField = document.getElementById('addon-ids-field');
+    const addonIds = addonIdsField ? addonIdsField.value.split(',') : []; // Assuming the add-ons are stored as a comma-separated string
+    console.log('Selected Add-ons:', addonIds); // Debugging line to ensure it is correctly captured
+
+    // Prepare the selections object
+    const selections = {
+        user: {
+            firstName: firstName,
+            lastName: lastName,
+            email: email,
+            mobileNumber: mobileNumber
+        },
+        reservation: {
+            checkInDate: checkInDate,
+            checkOutDate: checkOutDate, // Store the calculated checkout date
+            checkInTime: checkInTime,   // Store the check-in time
+            checkOutTime: checkOutTime  // Store the calculated check-out time
+        },
+        rate: {
+            rateId: rateId // Store the rate ID
+        },
+        addons: addonIds // Store the selected add-on IDs
+    };
+
+    // Convert the selections object to JSON
+    const selectionsJSON = JSON.stringify(selections);
+
+    // Store it in localStorage (or use any other storage method)
+    localStorage.setItem('selections', selectionsJSON);
+
+    // Log the selections JSON for debugging purposes
+    console.log('Selections stored:', selectionsJSON);
+}
+
+
+
+
+
+
+  
+  document.addEventListener("DOMContentLoaded", () => {
+    const selectedItems = document.querySelectorAll(".select-button");
+    const checkInDateInput = document.getElementById("check-in-date");
+    const checkOutDateInput = document.getElementById("check-out-date");
+    const checkInTimeInput = document.getElementById("check-in-time");
+    const checkOutTimeInput = document.getElementById("check-out-time");
+  
+    let selectedRate = null;
+  
+    // Fetch rate details from the server
+    async function fetchRateDetails(rateId) {
+      try {
+        const response = await fetch(`../api/get-rate-details.php?id=${rateId}`);
+        const responseText = await response.text();
+        console.log("Response:", responseText);  // Log raw response
+  
+        // Try parsing the response as JSON
+        const rate = JSON.parse(responseText);
+        return rate;
+      } catch (error) {
+        console.error("Error fetching rate details:", error);
+      }
+    }
+  
+// Function to calculate the checkout date and time based on check-in date, time, and hours of stay
+function calculateCheckoutDate(checkInDate, checkInTime, hoursOfStay) {
+  // Create a new Date object for the check-in date and time
+  const checkInDateTime = new Date(`${checkInDate}T${checkInTime}`);
+  console.log("Initial Check-in DateTime:", checkInDateTime); // Log initial DateTime
+
+  // Add hours of stay to the check-in time
+  checkInDateTime.setHours(checkInDateTime.getHours() + hoursOfStay);
+  console.log("Updated Check-in DateTime after adding stay hours:", checkInDateTime); // Log after adding hours
+
+  // Extract the new checkout date and time
+  const checkoutDate = checkInDateTime.toISOString().split("T")[0]; // Get the date in YYYY-MM-DD format
+  const checkoutTime = checkInDateTime.toTimeString().split(":").slice(0, 2).join(":"); // Get the time in HH:MM format
+
+  // Debugging output
+  console.log("Calculated Checkout Date:", checkoutDate);
+  console.log("Calculated Checkout Time:", checkoutTime);
+
+  // If the checkout date goes past midnight, adjust the date correctly
+  if (checkInDateTime.getDate() !== new Date(`${checkInDate}T${checkInTime}`).getDate()) {
+    const nextDay = new Date(checkInDateTime);
+    nextDay.setDate(checkInDateTime.getDate() + 1); // Add 1 day if the checkout crosses midnight
+    return { checkoutDate: nextDay.toISOString().split("T")[0], checkoutTime };
+  }
+
+  return { checkoutDate, checkoutTime };
+}
+
+  
+function selectRate(rateId, rateName, ratePrice) {
+  console.log("Selected Rate ID:", rateId);  // Debugging to check if the rateId is passed correctly
+  const rateCard = document.querySelector(`.rate-card[data-id='${rateId}']`);
+  
+  if (!rateCard) {
+
+    return; // Exit if the rate card is not found
+  }
+
+  const selectButton = rateCard.querySelector('.select-button');
+
+  // Check if the button is in 'Select' state (i.e., the button text is 'Select')
+  if (selectButton.innerText !== "Unselect") {
+    return; // Exit the function if it's in 'Unselect' state
+  }
+
+  // Fetch rate details when a rate is selected
+  fetchRateDetails(rateId).then((rate) => {
+    if (rate) {
+      const { checkin_time, checkout_time, hoursofstay } = rate;
+
+      selectedRate = rate;
+
+      // Set check-in time and check-out time based on the rate details
+      checkInTimeInput.value = checkin_time;
+      checkOutTimeInput.value = checkout_time;
+
+      // Handle the check-in date change and calculate the check-out date
+      checkInDateInput.addEventListener("change", () => {
+        if (checkInDateInput.value && selectedRate) {
+          const { checkoutDate, checkoutTime } = calculateCheckoutDate(
+            checkInDateInput.value,
+            checkin_time,
+            hoursofstay
+          );
+
+          checkOutDateInput.value = checkoutDate;
+          checkOutTimeInput.value = checkoutTime;
+        }
+      });
+
+      // Calculate initial checkout date when a rate is first selected
+      if (checkInDateInput.value) {
+        const { checkoutDate, checkoutTime } = calculateCheckoutDate(
+          checkInDateInput.value,
+          checkin_time,
+          hoursofstay
+        );
+
+        checkOutDateInput.value = checkoutDate;
+        checkOutTimeInput.value = checkoutTime;
+      }
+    }
+  });
+}
+
+
+  
+// Function to handle unselecting a rate (preserve previous values)
+function unselectRateTime() {
+  // Check if selectedRate exists
+  if (selectedRate) {
+    const { checkin_time, checkout_time, hoursofstay } = selectedRate;
+
+    // Reset selectedRate to null
+    selectedRate = null;
+
+    // Set the check-in and check-out time based on previous rate values
+    checkInTimeInput.value = checkin_time;
+    checkOutTimeInput.value = checkout_time;
+
+    // Calculate the checkout date when unselecting
+    if (checkInDateInput.value) {
+      const { checkoutDate, checkoutTime } = calculateCheckoutDate(
+        checkInDateInput.value,
+        checkin_time,
+        hoursofstay
+      );
+      checkOutDateInput.value = checkoutDate;
+      checkOutTimeInput.value = checkoutTime;
+    }
+  }
+}
+
+  
+    // Attach event listeners to all "Select" buttons
+    selectedItems.forEach((button) => {
+      button.addEventListener("click", (e) => {
+        const rateId = e.target.dataset.id;
+        const rateName = e.target.dataset.name;
+        const ratePrice = e.target.dataset.price;
+        selectRate(rateId, rateName, ratePrice);
+      });
+    });
+  
+    // Example of a "Unselect" button functionality
+// Example of a "Unselect" button functionality
+const unselectButton = document.getElementById("unselect-button");
+if (unselectButton) {
+  unselectButton.addEventListener("click", unselectRateTime);
+}
+
+  });
+  
+  
   

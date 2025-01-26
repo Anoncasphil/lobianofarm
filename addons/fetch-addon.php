@@ -6,12 +6,9 @@ require '../db_connection.php'; // Include database connection
 
 if (isset($_GET['id'])) {
     $id = intval($_GET['id']); // Sanitize input
-    $sql = "SELECT name, price, description, picture, status FROM addons WHERE id = ?";
-    $stmt = $conn->prepare($sql);
-    if (!$stmt) {
-        die('Error in SQL prepare: ' . $conn->error);
-    }
 
+    // Prepare and execute query
+    $stmt = $conn->prepare("SELECT name, price, description, picture, status FROM addons WHERE id = ?");
     $stmt->bind_param("i", $id);
     $stmt->execute();
     $result = $stmt->get_result();
@@ -19,30 +16,25 @@ if (isset($_GET['id'])) {
     if ($result->num_rows > 0) {
         $row = $result->fetch_assoc();
 
-        if ($row['picture']) {
-            $imageData = base64_encode($row['picture']);
-            $imageType = 'image/png'; // Adjust based on the image format
-            $response = [
-                'name' => $row['name'],
-                'price' => $row['price'],
-                'description' => $row['description'],
-                'status' => $row['status'],
-                'picture' => 'data:' . $imageType . ';base64,' . $imageData
-            ];
-        } else {
-            $response = [
-                'name' => $row['name'],
-                'price' => $row['price'],
-                'description' => $row['description'],
-                'status' => $row['status'],
-                'picture' => null
-            ];
+        // Prepare response
+        $response = [
+            'name' => $row['name'],
+            'price' => $row['price'],
+            'description' => $row['description'],
+            'status' => $row['status'],
+            'picture' => $row['picture'] ? '../src/uploads/addons/' . $row['picture'] : null
+        ];
+
+        // Check if file exists
+        if ($response['picture'] && !file_exists($response['picture'])) {
+            $response['picture'] = null;
         }
 
-        echo json_encode($response); // Return JSON
+        echo json_encode($response); // Return JSON response
     } else {
         echo json_encode(['error' => 'No data found']);
     }
+
     $stmt->close();
     $conn->close();
 } else {

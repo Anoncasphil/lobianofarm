@@ -173,155 +173,138 @@ $stmt->close();
   <div class=" mt-6 overflow-x-auto flex space-x-6 scrollbar-none">
     <!-- Card 1 -->
     <?php
-// Include database connection
-include '../db_connection.php';
+        // Include database connection
+        include '../db_connection.php';
 
-// Fetch rates from the database
-$sql = "SELECT * FROM rates WHERE status = 'active'";
-$result = $conn->query($sql);
+        // Fetch rates from the database
+        $sql = "SELECT * FROM rates WHERE status = 'active'";
+        $result = $conn->query($sql);
 
-// Check if there are any results
-if ($result->num_rows > 0) {
-    // Add a wrapper with overflow-x-auto and flex to make the cards scrollable
-    echo "<div class='pb-6 overflow-x-auto flex space-x-6 scrollbar-hide scrollable-container'>"; // Apply scrollable-container class here
-    
-// Assuming the result from the database is already fetched into $result
-while ($row = $result->fetch_assoc()) {
-  $id = $row['id'];
-  $name = $row['name'];
-  $price = $row['price'];
-  $hours_of_stay = $row['hoursofstay'];
-  $picture = $row['picture'];
-  
-  // Generate the rate card with dynamic data and JavaScript functionality
-  echo "
-  <div class='flex-none max-w-sm bg-white border border-gray-200 rounded-lg shadow-sm relative rate-card' data-id='$id'>
-      <a href='#'>
-          <img class='rounded-t-lg w-full h-40 object-cover' src='../src/uploads/rates/$picture' alt='$name' />
-      </a>
-      <div class='p-5'>
-          <a href='#'>
-              <h5 class='mb-3 text-2xl font-semibold tracking-tight dark:text-blue-950'>$name</h5>
-          </a>
-          <div class='mb-2'>
-              <span class='text-lg font-medium text-gray-700'>₱$price</span>
+        // Check if there are any results
+        if ($result->num_rows > 0) {
+            // Add a wrapper with overflow-x-auto and flex to make the cards scrollable
+            echo "<div class='pb-6 overflow-x-auto flex space-x-6 scrollbar-hide scrollable-container'>"; // Apply scrollable-container class here
+            
+        // Assuming the result from the database is already fetched into $result
+        while ($row = $result->fetch_assoc()) {
+          $id = $row['id'];
+          $name = $row['name'];
+          $price = $row['price'];
+          $hours_of_stay = $row['hoursofstay'];
+          $picture = $row['picture'];
+          
+          // Generate the rate card with dynamic data and JavaScript functionality
+          echo "
+          <div class='flex-none max-w-sm bg-white border border-gray-200 rounded-lg shadow-sm relative rate-card' data-id='$id'>
+              <a href='#'>
+                  <img class='rounded-t-lg w-[284.18px] h-[160px] object-fill' src='../src/uploads/rates/$picture' alt='$name' />
+
+              </a>
+              <div class='p-5'>
+                  <a href='#'>
+                      <h5 class='mb-3 text-2xl font-semibold tracking-tight dark:text-blue-950'>$name</h5>
+                  </a>
+                  <div class='mb-2'>
+                      <span class='text-lg font-medium text-gray-700'>₱$price</span>
+                  </div>
+                  <div class='mb-5'>
+                      <span class='text-sm text-gray-600 mt-[-2]'>
+                          <i class='fas fa-clock'></i> $hours_of_stay hours
+                      </span>
+                  </div>
+                  <button onclick='openModal(\"$id\")' class='absolute top-2 right-2 text-white hover:text-blue-500'>
+                      <i class='fas fa-info-circle text-2xl'></i>
+                  </button>
+                  <div class='mt-4 text-center'>
+                    <button onclick='selectRate(\"$id\", \"$name\", \"$price\")' class='select-button bg-blue-600 text-white w-full font-bold py-2 px-4 rounded-md hover:bg-blue-700 transition duration-200' data-id='$id' data-price='$price' data-name='$name'>
+                        Select
+                    </button>
+                  </div>
+              </div>
           </div>
-          <div class='mb-5'>
-              <span class='text-sm text-gray-600 mt-[-2]'>
-                  <i class='fas fa-clock'></i> $hours_of_stay hours
-              </span>
-          </div>
-          <button onclick='openModal(\"$id\")' class='absolute top-2 right-2 text-white hover:text-blue-500'>
-              <i class='fas fa-info-circle text-2xl'></i>
-          </button>
-          <div class='mt-4 text-center'>
-              <button onclick='selectRate(\"$id\", \"$name\", \"$price\")' class='select-button bg-blue-600 text-white w-full font-bold py-2 px-4 rounded-md hover:bg-blue-700 transition duration-200'>
-                  Select
-              </button>
-          </div>
-      </div>
-  </div>
-  ";
-}
-  
-    
-    // Close the scrollable wrapper
-    echo "</div>";
-} else {
-    echo "No active rates available.";
-}
+          ";
+        }
+          
+            // Close the scrollable wrapper
+            echo "</div>";
+        } else {
+            echo "No active rates available.";
+        }
 
-// Close the database connection
-$conn->close();
-?>
-
-
-
-
-
-
-  
+        // Close the database connection
+        $conn->close();
+      ?>
   </div>
 </div>
 
-<!-- Addons -->
-<div id="addon" class="flex-4 bg-white p-6 rounded-3xl mt-5 shadow-lg">
+<!-- addons -->
+<div id="addons" class="flex-4 bg-white p-6 mb-10 rounded-3xl mt-5 shadow-lg">
   <h2 class="text-3xl font-extrabold text-gray-700">Add-ons</h2>
   <p class="mt-2 text-gray-600">Please choose your preferred add-ons.</p>
 
   <!-- Card View Section with Minimalistic Scrollbar -->
-  <div class="pb-6 mt-6 overflow-x-auto flex space-x-6 scrollbar-none">
+  <div class=" mt-6 overflow-x-auto flex space-x-6 scrollbar-none">
     <!-- Card 1 -->
-    <div class="relative bg-gray-100 p-4 rounded-lg shadow-md w-1/3 flex-shrink-0">
-      <h3 class="text-xl font-semibold text-gray-800">Add-ons 1</h3>
-      <p class="text-gray-500">Description for Add-ons 1.</p>
-      <div class="mt-4">
-        <span class="text-lg font-bold text-gray-800">$50</span>
-        <p class="text-sm text-gray-400">per night</p>
-      </div>
-      <!-- Info Icon -->
-      <button onclick="openModal('Add-ons1')" class="absolute top-2 right-2 text-gray-600 hover:text-blue-500">
-        <i class="fas fa-info-circle text-2xl"></i> <!-- Info Icon -->
-      </button>
-    </div>
+    <?php
+        // Include database connection
+        include '../db_connection.php';
 
-    <!-- Card 2 -->
-    <div class="relative bg-gray-100 p-4 rounded-lg shadow-md w-1/3 flex-shrink-0">
-      <h3 class="text-xl font-semibold text-gray-800">Add-ons 2</h3>
-      <p class="text-gray-500">Description for Add-ons 2.</p>
-      <div class="mt-4">
-        <span class="text-lg font-bold text-gray-800">$75</span>
-        <p class="text-sm text-gray-400">per night</p>
-      </div>
-      <!-- Info Icon -->
-      <button onclick="openModal('Add-ons2')" class="absolute top-2 right-2 text-gray-600 hover:text-blue-500">
-        <i class="fas fa-info-circle text-2xl"></i> <!-- Info Icon -->
-      </button>
-    </div>
+        // Fetch addons from the database
+        $sql = "SELECT * FROM addons WHERE status = 'active'";
+        $result = $conn->query($sql);
 
-    <!-- Card 3 -->
-    <div class="relative bg-gray-100 p-4 rounded-lg shadow-md w-1/3 flex-shrink-0">
-      <h3 class="text-xl font-semibold text-gray-800">Add-ons 3</h3>
-      <p class="text-gray-500">Description for Add-ons 3.</p>
-      <div class="mt-4">
-        <span class="text-lg font-bold text-gray-800">$100</span>
-        <p class="text-sm text-gray-400">per night</p>
-      </div>
-      <!-- Info Icon -->
-      <button onclick="openModal('Add-ons3')" class="absolute top-2 right-2 text-gray-600 hover:text-blue-500">
-        <i class="fas fa-info-circle text-2xl"></i> <!-- Info Icon -->
-      </button>
-    </div>
+        // Check if there are any results
+        if ($result->num_rows > 0) {
+            // Add a wrapper with overflow-x-auto and flex to make the cards scrollable
+            echo "<div class='pb-6 overflow-x-auto flex space-x-6 scrollbar-hide scrollable-container'>"; // Apply scrollable-container class here
+            
+        // Assuming the result from the database is already fetched into $result
+        while ($row = $result->fetch_assoc()) {
+          $id = $row['id'];
+          $name = $row['name'];
+          $price = $row['price'];
+          $description = $row['description'];
+          $picture = $row['picture'];
+          
+          // Generate the rate card with dynamic data and JavaScript functionality
+          echo "
+          <div class='flex-none max-w-[284.18] bg-white border border-gray-200 rounded-lg shadow-sm relative addon-card' data-id='$id'>
+              <a href='#'>
+                  <img class='rounded-t-lg w-[284.18px] h-[160px] object-fill' src='../src/uploads/addons/$picture' alt='$name' />
 
-    <!-- Card 4 -->
-    <div class="relative bg-gray-100 p-4 rounded-lg shadow-md w-1/3 flex-shrink-0">
-      <h3 class="text-xl font-semibold text-gray-800">Add-ons 4</h3>
-      <p class="text-gray-500">Description for Add-ons 4.</p>
-      <div class="mt-4">
-        <span class="text-lg font-bold text-gray-800">$125</span>
-        <p class="text-sm text-gray-400">per night</p>
-      </div>
-      <!-- Info Icon -->
-      <button onclick="openModal('Add-ons4')" class="absolute top-2 right-2 text-gray-600 hover:text-blue-500">
-        <i class="fas fa-info-circle text-2xl"></i> <!-- Info Icon -->
-      </button>
-    </div>
+              </a>
+              <div class='p-5'>
+                  <a href='#'>
+                      <h5 class='mb-3 text-2xl font-semibold tracking-tight dark:text-blue-950'>$name</h5>
+                  </a>
+                  <div class='mb-2'>
+                      <span class='text-lg font-medium text-gray-700'>₱$price</span>
+                  </div>
+                  <button onclick='openModal(\"$id\")' class='absolute top-2 right-2 text-white hover:text-blue-500'>
+                      <i class='fas fa-info-circle text-2xl'></i>
+                  </button>
+                  <div class='mt-4 text-center'>
+                      <button onclick='toggleAddonSelection(\"$id\", \"$name\", \"$price\")' class='select-button mt-8 bg-blue-600 text-white w-full font-bold py-2 px-4 rounded-md hover:bg-blue-700 transition duration-200'>
+                          Select
+                      </button>
+                  </div>
+              </div>
+          </div>
+          ";
+        }
+          
+            // Close the scrollable wrapper
+            echo "</div>";
+        } else {
+            echo "No active rates available.";
+        }
 
-    <!-- Card 5 -->
-    <div class="relative bg-gray-100 p-4 rounded-lg shadow-md w-1/3 flex-shrink-0">
-      <h3 class="text-xl font-semibold text-gray-800">Add-ons 5</h3>
-      <p class="text-gray-500">Description for Add-ons 5.</p>
-      <div class="mt-4">
-        <span class="text-lg font-bold text-gray-800">$150</span>
-        <p class="text-sm text-gray-400">per night</p>
-      </div>
-      <!-- Info Icon -->
-      <button onclick="openModal('Add-ons5')" class="absolute top-2 right-2 text-gray-600 hover:text-blue-500">
-        <i class="fas fa-info-circle text-2xl"></i> <!-- Info Icon -->
-      </button>
-    </div>
+        // Close the database connection
+        $conn->close();
+      ?>
   </div>
 </div>
+
 
 
 </div>
@@ -370,7 +353,7 @@ $conn->close();
         <div>
           <p class="text-gray-600 font-bold text-center">Item</p>
           <ul id="selected-items" class="text-gray-700 text-center">
-            <!-- Selected items will be inserted here -->
+            <!-- Selected rate and addons will be inserted here -->
           </ul>
         </div>
       </div>
@@ -378,27 +361,38 @@ $conn->close();
       <div class="text-center">
         <p class="text-gray-600 font-bold">Price</p>
         <ul id="selected-prices" class="text-gray-700">
-          <!-- Selected prices will be inserted here -->
+          <!-- Selected rates and addons prices will be inserted here -->
         </ul>
       </div>
     </div>
 
-        <!-- Total Below the Grid -->
-      <div class="mt-10 text-center">
-        <div class="grid grid-cols-2 gap-4 justify-items-center items-center">
-          <p class="text-gray-700 font-bold">Total</p>
-          <p id="total-price" class="text-gray-700 font-bold text-right">₱0</p>
-        </div>
+    <!-- Total Below the Grid -->
+    <div class="mt-10 text-center">
+      <div class="grid grid-cols-2 gap-4 justify-items-center items-center">
+        <p class="text-gray-700 font-bold">Total</p>
+        <p id="total-price" class="text-gray-700 font-bold text-right">₱0.00</p>
       </div>
+    </div>
 
+    <!-- Hidden rate ID field and addon ID field -->
+    <form id="summary-form" action="/submit-booking" method="POST">
+      <input type="text" id="rate-id-field" name="rate_id" hidden />
+      <input type="text" id="addon-ids-field" name="addon_ids" hidden />
+      <!-- Hidden field will be added dynamically when a rate is selected -->
+    </form>
   </div>
 </div>
 
 
 
+
+
+
+
+
 <!-- Proceed to Payment Button -->
 <div class="mt-6 flex justify-center">
-  <button class="bg-blue-600 text-white font-bold py-3 w-full px-6 rounded-md shadow-lg hover:bg-blue-700 transition duration-200">
+  <button onclick="prepareForSubmission()" class= "bg-blue-600 text-white font-bold py-3 w-full px-6 rounded-md shadow-lg hover:bg-blue-700 transition duration-200">
     Proceed to Payment
   </button>
 </div>

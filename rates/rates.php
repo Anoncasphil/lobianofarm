@@ -108,7 +108,7 @@ if (!isset($_SESSION['admin_id'])) {
 					}
 					?>
 
-					<!-- HTML to wormation -->
+					<!-- HTML to display the profile information -->
 					<div class="profile flex items-center space-x-4 cursor-pointer">
 						<img class="w-10 h-10 rounded-full" src="<?= htmlspecialchars($profile_picture) ?>" alt="Profile Picture">
 
