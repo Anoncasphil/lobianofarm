@@ -7,7 +7,13 @@ document.addEventListener('DOMContentLoaded', function() {
         defaultDate: "today",
         inline: true,
         onChange: function(selectedDates, dateStr) {
-            if (selectedDates.length === 2) {
+            if (selectedDates.length === 1) {
+                // If only one date is selected, set both check-in and check-out to the same date
+                document.getElementById('reservation_check_in_date').value = 
+                    flatpickr.formatDate(selectedDates[0], "Y-m-d");
+                document.getElementById('reservation_check_out_date').value = 
+                    flatpickr.formatDate(selectedDates[0], "Y-m-d");
+            } else if (selectedDates.length === 2) {
                 // Update hidden fields
                 document.getElementById('reservation_check_in_date').value = 
                     flatpickr.formatDate(selectedDates[0], "Y-m-d");

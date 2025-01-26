@@ -29,7 +29,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 checkInDate: info.event.start.toISOString().slice(0, 10),
                 checkOutDate: info.event.end
                     ? info.event.end.toISOString().slice(0, 10)
-                    : "N/A"
+                    : info.event.start.toISOString().slice(0, 10)
             };
             console.log('Stored reservation data:', currentReservation); // Debug log
 
