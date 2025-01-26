@@ -1,82 +1,68 @@
 <?php
-include '../db_connection.php';  // Include database connection
+// Include database connection
+require_once '../db_connection.php';
 
+// Check if the form is submitted
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    // Get form values
-    $id = $_POST['id'];  // Get the rate ID
+    // Get the data from the form
+    $id = $_POST['id'];
     $name = $_POST['name'];
     $price = $_POST['price'];
-    $hours = $_POST['hoursofstay'];
     $description = $_POST['description'];
+    $hoursofstay = $_POST['hoursofstay'];
+    $checkin_time = $_POST['checkin'];
+    $checkout_time = $_POST['checkout'];
 
-    // Initialize variables for updating fields
-    $updateFields = [];
-    $updateValues = [];
-
-    // Add fields to update if they are provided
-    if (!empty($name)) {
-        $updateFields[] = "name = ?";
-        $updateValues[] = $name;
-    }
-
-    if (!empty($price)) {
-        $updateFields[] = "price = ?";
-        $updateValues[] = $price;
-    }
-
-    if (!empty($description)) {
-        $updateFields[] = "description = ?";
-        $updateValues[] = $description;
-    }
-
-    if (!empty($hours)) {
-        $updateFields[] = "hoursofstay = ?";
-        $updateValues[] = $hours;
-    }
-
-    // Handle the file upload if a new picture is provided
+    // Handle file upload (if any)
+    $picture = null;
     if (isset($_FILES['picture']) && $_FILES['picture']['error'] == 0) {
-        $fileTmpPath = $_FILES['picture']['tmp_name'];
+        $target_dir = "../src/uploads/rates/";
 
-        // Ensure the file is a valid image
-        $imageInfo = getimagesize($fileTmpPath);
-        if ($imageInfo !== false) {
-            $fileContent = file_get_contents($fileTmpPath);  // Get the image content in binary form
-            $updateFields[] = "picture = ?";
-            $updateValues[] = $fileContent;
+        // Check if the directory exists, if not, create it
+        if (!file_exists($target_dir)) {
+            mkdir($target_dir, 0777, true);
+        }
+
+        $original_file_name = basename($_FILES["picture"]["name"]);
+        $imageFileType = strtolower(pathinfo($original_file_name, PATHINFO_EXTENSION));
+
+        // Generate a unique file name using timestamp and random number
+        $unique_name = time() . '_' . rand(1000, 9999) . '.' . $imageFileType;
+        $target_file = $target_dir . $unique_name;
+
+        // Check if the file is a valid image
+        $valid_types = array("jpg", "jpeg", "png");
+        if (in_array($imageFileType, $valid_types)) {
+            if (move_uploaded_file($_FILES["picture"]["tmp_name"], $target_file)) {
+                $picture = $unique_name;
+            } else {
+                echo "Sorry, there was an error uploading your file.";
+                exit;
+            }
         } else {
-            echo "Invalid image file.";  // Handle invalid image type
-            exit();
+            echo "Sorry, only JPG, JPEG, PNG files are allowed.";
+            exit;
         }
     }
 
-    // Only proceed if there are fields to update
-    if (count($updateFields) > 0) {
-        // Prepare the SQL query with dynamic updates
-        $sql = "UPDATE rates SET " . implode(", ", $updateFields) . " WHERE id = ?";
-
-        // Prepare and execute the statement
-        $stmt = $conn->prepare($sql);
-        
-        // Bind parameters dynamically
-        $updateValues[] = $id; // Always bind the ID last for WHERE clause
-        $types = str_repeat('s', count($updateValues) - 1) . 'i'; // Assuming all fields except ID are strings, adjust types accordingly
-        $stmt->bind_param($types, ...$updateValues);
-
-        // Execute the query
-        if ($stmt->execute()) {
-            header('Location: rates.php');  // Redirect to the rates page
-            exit();
-        } else {
-            echo "Error updating rate: " . $stmt->error;  // Display error if query fails
-        }
-
-        // Close the statement
-        $stmt->close();
+    // Prepare the SQL query for updating the rate
+    if ($picture) {
+        $sql = "UPDATE rates SET name = '$name', price = '$price', description = '$description', hoursofstay = '$hoursofstay', checkin_time = '$checkin_time', checkout_time = '$checkout_time', picture = '$picture' WHERE id = '$id'";
     } else {
-        echo "No fields to update.";  // Handle case where no fields are selected for update
+        $sql = "UPDATE rates SET name = '$name', price = '$price', description = '$description', hoursofstay = '$hoursofstay', checkin_time = '$checkin_time', checkout_time = '$checkout_time' WHERE id = '$id'";
     }
-}
 
-$conn->close();  // Close the database connection
+    // Execute the query
+    if ($conn->query($sql) === TRUE) {
+        echo "Rate updated successfully";
+        header("Location: rates.php");  // Redirect to the rates page after success
+    } else {
+        echo "Error: " . $sql . "<br>" . $conn->error;
+    }
+
+    // Close the connection
+    $conn->close();
+}
 ?>
+
+<!-- The modal form code (already provided by you) will be displayed here -->

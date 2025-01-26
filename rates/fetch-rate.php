@@ -6,7 +6,7 @@ require '../db_connection.php'; // Include database connection
 
 if (isset($_GET['id'])) {
     $id = intval($_GET['id']); // Sanitize input
-    $sql = "SELECT name, price, description, hoursofstay, picture FROM rates WHERE id = ?";
+    $sql = "SELECT name, price, description, hoursofstay, checkin_time, checkout_time, picture FROM rates WHERE id = ?";
     $stmt = $conn->prepare($sql);
     if (!$stmt) {
         die('Error in SQL prepare: ' . $conn->error);
@@ -18,26 +18,20 @@ if (isset($_GET['id'])) {
 
     if ($result->num_rows > 0) {
         $row = $result->fetch_assoc();
-        
-        if ($row['picture']) {
-            $imageData = base64_encode($row['picture']);
-            $imageType = 'image/png'; // Adjust based on the image format
-            $response = [
-                'name' => $row['name'],
-                'price' => $row['price'],
-                'description' => $row['description'],
-                'hoursofstay' => $row['hoursofstay'],
-                'picture' => 'data:' . $imageType . ';base64,' . $imageData
-            ];
-        } else {
-            $response = [
-                'name' => $row['name'],
-                'price' => $row['price'],
-                'description' => $row['description'],
-                'hoursofstay' => $row['hoursofstay'],
-                'picture' => null
-            ];
-        }
+
+        // Get the picture file path from the database
+        $picturePath = $row['picture'] ? "../src/uploads/rates/" . $row['picture'] : null;
+
+        // Prepare the response
+        $response = [
+            'name' => $row['name'],
+            'price' => $row['price'],
+            'description' => $row['description'],
+            'hoursofstay' => $row['hoursofstay'],
+            'checkin_time' => $row['checkin_time'],
+            'checkout_time' => $row['checkout_time'],
+            'picture' => $picturePath
+        ];
 
         echo json_encode($response); // Return JSON
     } else {
@@ -48,5 +42,4 @@ if (isset($_GET['id'])) {
 } else {
     echo json_encode(['error' => 'Invalid request']);
 }
-
 ?>
