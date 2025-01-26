@@ -18,11 +18,13 @@ $reservations = array();
 
 // Fetch each row and map it to the array
 while ($row = $result->fetch_assoc()) {
-    // Add 1 day to the check-in and check-out dates
     $checkInDate = new DateTime($row['reservation_check_in_date']);
     $checkOutDate = new DateTime($row['reservation_check_out_date']);
-    $checkInDate->modify('+1 day');
-    $checkOutDate->modify('+1 day'); // Add 1 day to the check-out date
+    
+    // Ensure the check-out date is not before the check-in date
+    if ($checkInDate == $checkOutDate) {
+        $checkOutDate = clone $checkInDate;
+    }
 
     // Format the new dates back to string
     $checkInDateFormatted = $checkInDate->format('Y-m-d');
@@ -36,7 +38,7 @@ while ($row = $result->fetch_assoc()) {
         'start' => $checkInDateFormatted,
         'end' => $checkOutDateFormatted,
         'status' => $row['title'],
-        'backgroundColor' => $row['title'] === 'Pending' ? '#FFA500' : '#008000' // Conditional color coding
+        'backgroundColor' => $row['title'] === 'Pending' ? '#FFA500' : '#008000' // Conditional color coding  
     );
 }
 

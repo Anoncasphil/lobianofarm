@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', function () {
     let currentReservation = null; // Holds data for the currently selected reservation
 
     const modalId = document.getElementById('modal-id'); // Reference for modal-id
-    const modalName = document.getElementById('modal-name');
+    const modalName = document.getElementById('modal-name');    
     const modalReservationDate = document.getElementById('modal-reservation-date');
     const modalDesiredDate = document.getElementById('modal-desired-date');
 
@@ -26,12 +26,14 @@ document.addEventListener('DOMContentLoaded', function () {
                 id: info.event.id,
                 firstName: info.event.extendedProps.firstName,
                 lastName: info.event.extendedProps.lastName,
-                checkInDate: info.event.start.toISOString().slice(0, 10),
-                checkOutDate: info.event.end
-                    ? info.event.end.toISOString().slice(0, 10)
-                    : info.event.start.toISOString().slice(0, 10)
+                checkInDate: info.event.startStr, // Use startStr for check-in date
+                checkOutDate: info.event.endStr || info.event.startStr // Use endStr for check-out date, or startStr if endStr is null
             };
             console.log('Stored reservation data:', currentReservation); // Debug log
+            // Ensure the check-out date is set to the same as the check-in date if they are the same
+            if (!currentReservation.checkOutDate) {
+                currentReservation.checkOutDate = currentReservation.checkInDate;
+            }
 
             // Populate modal fields
             modalId.textContent = currentReservation.id; // Display reservation ID
@@ -84,7 +86,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         (ev) =>
                             ev.extendedProps.firstName === currentReservation.firstName &&
                             ev.extendedProps.lastName === currentReservation.lastName &&
-                            ev.start.toISOString().slice(0, 10) === currentReservation.checkInDate
+                            ev.startStr === currentReservation.checkInDate
                     );
 
                     if (event) {

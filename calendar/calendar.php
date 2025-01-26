@@ -146,15 +146,13 @@ if (!isset($_SESSION['admin_id'])) {
 
 		<!-- MAIN -->
 			<main>
-				
-			<div id="calendar"></div>
-
+				<div id="calendar"></div>
 
 				<div id="dateModal" class="modal">
 					<div class="modal-content">
 						<span class="close" id="closeModal">&times;</span>
 						<h2>Reservation Details</h2>
-						<p><strong>id:</strong> <span id="modal-id"></span></p>
+						<p><strong>Reservation ID:</strong> <span id="modal-id"></span></p>
 						<p><strong>Guest Name:</strong> <span id="modal-name"></span></p>
 						<p><strong>Check-in Date:</strong> <span id="modal-reservation-date"></span></p>
 						<p><strong>Check-out Date:</strong> <span id="modal-desired-date"></span></p>
