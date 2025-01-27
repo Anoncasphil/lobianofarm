@@ -181,6 +181,8 @@ if (!isset($_SESSION['admin_id'])) {
                     $reservations = getReservations();
                     if (!empty($reservations)) {
                         foreach ($reservations as $reservation) {
+                            $userDetails = getUserDetails($reservation['user_id'], $conn);
+                            $userName = htmlspecialchars($userDetails['first_name']) . ' ' . htmlspecialchars($userDetails['last_name']);
                             $statusColor = match($reservation['status']) {
                                 'Approved' => 'text-green-500 dark:text-green-400',
                                 'Pending' => 'text-orange-500 dark:text-orange-400',
@@ -189,7 +191,7 @@ if (!isset($_SESSION['admin_id'])) {
                             };
                             echo "<tr class='bg-gray-50 border-b dark:bg-gray-900 dark:border-gray-800'>";
 							echo "<td class='py-2 px-4 border-b text-gray-700'>" . $reservation['id'] . "</td>";
-                            echo "<td class='py-2 px-4 border-b text-gray-700'>" . htmlspecialchars($reservation['user_id']) . "</td>";
+                            echo "<td class='py-2 px-4 border-b text-gray-700'>" . $userName . "</td>";
                             echo "<td class='py-2 px-4 border-b text-gray-700'>" . htmlspecialchars($reservation['formatted_date']) . "</td>";
                             echo "<td class='py-2 px-4 border-b font-medium " . $statusColor . "'>" . htmlspecialchars($reservation['status']) . "</td>";
                             echo "<td class='py-2 px-4 border-b'>
@@ -288,3 +290,18 @@ if (!isset($_SESSION['admin_id'])) {
 	
 </body>
 </html>
+
+<?php
+// Function to get user details by user_id
+function getUserDetails($user_id, $conn) {
+    $query = "SELECT first_name, last_name FROM user_tbl WHERE user_id = ?";
+    $stmt = $conn->prepare($query);
+    if ($stmt === false) {
+        die('MySQL prepare error: ' . $conn->error);
+    }
+    $stmt->bind_param("i", $user_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    return $result->fetch_assoc();
+}
+?>
