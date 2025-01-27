@@ -48,7 +48,7 @@ include '../db_connection.php';
                     $_SESSION['last_name'] = $user['last_name'];
                     $_SESSION['user_email'] = $user['email'];
                     $_SESSION['contact_no'] = $user['contact_no']; // Add this line
-                    header("Location: newhome.php");
+                    header("Location: homepage.php");
                     exit();
                 }
             }
