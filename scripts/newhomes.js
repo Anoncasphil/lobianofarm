@@ -84,7 +84,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const formattedDateForUrl = checkInDate.split('/').reverse().join('-');
 
     // Redirect to the booking page with the selected check-in date
-    const url = `/Admin/landing_page_customer/booking.php?checkin=${formattedDateForUrl}`;
+    const url = `booking.php?checkin=${formattedDateForUrl}`;
     window.location.href = url;
   });
 });
