@@ -70,7 +70,7 @@ $stmt->close();
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <script src="../scripts/booking.js" defer></script>
-    <script src="../scripts/userpayment.js" defer></script>
+    <script src="../scripts/userpayments.js" defer></script>
     <link rel="stylesheet" href="../styles/booking.css">
     <link href="../dist/output.css" rel="stylesheet">
 
@@ -144,14 +144,15 @@ $stmt->close();
   <div class="max-w-screen-xl mx-auto flex gap-8 mt-10">
 
 <!-- 4-Column Wide Div -->
+ 
 <div class="flex-4">
+<form id="reservation-form">
   <div id="basic-details" class="flex-4 bg-white p-6 rounded-3xl shadow-lg">
     <h2 class="text-3xl font-extrabold text-gray-700">RESERVATION DETAILS</h2>
     <p class="mt-2 text-gray-600">Here are your reservation details, please review the following fields.</p>
 
 <!-- Personal Information Section -->
 <div class="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
-
     <input type="hidden" name="user_id" id="user_id" />
   <!-- First Name -->
   <div class="relative">
@@ -169,8 +170,8 @@ $stmt->close();
 <div class="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
   <!-- Email -->
   <div class="relative">
-    <input type="email" id="email-p" class="peer font-semibold p-3 pt-5 w-full border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-transparent text-blue-950" placeholder=" "  value="email" disabled/>
-    <label for="email" class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-600 text-sm font-medium transition-all duration-200">Email</label>
+    <input type="email" id="email-p" class="peer font-semibold p-3 pt-5 w-full border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-transparent text-blue-950" placeholder=" "  value="email" readonly/>
+    <label for="email-p" class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-600 text-sm font-medium transition-all duration-200">Email</label>
   </div>
   <!-- Mobile Number -->
   <div class="relative">
@@ -293,6 +294,8 @@ $stmt->close();
 
 
   </div>
+
+  </form>
 </section>
 
 <!-- Modal -->

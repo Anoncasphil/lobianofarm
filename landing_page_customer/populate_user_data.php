@@ -5,8 +5,18 @@ session_start();
 // Include the database connection file
 include '../db_connection.php';
 
-// Set the fixed user_id (in this case, 23)
-$user_id = 23;
+// Check if the user_id is stored in the session
+if (!isset($_SESSION['user_id'])) {
+    // If user_id is not set in the session, return an error
+    echo json_encode([
+        'success' => false,
+        'message' => 'User not logged in.'
+    ]);
+    exit;
+}
+
+// Get the user_id from the session
+$user_id = $_SESSION['user_id'];
 
 // Query to fetch user data
 $query = "SELECT first_name, last_name, email, contact_no FROM user_tbl WHERE user_id = $user_id";
