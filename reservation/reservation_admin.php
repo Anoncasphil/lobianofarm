@@ -181,22 +181,22 @@ if (!isset($_SESSION['admin_id'])) {
                     $reservations = getReservations();
                     if (!empty($reservations)) {
                         foreach ($reservations as $reservation) {
-                            $statusColor = match($reservation['title']) {
+                            $statusColor = match($reservation['status']) {
                                 'Approved' => 'text-green-500 dark:text-green-400',
                                 'Pending' => 'text-orange-500 dark:text-orange-400',
                                 'Rescheduled' => 'text-blue-500 dark:text-blue-400',
                                 default => 'text-gray-500'
                             };
                             echo "<tr class='bg-gray-50 border-b dark:bg-gray-900 dark:border-gray-800'>";
-							echo "<td class='py-2 px-4 border-b text-gray-700'>" . $reservation['reservation_id'] . "</td>";
-                            echo "<td class='py-2 px-4 border-b text-gray-700'>" . htmlspecialchars($reservation['first_name']) . " " . htmlspecialchars($reservation['last_name']) . "</td>";
+							echo "<td class='py-2 px-4 border-b text-gray-700'>" . $reservation['id'] . "</td>";
+                            echo "<td class='py-2 px-4 border-b text-gray-700'>" . htmlspecialchars($reservation['user_id']) . "</td>";
                             echo "<td class='py-2 px-4 border-b text-gray-700'>" . htmlspecialchars($reservation['formatted_date']) . "</td>";
-                            echo "<td class='py-2 px-4 border-b font-medium " . $statusColor . "'>" . htmlspecialchars($reservation['title']) . "</td>";
+                            echo "<td class='py-2 px-4 border-b font-medium " . $statusColor . "'>" . htmlspecialchars($reservation['status']) . "</td>";
                             echo "<td class='py-2 px-4 border-b'>
         <button 
             type='button' 
             class='view-button text-white bg-blue-500 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2' 
-            data-id='" . $reservation['reservation_id'] . "'>
+            data-id='" . $reservation['id'] . "'>
             View
         </button>
       </td>";
