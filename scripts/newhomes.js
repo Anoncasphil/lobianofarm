@@ -1,57 +1,94 @@
-document.addEventListener("DOMContentLoaded", () => {
-  // Mock data for reserved dates
-  const reservedDates = [
-    { start: "2025-01-25", end: "2025-01-27" },
-    { start: "2025-02-01", end: "2025-02-03" },
-    { start: "2025-02-10", end: "2025-02-12" }
-  ];
-
-  // Convert reserved date ranges to an array of dates
-  const disabledDates = [];
-  reservedDates.forEach(range => {
-    let start = new Date(range.start);
-    let end = new Date(range.end);
-
-    while (start <= end) {
-      disabledDates.push(start.toISOString().split('T')[0]); // Store in YYYY-MM-DD format
-      start.setDate(start.getDate() + 1);
-    }
-  });
-
-  // Initialize Flatpickr for the check-in date picker
-  flatpickr("#check-in", {
-    disable: disabledDates, // Disable reserved dates
-    dateFormat: "Y-m-d", // Format for displaying selected dates
-  });
-
-// Function to open the modal
-function openModal() {
-  const modal = document.getElementById('checkInModal');
-  modal.classList.remove('hidden'); // Show the modal
-
-  // Apply the slide-in animation
-  modal.style.animation = 'slideInRight 0.5s ease-out forwards';
-
-  // Hide the modal after 3 seconds with the slide-out effect
-  setTimeout(() => {
-    modal.classList.add('hidden'); // This will trigger the slide-out animation
-  }, 3000);
+// Function to format the date as mm/dd/yyyy
+function formatDate(date) {
+  const d = new Date(date);
+  const month = String(d.getMonth() + 1).padStart(2, '0');  // Add leading zero if needed
+  const day = String(d.getDate()).padStart(2, '0');  // Add leading zero if needed
+  const year = d.getFullYear();
+  return `${month}/${day}/${year}`;  // Return the formatted date
 }
 
-// Book button click handler
-const bookButton = document.getElementById("book-btn");
-bookButton.addEventListener("click", () => {
-  const checkInDate = document.getElementById("check-in").value;
+document.addEventListener("DOMContentLoaded", () => {
+  // Fetch the reserved dates from the PHP script
+  fetch('get_reserved_dates.php') // Adjust the path to your PHP endpoint
+    .then(response => response.json())
+    .then(reservedDateRanges => {
+      // Parse the reserved dates into an array
+      const reservedDates = [];
 
-  if (!checkInDate) {
-    openModal(); // Show modal instead of alert
-    return;
+      reservedDateRanges.forEach(range => {
+        let start = new Date(range.start);
+        let end = new Date(range.end);
+
+        // Add all dates within the range to reservedDates
+        while (start <= end) {
+          reservedDates.push(start.toISOString().split('T')[0]); // Format as YYYY-MM-DD
+          start.setDate(start.getDate() + 1); // Increment day
+        }
+      });
+
+      // Initialize the disabledDates array
+      const disabledDates = [...reservedDates];
+
+      // Disable 30 days before today
+      const today = new Date();
+      const startDate = new Date();
+      startDate.setDate(today.getDate() - 30); // 30 days before today
+
+      // Add all dates 30 days before today to disabledDates
+      let day = new Date(startDate);
+      while (day <= today) {
+        disabledDates.push(day.toISOString().split('T')[0]); // Format as YYYY-MM-DD
+        day.setDate(day.getDate() + 1); // Increment day
+      }
+
+      // Initialize Flatpickr
+      flatpickr("#check-in", {
+        disable: disabledDates, // Disable the dates in the array
+        dateFormat: "m/d/Y", // Set the format to mm/dd/yyyy
+        onChange: function(selectedDates, dateStr, instance) {
+          // Format the selected date as mm/dd/yyyy and update the input value
+          const formattedDate = formatDate(dateStr);
+          document.getElementById("check-in").value = formattedDate;
+        },
+      });
+    })
+    .catch(error => {
+      console.error('Error fetching reserved dates:', error);
+    });
+
+  // Function to open the modal
+  function openModal() {
+    const modal = document.getElementById('checkInModal');
+    modal.classList.remove('hidden'); // Show the modal
+
+    // Apply the slide-in animation
+    modal.style.animation = 'slideInRight 0.5s ease-out forwards';
+
+    // Hide the modal after 3 seconds with the slide-out effect
+    setTimeout(() => {
+      modal.classList.add('hidden'); // This will trigger the slide-out animation
+    }, 3000);
   }
 
-  // Redirect to the booking page with the selected check-in date
-  const url = `/Admin/landing_page_customer/booking.php?checkin=${checkInDate}`;
-  window.location.href = url;
+  // Book button click handler
+  const bookButton = document.getElementById("book-btn");
+  bookButton.addEventListener("click", () => {
+    const checkInDate = document.getElementById("check-in").value;
+
+    if (!checkInDate) {
+      openModal(); // Show modal instead of alert
+      return;
+    }
+
+    // Format the date for the URL (mm/dd/yyyy)
+    const formattedDateForUrl = checkInDate.split('/').reverse().join('-');
+
+    // Redirect to the booking page with the selected check-in date
+    const url = `/Admin/landing_page_customer/booking.php?checkin=${formattedDateForUrl}`;
+    window.location.href = url;
+  });
 });
+
 
 
 
@@ -91,7 +128,7 @@ bookButton.addEventListener("click", () => {
     });
   });
 
-});
+
 
 // Function to show the success modal with a message
 function showSuccessModal(message) {
@@ -104,24 +141,25 @@ function showSuccessModal(message) {
   }, 3000); // 3000ms = 3 seconds
 }
 
-// Function to show the error modal with a message
-function showErrorModal(message) {
-  const modal = document.getElementById('errorModal');
-  const messageElement = modal.querySelector('.modal-message');
-  messageElement.textContent = message; // Set the error message
-  modal.classList.remove('hidden'); // Show the modal
-  setTimeout(() => {
-    modal.classList.add('hidden'); // Hide the modal after 3 seconds
-  }, 3000); // 3000ms = 3 seconds
-}
 
+// Book button click handler
 // Book button click handler
 const bookButton = document.getElementById("book-btn");
 bookButton.addEventListener("click", () => {
   const checkInDate = document.getElementById("check-in").value;
 
+  // Check if a date is selected
   if (!checkInDate) {
     showErrorModal("Please select a check-in date."); // Show error modal if no date selected
+    return;
+  }
+
+  // Get today's date in YYYY-MM-DD format
+  const today = new Date().toISOString().split('T')[0]; // Format the date as YYYY-MM-DD
+
+  // Check if the selected date is in the past or the current date
+  if (checkInDate <= today) {
+    showErrorModal("Date input is invalid. Please select a future date."); // Show error modal for invalid date
     return;
   }
 
@@ -133,8 +171,25 @@ bookButton.addEventListener("click", () => {
   }, 3000); // Wait for the success modal to disappear before redirect
 });
 
-// JavaScript to hide the preloader once the page is fully loaded
-window.addEventListener("load", function() {
-  // Hide the preloader after the page is loaded
-  document.getElementById('preloader').style.display = 'none';
-});
+// Function to show error modal
+function showErrorModal(message) {
+  const modal = document.getElementById("checkInModal");
+  const modalMessage = document.getElementById("modalMessage");
+
+  // Set the error message in the modal
+  modalMessage.textContent = message;
+
+  // Show the modal
+  modal.classList.remove("hidden");
+}
+
+// Function to close the modal
+function closeModal() {
+  const modal = document.getElementById("checkInModal");
+  modal.classList.add("hidden");
+}
+
+// Function to show success modal (for simplicity, just a placeholder function)
+function showSuccessModal(message) {
+  alert(message);  // Replace with your actual modal implementation
+}

@@ -70,3 +70,34 @@
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
+
+.flatpickr-calendar {
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.flatpickr-day {
+  font-size: 14px;
+  border-radius: 50%;
+  transition: background-color 0.3s;
+}
+
+.flatpickr-day:hover {
+  background-color: #e0f7fa;
+  color: #00796b;
+}
+
+.flatpickr-day.reserved-date {
+  background-color: #fa0000 !important; /* Custom background color for reserved dates */
+  color: #ffffff !important;           /* Text color */
+  cursor: not-allowed !important;      /* Cursor style */
+  border-radius: 50%;                  /* Optional: Make the date a circle */
+}
+
+
+
+.flatpickr-day.selected {
+  background-color: #0288d1 !important;
+  color: #ffffff !important;
+}

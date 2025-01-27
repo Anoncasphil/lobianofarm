@@ -48,7 +48,7 @@ include '../db_connection.php';
                     $_SESSION['last_name'] = $user['last_name'];
                     $_SESSION['user_email'] = $user['email'];
                     $_SESSION['contact_no'] = $user['contact_no']; // Add this line
-                    header("Location: main_page_logged.php");
+                    header("Location: newhome.php");
                     exit();
                 }
             }
@@ -65,7 +65,7 @@ include '../db_connection.php';
                 // Debug session data
                 error_log("Session data set: " . print_r($_SESSION, true));
                 
-                header("Location: main_page_logged.php");
+                header("Location: newhome.php");
                 exit();
             } else {
                 $loginError = true;

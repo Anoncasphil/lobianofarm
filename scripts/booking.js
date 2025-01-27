@@ -1,4 +1,5 @@
-// Function to handle floating label behavior
+
+
 document.querySelectorAll('.peer').forEach(input => {
   const label = input.nextElementSibling;
 
@@ -189,7 +190,6 @@ function moveCarousel(direction) {
   
       // Update the total price and store selections
       updateTotalPrice();
-      storeSelections(); 
   }
   
   function unselectRate(selectButton, id, allRateCards) {
@@ -227,7 +227,6 @@ function moveCarousel(direction) {
   
       // Update the total price
       updateTotalPrice();
-      storeSelections();  // Store selections in JSON
   }
   
   function removeRate(id) {
@@ -261,7 +260,6 @@ function moveCarousel(direction) {
   
       // Update the total price
       updateTotalPrice();
-      storeSelections();  // Store selections in JSON
   }
   
   function toggleAddonSelection(id, name, price) {
@@ -298,7 +296,6 @@ function moveCarousel(direction) {
   
       // Update the summary and total price
       updateSummary();
-      storeSelections(); 
   }
   
   function updateSummary() {
@@ -335,12 +332,6 @@ function moveCarousel(direction) {
       console.log('Rate ID:', document.getElementById('rate-id-field').value);
       console.log('Addon IDs:', document.getElementById('addon-ids-field').value);
   }
-  
-  function storeSelections() {
-      // This function can store selections in JSON or other mechanisms for later use
-  }
-  
-  
   // Function to update the total price
   function updateTotalPrice() {
       const totalPriceElement = document.getElementById('total-price');
@@ -361,7 +352,25 @@ function moveCarousel(direction) {
       totalPriceElement.textContent = '₱' + total.toFixed(2);
   }
   
-  function storeSelections() {
+  function validateForm() {
+    // Get the values from the input fields
+    const firstName = document.getElementById('first-name').value;
+    const lastName = document.getElementById('last-name').value;
+    const email = document.getElementById('email').value;
+    const mobileNumber = document.getElementById('mobile-number').value;
+    const checkInDate = document.getElementById('check-in-date').value;
+    const rateId = document.getElementById('rate-id-field').value;
+
+    // Check if any of the required fields are empty
+    if (!firstName || !lastName || !email || !mobileNumber || !checkInDate || !rateId) {
+        // Show an alert or error message
+        alert("Please fill out all the required fields.");
+        return false; // Prevent submission
+    }
+    return true; // Allow submission if all fields are filled
+}
+
+function storeSelections() {
     // Get the input values from the form
     const firstName = document.getElementById('first-name').value;
     const lastName = document.getElementById('last-name').value;
@@ -375,12 +384,10 @@ function moveCarousel(direction) {
     // Capture rate ID from the hidden field in the form
     const rateIdField = document.getElementById('rate-id-field');
     const rateId = rateIdField ? rateIdField.value : ''; // Use rate ID from the hidden field
-    console.log('Rate ID:', rateId); // Debugging line to ensure it is correctly captured
 
     // Capture selected add-on IDs from the hidden field in the form
     const addonIdsField = document.getElementById('addon-ids-field');
     const addonIds = addonIdsField ? addonIdsField.value.split(',') : []; // Assuming the add-ons are stored as a comma-separated string
-    console.log('Selected Add-ons:', addonIds); // Debugging line to ensure it is correctly captured
 
     // Prepare the selections object
     const selections = {
@@ -412,6 +419,16 @@ function moveCarousel(direction) {
     console.log('Selections stored:', selectionsJSON);
 }
 
+function redirectToPayment() {
+    // Redirect to payment.php
+    if (!validateForm()) return; // Stop if validation fails
+    window.location.href = "payment.php";
+}
+
+function prepareForSubmission() {
+    // Store selections and redirect to the next page
+    storeSelections();
+}
 
 
 
@@ -574,6 +591,4 @@ if (unselectButton) {
 }
 
   });
-  
-  
   

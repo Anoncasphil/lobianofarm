@@ -1,9 +1,13 @@
 <?php
-session_start(); // Start the session
+// Start the session
+session_start();
 
-// Manually set the session for user_id 23
-$_SESSION['user_id'] = 23; 
-
+// Check if the user is logged in
+if (!isset($_SESSION['user_id'])) {
+    // Redirect to login page if not logged in
+    header("Location: login.php");
+    exit(); // Make sure no further code is executed
+}
 // Include the database connection
 include('../db_connection.php'); // Adjust the path if necessary
 
@@ -59,15 +63,10 @@ $stmt->close();
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <link rel="stylesheet" href="../styles/newhomes.css">
+    <link rel="stylesheet" href="../styles/newhome.css">
 
 </head>
 <body>
-
-<!-- Preloader -->
-<div id="preloader" class="preloader">
-  <div class="spinner"></div>
-</div>
 
  <!-- Navbar -->
 <nav class="bg-white border-blue-200 dark:bg-blue-900 fixed top-0 left-0 w-full z-50">
@@ -153,26 +152,27 @@ $stmt->close();
     </div>
     
     <!-- Check-In Form centered below the text -->
-    <div class="flex justify-center mt-8 mb-8 w-full mt-10">
-      <div class="inline-flex flex-col sm:flex-row border border-yellow-300 rounded-lg overflow-hidden shadow-sm dark:border-yellow-500">
-        <!-- Check-In Date -->
-        <input
-          type="text"
-          id="check-in"
-          name="check-in"
-          class="px-6 py-3 w-56 sm:w-48 border-r-2 border-yellow-500 opacity-90 focus:ring-2 focus:ring-blue-500 focus:outline-none dark:bg-white dark:text-black"
-          placeholder="Check-In"
-          required
-        />
-        <!-- Book Button -->
-        <button
-          type="submit"
-          id="book-btn"
-          class="px-6 py-3 bg-blue-600 text-white font-semibold hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:outline-none"
-        >
-          Book
-        </button>
-      </div>
+    <div class="flex justify-center mt-8 mb-8 w-full">
+  <div class="inline-flex flex-col sm:flex-row border border-yellow-300 rounded-lg overflow-hidden shadow-sm dark:border-yellow-500">
+    <!-- Check-In Date Input -->
+    <input
+      type="text"
+      id="check-in"
+      name="check-in"
+      class="px-6 py-3 w-56 sm:w-48 border-r-2 border-yellow-500 opacity-90 focus:ring-2 focus:ring-blue-500 focus:outline-none dark:bg-white dark:text-black"
+      placeholder="Check-In"
+      required
+    />
+    <!-- Book Button -->
+    <button
+      type="submit"
+      id="book-btn"
+      class="px-6 py-3 bg-blue-600 text-white font-semibold hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+    >
+      Book
+    </button>
+  </div>
+</div>
     </div>
   </div>
 </section>
@@ -306,9 +306,11 @@ $stmt->close();
 <!-- Check-in Date Modal -->
 <div id="checkInModal" class="fixed mt-20 right-4 z-50 hidden bg-red-500 text-white rounded-lg px-4 py-3 shadow-lg">
   <div class="flex justify-between items-center">
-    <p class="modal-message">Please select a check-in date.</p>
+    <p id="modalMessage" class="modal-message">Please select a check-in date.</p>
+    <button onclick="closeModal()" class="text-white">X</button>
   </div>
 </div>
+
 
 
 <script src="../scripts/newhomes.js"></script>
