@@ -1,10 +1,9 @@
 <?php
 include('../db_connection.php');
 
-// Prepare the SQL query to fetch reservation data along with user first name and last name
-$sql = "SELECT r.id, r.user_id, u.first_name, u.last_name, r.check_in_date, r.check_out_date, r.status 
-        FROM reservations r
-        JOIN user_tbl u ON r.user_id = u.user_id";
+// Prepare the SQL query to fetch reservation data
+$sql = "SELECT id, user_id, check_in_date, check_out_date, status 
+        FROM reservations";
 
 // Execute the query
 $result = $conn->query($sql);
@@ -34,8 +33,6 @@ while ($row = $result->fetch_assoc()) {
     $reservations[] = array(
         'id' => $row['id'], // Map id
         'user_id' => $row['user_id'],
-        'first_name' => $row['first_name'],
-        'last_name' => $row['last_name'],
         'start' => $checkInDateFormatted,
         'end' => $checkOutDateFormatted,
         'status' => $row['status'],
