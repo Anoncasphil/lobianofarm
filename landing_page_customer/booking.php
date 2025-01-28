@@ -42,7 +42,7 @@ if ($stmt->fetch()) {
     $user_picture = !empty($picture) ? 'userpicture/' . $picture : 'default-avatar.jpg'; // Adjust the path for the profile picture
 } else {
     // If user not found, handle accordingly (e.g., redirect to login)
-    header("Location: ../adlogin.php");
+    header("Location: login.php");
     exit;
 }
 
@@ -329,7 +329,7 @@ $stmt->close();
     
     <!-- Check-Out Date (non-interactable) -->
     <div class="relative">
-      <input type="date" id="check-out-date" class="p-3 pt-5 w-full max-w-xs border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-transparent text-blue-950" placeholder=" " disabled />
+      <input type="date" id="check-out-date" class="p-3 pt-5 w-full max-w-xs border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-transparent text-blue-950" placeholder=" " readonly />
       <label for="check-out-date" class="px-2 bg-white absolute left-3 top-[-10px] text-gray-600 text-sm font-medium"> Check-Out Date </label>
     </div>
   </div>

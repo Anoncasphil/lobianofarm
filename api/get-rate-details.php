@@ -2,8 +2,8 @@
 // Include database connection
 include '../db_connection.php';
 
-if (isset($_GET['id'])) {
-    $rateId = $_GET['id'];
+if (isset($_GET['userid'])) {
+    $rateId = $_GET['userid'];
 
     // Prepare SQL query to fetch rate details
     $sql = "SELECT checkin_time, checkout_time, hoursofstay FROM rates WHERE id = ?";
