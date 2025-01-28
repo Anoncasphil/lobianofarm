@@ -321,6 +321,9 @@ $reviews = $reviews_query->get_result();
   </div>
 </footer>
 
+
+
+
 <script src="../scripts/newhome.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>

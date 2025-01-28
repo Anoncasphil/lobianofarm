@@ -3,3 +3,101 @@
     width: auto;
     object-fit: contain;
 }
+
+/* Slide-in animation from the right */
+@keyframes slideInRight {
+  0% {
+    right: -300px; /* Start off-screen on the right */
+  }
+  100% {
+    right: 1rem; /* End at the visible position */
+  }
+}
+
+/* Slide-out animation for disappearing with ease-out */
+@keyframes slideOutRight {
+  0% {
+    right: 1rem; /* Start at the visible position */
+    opacity: 1; /* Fully visible */
+  }
+  100% {
+    right: -300px; /* Move off-screen */
+    opacity: 0; /* Fade out */
+  }
+}
+
+/* Apply the slide-in animation initially */
+#checkInModal {
+  position: fixed;
+  top: 1rem;
+  right: -300px; /* Initially off-screen */
+  animation: slideInRight 0.5s ease-out forwards;
+  z-index: 50;
+  opacity: 1;
+}
+
+/* Add styles to the modal after the animation */
+#checkInModal.hidden {
+  display: none;
+}
+
+/* Style for the preloader */
+.preloader {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.6); /* Semi-transparent background */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+/* Spinner animation */
+.spinner {
+  border: 6px solid #f3f3f3; /* Light background */
+  border-top: 6px solid #3498db; /* Blue color for the spinning part */
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  animation: spin 1s linear infinite;
+}
+
+/* Spinner rotation animation */
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.flatpickr-calendar {
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.flatpickr-day {
+  font-size: 14px;
+  border-radius: 50%;
+  transition: background-color 0.3s;
+}
+
+.flatpickr-day:hover {
+  background-color: #e0f7fa;
+  color: #00796b;
+}
+
+.flatpickr-day.reserved-date {
+  background-color: #fa0000 !important; /* Custom background color for reserved dates */
+  color: #ffffff !important;           /* Text color */
+  cursor: not-allowed !important;      /* Cursor style */
+  border-radius: 50%;                  /* Optional: Make the date a circle */
+}
+
+
+
+.flatpickr-day.selected {
+  background-color: #0288d1 !important;
+  color: #ffffff !important;
+}

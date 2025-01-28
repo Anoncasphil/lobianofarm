@@ -18,6 +18,8 @@ if (!isset($_SESSION['admin_id'])) {
 	<link href='https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css' rel='stylesheet'>
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/all.min.css" integrity="sha512-5Hs3dF2AEPkpNAR7UiOHba+lRSJNeM2ECkwxUIxC1Q/FLycGTbNapWXB4tP889k5T5Ju8fs4b1P5z/iB4nMfSQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <script src="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"></script>
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+	<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 	<link rel="stylesheet" href="../styles/style.css">
 	<link rel="stylesheet" href="../styles/rate.css">
 	
@@ -241,11 +243,14 @@ if (!isset($_SESSION['admin_id'])) {
 				</tr>
 			</thead>
 			<tbody>
-				<?php
-					$sql = "SELECT id, name, price, description, picture, hoursofstay FROM rates WHERE status = 'active'";
-					$result = $conn->query($sql);
+			<?php
+				$sql = "SELECT id, name, price, description, picture, hoursofstay FROM rates WHERE status = 'active'";
 
+				$result = $conn->query($sql);
+
+				if ($result) {
 					if ($result->num_rows > 0) {
+						// Process rows
 						while ($row = $result->fetch_assoc()) {
 							echo "<tr id='rate-" . $row['id'] . "'>";
 							echo "<td class='py-2 px-4 border-b text-gray-700'>" . $row['id'] . "</td>";
@@ -255,29 +260,32 @@ if (!isset($_SESSION['admin_id'])) {
 							echo "<td class='py-2 px-4 border-b text-gray-700'>";
 							
 							if (!empty($row['picture'])) {
-								$base64Image = base64_encode($row['picture']);
-								$imageSrc = 'data:image/jpeg;base64,' . $base64Image;
+								$imageSrc = '../src/uploads/rates/' . $row['picture'];
 								echo "<img src='" . $imageSrc . "' alt='Rate Image' class='w-20 h-auto object-cover rounded-lg'>";
 							}
 
 							echo "</td>";
 							echo "<td class='py-2 px-4 border-b text-gray-700'>
-								<button type='button' class='text-white bg-blue-500 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2' onclick='showDetails(" . $row['id'] . ");'>
-									<i class='fa-solid fa-box-archive'></i> View
-								</button>
-								<button type='button' class='text-white bg-blue-500 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2' onclick='fetchRateData(" . $row['id'] . "); toggleUpdateRateModal();'>
-									<i class='fa-solid fa-pen-to-square'></i> Update
-								</button>
-								<button type='button' class='text-white bg-red-500 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2' onclick='archiveConfirmation(" . $row['id'] . ");'>
-									<i class='fa-solid fa-box-archive'></i> Archive
-								</button>
-							</td>";
+									<button type='button' class='text-white bg-blue-500 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2' onclick='showDetails(" . $row['id'] . ");'>
+										<i class='fa-solid fa-box-archive'></i> View
+									</button>
+									<button type='button' class='text-white bg-blue-500 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2' onclick='fetchRateData(" . $row['id'] . "); toggleUpdateRateModal();'>
+										<i class='fa-solid fa-pen-to-square'></i> Update
+									</button>
+									<button type='button' class='text-white bg-red-500 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2' onclick='archiveConfirmation(" . $row['id'] . ");'>
+										<i class='fa-solid fa-box-archive'></i> Archive
+									</button>
+								</td>";
 							echo "</tr>";
 						}
 					} else {
-						echo "<tr><td colspan='6' class='py-2 px-4 border-b text-gray-700'>No records found</td></tr>";
+						echo "<tr><td colspan='6' class='py-2 px-4 border-b text-gray-700'>No active records found.</td></tr>";
 					}
+				} else {
+					echo "Error executing query: " . $conn->error;
+				}
 				?>
+
 			</tbody>
 		</table>
 	</div>
@@ -301,6 +309,7 @@ if (!isset($_SESSION['admin_id'])) {
 					$result = $conn->query($sql);
 
 					if ($result->num_rows > 0) {
+						// Process rows
 						while ($row = $result->fetch_assoc()) {
 							echo "<tr id='rate-" . $row['id'] . "'>";
 							echo "<td class='py-2 px-4 border-b text-gray-700'>" . $row['id'] . "</td>";
@@ -310,8 +319,7 @@ if (!isset($_SESSION['admin_id'])) {
 							echo "<td class='py-2 px-4 border-b text-gray-700'>";
 							
 							if (!empty($row['picture'])) {
-								$base64Image = base64_encode($row['picture']);
-								$imageSrc = 'data:image/jpeg;base64,' . $base64Image;
+								$imageSrc = 'uploads/' . $row['picture'];
 								echo "<img src='" . $imageSrc . "' alt='Rate Image' class='w-20 h-auto object-cover rounded-lg'>";
 							}
 
@@ -404,8 +412,8 @@ if (!isset($_SESSION['admin_id'])) {
 
 
 				
-		<!-- Add Rate Main modal -->
-		<div id="add-rate-modal" onsubmit="addRate(event)" tabindex="-1" aria-hidden="true" class="hidden fixed inset-0 z-50 flex justify-center items-center">
+<!-- Add Rate Main modal -->
+<div id="add-rate-modal" onsubmit="addRate(event)" tabindex="-1" aria-hidden="true" class="hidden fixed inset-0 z-50 flex justify-center items-center">
 			<div class="relative p-4 w-full max-w-md max-h-full">
 				<!-- Modal content -->
 				<div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
@@ -433,9 +441,20 @@ if (!isset($_SESSION['admin_id'])) {
 								<input type="number" name="price" id="price" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="₱15000" required="">
 							</div>
 							<div class="col-span-2 sm:col-span-1">
-								<label for="price" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Hours of Stay</label>
+								<label for="hours" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Hours of Stay</label>
 								<input type="number" name="hours" id="hours" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="12" required="">
 							</div>
+
+							<div class="col-span-2 sm:col-span-1">
+								<label for="checkin" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Check-in Time</label>
+								<input type="time" name="checkin" id="checkin" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Select Check-in Time" required>
+							</div>
+
+							<div class="col-span-2 sm:col-span-1">
+								<label for="checkout" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Check-out Time</label>
+								<input type="time" name="checkout" id="checkout" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Select Check-out Time" required>
+							</div>
+
 
 							<div class="col-span-2">
 								<label for="description" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Rate Description</label>
@@ -462,6 +481,8 @@ if (!isset($_SESSION['admin_id'])) {
 				</div>
 			</div>
 		</div>
+
+
 
 		<!-- Update Rate Main modal -->
 		<div id="update-rate-modal" tabindex="-1" aria-hidden="true" class="hidden fixed inset-0 z-50 flex justify-center items-center">
@@ -500,6 +521,16 @@ if (!isset($_SESSION['admin_id'])) {
 								<input type="number" name="hoursofstay" id="updatehoursofstay" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"  required="">
 							</div>
 
+							<div class="col-span-2 sm:col-span-1">
+								<label for="checkin" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Check-in Time</label>
+								<input type="time" name="checkin" id="updatecheckin" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Select Check-in Time" required>
+							</div>
+
+							<div class="col-span-2 sm:col-span-1">
+								<label for="checkout" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Check-out Time</label>
+								<input type="time" name="checkout" id="updatecheckout" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Select Check-out Time" required>
+							</div>
+
 							<div class="col-span-2">
 								<label for="description" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Rate Description</label>
 								<textarea id="updatedescription" name="description" rows="4" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"></textarea>
@@ -530,13 +561,10 @@ if (!isset($_SESSION['admin_id'])) {
 				</div>
 			</div>
 		</div>
+
+
 	</main>
 </section>
-
-	<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
-	<script src="../scripts/script.js"></script>
-	<script src="../scripts/modalscript.js" defer></script>
-
 	<script>
 		function archiveConfirmation(rateId) {
     // Show the modal and attach the rate ID to the confirm button
@@ -597,23 +625,6 @@ function showModal(modalId, message) {
     }
 }
 
-function showDetails(id) {
-    // Fetch data from the database using AJAX
-    fetch('fetch-rate.php?id=' + id)
-        .then(response => response.json())
-        .then(data => {
-            // Populate modal fields with data
-            document.getElementById('modalTitle').textContent = data.name
-            document.getElementById('modalPrice').textContent = data.price;
-            document.getElementById('modalHoursOfStay').textContent = data.hoursofstay;
-            document.getElementById('modalDescription').textContent = data.description;
-            document.getElementById('modalPicture').src = data.picture;
-
-            // Show the modal
-            document.getElementById('detailsModal').classList.remove('hidden');
-        })
-        .catch(error => console.error('Error fetching data:', error));
-}
 
 function closeDetailsModal() {
     // Hide the modal
@@ -659,9 +670,10 @@ function restoreRate(rateId) {
     };
     xhr.send("rate_id=" + rateId);
 }
-
-
 	</script>
+	<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+	<script src="../scripts/script.js"></script>
+	<script src="../scripts/modalscripts.js" defer></script>
 
 </body>
 </html>

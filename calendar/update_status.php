@@ -9,15 +9,13 @@ try {
     // Log the received data for debugging purposes
     error_log("Received data: " . print_r($data, true));
 
-    // Prepare the SQL query to update the title
-    $sql = "UPDATE reservation 
-        SET title = 'Approved' 
-        WHERE reservation_id = ? 
-        AND first_name = ? 
-        AND last_name = ? 
-        AND reservation_check_in_date = ? 
-        AND title = 'Pending'";
-
+    // Prepare the SQL query to update the status
+    $sql = "UPDATE reservations 
+        SET status = 'Approved' 
+        WHERE id = ? 
+        AND user_id = ? 
+        AND check_in_date = ? 
+        AND status = 'Pending'";
 
     // Prepare the statement
     $stmt = $conn->prepare($sql);
@@ -27,10 +25,9 @@ try {
     }
 
     // Bind the parameters
-    $stmt->bind_param("isss", 
+    $stmt->bind_param("iis", 
         $data['reservationId'], 
-        $data['firstName'], 
-        $data['lastName'], 
+        $data['userId'], 
         $data['checkInDate']
     );
 

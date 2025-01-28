@@ -2,8 +2,8 @@
 include('../db_connection.php');
 
 // Prepare the SQL query to fetch reservation data
-$sql = "SELECT reservation_id, title, first_name, last_name, reservation_check_in_date, reservation_check_out_date 
-        FROM reservation";
+$sql = "SELECT id, user_id, check_in_date, check_out_date, status 
+        FROM reservations";
 
 // Execute the query
 $result = $conn->query($sql);
@@ -18,25 +18,25 @@ $reservations = array();
 
 // Fetch each row and map it to the array
 while ($row = $result->fetch_assoc()) {
-    // Add 1 day to the check-in and check-out dates
-    $checkInDate = new DateTime($row['reservation_check_in_date']);
-    $checkOutDate = new DateTime($row['reservation_check_out_date']);
-    $checkInDate->modify('+1 day');
-    $checkOutDate->modify('+1 day'); // Add 1 day to the check-out date
+    $checkInDate = new DateTime($row['check_in_date']);
+    $checkOutDate = new DateTime($row['check_out_date']);
+    
+    // Ensure the check-out date is not before the check-in date
+    if ($checkInDate == $checkOutDate) {
+        $checkOutDate = clone $checkInDate;
+    }
 
     // Format the new dates back to string
     $checkInDateFormatted = $checkInDate->format('Y-m-d');
     $checkOutDateFormatted = $checkOutDate->format('Y-m-d');
 
     $reservations[] = array(
-        'id' => $row['reservation_id'], // Map reservation_id to id
-        'title' => $row['title'],
-        'firstName' => $row['first_name'],
-        'lastName' => $row['last_name'],
+        'id' => $row['id'], // Map id
+        'user_id' => $row['user_id'],
         'start' => $checkInDateFormatted,
         'end' => $checkOutDateFormatted,
-        'status' => $row['title'],
-        'backgroundColor' => $row['title'] === 'Pending' ? '#FFA500' : '#008000' // Conditional color coding
+        'status' => $row['status'],
+        'backgroundColor' => $row['status'] === 'Pending' ? '#FFA500' : '#008000' // Conditional color coding  
     );
 }
 

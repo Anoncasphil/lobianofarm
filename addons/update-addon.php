@@ -3,78 +3,79 @@ include '../db_connection.php'; // Include database connection
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // Get form values
-    $id = $_POST['id']; // Get the addon ID
+    $id = $_POST['id']; 
     $name = $_POST['name'];
     $price = $_POST['price'];
     $description = $_POST['description'];
-    $status = $_POST['status'];
+    $status = 'active'; // Status is automatically set to 'active'
 
-    // Initialize variables for updating fields
+    // Initialize update arrays
     $updateFields = [];
     $updateValues = [];
 
-    // Add fields to update if they are provided
-    if (!empty($name)) {
-        $updateFields[] = "name = ?";
-        $updateValues[] = $name;
-    }
-
-    if (!empty($price)) {
-        $updateFields[] = "price = ?";
-        $updateValues[] = $price;
-    }
-
-    if (!empty($description)) {
-        $updateFields[] = "description = ?";
-        $updateValues[] = $description;
-    }
-
-    if (!empty($status)) {
-        $updateFields[] = "status = ?";
-        $updateValues[] = $status;
-    }
-
-    // Handle the file upload if a new picture is provided
-    if (isset($_FILES['picture']) && $_FILES['picture']['error'] == 0) {
-        $fileTmpPath = $_FILES['picture']['tmp_name'];
-
-        // Ensure the file is a valid image
-        $imageInfo = getimagesize($fileTmpPath);
-        if ($imageInfo !== false) {
-            $fileContent = file_get_contents($fileTmpPath); // Get the image content in binary form
-            $updateFields[] = "picture = ?";
-            $updateValues[] = $fileContent;
-        } else {
-            echo "Invalid image file."; // Handle invalid image type
-            exit();
+    // Prepare values for updating
+    foreach (['name' => $name, 'price' => $price, 'description' => $description, 'status' => $status] as $field => $value) {
+        if (!empty($value)) {
+            $updateFields[] = "$field = ?";
+            $updateValues[] = $value;
         }
     }
 
-    // Only proceed if there are fields to update
-    if (count($updateFields) > 0) {
-        // Prepare the SQL query with dynamic updates
+    // Handle image upload
+    if (isset($_FILES['picture']) && $_FILES['picture']['error'] == 0) {
+        $fileTmpPath = $_FILES['picture']['tmp_name'];
+        $uniqueFileName = 'addon_' . time() . '_' . rand(1000, 9999) . '.' . pathinfo($_FILES['picture']['name'], PATHINFO_EXTENSION);
+        $destPath = '../src/uploads/addons/' . $uniqueFileName;
+
+        // Check if there's an existing picture to delete
+        $sql = "SELECT picture FROM addons WHERE id = ?";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param('i', $id);
+        $stmt->execute();
+        $stmt->bind_result($existingPicture);
+        $stmt->fetch();
+        $stmt->close();
+
+        // If there's an existing picture, delete it from the server
+        if ($existingPicture) {
+            $existingFilePath = '../src/uploads/addons/' . $existingPicture;
+            if (file_exists($existingFilePath)) {
+                unlink($existingFilePath); // Delete the old image file
+            }
+        }
+
+        // Validate and upload the new image
+        if (getimagesize($fileTmpPath)) {
+            if (move_uploaded_file($fileTmpPath, $destPath)) {
+                $updateFields[] = "picture = ?";
+                $updateValues[] = $uniqueFileName; // Store only the file name in the database
+            } else {
+                exit("Failed to upload image.");
+            }
+        } else {
+            exit("Invalid image file.");
+        }
+    }
+
+    // Update record if there are fields to update
+    if ($updateFields) {
         $sql = "UPDATE addons SET " . implode(", ", $updateFields) . " WHERE id = ?";
+        $updateValues[] = $id; // Bind the ID for WHERE clause
 
         // Prepare and execute the statement
         $stmt = $conn->prepare($sql);
-
-        // Bind parameters dynamically
-        $updateValues[] = $id; // Always bind the ID last for WHERE clause
-        $types = str_repeat('s', count($updateValues) - 1) . 'i'; // Assuming all fields except ID are strings
+        $types = str_repeat('s', count($updateValues) - 1) . 'i'; // 's' for string, 'i' for integer (ID)
         $stmt->bind_param($types, ...$updateValues);
 
-        // Execute the query
         if ($stmt->execute()) {
             header('Location: addons.php'); // Redirect to the addons page
             exit();
         } else {
-            echo "Error updating addon: " . $stmt->error; // Display error if query fails
+            exit("Error updating addon: " . $stmt->error);
         }
-
-        // Close the statement
         $stmt->close();
     } else {
-        echo "No fields to update."; // Handle case where no fields are selected for update
+        exit("No fields to update.");
     }
 }
 

@@ -13,7 +13,7 @@ try {
     $reservation_id = intval($_GET['id']);
 
     // Prepare the SQL statement to fetch reservation data
-    $sql = "SELECT * FROM reservation WHERE reservation_id = ?";
+    $sql = "SELECT * FROM reservations WHERE id = ?";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param('i', $reservation_id); // Binding the reservation ID
     $stmt->execute();
@@ -32,34 +32,45 @@ try {
         $rate_result = $rate_stmt->get_result();
         $rate = $rate_result->fetch_assoc();
 
-        // Prepare SQL to fetch addons details (only if there's an addon)
-        $addons = null;
-        if ($reservation['addons_id']) {
-            $addons_sql = "SELECT * FROM addons WHERE id = ?";
-            $addons_stmt = $conn->prepare($addons_sql);
-            $addons_stmt->bind_param('i', $reservation['addons_id']);
-            $addons_stmt->execute();
-            $addons_result = $addons_stmt->get_result();
-            $addons = $addons_result->fetch_assoc();
+        // Prepare SQL to fetch addons details
+        $addons_sql = "SELECT a.* FROM addons a
+                       JOIN reservation_addons ra ON a.id = ra.addon_id
+                       WHERE ra.reservation_id = ?";
+        $addons_stmt = $conn->prepare($addons_sql);
+        $addons_stmt->bind_param('i', $reservation_id);
+        $addons_stmt->execute();
+        $addons_result = $addons_stmt->get_result();
+        $addons = [];
+        while ($addon = $addons_result->fetch_assoc()) {
+            $addons[] = $addon;
         }
 
         // Prepare the response data
         $response = [
             'status' => 'success',
             'data' => [
-                'reservation_id' => $reservation['reservation_id'],
-                'first_name' => $reservation['first_name'],
-                'last_name' => $reservation['last_name'],
-                'email' => $reservation['email'],
-                'phone_number' => $reservation['mobile_number'],
-                'check_in_date' => $reservation['reservation_check_in_date'],
-                'check_out_date' => $reservation['reservation_check_out_date'],
-                'total_amount' => (float)$reservation['total_amount'], // Use total_amount directly
-                'rate_name' => $rate['name'],
-                'rate_price' => (float)$rate['price'], // Rate price
-                'addons_name' => $addons ? $addons['name'] : null, // Addon name (if any)
-                'addons_price' => $addons ? (float)$addons['price'] : null, // Addon price (if any)
-                'payment_proof' => '../src/uploads/payment_proof/' . $reservation['payment_proof']
+                'reservation_id' => $reservation['id'],
+                'user_id' => $reservation['user_id'],
+                'check_in_date' => $reservation['check_in_date'],
+                'check_out_date' => $reservation['check_out_date'],
+                'check_in_time' => $reservation['check_in_time'],
+                'check_out_time' => $reservation['check_out_time'],
+                'reference_number' => $reservation['reference_number'],
+                'invoice_date' => $reservation['invoice_date'],
+                'invoice_number' => $reservation['invoice_number'],
+                'total_price' => (float)$reservation['total_price'],
+                'payment_receipt' => $reservation['payment_receipt'],
+                'status' => $reservation['status'],
+                'payment_status' => $reservation['payment_status'],
+                'contact_number' => $reservation['contact_number'],
+                'created_at' => $reservation['created_at'],
+                'updated_at' => $reservation['updated_at'],
+                'rate' => [
+                    'id' => $rate['id'],
+                    'name' => $rate['name'],
+                    'price' => (float)$rate['price']
+                ],
+                'addons' => $addons
             ]
         ];
 
@@ -74,7 +85,7 @@ try {
 
     // Close the statements and connection
     $rate_stmt->close();
-    if ($addons) $addons_stmt->close();
+    $addons_stmt->close();
     $stmt->close();
     $conn->close();
 } catch (Exception $e) {
