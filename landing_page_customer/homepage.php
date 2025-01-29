@@ -69,6 +69,11 @@ $stmt->close();
     
 
     <style>
+    .logo {
+    height: 3rem; /* Adjust this as needed */
+    width: auto;
+    object-fit: contain;
+  }
           /* Minimalist scrollbar styles */
     .scrollable-container {
       overflow-x: auto;
