@@ -63,8 +63,36 @@ $stmt->close();
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <script src="../scripts/newhome.js"></script>
+
+    <script src="../scripts/newhomes.js"></script>
     <link rel="stylesheet" href="../styles/newhome.css">
+
+    <style>
+          /* Minimalist scrollbar styles */
+    .scrollable-container {
+      overflow-x: auto;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(0, 0, 0, 0.3) transparent;
+      scroll-behavior: smooth; /* Enable smooth scrolling */
+    }
+
+    .scrollable-container::-webkit-scrollbar {
+      height: 8px; /* Height for horizontal scrollbar */
+    }
+
+    .scrollable-container::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    .scrollable-container::-webkit-scrollbar-thumb {
+      background-color: rgba(0, 0, 0, 0.3); /* Dark color for the scrollbar thumb */
+      border-radius: 4px;
+    }
+
+    .scrollable-container::-webkit-scrollbar-thumb:hover {
+      background-color: rgba(0, 0, 0, 0.5); /* Slightly darker when hovered */
+    }
+    </style>
 
 </head>
 <body>
@@ -136,7 +164,7 @@ $stmt->close();
 <section
   id="home"
   class="bg-cover bg-center relative py-16"
-  style="background-image: url('../src/uploads/album/resort.png');"
+  style="background-image: url('../src/uploads/resort.png');"
 >
   <!-- Overlay -->
   <div class="absolute inset-0 bg-blue-950 opacity-90"></div>
@@ -178,13 +206,155 @@ $stmt->close();
   </div>
 </section>
 
+<!-- reservation steps  -->
+<section id="reserve" class="bg-gray-100 flex items-center justify-center pt-16 px-4">
+  <div class="max-w-screen-xl mx-auto flex flex-col md:flex-row items-center gap-8">
+    <!-- text section -->
+    <div class="w-full md:w-1/2 text-center md:text-left md:mx-8">
+      <h2 class="text-3xl font-extrabold text-gray-900 mb-4">How to Reserve</h2>
+      <ol class="list-decimal text-gray-700 mb-10 text-justify space-y-3">
+        <li>View available dates, select your preferred date, and click <strong>"Book"</strong> to go to the reservation page.</li>
+        <li>Fill in your details and choose your preferred rates and add-ons.</li>
+        <li>Click <strong>"Proceed to Payment"</strong> to review your reservation and invoice.</li>
+        <li>Scan the QR code to pay 50% of the total amount.</li>
+        <li>Enter the payment reference number and upload the payment proof.</li>
+        <li>Click <strong>"Submit"</strong>. Your reservation will be reviewed, and you will receive a confirmation email.</li>
+      </ol>
+    </div>
+
+    <!-- image -->
+    <div class="w-full md:w-1/2 flex justify-center mb-10">
+      <img 
+        src="../src/uploads/about/resort.png" 
+        alt="Reservation Steps Image" 
+        class="rounded-2xl shadow-lg w-full h-auto object-cover"
+      />
+    </div>
+  </div>
+</section>
+
+<!-- Rates & Add-ons Section -->
+<section id="rates-addons" class="bg-white min-h-screen flex flex-col items-center justify-center pt-16 px-4">
+  <div class="max-w-screen-xl mx-auto">
+    
+<!-- Rates Section -->
+<div class="mb-16">
+  <h2 class="text-3xl font-extrabold text-center text-gray-900">Our Rates</h2>
+  <p class="mt-4 text-lg text-center text-gray-600">Check out our affordable pricing plans designed for everyone.</p>
+
+  <!-- Scrollable Horizontal Rates Cards -->
+<div class="mt-8 overflow-x-auto w-full px-5 py-2 scrollable-container">
+    <div class="flex space-x-6">
+        <?php
+            // Include database connection
+            include '../db_connection.php';
+
+            // Fetch rates from the database
+            $sql = "SELECT * FROM rates WHERE status = 'active'";
+            $result = $conn->query($sql);
+
+            if ($result->num_rows > 0) {
+                while ($row = $result->fetch_assoc()) {
+                    $id = $row['id'];
+                    $name = $row['name'];
+                    $price = $row['price'];
+                    $hours_of_stay = $row['hoursofstay'];
+                    $description = $row['description'];
+                    $picture = $row['picture'];
+                    $check_in_time = isset($row['checkin_time']) ? date("g:i A", strtotime($row['checkin_time'])) : 'Not specified';
+                    $check_out_time = isset($row['checkout_time']) ? date("g:i A", strtotime($row['checkout_time'])) : 'Not specified';
+
+                    // Add data attributes for modal
+                    echo "
+                    <div class='flex-none mb-5 mt-5 max-w-sm rounded-2xl shadow-lg relative rate-card hover:scale-105 hover:shadow-2xl transition-transform duration-300'>
+                        <img class='rounded-t-2xl w-full h-[200px] object-cover' src='../src/uploads/rates/$picture' alt='$name'>
+
+                        <div class='p-5'>
+                            <h2 class='text-2xl font-bold text-gray-800'>$name</h2>
+
+                            <div class='text-gray-600 mt-2 flex items-center'>
+                                <span class='material-icons mr-2'>schedule</span>
+                                <p class='text-gray-600 font-medium'>{$hours_of_stay} hours</p>
+                            </div>
+
+                            <!-- Time Box with Arrow -->
+                            <div class='flex items-center mt-4'>
+                                <div class='bg-gray-50 border border-gray-300 text-gray-500 text-sm rounded-lg py-2 font-medium px-4'>
+                                     $check_in_time
+                                </div>
+                                <div class='mx-3'>
+                                    <svg class='w-6 h-6 text-gray-500' xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='currentColor'>
+                                        <path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M13 7l5 5-5 5M6 7l5 5-5 5'></path>
+                                    </svg>
+                                </div>
+                                <div class='bg-gray-50 border border-gray-300 text-gray-600 text-sm rounded-lg py-2 font-medium px-4'>
+                                     $check_out_time
+                                </div>
+                            </div>
+
+                            <p class='text-gray-800 font-semibold text-xl mt-4'>₱$price</p>
+                        </div>
+                    </div>";
+                }
+            } else {
+                echo "<p class='text-gray-600'>No active rates available.</p>";
+            }
+
+            // Close the database connection
+            $conn->close();
+        ?>
+    </div>
+</div>
+
+
+
+
+
+
+
+    <!-- Add-ons Section -->
+    <div>
+      <h2 class="text-3xl font-extrabold text-gray-900">Add-ons</h2>
+      <p class="mt-4 text-lg text-gray-600">Explore our additional services to enhance your experience.</p>
+
+      <!-- Add-ons Cards -->
+      <div class="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div class="bg-gray-100 p-6 rounded-2xl shadow-lg">
+          <h3 class="text-xl font-bold text-gray-900">Breakfast</h3>
+          <p class="text-gray-600 mt-2">Start your day with a delicious meal.</p>
+          <p class="text-gray-900 font-semibold mt-4">$10</p>
+        </div>
+        <div class="bg-gray-100 p-6 rounded-2xl shadow-lg">
+          <h3 class="text-xl font-bold text-gray-900">Massage</h3>
+          <p class="text-gray-600 mt-2">Relax with a soothing massage session.</p>
+          <p class="text-gray-900 font-semibold mt-4">$30</p>
+        </div>
+        <div class="bg-gray-100 p-6 rounded-2xl shadow-lg">
+          <h3 class="text-xl font-bold text-gray-900">Kayaking</h3>
+          <p class="text-gray-600 mt-2">Enjoy an adventure on the water.</p>
+          <p class="text-gray-900 font-semibold mt-4">$20</p>
+        </div>
+        <div class="bg-gray-100 p-6 rounded-2xl shadow-lg">
+          <h3 class="text-xl font-bold text-gray-900">Bonfire Night</h3>
+          <p class="text-gray-600 mt-2">Experience a cozy bonfire under the stars.</p>
+          <p class="text-gray-900 font-semibold mt-4">$15</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+
+
+
 
 
 <!-- About Us Section -->
 <section id="about" class="bg-white flex items-center justify-center pt-16 px-4">
   <div class="max-w-screen-xl mx-auto flex flex-col md:flex-row items-center gap-8">
     <!-- Image Section -->
-    <div class="w-full md:w-1/2 flex justify-center">
+    <div class="w-full md:w-1/2 flex justify-lef">
       <img 
         src="../src/uploads/about/resort.png" 
         alt="About Us Image" 
@@ -254,31 +424,12 @@ $stmt->close();
   setInterval(changeImage, 2000);
 </script>
 
-
-
-<!-- Rates Section -->
-<section id="rates" class="bg-gray-50 dark:bg-gray-800 min-h-screen flex items-center justify-center pt-16">
-  <div class="text-center">
-    <h2 class="text-3xl font-extrabold text-gray-900 dark:text-white">Our Rates</h2>
-    <p class="mt-4 text-lg text-gray-600 dark:text-gray-400">Check out our affordable pricing plans designed for everyone.</p>
-  </div>
-</section>
-
-<!-- Add-ons Section -->
-<section id="addons" class="bg-white dark:bg-gray-900 min-h-screen flex items-center justify-center pt-16">
-  <div class="text-center">
-    <h2 class="text-3xl font-extrabold text-gray-900 dark:text-white">Add-ons</h2>
-    <p class="mt-4 text-lg text-gray-600 dark:text-gray-400">Explore our additional services to enhance your experience.</p>
-  </div>
-</section>
-
 <!-- Video Tour Section -->
 <section id="video-tour" class="bg-gray-50 dark:bg-gray-800 min-h-screen flex items-center justify-center pt-16">
   <div class="text-center">
     <h2 class="text-3xl font-extrabold text-gray-900 dark:text-white">Video Tour</h2>
     <p class="mt-4 text-lg text-gray-600 dark:text-gray-400">Watch a tour of our facilities and see what we offer.</p>
     <div class="mt-8">
-      <iframe class="w-full max-w-3xl mx-auto aspect-video rounded-lg" src="https://www.youtube.com/embed/dQw4w9WgXcQ" frameborder="0" allowfullscreen></iframe>
     </div>
   </div>
 </section>
@@ -312,6 +463,67 @@ $stmt->close();
   </div>
 </div>
 
+
+<!-- Modal Structure -->
+<div id="rate-modal" class="hidden fixed top-0 left-0 w-full h-full bg-gray-800 bg-opacity-50 flex justify-center items-center z-50">
+    <div class="bg-white w-11/12 md:w-1/3 p-6 rounded-lg relative">
+        <!-- Close Button (X) -->
+        <button id="close-modal" class="absolute top-4 right-4 text-2xl font-bold text-gray-700">
+            &times;
+        </button>
+
+        <!-- Modal Content -->
+        <img id="modal-picture" class="w-full h-64 object-cover rounded-lg mb-4" src="" alt="Rate Picture">
+        <h2 id="modal-name" class="text-2xl font-bold mb-2 text-gray-800"></h2>
+        <p id="modal-price" class="text-xl font-semibold text-gray-800 mb-2"></p>
+        <p id="modal-hours" class="text-sm text-gray-600 mb-2"></p>
+        <p id="modal-checkin-time" class="text-sm text-gray-600 mb-2"></p>
+        <p id="modal-checkout-time" class="text-sm text-gray-600 mb-2"></p>
+        <p id="modal-description" class="text-gray-600 mt-2"></p>
+    </div>
+</div>
+
+
+<script>
+// JavaScript to open the modal with the correct data
+document.querySelectorAll('.rate-card').forEach(card => {
+  card.addEventListener('click', function() {
+    const modal = document.getElementById('rate-modal');
+    
+    // Debugging: Log the clicked card data
+    console.log("Card clicked", this);
+    
+    // Populate modal with data from clicked card
+    const name = this.getAttribute('data-name');
+    const price = this.getAttribute('data-price');
+    const hoursOfStay = this.getAttribute('data-hours-of-stay');
+    const checkinTime = this.getAttribute('data-checkin-time');
+    const checkoutTime = this.getAttribute('data-checkout-time');
+    const description = this.getAttribute('data-description');
+    const picture = this.getAttribute('data-picture');
+
+    // Log modal content being set
+    console.log("Setting modal data:", { name, price, hoursOfStay, checkinTime, checkoutTime, description, picture });
+
+    document.getElementById('modal-name').innerText = name;
+    document.getElementById('modal-price').innerText = '₱' + price;
+    document.getElementById('modal-hours').innerText = hoursOfStay + ' hours';
+    document.getElementById('modal-checkin-time').innerText = checkinTime;
+    document.getElementById('modal-checkout-time').innerText = checkoutTime;
+    document.getElementById('modal-description').innerText = description;
+    document.getElementById('modal-picture').src = '../src/uploads/rates/' + picture;
+    
+    // Show the modal
+    modal.classList.remove('hidden');
+  });
+});
+
+// Close the modal when the close button (X) is clicked
+document.getElementById('close-modal').addEventListener('click', function() {
+  console.log("Closing modal");
+  document.getElementById('rate-modal').classList.add('hidden');
+});
+</script>
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js"></script>

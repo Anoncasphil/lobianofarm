@@ -35,31 +35,6 @@
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   }
   
-/* Minimalist scrollbar styles */
-.scrollable-container {
-  overflow-x: auto;
-  scrollbar-width: thin;
-  scrollbar-color: rgba(0, 0, 0, 0.3) transparent;
-  scroll-behavior: smooth; /* Enable smooth scrolling */
-}
-
-.scrollable-container::-webkit-scrollbar {
-  height: 8px; /* Height for horizontal scrollbar */
-}
-
-.scrollable-container::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.scrollable-container::-webkit-scrollbar-thumb {
-  background-color: rgba(0, 0, 0, 0.3); /* Dark color for the scrollbar thumb */
-  border-radius: 4px;
-}
-
-.scrollable-container::-webkit-scrollbar-thumb:hover {
-  background-color: rgba(0, 0, 0, 0.5); /* Slightly darker when hovered */
-}
-
 /* Animation for the modal pop-up */
 @keyframes modal-fade-in {
   0% {
