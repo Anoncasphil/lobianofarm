@@ -69,35 +69,78 @@ $stmt->close();
     
 
     <style>
+
+      /* Apply styles to the whole page's scrollbar */
+html {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 0, 0, 0.5) transparent; /* Default opacity 20% */
+}
+
+::-webkit-scrollbar {
+  width: 8px; /* Width for vertical scrollbar */
+  height: 8px; /* Height for horizontal scrollbar */
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.2); /* Dark color for the scrollbar thumb with 20% opacity */
+  border-radius: 4px;
+  transition: background-color 0.3s, opacity 0.3s, transform 0.3s; /* Smooth transition */
+  transform: scale(1.1); /* Zoom effect */
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(0, 0, 0, 0.5); /* Slightly darker when hovered */
+  opacity: 0.8; /* Ensure opacity stays at 80% when thumb is hovered */
+  transform: scale(1.1); /* Zoom effect on thumb hover */
+}
+
     .logo {
     height: 3rem; /* Adjust this as needed */
     width: auto;
     object-fit: contain;
   }
           /* Minimalist scrollbar styles */
-    .scrollable-container {
-      overflow-x: auto;
-      scrollbar-width: thin;
-      scrollbar-color: rgba(0, 0, 0, 0.3) transparent;
-      scroll-behavior: smooth; /* Enable smooth scrolling */
-    }
+          .scrollable-container {
+  overflow-x: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 0, 0, 0.1) transparent; /* Default opacity 20% */
+  scroll-behavior: smooth; /* Enable smooth scrolling */
+}
 
-    .scrollable-container::-webkit-scrollbar {
-      height: 8px; /* Height for horizontal scrollbar */
-    }
+.scrollable-container:hover {
+  scrollbar-color: rgba(0, 0, 0, 0.5) transparent; /* On hover, opacity 80% */
+}
 
-    .scrollable-container::-webkit-scrollbar-track {
-      background: transparent;
-    }
+.scrollable-container::-webkit-scrollbar {
+  height: 8px; /* Height for horizontal scrollbar */
+}
 
-    .scrollable-container::-webkit-scrollbar-thumb {
-      background-color: rgba(0, 0, 0, 0.3); /* Dark color for the scrollbar thumb */
-      border-radius: 4px;
-    }
+.scrollable-container::-webkit-scrollbar-track {
+  background: transparent;
+}
 
-    .scrollable-container::-webkit-scrollbar-thumb:hover {
-      background-color: rgba(0, 0, 0, 0.5); /* Slightly darker when hovered */
-    }
+.scrollable-container::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.2); /* Dark color for the scrollbar thumb with 20% opacity */
+  border-radius: 4px;
+  transition: background-color 0.3s, opacity 0.3s, transform 0.3s; /* Smooth transition */
+}
+
+.scrollable-container:hover::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.8); /* On hover, 80% opacity for the thumb */
+  opacity: 0.8; /* Set opacity to 80% */
+  transform: scale(1.1); /* Zoom effect on hover */
+}
+
+.scrollable-container::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(0, 0, 0, 0.5); /* Slightly darker when hovered */
+  opacity: 0.8; /* Ensure opacity stays at 80% when thumb is hovered */
+  transform: scale(1.1); /* Zoom effect on thumb hover */
+}
+
     </style>
 
 </head>
