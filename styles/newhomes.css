@@ -1,0 +1,132 @@
+.logo {
+  height: 3rem; /* Adjust this as needed */
+  width: auto;
+  object-fit: contain;
+}
+
+/* Slide-in animation from the right */
+@keyframes slideInRight {
+0% {
+  right: -300px; /* Start off-screen on the right */
+}
+100% {
+  right: 1rem; /* End at the visible position */
+}
+}
+
+/* Slide-out animation for disappearing with ease-out */
+@keyframes slideOutRight {
+0% {
+  right: 1rem; /* Start at the visible position */
+  opacity: 1; /* Fully visible */
+}
+100% {
+  right: -300px; /* Move off-screen */
+  opacity: 0; /* Fade out */
+}
+}
+
+/* Apply the slide-in animation initially */
+#checkInModal {
+position: fixed;
+top: 1rem;
+right: -300px; /* Initially off-screen */
+animation: slideInRight 0.5s ease-out forwards;
+z-index: 50;
+opacity: 1;
+}
+
+/* Add styles to the modal after the animation */
+#checkInModal.hidden {
+display: none;
+}
+
+.flatpickr-calendar {
+background-color: #ffffff;
+border-radius: 10px;
+box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.flatpickr-day {
+font-size: 14px;
+border-radius: 50%;
+transition: background-color 0.3s;
+}
+
+.flatpickr-day:hover {
+background-color: #e0f7fa;
+color: #00796b;
+}
+
+.flatpickr-day.reserved-date {
+background-color: #fa0000 !important; /* Custom background color for reserved dates */
+color: #ffffff !important;           /* Text color */
+cursor: not-allowed !important;      /* Cursor style */
+border-radius: 50%;                  /* Optional: Make the date a circle */
+}
+
+
+
+.flatpickr-day.selected {
+background-color: #0288d1 !important;
+color: #ffffff !important;
+}
+
+/* Swiper Wrapper */
+.swiper-wrapper {
+width: 100%;
+height: max-content !important;
+padding-bottom: 64px !important;
+-webkit-transition-timing-function: linear !important;
+transition-timing-function: linear !important;
+position: relative;
+}
+
+/* Pagination Bullet Styling (Optional) */
+.swiper-pagination-bullet {
+background: #4f46e5;
+}
+
+.hidden {
+display: none;
+}
+
+#close-modal {
+position: absolute;
+top: 10px;
+right: 10px;
+background: none;
+border: none;
+font-size: 1.5rem;
+cursor: pointer;
+transition: color 0.2s;
+}
+
+#close-modal:hover {
+color: red; /* Change color when hovering */
+}
+
+/* Minimalist scrollbar styles */
+.scrollable-container {
+overflow-x: auto;
+scrollbar-width: thin;
+scrollbar-color: rgba(0, 0, 0, 0.3) transparent;
+scroll-behavior: smooth; /* Enable smooth scrolling */
+}
+
+.scrollable-container::-webkit-scrollbar {
+height: 8px; /* Height for horizontal scrollbar */
+}
+
+.scrollable-container::-webkit-scrollbar-track {
+background: transparent;
+}
+
+.scrollable-container::-webkit-scrollbar-thumb {
+background-color: rgba(0, 0, 0, 0.3); /* Dark color for the scrollbar thumb */
+border-radius: 4px;
+}
+
+.scrollable-container::-webkit-scrollbar-thumb:hover {
+background-color: rgba(0, 0, 0, 0.5); /* Slightly darker when hovered */
+}

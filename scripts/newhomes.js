@@ -68,10 +68,16 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 
-
-
-
-
+window.addEventListener('load', function() {
+  const container = document.getElementById('rates-container');
+  const cards = container.querySelectorAll('.rate-card');
+  
+  if (cards.length < 3) {
+    container.classList.add('justify-center');
+  } else {
+    container.classList.remove('justify-center');
+  }
+});
 
   // Slideshow functionality
   document.addEventListener("DOMContentLoaded", () => {
@@ -172,3 +178,14 @@ function closeModal() {
 function showSuccessModal(message) {
   alert(message);  // Replace with your actual modal implementation
 }
+
+window.addEventListener('load', function() {
+  const container = document.getElementById('rates-container');
+  const cards = container.querySelectorAll('.rate-card');
+  
+  if (cards.length < 3) {
+    container.classList.add('justify-center');
+  } else {
+    container.classList.remove('justify-center');
+  }
+});

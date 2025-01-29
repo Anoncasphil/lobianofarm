@@ -62,6 +62,8 @@ $stmt->close();
     <link href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" rel="stylesheet"/>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
     <script src="../scripts/booking.js" defer></script>
     <link rel="stylesheet" href="../styles/booking.css">
     <link href="../dist/output.css" rel="stylesheet">
@@ -175,70 +177,71 @@ $stmt->close();
   <!-- Card View Section with Minimalistic Scrollbar -->
   <div class=" mt-6 overflow-x-auto flex space-x-6 scrollbar-none">
     <!-- Card 1 -->
-    <?php
-        // Include database connection
-        include '../db_connection.php';
+<?php
+    // Include database connection
+    include '../db_connection.php';
 
-        // Fetch rates from the database
-        $sql = "SELECT * FROM rates WHERE status = 'active'";
-        $result = $conn->query($sql);
+    // Fetch rates from the database
+    $sql = "SELECT * FROM rates WHERE status = 'active'";
+    $result = $conn->query($sql);
 
-        // Check if there are any results
-        if ($result->num_rows > 0) {
-            // Add a wrapper with overflow-x-auto and flex to make the cards scrollable
-            echo "<div class='pb-6 overflow-x-auto flex space-x-6 scrollbar-hide scrollable-container'>"; // Apply scrollable-container class here
-            
-        // Assuming the result from the database is already fetched into $result
-        while ($row = $result->fetch_assoc()) {
-          $id = $row['id'];
-          $name = $row['name'];
-          $price = $row['price'];
-          $hours_of_stay = $row['hoursofstay'];
-          $picture = $row['picture'];
-          
-          // Generate the rate card with dynamic data and JavaScript functionality
-          echo "
-          <div class='flex-none max-w-sm bg-white border border-gray-200 rounded-lg shadow-sm relative rate-card' data-id='$id'>
+    // Check if there are any results
+    if ($result->num_rows > 0) {
+        // Add a wrapper with overflow-x-auto and flex to make the cards scrollable
+        echo "<div class='pb-6 overflow-x-auto flex space-x-6 scrollbar-hide scrollable-container'>"; // Apply scrollable-container class here
+        
+    // Assuming the result from the database is already fetched into $result
+    while ($row = $result->fetch_assoc()) {
+      $id = $row['id'];
+      $name = $row['name'];
+      $price = $row['price'];
+      $hours_of_stay = $row['hoursofstay'];
+      $picture = $row['picture'];
+      
+      // Generate the rate card with dynamic data and JavaScript functionality
+      echo "
+      <div class='flex-none max-w-sm bg-white border border-gray-200 rounded-lg shadow-sm relative rate-card hover:scale-105 hover:shadow-2xl transition duration-300'>
+          <a href='#'>
+              <img class='rounded-t-lg w-[284.18px] h-[160px] object-fill' src='../src/uploads/rates/$picture' alt='$name' />
+          </a>
+          <div class='p-5'>
               <a href='#'>
-                  <img class='rounded-t-lg w-[284.18px] h-[160px] object-fill' src='../src/uploads/rates/$picture' alt='$name' />
-
+                  <h5 class='mb-3 text-2xl font-semibold tracking-tight dark:text-blue-950'>$name</h5>
               </a>
-              <div class='p-5'>
-                  <a href='#'>
-                      <h5 class='mb-3 text-2xl font-semibold tracking-tight dark:text-blue-950'>$name</h5>
-                  </a>
-                  <div class='mb-2'>
-                      <span class='text-lg font-medium text-gray-700'>₱$price</span>
-                  </div>
-                  <div class='mb-5'>
-                      <span class='text-sm text-gray-600 mt-[-2]'>
-                          <i class='fas fa-clock'></i> $hours_of_stay hours
-                      </span>
-                  </div>
-                  <button onclick='openModal(\"$id\")' class='absolute top-2 right-2 text-white hover:text-blue-500'>
-                      <i class='fas fa-info-circle text-2xl'></i>
-                  </button>
-                  <div class='mt-4 text-center'>
-                    <button onclick='selectRate(\"$id\", \"$name\", \"$price\")' class='select-button bg-blue-600 text-white w-full font-bold py-2 px-4 rounded-md hover:bg-blue-700 transition duration-200' data-id='$id' data-price='$price' data-name='$name'>
-                        Select
-                    </button>
-                  </div>
+              <div class='mb-2'>
+                  <span class='text-lg font-medium text-gray-700'>₱$price</span>
+              </div>
+              <div class='mb-5'>
+                  <span class='text-sm text-gray-600 mt-[-2]'>
+                      <i class='fas fa-clock'></i> $hours_of_stay hours
+                  </span>
+              </div>
+              <button onclick='openModal(\"$id\")' class='absolute top-2 right-2 text-white hover:text-blue-500'>
+                  <i class='fas fa-info-circle text-2xl'></i>
+              </button>
+              <div class='mt-4 text-center'>
+                <button onclick='selectRate(\"$id\", \"$name\", \"$price\")' class='select-button bg-blue-600 text-white w-full font-bold py-2 px-4 rounded-md hover:bg-blue-700 transition duration-200' data-id='$id' data-price='$price' data-name='$name'>
+                    Select
+                </button>
               </div>
           </div>
-          ";
-        }
-          
-            // Close the scrollable wrapper
-            echo "</div>";
-        } else {
-            echo "No active rates available.";
-        }
+      </div>
+      ";
+    }
+      
+        // Close the scrollable wrapper
+        echo "</div>";
+    } else {
+        echo "No active rates available.";
+    }
 
-        // Close the database connection
-        $conn->close();
-      ?>
+    // Close the database connection
+    $conn->close();
+?>
   </div>
 </div>
+
+
 
 <!-- addons -->
 <div id="addons" class="flex-4 bg-white p-6 mb-10 rounded-3xl mt-5 shadow-lg">
