@@ -93,6 +93,7 @@ $stmt->close();
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <script src="../scripts/newhome.js"></script>
     <link rel="stylesheet" href="../styles/newhome.css">
 
 </head>
@@ -414,7 +415,6 @@ $stmt->close();
 
 
 <script src="../scripts/newhomes.js"></script>
->>>>>>> e47081aea4de0ac3294d61b8a4258f72864be063:landing_page_customer/homepage.php
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js"></script>

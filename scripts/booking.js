@@ -124,146 +124,145 @@ function moveCarousel(direction) {
   let selectedAddons = {};  // Store selected addons
   
   function selectRate(id, name, price) {
-      console.log(`Rate selected: ${id}, ${name}, ₱${price}`);  // Debugging log
+    const selectedItems = document.getElementById("selected-items");
+    const selectedPrices = document.getElementById("selected-prices");
+    const allRateCards = document.getElementsByClassName('rate-card');
   
-      const selectedItems = document.getElementById("selected-items");
-      const selectedPrices = document.getElementById("selected-prices");
-      const allRateCards = document.getElementsByClassName('rate-card');
+    let rateCard = null;
+    for (let card of allRateCards) {
+      if (card.getAttribute('data-id') === id.toString()) {
+        rateCard = card;
+        break;
+      }
+    }
   
-      let rateCard = null;
+    if (!rateCard) {
+      console.error(`Rate card with id ${id} not found!`);
+      return;
+    }
+  
+    const selectButton = rateCard.getElementsByClassName('select-button')[0];
+  
+    // Deselect previous rate if any
+    if (selectedRate) {
+      const rateItem = document.querySelector(`#selected-items li[data-id='${selectedRate.id}']`);
+      const priceItem = document.querySelector(`#selected-prices li[data-id='${selectedRate.id}']`);
+      if (rateItem && priceItem) {
+        rateItem.remove();
+        priceItem.remove();
+      }
+      document.querySelector(`input[name="rate_id"][value="${selectedRate.id}"]`)?.remove();
+    }
+  
+    // If rate is already selected, unselect it
+    if (selectedRate && selectedRate.id === id) {
+      unselectRate(selectButton, id, allRateCards);
+    } else {
+      selectedRate = { id, name, price };  // Set the selected rate correctly
+  
+      // Add rate to the summary
+      selectedItems.innerHTML += `<li data-id="${id}">${name} <button onclick="removeRate(${id})"></button></li>`;
+      selectedPrices.innerHTML += `<li data-id="${id}">₱${price}</li>`;
+  
+      // Add hidden input for the selected rate
+      const hiddenInput = document.createElement("input");
+      hiddenInput.type = "hidden";
+      hiddenInput.name = "rate_id";
+      hiddenInput.value = id;
+      document.getElementById("summary-form").appendChild(hiddenInput);
+  
+      // Change button to 'Unselect'
+      selectButton.innerText = "Unselect";
+      selectButton.classList.remove('bg-blue-600');
+      selectButton.classList.add('bg-red-600');
+  
+      // Disable other rate cards
       for (let card of allRateCards) {
-          if (card.getAttribute('data-id') === id.toString()) {
-              rateCard = card;
-              break;
-          }
+        if (card.getAttribute('data-id') !== id.toString()) {
+          card.classList.add('opacity-50', 'cursor-not-allowed');
+          const button = card.getElementsByClassName('select-button')[0];
+          button.disabled = true;
+        }
       }
+    }
   
-      if (!rateCard) {
-          console.error(`Rate card with id ${id} not found!`);
-          return;
-      }
-  
-      const selectButton = rateCard.getElementsByClassName('select-button')[0];
-  
-      // Deselect previous rate if any
-      if (selectedRate) {
-          const rateItem = document.querySelector(`#selected-items li[data-id='${selectedRate.id}']`);
-          const priceItem = document.querySelector(`#selected-prices li[data-id='${selectedRate.id}']`);
-          if (rateItem && priceItem) {
-              rateItem.remove();
-              priceItem.remove();
-          }
-          document.querySelector(`input[name="rate_id"][value="${selectedRate.id}"]`)?.remove();
-      }
-  
-      // If rate is already selected, unselect it
-      if (selectedRate && selectedRate.id === id) {
-          unselectRate(selectButton, id, allRateCards);
-      } else {
-          selectedRate = { id, name, price };  // Set the selected rate correctly
-  
-          // Add rate to the summary
-          selectedItems.innerHTML += `<li data-id="${id}">${name} <button onclick="removeRate(${id})"></button></li>`;
-          selectedPrices.innerHTML += `<li data-id="${id}">₱${price}</li>`;
-  
-          // Add hidden input for the selected rate
-          const hiddenInput = document.createElement("input");
-          hiddenInput.type = "hidden";
-          hiddenInput.name = "rate_id";
-          hiddenInput.value = id;
-          document.getElementById("summary-form").appendChild(hiddenInput);
-  
-          // Change button to 'Unselect'
-          selectButton.innerText = "Unselect";
-          selectButton.classList.remove('bg-blue-600');
-          selectButton.classList.add('bg-red-600');
-  
-          // Disable other rate cards
-          for (let card of allRateCards) {
-              if (card.getAttribute('data-id') !== id.toString()) {
-                  card.classList.add('opacity-50', 'cursor-not-allowed');
-                  const button = card.getElementsByClassName('select-button')[0];
-                  button.disabled = true;
-              }
-          }
-      }
-  
-      // Update the total price and store selections
-      updateTotalPrice();
+    // Update the total price and store selections
+    updateTotalPrice();
   }
   
   function unselectRate(selectButton, id, allRateCards) {
-      // Reset selectedRate to null
-      selectedRate = null;
-      console.log(`Rate selected: ${id}`);  // Debugging log
+    // Reset selectedRate to null
+    selectedRate = null;
   
-      // Change button to 'Select'
-      selectButton.innerText = "Select";
-      selectButton.classList.remove('bg-red-600');
-      selectButton.classList.add('bg-blue-600');
+    // Change button to 'Select'
+    selectButton.innerText = "Select";
+    selectButton.classList.remove('bg-red-600');
+    selectButton.classList.add('bg-blue-600');
   
-      // Re-enable all rate cards
-      for (let card of allRateCards) {
-          card.classList.remove('opacity-50', 'cursor-not-allowed');
-          const button = card.getElementsByClassName('select-button')[0];
-          button.disabled = false; // Enable the button
-      }
+    // Re-enable all rate cards
+    for (let card of allRateCards) {
+      card.classList.remove('opacity-50', 'cursor-not-allowed');
+      const button = card.getElementsByClassName('select-button')[0];
+      button.disabled = false; // Enable the button
+    }
   
-      // Remove rate from the summary
-      const rateItem = document.querySelector(`#selected-items li[data-id='${id}']`);
-      const priceItem = document.querySelector(`#selected-prices li[data-id='${id}']`);
-      if (rateItem && priceItem) {
-          rateItem.remove();
-          priceItem.remove();
-      }
+    // Remove rate from the summary
+    const rateItem = document.querySelector(`#selected-items li[data-id='${id}']`);
+    const priceItem = document.querySelector(`#selected-prices li[data-id='${id}']`);
+    if (rateItem && priceItem) {
+      rateItem.remove();
+      priceItem.remove();
+    }
   
-      // Remove hidden input for the unselected rate
-      document.querySelector(`input[name="rate_id"][value="${id}"]`)?.remove();
+    // Remove hidden input for the unselected rate
+    document.querySelector(`input[name="rate_id"][value="${id}"]`)?.remove();
   
-      // Clear the check-out date and times
+    // Clear the check-out date and times if no rate is selected
+    if (!selectedRate) {
       document.getElementById("check-out-date").value = "";
       document.getElementById("check-in-time").value = "";
       document.getElementById("check-out-time").value = "";
+    }
   
-      // Update the total price
-      updateTotalPrice();
+    // Update the total price
+    updateTotalPrice();
   }
   
   function removeRate(id) {
-      const selectedItems = document.getElementById("selected-items");
-      const selectedPrices = document.getElementById("selected-prices");
+    const selectedItems = document.getElementById("selected-items");
+    const selectedPrices = document.getElementById("selected-prices");
   
-      // Remove the rate from the summary (both name and price)
-      const rateItem = document.querySelector(`#selected-items li[data-id='${id}']`);
-      const priceItem = document.querySelector(`#selected-prices li[data-id='${id}']`);
-      if (rateItem && priceItem) {
-          rateItem.remove();
-          priceItem.remove();
-      }
+    // Remove the rate from the summary (both name and price)
+    const rateItem = document.querySelector(`#selected-items li[data-id='${id}']`);
+    const priceItem = document.querySelector(`#selected-prices li[data-id='${id}']`);
+    if (rateItem && priceItem) {
+      rateItem.remove();
+      priceItem.remove();
+    }
   
-      // Remove hidden input for the removed rate
-      const hiddenInput = document.querySelector(`input[name="rate_id"][value="${id}"]`);
-      if (hiddenInput) {
-          hiddenInput.remove();
-      }
+    // Remove hidden input for the removed rate
+    const hiddenInput = document.querySelector(`input[name="rate_id"][value="${id}"]`);
+    if (hiddenInput) {
+      hiddenInput.remove();
+    }
   
-      // Re-enable the rate card
-      const rateCard = document.querySelector(`.rate-card[data-id='${id}']`);
-      const selectButton = rateCard.getElementsByClassName('select-button')[0];
-      selectButton.innerText = "Select";
-      selectButton.classList.remove('bg-red-600');
-      selectButton.classList.add('bg-blue-600');
-      rateCard.classList.remove('opacity-50', 'cursor-not-allowed');
+    // Re-enable the rate card
+    const rateCard = document.querySelector(`.rate-card[data-id='${id}']`);
+    const selectButton = rateCard.getElementsByClassName('select-button')[0];
+    selectButton.innerText = "Select";
+    selectButton.classList.remove('bg-red-600');
+    selectButton.classList.add('bg-blue-600');
+    rateCard.classList.remove('opacity-50', 'cursor-not-allowed');
   
-      // Reset selectedRate
-      selectedRate = null;
+    // Reset selectedRate
+    selectedRate = null;
   
-      // Update the total price
-      updateTotalPrice();
+    // Update the total price
+    updateTotalPrice();
   }
   
+  
   function toggleAddonSelection(id, name, price) {
-      console.log(`Addon selected: ${id}, ${name}, ₱${price}`);  // Debugging log
   
       const addonCard = document.querySelector(`[data-id="${id}"]`);
       const addonButton = addonCard ? addonCard.querySelector('.select-button') : null;
@@ -329,8 +328,6 @@ function moveCarousel(direction) {
       // Update hidden fields with the current selection
       document.getElementById('rate-id-field').value = selectedRate ? selectedRate.id : '';
       document.getElementById('addon-ids-field').value = Object.keys(selectedAddons).join(',');
-      console.log('Rate ID:', document.getElementById('rate-id-field').value);
-      console.log('Addon IDs:', document.getElementById('addon-ids-field').value);
   }
   // Function to update the total price
   function updateTotalPrice() {
@@ -359,18 +356,20 @@ function moveCarousel(direction) {
     const email = document.getElementById('email').value;
     const mobileNumber = document.getElementById('mobile-number').value;
     const checkInDate = document.getElementById('check-in-date').value;
-    const rateId = document.getElementById('rate-id-field').value;
-
+    
+    // Assuming 'selectedRate' holds the selected rate object
+    const rateId = selectedRate ? selectedRate.id : null; // Get the rateId from selectedRate
+    
     // Check if any of the required fields are empty
     if (!firstName || !lastName || !email || !mobileNumber || !checkInDate || !rateId) {
-        // Show an alert or error message
-        alert("Please fill out all the required fields.");
-        return false; // Prevent submission
+      // Show an alert or error message
+      alert("Please fill out all the required fields.");
+      return false; // Prevent submission
     }
     return true; // Allow submission if all fields are filled
-}
-
-function storeSelections() {
+  }
+  
+  function storeSelections() {
     // Get the input values from the form
     const firstName = document.getElementById('first-name').value;
     const lastName = document.getElementById('last-name').value;
@@ -384,6 +383,12 @@ function storeSelections() {
     // Capture rate ID from the hidden field in the form
     const rateIdField = document.getElementById('rate-id-field');
     const rateId = rateIdField ? rateIdField.value : ''; // Use rate ID from the hidden field
+
+    // Check if rateId is missing or empty
+    if (!rateId) {
+        console.log("Rate ID is missing or not selected.");
+        return; // Prevent storing selections if no rate is selected
+    }
 
     // Capture selected add-on IDs from the hidden field in the form
     const addonIdsField = document.getElementById('addon-ids-field');
@@ -409,15 +414,15 @@ function storeSelections() {
         addons: addonIds // Store the selected add-on IDs
     };
 
+    // Log the selections object to the consol
+
     // Convert the selections object to JSON
     const selectionsJSON = JSON.stringify(selections);
 
     // Store it in localStorage (or use any other storage method)
     localStorage.setItem('selections', selectionsJSON);
-
-    // Log the selections JSON for debugging purposes
-    console.log('Selections stored:', selectionsJSON);
 }
+
 
 function redirectToPayment() {
     // Redirect to payment.php
@@ -432,163 +437,148 @@ function prepareForSubmission() {
 
 
 
+document.addEventListener("DOMContentLoaded", () => {
+  const selectedItems = document.querySelectorAll(".select-button");
+  const checkInDateInput = document.getElementById("check-in-date");
+  const checkOutDateInput = document.getElementById("check-out-date");
+  const checkInTimeInput = document.getElementById("check-in-time");
+  const checkOutTimeInput = document.getElementById("check-out-time");
 
+  let selectedRate = null;
 
-  
-  document.addEventListener("DOMContentLoaded", () => {
-    const selectedItems = document.querySelectorAll(".select-button");
-    const checkInDateInput = document.getElementById("check-in-date");
-    const checkOutDateInput = document.getElementById("check-out-date");
-    const checkInTimeInput = document.getElementById("check-in-time");
-    const checkOutTimeInput = document.getElementById("check-out-time");
-  
-    let selectedRate = null;
-  
-    // Fetch rate details from the server
-    async function fetchRateDetails(rateId) {
-      try {
-        const response = await fetch(`../api/get-rate-details.php?id=${rateId}`);
-        const responseText = await response.text();
-        console.log("Response:", responseText);  // Log raw response
-  
-        // Try parsing the response as JSON
-        const rate = JSON.parse(responseText);
-        return rate;
-      } catch (error) {
-        console.error("Error fetching rate details:", error);
-      }
+  // Load and display the previously stored check-in date
+  const selectedDate = JSON.parse(localStorage.getItem("selectedDate"));
+  if (selectedDate && selectedDate.checkIn) {
+    checkInDateInput.value = selectedDate.checkIn; // Set the value in the check-in date input
+  }
+
+  // Fetch rate details from the server
+  async function fetchRateDetails(rateId) {
+    try {
+      const response = await fetch(`../api/get-rate-details.php?id=${rateId}`);
+      const responseText = await response.text();
+
+      // Try parsing the response as JSON
+      const rate = JSON.parse(responseText);
+      return rate;
+    } catch (error) {
+      console.error('Error fetching rate details:', error);
+    }
+  }
+
+  function calculateCheckoutDate(checkInDate, checkInTime, hoursOfStay) {
+    const validDate = Date.parse(`${checkInDate}T${checkInTime}`);
+    if (isNaN(validDate)) {
+      console.error('Invalid date or time format');
+      return { checkoutDate: '', checkoutTime: '' }; 
     }
   
-// Function to calculate the checkout date and time based on check-in date, time, and hours of stay
-function calculateCheckoutDate(checkInDate, checkInTime, hoursOfStay) {
-  // Create a new Date object for the check-in date and time
-  const checkInDateTime = new Date(`${checkInDate}T${checkInTime}`);
-  console.log("Initial Check-in DateTime:", checkInDateTime); // Log initial DateTime
-
-  // Add hours of stay to the check-in time
-  checkInDateTime.setHours(checkInDateTime.getHours() + hoursOfStay);
-  console.log("Updated Check-in DateTime after adding stay hours:", checkInDateTime); // Log after adding hours
-
-  // Extract the new checkout date and time
-  const checkoutDate = checkInDateTime.toISOString().split("T")[0]; // Get the date in YYYY-MM-DD format
-  const checkoutTime = checkInDateTime.toTimeString().split(":").slice(0, 2).join(":"); // Get the time in HH:MM format
-
-  // Debugging output
-  console.log("Calculated Checkout Date:", checkoutDate);
-  console.log("Calculated Checkout Time:", checkoutTime);
-
-  // If the checkout date goes past midnight, adjust the date correctly
-  if (checkInDateTime.getDate() !== new Date(`${checkInDate}T${checkInTime}`).getDate()) {
-    const nextDay = new Date(checkInDateTime);
-    nextDay.setDate(checkInDateTime.getDate() + 1); // Add 1 day if the checkout crosses midnight
-    return { checkoutDate: nextDay.toISOString().split("T")[0], checkoutTime };
-  }
-
-  return { checkoutDate, checkoutTime };
-}
-
+    const checkInDateTime = new Date(`${checkInDate}T${checkInTime}`);
+    checkInDateTime.setHours(checkInDateTime.getHours() + hoursOfStay);
   
-function selectRate(rateId, rateName, ratePrice) {
-  console.log("Selected Rate ID:", rateId);  // Debugging to check if the rateId is passed correctly
-  const rateCard = document.querySelector(`.rate-card[data-id='${rateId}']`);
+    const totalHours = hoursOfStay + checkInDateTime.getHours();
   
-  if (!rateCard) {
-
-    return; // Exit if the rate card is not found
+    if (totalHours > 48) {
+      checkInDateTime.setDate(checkInDateTime.getDate() + 2);
+    } else if (totalHours > 24) {
+      checkInDateTime.setDate(checkInDateTime.getDate() + 1);
+    }
+  
+    const checkoutDate = checkInDateTime.toISOString().split("T")[0]; 
+    const checkoutTime = checkInDateTime.toTimeString().split(":").slice(0, 2).join(":"); 
+  
+    return { checkoutDate, checkoutTime };
   }
 
-  const selectButton = rateCard.querySelector('.select-button');
-
-  // Check if the button is in 'Select' state (i.e., the button text is 'Select')
-  if (selectButton.innerText !== "Unselect") {
-    return; // Exit the function if it's in 'Unselect' state
-  }
-
-  // Fetch rate details when a rate is selected
-  fetchRateDetails(rateId).then((rate) => {
-    if (rate) {
-      const { checkin_time, checkout_time, hoursofstay } = rate;
-
-      selectedRate = rate;
-
-      // Set check-in time and check-out time based on the rate details
-      checkInTimeInput.value = checkin_time;
-      checkOutTimeInput.value = checkout_time;
-
-      // Handle the check-in date change and calculate the check-out date
-      checkInDateInput.addEventListener("change", () => {
-        if (checkInDateInput.value && selectedRate) {
+  function selectRate(rateId, rateName, ratePrice) {
+    if (selectedRate && selectedRate.id === rateId) {
+      return;
+    }
+  
+    const selectButton = document.querySelector(`button[data-id="${rateId}"]`);
+    if (selectButton && selectButton.innerText === "Select") {
+      return;
+    }
+  
+    fetchRateDetails(rateId).then((rate) => {
+      if (rate) {
+        const { checkin_time, checkout_time, hoursofstay } = rate;
+        selectedRate = rate;
+  
+        const checkInTime = checkin_time || '14:00'; 
+        const checkOutTime = checkout_time || '12:00';
+  
+        checkInTimeInput.value = checkInTime;
+        checkOutTimeInput.value = checkOutTime;
+  
+        if (checkInDateInput.value) {
+          const checkInDate = checkInDateInput.value;
+          const checkInTime = checkInTimeInput.value;
+  
+          const validCheckInDate = Date.parse(`${checkInDate}T${checkInTime}`);
+          if (isNaN(validCheckInDate)) {
+            console.error("Invalid check-in date or time:", checkInDate, checkInTime);
+            return;
+          }
+  
           const { checkoutDate, checkoutTime } = calculateCheckoutDate(
-            checkInDateInput.value,
-            checkin_time,
+            checkInDate,
+            checkInTime,
             hoursofstay
           );
+  
+          checkOutDateInput.value = checkoutDate;
+          checkOutTimeInput.value = checkoutTime;
+  
+          localStorage.setItem(
+            "selectedDate",
+            JSON.stringify({ checkIn: checkInDateInput.value })
+          );
+        }
+      }
+    }).catch((error) => {
+      console.error("Error fetching rate details:", error);
+    });
+  }
 
+  // Flatpickr initialization for date inputs
+  if (checkInDateInput && checkOutDateInput) {
+    flatpickr(checkInDateInput, {
+      dateFormat: "Y-m-d",
+      defaultDate: selectedDate ? selectedDate.checkIn : null, // Use stored date as default if available
+      onChange: function(selectedDates, dateStr, instance) {
+        // When check-in date changes, recalculate checkout date
+        if (selectedDates[0] && checkInTimeInput.value) {
+          const checkInDate = selectedDates[0].toISOString().split("T")[0];
+          const checkInTime = checkInTimeInput.value;
+          const { checkoutDate, checkoutTime } = calculateCheckoutDate(
+            checkInDate,
+            checkInTime,
+            selectedRate ? selectedRate.hoursofstay : 24
+          );
           checkOutDateInput.value = checkoutDate;
           checkOutTimeInput.value = checkoutTime;
         }
-      });
-
-      // Calculate initial checkout date when a rate is first selected
-      if (checkInDateInput.value) {
-        const { checkoutDate, checkoutTime } = calculateCheckoutDate(
-          checkInDateInput.value,
-          checkin_time,
-          hoursofstay
-        );
-
-        checkOutDateInput.value = checkoutDate;
-        checkOutTimeInput.value = checkoutTime;
       }
-    }
-  });
-}
-
-
-  
-// Function to handle unselecting a rate (preserve previous values)
-function unselectRateTime() {
-  // Check if selectedRate exists
-  if (selectedRate) {
-    const { checkin_time, checkout_time, hoursofstay } = selectedRate;
-
-    // Reset selectedRate to null
-    selectedRate = null;
-
-    // Set the check-in and check-out time based on previous rate values
-    checkInTimeInput.value = checkin_time;
-    checkOutTimeInput.value = checkout_time;
-
-    // Calculate the checkout date when unselecting
-    if (checkInDateInput.value) {
-      const { checkoutDate, checkoutTime } = calculateCheckoutDate(
-        checkInDateInput.value,
-        checkin_time,
-        hoursofstay
-      );
-      checkOutDateInput.value = checkoutDate;
-      checkOutTimeInput.value = checkoutTime;
-    }
-  }
-}
-
-  
-    // Attach event listeners to all "Select" buttons
-    selectedItems.forEach((button) => {
-      button.addEventListener("click", (e) => {
-        const rateId = e.target.dataset.id;
-        const rateName = e.target.dataset.name;
-        const ratePrice = e.target.dataset.price;
-        selectRate(rateId, rateName, ratePrice);
-      });
     });
-  
-    // Example of a "Unselect" button functionality
-// Example of a "Unselect" button functionality
-const unselectButton = document.getElementById("unselect-button");
-if (unselectButton) {
-  unselectButton.addEventListener("click", unselectRateTime);
-}
 
+    flatpickr(checkOutDateInput, {
+      dateFormat: "Y-m-d",
+      onChange: function(selectedDates, dateStr, instance) {
+        if (selectedDates[0]) {
+          const checkOutDate = selectedDates[0].toISOString().split("T")[0];
+          checkOutDateInput.value = checkOutDate;
+        }
+      }
+    });
+  }
+
+  selectedItems.forEach((button) => {
+    button.addEventListener("click", (e) => {
+      const rateId = e.target.dataset.id;
+      const rateName = e.target.dataset.name;
+      const ratePrice = e.target.dataset.price;
+      selectRate(rateId, rateName, ratePrice);
+    });
   });
-  
+});

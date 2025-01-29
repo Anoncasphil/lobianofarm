@@ -234,7 +234,7 @@
             </div>
             <div class="relative w-full">
                 <i class="fa-solid fa-user absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500"></i>
-                <input type="text" id="contact_input" name="contactno" placeholder="Contact No:" 
+                <input type="number" id="contact_input" name="contactno" placeholder="Contact No:" 
                        class="w-full border border-gray-500 rounded-lg p-2 pl-10" minlength="11" required>
                 <small id="contact_error" class="text-red-500 mt-1 hidden error-message">Contact number must be exactly 11 digits.</small>
             </div>

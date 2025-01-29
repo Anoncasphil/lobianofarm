@@ -7,7 +7,8 @@ function getReservations() {
     $sql = "SELECT 
         r.id,
         r.user_id,
-        CONCAT(u.first_name, ' ', u.last_name) AS full_name,
+        u.first_name,
+        u.last_name,
         r.check_in_date,
         r.check_out_date,
         r.status 

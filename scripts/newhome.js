@@ -1,92 +1,71 @@
-// Function to format the date as mm/dd/yyyy
-function formatDate(date) {
-  const d = new Date(date);
-  const month = String(d.getMonth() + 1).padStart(2, '0');  // Add leading zero if needed
-  const day = String(d.getDate()).padStart(2, '0');  // Add leading zero if needed
-  const year = d.getFullYear();
-  return `${month}/${day}/${year}`;  // Return the formatted date
-}
-
 document.addEventListener("DOMContentLoaded", () => {
-  // Fetch the reserved dates from the PHP script
-  fetch('get_reserved_dates.php') // Adjust the path to your PHP endpoint
+  // Fetch reserved dates
+  fetch('get_reserved_dates.php')
     .then(response => response.json())
     .then(reservedDateRanges => {
-      // Parse the reserved dates into an array
       const reservedDates = [];
-
       reservedDateRanges.forEach(range => {
         let start = new Date(range.start);
         let end = new Date(range.end);
-
-        // Add all dates within the range to reservedDates
         while (start <= end) {
-          reservedDates.push(start.toISOString().split('T')[0]); // Format as YYYY-MM-DD
-          start.setDate(start.getDate() + 1); // Increment day
+          reservedDates.push(start.toISOString().split('T')[0]);
+          start.setDate(start.getDate() + 1);
         }
       });
 
-      // Initialize the disabledDates array
       const disabledDates = [...reservedDates];
-
-      // Disable 30 days before today
       const today = new Date();
       const startDate = new Date();
-      startDate.setDate(today.getDate() - 30); // 30 days before today
+      startDate.setDate(today.getDate() - 30);
 
-      // Add all dates 30 days before today to disabledDates
       let day = new Date(startDate);
       while (day <= today) {
-        disabledDates.push(day.toISOString().split('T')[0]); // Format as YYYY-MM-DD
-        day.setDate(day.getDate() + 1); // Increment day
+        disabledDates.push(day.toISOString().split('T')[0]);
+        day.setDate(day.getDate() + 1);
       }
 
       // Initialize Flatpickr
       flatpickr("#check-in", {
-        disable: disabledDates, // Disable the dates in the array
-        dateFormat: "m/d/Y", // Set the format to mm/dd/yyyy
-        onChange: function(selectedDates, dateStr, instance) {
-          // Format the selected date as mm/dd/yyyy and update the input value
+        disable: disabledDates,
+        dateFormat: "Y-m-d",
+        onChange: function (selectedDates, dateStr) {
           const formattedDate = formatDate(dateStr);
           document.getElementById("check-in").value = formattedDate;
         },
       });
     })
-    .catch(error => {
-      console.error('Error fetching reserved dates:', error);
-    });
+    .catch(error => console.error('Error fetching reserved dates:', error));
 
-  // Function to open the modal
-  function openModal() {
-    const modal = document.getElementById('checkInModal');
-    modal.classList.remove('hidden'); // Show the modal
-
-    // Apply the slide-in animation
-    modal.style.animation = 'slideInRight 0.5s ease-out forwards';
-
-    // Hide the modal after 3 seconds with the slide-out effect
-    setTimeout(() => {
-      modal.classList.add('hidden'); // This will trigger the slide-out animation
-    }, 3000);
-  }
-
-  // Book button click handler
+  // Event listener for the Book button
   const bookButton = document.getElementById("book-btn");
   bookButton.addEventListener("click", () => {
     const checkInDate = document.getElementById("check-in").value;
 
     if (!checkInDate) {
-      openModal(); // Show modal instead of alert
+      openModal(); // Show modal if no date is selected
       return;
     }
 
-    // Format the date for the URL (mm/dd/yyyy)
-    const formattedDateForUrl = checkInDate.split('/').reverse().join('-');
+    // Create a JSON object to store the selected date
+    const selectedDate = {
+      checkIn: checkInDate,
+    };
 
-    // Redirect to the booking page with the selected check-in date
-    const url = `booking.php?checkin=${formattedDateForUrl}`;
-    window.location.href = url;
+    // Save the JSON object to localStorage or sessionStorage
+    localStorage.setItem("selectedDate", JSON.stringify(selectedDate)); // Persist even after browser closes
+    // OR
+    // sessionStorage.setItem("selectedDate", JSON.stringify(selectedDate)); // Clear when the session ends
+
+    // Redirect to the next page without using URL parameters
+    window.location.href = "booking.php";
   });
+
+  function openModal() {
+    const modal = document.getElementById('checkInModal');
+    modal.classList.remove('hidden');
+    modal.style.animation = 'slideInRight 0.5s ease-out forwards';
+    setTimeout(() => modal.classList.add('hidden'), 3000);
+  }
 });
 
 

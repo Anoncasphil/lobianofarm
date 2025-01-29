@@ -6,9 +6,11 @@ document.addEventListener('DOMContentLoaded', function () {
     let currentReservation = null; // Holds data for the currently selected reservation
 
     const modalId = document.getElementById('modal-id'); // Reference for modal-id
-    const modalName = document.getElementById('modal-name');    
+    const modalUserId = document.getElementById('modal-user-id'); // Reference for modal-user-id
     const modalReservationDate = document.getElementById('modal-reservation-date');
     const modalDesiredDate = document.getElementById('modal-desired-date');
+    const modalCheckinTime = document.getElementById('modal-checkin-time'); 
+    const modalCheckoutTime = document.getElementById('modal-checkout-time'); 
 
     // Initialize FullCalendar
     const calendarEl = document.getElementById('calendar');
@@ -17,17 +19,18 @@ document.addEventListener('DOMContentLoaded', function () {
         events: '../calendar/get-reservations.php', // Endpoint to fetch events
         eventClick: function (info) {
             
-            if (info.event.title === 'Approved') {
-                return; // Exit the handler
+            if (info.event.extendedProps.status === 'Approved') {
+                return; // Exit the handler if the event is approved
             }
 
             // Populate the currentReservation object with all necessary details
             currentReservation = {
                 id: info.event.id,
-                firstName: info.event.extendedProps.firstName,
-                lastName: info.event.extendedProps.lastName,
+                userId: info.event.extendedProps.userId, // Use extendedProps for user ID
                 checkInDate: info.event.startStr, // Use startStr for check-in date
-                checkOutDate: info.event.endStr || info.event.startStr // Use endStr for check-out date, or startStr if endStr is null
+                checkOutDate: info.event.endStr || info.event.startStr, // Use endStr for check-out date, or startStr if endStr is null
+                checkInTime: info.event.extendedProps.checkInTime, // Use extendedProps for check-in time
+                checkOutTime: info.event.extendedProps.checkOutTime // Use extendedProps for check-out time
             };
             console.log('Stored reservation data:', currentReservation); // Debug log
             // Ensure the check-out date is set to the same as the check-in date if they are the same
@@ -37,13 +40,21 @@ document.addEventListener('DOMContentLoaded', function () {
 
             // Populate modal fields
             modalId.textContent = currentReservation.id; // Display reservation ID
-            modalName.textContent = `${currentReservation.firstName} ${currentReservation.lastName}`;
+            modalUserId.textContent = currentReservation.userId; // Display user ID
             modalReservationDate.textContent = currentReservation.checkInDate;
             modalDesiredDate.textContent = currentReservation.checkOutDate;
+            modalCheckinTime.textContent = currentReservation.checkInTime; // Display check-in time
+            modalCheckoutTime.textContent = currentReservation.checkOutTime; // Display check-out time
 
             // Show the modal
             modal.style.display = 'flex';
         },
+        eventContent: function(arg) {
+            let title = document.createElement('div');
+            title.classList.add('fc-event-title');
+            title.innerText = arg.event.title;
+            return { domNodes: [title] };
+        }
     });
 
     // Approve Button Handler
@@ -68,9 +79,11 @@ document.addEventListener('DOMContentLoaded', function () {
                     },
                     body: JSON.stringify({
                         reservationId: currentReservation.id,
-                        firstName: currentReservation.firstName,
-                        lastName: currentReservation.lastName,
+                        userId: currentReservation.userId, // Send user ID
                         checkInDate: currentReservation.checkInDate,
+                        checkOutDate: currentReservation.checkOutDate,
+                        checkInTime: currentReservation.checkInTime, // Send check-in time
+                        checkOutTime: currentReservation.checkOutTime, // Send check-out time
                         title: newTitle, // Send the new title
                     }),
                 });
@@ -84,13 +97,13 @@ document.addEventListener('DOMContentLoaded', function () {
                     // Update the calendar event title
                     const event = calendar.getEvents().find(
                         (ev) =>
-                            ev.extendedProps.firstName === currentReservation.firstName &&
-                            ev.extendedProps.lastName === currentReservation.lastName &&
+                            ev.extendedProps.userId === currentReservation.userId &&
                             ev.startStr === currentReservation.checkInDate
                     );
 
                     if (event) {
                         event.setProp('title', newTitle); // Update the title on the calendar
+                        event.setExtendedProp('status', 'Approved'); // Update the status on the calendar
                     }
 
                     calendar.refetchEvents(); // Refresh the events
