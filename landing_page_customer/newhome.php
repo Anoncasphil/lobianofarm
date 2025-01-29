@@ -1,5 +1,4 @@
 <?php
-<<<<<<< HEAD:landing_page_customer/newhome.php
 session_start();
 require_once '../db_connection.php';
 
@@ -27,61 +26,6 @@ $reviews_query->execute();
 $reviews = $reviews_query->get_result();
 ?>
 
-=======
-// Start the session
-session_start();
-
-// Check if the user is logged in
-if (!isset($_SESSION['user_id'])) {
-    // Redirect to login page if not logged in
-    header("Location: login.php");
-    exit(); // Make sure no further code is executed
-}
-// Include the database connection
-include('../db_connection.php'); // Adjust the path if necessary
-
-// Check if the connection is established
-if (!$conn) {
-    die("Connection failed: " . mysqli_connect_error());
-}
-
-// Query to retrieve user info based on user_id
-$sql = "SELECT first_name, last_name, picture FROM user_tbl WHERE user_id = ?";
-$stmt = $conn->prepare($sql);
-
-// Check if prepare() failed
-if ($stmt === false) {
-    die("Error preparing the SQL statement: " . $conn->error);
-}
-
-// Bind the user_id to the query
-$stmt->bind_param("i", $_SESSION['user_id']);
-
-// Execute the query
-$stmt->execute();
-$stmt->store_result();
-
-// Bind the results to variables
-$stmt->bind_result($first_name, $last_name, $picture);
-
-// Check if user data is found
-if ($stmt->fetch()) {
-    // Combine first and last name
-    $full_name = $first_name . ' ' . $last_name;
-    // Use the picture if it exists, otherwise set a default
-    $user_picture = !empty($picture) ? 'userpicture/' . $picture : 'default-avatar.jpg'; // Adjust the path for the profile picture
-} else {
-    // If user not found, handle accordingly (e.g., redirect to login)
-    header("Location: ../adlogin.php");
-    exit;
-}
-
-$stmt->close();
-?>
-
-
-
->>>>>>> e47081aea4de0ac3294d61b8a4258f72864be063:landing_page_customer/homepage.php
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -92,86 +36,65 @@ $stmt->close();
     <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <script src="../scripts/newhome.js"></script>
     <link rel="stylesheet" href="../styles/newhome.css">
 
 </head>
 <body>
 
- <!-- Navbar -->
-<nav class="bg-white border-blue-200 dark:bg-blue-900 fixed top-0 left-0 w-full z-50">
-  <div class="max-w-screen-xl flex items-center justify-between mx-auto p-4">
-    <!-- Logo -->
-    <a href="#" class="flex items-center space-x-3 rtl:space-x-reverse">
-      <img src="../src/uploads/logo.svg" class="logo" alt="Logo" />
-      <span class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white"></span>
-    </a>
+  <!-- Navbar -->
+  <nav class="bg-white border-blue-200 dark:bg-blue-900 fixed top-0 left-0 w-full z-50">
+    <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
+      <!-- Logo -->
+      <a href="#" class="flex items-center space-x-3 rtl:space-x-reverse">
+        <img src="../src/uploads/logo.svg" class="logo" alt="Logo" />
+        <span class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white"></span>
+      </a>
 
-    <!-- Cart, Profile, and Hamburger -->
-    <div class="flex items-center md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">
+      <!-- Profile and Hamburger -->
+      <div class="flex items-center md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">
+        <button type="button" class="flex text-sm bg-gray-800 rounded-full md:me-0 focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600">
+          <span class="sr-only">Open user menu</span>
+          <img class="w-8 h-8 rounded-full" src="../src/uploads/team/img_677c4eca1c8992.47415664.jpg" alt="user photo">
+        </button>
+        <!-- Hamburger menu -->
+        <button data-collapse-toggle="navbar-user" type="button" class="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600" aria-controls="navbar-user" aria-expanded="false">
+          <span class="sr-only">Open main menu</span>
+          <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 17 14">
+              <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 1h15M1 7h15M1 13h15"/>
+          </svg>
+        </button>
+      </div>
 
-    <button type="button" class="flex text-lg dark:bg-blue-900 rounded-lg md:me-0 px-4 py-4 p-2 hover:bg-white/10">
-      <span class="sr-only">Open cart</span>
-      <!-- Cart Icon using Google Material Icons with fixed size -->
-      <span class="material-icons text-white text-2xl bg-opacity-100 hover:bg-opacity-10">
-          shopping_cart
-      </span>
-    </button>
-
-    <!-- Profile button -->
-    <button type="button" class="flex items-center ml-2 space-x-3 text-sm dark:bg-blue-900 hover:bg-white/10 rounded-lg px-4 py-2">
-        <span class="sr-only">Open user menu</span>
-        <!-- Display user profile picture -->
-        <img class="w-10 h-10 rounded-full" src="../src/uploads/<?php echo htmlspecialchars($user_picture); ?>" alt="User Photo">
-        <!-- Display user first name and last name to the right -->
-        <span class="text-white font-medium"><?php echo htmlspecialchars($full_name); ?></span>
-    </button>
-
-
-      <!-- Hamburger menu -->
-      <button data-collapse-toggle="navbar-user" type="button" class="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-white rounded-lg md:hidden hover:bg-gray-100 dark:text-gray-400 hover:bg-white/10" aria-controls="navbar-user" aria-expanded="false">
-        <span class="sr-only">Open main menu</span>
-        <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 17 14">
-          <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 1h15M1 7h15M1 13h15"/>
-        </svg>
-      </button>
+      <!-- Navigation Links -->
+      <div class="items-center justify-between hidden w-full md:flex md:w-auto md:order-1" id="navbar-user">
+        <ul class="flex flex-col font-medium p-4 md:p-0 mt-4 border border-gray-100 rounded-lg bg-gray-50 md:flex-row md:space-x-8 rtl:space-x-reverse md:mt-0 md:border-0 md:bg-white dark:bg-blue-800 md:dark:bg-blue-900">
+          <li>
+            <a href="#home" class="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">Home</a>
+          </li>
+          <li>
+            <a href="#about" class="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">About</a>
+          </li>
+          <li>
+            <a href="#" class="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">Services</a>
+          </li>
+          <li>
+            <a href="#" class="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">Contact</a>
+          </li>
+        </ul>
+      </div>
     </div>
-
-    <!-- Navigation Links -->
-    <div class="items-center mr-110 justify-center hidden w-full md:flex md:w-auto md:order-1" id="navbar-user">
-      <ul class="flex flex-col font-medium p-4 md:p-0 mt-4 border border-gray-100 rounded-lg bg-gray-50 md:flex-row md:space-x-8 rtl:space-x-reverse md:mt-0 md:border-0 md:bg-white dark:bg-blue-800 md:dark:bg-blue-900">
-        <li>
-          <a href="#home" class="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">Home</a>
-        </li>
-        <li>
-          <a href="#about" class="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">About</a>
-        </li>
-        <li>
-          <a href="#album" class="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">Gallery</a>
-        </li>
-        <li>
-          <a href="#services" class="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">Services</a>
-        </li>
-        <li>
-          <a href="#reviews" class="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">Contact</a>
-        </li>
-      </ul>
-    </div>
-  </div>
-</nav>
-
+  </nav>
 
 <!-- Hero Section -->
 <section
   id="home"
-  class="bg-cover bg-center relative py-16"
+  class="bg-cover bg-center min-h-[50vh] pt-16 relative"
   style="background-image: url('../src/uploads/album/resort.png');"
 >
   <!-- Overlay -->
   <div class="absolute inset-0 bg-blue-950 opacity-90"></div>
 
-  <div class="max-w-screen-xl mx-auto p-0 h-auto flex flex-col justify-start relative z-10">
+  <div class="max-w-screen-xl mx-auto m-0 p-0 h-full flex flex-col justify-start relative z-10">
     <!-- Left Section: Text -->
     <div class="mt-30 text-left lg:mr-0 lg:w-1/2 ml-4 pl-0">
       <h1 class="text-5xl font-extrabold text-gray-900 dark:text-white">
@@ -183,31 +106,29 @@ $stmt->close();
     </div>
     
     <!-- Check-In Form centered below the text -->
-    <div class="flex justify-center mt-8 mb-8 w-full">
-  <div class="inline-flex flex-col sm:flex-row border border-yellow-300 rounded-lg overflow-hidden shadow-sm dark:border-yellow-500">
-    <!-- Check-In Date Input -->
-    <input
-      type="text"
-      id="check-in"
-      name="check-in"
-      class="px-6 py-3 w-56 sm:w-48 border-r-2 border-yellow-500 opacity-90 focus:ring-2 focus:ring-blue-500 focus:outline-none dark:bg-white dark:text-black"
-      placeholder="Check-In"
-      required
-    />
-    <!-- Book Button -->
-    <button
-      type="submit"
-      id="book-btn"
-      class="px-6 py-3 bg-blue-600 text-white font-semibold hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:outline-none"
-    >
-      Book
-    </button>
-  </div>
-</div>
+    <div class="flex justify-center mt-15 mb-15 w-full">
+      <div class="inline-flex flex-col sm:flex-row border border-yellow-300 rounded-lg overflow-hidden shadow-sm dark:border-yellow-500">
+        <!-- Check-In Date -->
+        <input
+          type="text"
+          id="check-in"
+          name="check-in"
+          class="px-6 py-3 w-56 sm:w-48 border-r-2 border-yellow-500 opacity-90 focus:ring-2 focus:ring-blue-500 focus:outline-none dark:bg-white dark:text-black"
+          placeholder="Check-In"
+          required
+        />
+        <!-- Book Button -->
+        <button
+          type="submit"
+          id="book-btn"
+          class="px-6 py-3 bg-blue-600 text-white font-semibold hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+        >
+          Book
+        </button>
+      </div>
     </div>
   </div>
 </section>
-
 
 
 <!-- About Us Section -->
@@ -400,21 +321,10 @@ $stmt->close();
   </div>
 </footer>
 
-<<<<<<< HEAD:landing_page_customer/newhome.php
+
+
+
 <script src="../scripts/newhome.js"></script>
-=======
-
-<!-- Check-in Date Modal -->
-<div id="checkInModal" class="fixed mt-20 right-4 z-50 hidden bg-red-500 text-white rounded-lg px-4 py-3 shadow-lg">
-  <div class="flex justify-between items-center">
-    <p id="modalMessage" class="modal-message">Please select a check-in date.</p>
-    <button onclick="closeModal()" class="text-white">X</button>
-  </div>
-</div>
-
-
-
-<script src="../scripts/newhomes.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js"></script>
