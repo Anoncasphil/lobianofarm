@@ -69,13 +69,24 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 window.addEventListener('load', function() {
-  const container = document.getElementById('rates-container');
-  const cards = container.querySelectorAll('.rate-card');
+  // Get both containers
+  const rateContainer = document.getElementById('rates-container');
+  const addonContainer = document.getElementById('addon-container');
   
-  if (cards.length < 3) {
-    container.classList.add('justify-center');
+  // Check the number of rate cards
+  const rateCards = rateContainer.querySelectorAll('.rate-card');
+  if (rateCards.length < 3) {
+    rateContainer.classList.add('justify-center');
   } else {
-    container.classList.remove('justify-center');
+    rateContainer.classList.remove('justify-center');
+  }
+
+  // Check the number of addon cards
+  const addonCards = addonContainer.querySelectorAll('.addon-card');
+  if (addonCards.length < 3) {
+    addonContainer.classList.add('justify-center');
+  } else {
+    addonContainer.classList.remove('justify-center');
   }
 });
 
@@ -178,14 +189,3 @@ function closeModal() {
 function showSuccessModal(message) {
   alert(message);  // Replace with your actual modal implementation
 }
-
-window.addEventListener('load', function() {
-  const container = document.getElementById('rates-container');
-  const cards = container.querySelectorAll('.rate-card');
-  
-  if (cards.length < 3) {
-    container.classList.add('justify-center');
-  } else {
-    container.classList.remove('justify-center');
-  }
-});

@@ -63,7 +63,7 @@ $stmt->close();
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-
+    <script src="../scripts/homepage_animation.js"></script>
     <script src="../scripts/newhomes.js"></script>
     <link rel="stylesheet" href="../styles/newhome.css">
     
@@ -177,7 +177,7 @@ $stmt->close();
 
   <div class="max-w-screen-xl mx-auto p-0 h-auto flex flex-col justify-start relative z-10">
     <!-- Left Section: Text -->
-    <div class="mt-30 text-left lg:mr-0 lg:w-1/2 ml-4 pl-0">
+    <div id="hero-text" class="mt-30 text-left lg:mr-0 lg:w-1/2 ml-4 pl-0">
       <h1 class="text-5xl font-extrabold text-gray-900 dark:text-white">
         Welcome to Our Website
       </h1>
@@ -185,38 +185,38 @@ $stmt->close();
         Explore our services, discover amazing features, and connect with us to know more.
       </p>
     </div>
-    
+
     <!-- Check-In Form centered below the text -->
-    <div class="flex justify-center mt-8 mb-8 w-full">
-  <div class="inline-flex flex-col sm:flex-row border border-yellow-300 rounded-lg overflow-hidden shadow-sm dark:border-yellow-500">
-    <!-- Check-In Date Input -->
-    <input
-      type="text"
-      id="check-in"
-      name="check-in"
-      class="px-6 py-3 w-56 sm:w-48 border-r-2 border-yellow-500 opacity-90 focus:ring-2 focus:ring-blue-500 focus:outline-none dark:bg-white dark:text-black"
-      placeholder="Check-In"
-      required
-    />
-    <!-- Book Button -->
-    <button
-      type="submit"
-      id="book-btn"
-      class="px-6 py-3 bg-blue-600 text-white font-semibold hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:outline-none"
-    >
-      Book
-    </button>
-  </div>
-</div>
+    <div id="check-in-form" class="flex justify-center mt-8 mb-8 w-full">
+      <div class="inline-flex flex-col sm:flex-row border border-yellow-300 rounded-lg overflow-hidden shadow-sm dark:border-yellow-500">
+        <!-- Check-In Date Input -->
+        <input
+          type="text"
+          id="check-in"
+          name="check-in"
+          class="px-6 py-3 w-56 sm:w-48 border-r-2 border-yellow-500 opacity-90 focus:ring-2 focus:ring-blue-500 focus:outline-none dark:bg-white dark:text-black"
+          placeholder="Check-In"
+          required
+        />
+        <!-- Book Button -->
+        <button
+          type="submit"
+          id="book-btn"
+          class="px-6 py-3 bg-blue-600 text-white font-semibold hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+        >
+          Book
+        </button>
+      </div>
     </div>
   </div>
 </section>
 
-<!-- reservation steps  -->
+
+<!-- Reservation Steps -->
 <section id="reserve" class="bg-gray-100 flex items-center justify-center pt-16 px-4">
   <div class="max-w-screen-xl mx-auto flex flex-col md:flex-row items-center gap-8">
-    <!-- text section -->
-    <div class="w-full md:w-1/2 text-center md:text-left md:mx-8">
+    <!-- Text Section -->
+    <div id="reserve-text" class="w-full md:w-1/2 text-center md:text-left md:mx-8 opacity-0 transform translate-x-[-50px]">
       <h2 class="text-3xl font-extrabold text-gray-900 mb-4">How to Reserve</h2>
       <ol class="list-decimal text-gray-700 mb-10 text-justify space-y-3">
         <li>View available dates, select your preferred date, and click <strong>"Book"</strong> to go to the reservation page.</li>
@@ -228,8 +228,8 @@ $stmt->close();
       </ol>
     </div>
 
-    <!-- image -->
-    <div class="w-full md:w-1/2 flex justify-center mb-10">
+    <!-- Image Section -->
+    <div id="reserve-image" class="w-full md:w-1/2 flex justify-center mb-10 opacity-0 transform translate-x-[50px]">
       <img 
         src="../src/uploads/about/resort.png" 
         alt="Reservation Steps Image" 
@@ -240,18 +240,18 @@ $stmt->close();
 </section>
 
 <!-- Rates & Add-ons Section -->
-<section id="rates-addons" class="bg-white min-h-screen flex flex-col items-center justify-center pt-16 px-4">
+<section id="rates-section" class="bg-white flex flex-col items-center justify-center pt-16 px-4">
   <div class="max-w-screen-xl mx-auto">
     
-<!-- Rates Section -->
-<div class="mb-16">
-  <h2 class="text-3xl font-extrabold text-center text-gray-900">Our Rates</h2>
-  <p class="mt-4 text-lg text-center text-gray-600">Check out our affordable pricing plans designed for everyone.</p>
+    <!-- Rates Section -->
+    <div>
+      <h2 class="text-3xl font-extrabold text-center text-gray-900 header-rate">Our Rates</h2>
+      <p class="mt-4 text-lg text-center text-gray-600 text-rate">Check out our affordable pricing plans designed for everyone.</p>
 
-  <!-- Scrollable Horizontal Rates Cards -->
-<div class="mt-8 overflow-x-auto w-full px-5 py-2 scrollable-container">
-    <div class="flex space-x-6">
-        <?php
+      <!-- Scrollable Horizontal Rates Cards -->
+      <div class="mt-8 overflow-x-auto w-full px-5 py-2 scrollable-container" id="rates-container">
+        <div class="flex space-x-6 min-w-max">
+          <?php
             // Include database connection
             include '../db_connection.php';
 
@@ -272,7 +272,7 @@ $stmt->close();
 
                     // Add data attributes for modal
                     echo "
-                    <div class='flex-none mb-5 mt-5 max-w-sm rounded-2xl shadow-lg relative rate-card hover:scale-105 hover:shadow-2xl transition-transform duration-300'>
+                    <div class='flex-none mb-5 mt-5 max-w-sm rounded-2xl shadow-lg relative rate-card animate-card' onclick=\"openModal('$picture', '$name', '$description', '$hours_of_stay', '$check_in_time', '$check_out_time', '$price')\">
                         <img class='rounded-t-2xl w-full h-[200px] object-cover' src='../src/uploads/rates/$picture' alt='$name'>
 
                         <div class='p-5'>
@@ -286,7 +286,7 @@ $stmt->close();
                             <!-- Time Box with Arrow -->
                             <div class='flex items-center mt-4'>
                                 <div class='bg-gray-50 border border-gray-300 text-gray-500 text-sm rounded-lg py-2 font-medium px-4'>
-                                     $check_in_time
+                                    $check_in_time
                                 </div>
                                 <div class='mx-3'>
                                     <svg class='w-6 h-6 text-gray-500' xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='currentColor'>
@@ -294,7 +294,7 @@ $stmt->close();
                                     </svg>
                                 </div>
                                 <div class='bg-gray-50 border border-gray-300 text-gray-600 text-sm rounded-lg py-2 font-medium px-4'>
-                                     $check_out_time
+                                    $check_out_time
                                 </div>
                             </div>
 
@@ -308,45 +308,77 @@ $stmt->close();
 
             // Close the database connection
             $conn->close();
-        ?>
-    </div>
-</div>
-
-
-
-
-
-
-
-    <!-- Add-ons Section -->
-    <div>
-      <h2 class="text-3xl font-extrabold text-gray-900">Add-ons</h2>
-      <p class="mt-4 text-lg text-gray-600">Explore our additional services to enhance your experience.</p>
-
-      <!-- Add-ons Cards -->
-      <div class="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <div class="bg-gray-100 p-6 rounded-2xl shadow-lg">
-          <h3 class="text-xl font-bold text-gray-900">Breakfast</h3>
-          <p class="text-gray-600 mt-2">Start your day with a delicious meal.</p>
-          <p class="text-gray-900 font-semibold mt-4">$10</p>
-        </div>
-        <div class="bg-gray-100 p-6 rounded-2xl shadow-lg">
-          <h3 class="text-xl font-bold text-gray-900">Massage</h3>
-          <p class="text-gray-600 mt-2">Relax with a soothing massage session.</p>
-          <p class="text-gray-900 font-semibold mt-4">$30</p>
-        </div>
-        <div class="bg-gray-100 p-6 rounded-2xl shadow-lg">
-          <h3 class="text-xl font-bold text-gray-900">Kayaking</h3>
-          <p class="text-gray-600 mt-2">Enjoy an adventure on the water.</p>
-          <p class="text-gray-900 font-semibold mt-4">$20</p>
-        </div>
-        <div class="bg-gray-100 p-6 rounded-2xl shadow-lg">
-          <h3 class="text-xl font-bold text-gray-900">Bonfire Night</h3>
-          <p class="text-gray-600 mt-2">Experience a cozy bonfire under the stars.</p>
-          <p class="text-gray-900 font-semibold mt-4">$15</p>
+          ?>
         </div>
       </div>
     </div>
+  </div>
+</section>
+
+<!-- Add-ons Section -->
+<section id="addons-section" class="bg-white flex flex-col items-center justify-center pt-16 px-4">
+  <div class="max-w-screen-xl mx-auto">
+
+    <div class="mb-10">
+        <h2 class="text-3xl font-extrabold text-center text-gray-900 heading-addon">Our Add-ons</h2>
+        <p class="mt-4 text-lg text-center text-gray-600 text-addon">Check out our affordable pricing plans designed for everyone.</p>
+
+        <!-- Scrollable Horizontal Add-ons Cards -->
+        <div class="mt-8 overflow-x-auto w-full px-5 py-2 scrollable-container" id="addons-container">
+          <div class="flex space-x-6 min-w-max">
+            <?php
+                // Include database connection
+                include '../db_connection.php';
+
+                // Fetch add-ons from the database
+                $sql = "SELECT * FROM addons WHERE status = 'active'";
+                $result = $conn->query($sql);
+
+                if ($result->num_rows > 0) {
+                    while ($row = $result->fetch_assoc()) {
+                        $id = $row['id'];
+                        $name = $row['name'];
+                        $price = $row['price'];
+                        $description = $row['description'];
+                        $picture = $row['picture'];
+
+                        // Add data attributes for modal
+                        echo "
+                        <div class='ml-[16px] flex-none mb-5 mt-5 max-w-sm rounded-2xl shadow-lg relative addons-card animate-card' onclick='openAddonModal(\"$picture\", \"$name\", \"$description\", \"$price\")'>
+                            <img class='rounded-t-2xl w-full h-[200px] object-cover' src='../src/uploads/addons/$picture' alt='$name'>
+
+                            <div class='p-5'>
+                                <h2 class='text-2xl font-bold text-gray-800'>$name</h2>
+
+                                <p class='text-gray-800 font-semibold text-xl mt-4'>₱$price</p>
+                            </div>
+                        </div>";
+                    }
+                } else {
+                    echo "<p class='text-gray-600'>No active add-ons available.</p>";
+                }
+
+                // Close the database connection
+                $conn->close();
+            ?>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+
+
+
+
+
+
+
+
+
+
 
   </div>
 </section>
@@ -470,66 +502,217 @@ $stmt->close();
 </div>
 
 
-<!-- Modal Structure -->
-<div id="rate-modal" class="hidden fixed top-0 left-0 w-full h-full bg-gray-800 bg-opacity-50 flex justify-center items-center z-50">
-    <div class="bg-white w-11/12 md:w-1/3 p-6 rounded-lg relative">
-        <!-- Close Button (X) -->
-        <button id="close-modal" class="absolute top-4 right-4 text-2xl font-bold text-gray-700">
-            &times;
-        </button>
+<!-- Add-ons Section -->
+<section id="addons-section" class="bg-white flex flex-col items-center justify-center pt-16 px-4">
+  <div class="max-w-screen-xl mx-auto">
 
-        <!-- Modal Content -->
-        <img id="modal-picture" class="w-full h-64 object-cover rounded-lg mb-4" src="" alt="Rate Picture">
-        <h2 id="modal-name" class="text-2xl font-bold mb-2 text-gray-800"></h2>
-        <p id="modal-price" class="text-xl font-semibold text-gray-800 mb-2"></p>
-        <p id="modal-hours" class="text-sm text-gray-600 mb-2"></p>
-        <p id="modal-checkin-time" class="text-sm text-gray-600 mb-2"></p>
-        <p id="modal-checkout-time" class="text-sm text-gray-600 mb-2"></p>
-        <p id="modal-description" class="text-gray-600 mt-2"></p>
+    <div class="mb-10">
+        <h2 class="text-3xl font-extrabold text-center text-gray-900">Our Add-ons</h2>
+        <p class="mt-4 text-lg text-center text-gray-600">Check out our affordable pricing plans designed for everyone.</p>
+
+        <!-- Scrollable Horizontal Add-ons Cards -->
+        <div class="mt-8 overflow-x-auto w-full px-5 py-2 scrollable-container">
+          <div class="flex space-x-6 min-w-max" id="addons-container">
+            <?php
+                // Include database connection
+                include '../db_connection.php';
+
+                // Fetch add-ons from the database
+                $sql = "SELECT * FROM addons WHERE status = 'active'";
+                $result = $conn->query($sql);
+
+                if ($result->num_rows > 0) {
+                    while ($row = $result->fetch_assoc()) {
+                        $id = $row['id'];
+                        $name = $row['name'];
+                        $price = $row['price'];
+                        $description = $row['description'];
+                        $picture = $row['picture'];
+
+                        // Add data attributes for modal
+                        echo "
+                        <div class=' ml-[16px] flex-none mb-5 mt-5 max-w-sm rounded-2xl shadow-lg relative addons-card hover:scale-105 hover:shadow-2xl transition-transform duration-300' onclick='openAddonModal(\"$picture\", \"$name\", \"$description\", \"$price\")'>
+                            <img class='rounded-t-2xl w-full h-[200px] object-cover' src='../src/uploads/addons/$picture' alt='$name'>
+
+                            <div class='p-5'>
+                                <h2 class='text-2xl font-bold text-gray-800'>$name</h2>
+
+                                <p class='text-gray-800 font-semibold text-xl mt-4'>₱$price</p>
+                            </div>
+                        </div>";
+                    }
+                } else {
+                    echo "<p class='text-gray-600'>No active add-ons available.</p>";
+                }
+
+                // Close the database connection
+                $conn->close();
+            ?>
+          </div>
+        </div>
+      </div>
     </div>
-</div>
+  </div>
+</section>
+
+<!-- Modal for displaying detailed information -->
+<div id="rate-modal" class="fixed inset-0 bg-black/30 flex justify-center items-center hidden z-50 opacity-0 transition-opacity duration-500 ease-in-out">
+  <div class="bg-white p-8 rounded-lg max-w-lg w-full">
+    <div class="flex">
+      <!-- Image on the left -->
+      <div class="flex-none w-1/3">
+        <img id="modal-picture" class="rounded-lg w-full h-full object-cover" src="" alt="Rate Picture">
+      </div>
+
+      <!-- Details on the right -->
+      <div class="ml-6 flex-1">
+        <h2 id="modal-name" class="text-2xl font-bold text-gray-800"></h2>
+
+        <div class="text-gray-600 mt-4 flex items-center">
+          <span class="material-icons mr-2">schedule</span>
+          <p id="modal-hours" class="text-gray-600 font-medium"></p>
+        </div>
+
+        <div class="flex items-center mt-4">
+          <div class="bg-gray-50 border border-gray-300 text-gray-500 text-sm rounded-lg py-2 font-medium px-4" id="modal-checkin-time"></div>
+          <div class="mx-3">
+            <svg class="w-6 h-6 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5-5 5M6 7l5 5-5 5"></path>
+            </svg>
+          </div>
+          <div class="bg-gray-50 border border-gray-300 text-gray-600 text-sm rounded-lg py-2 font-medium px-4" id="modal-checkout-time"></div>
+        </div>
+
+        <p class="text-gray-800 font-semibold text-xl mt-4">₱<span id="modal-price"></span></p>
+        <p id="modal-description" class="text-gray-600 mt-4 max-w-2xl"></p>
+        <!-- Close button -->
+        <button id="close-modal" class="mt-6 px-4 py-2 bg-blue-600 text-white rounded-lg w-full">Close</button>
+      </div>
+      
+    </div>
+  </div>
+</div> 
+
+<!-- Modal for displaying Add-on Details -->
+<div id="addon-modal" class="fixed inset-0 bg-black/30 flex justify-center items-center hidden z-50">
+  <div class="bg-white p-8 rounded-lg max-w-lg w-full">
+    <div class="flex">
+      <!-- Image on the left -->
+      <div class="flex-none w-1/3">
+        <img id="addon-modal-picture" class="rounded-lg w-full h-full object-cover" src="" alt="Addon Picture">
+      </div>
+
+      <!-- Details on the right -->
+      <div class="ml-6 flex-1">
+        <h2 id="addon-modal-name" class="text-2xl font-bold text-gray-800"></h2>
+
+        <p class="text-gray-800 font-semibold text-xl mt-4">₱<span id="addon-modal-price"></span></p>
+        <p id="addon-modal-description" class="text-gray-600 mt-4 max-w-2xl"></p>
+
+        <!-- Close button -->
+        <button id="close-addon-modal" class="mt-6 px-4 py-2 bg-blue-600 text-white rounded-lg w-full hover:bg-blue-700">Close</button>
+      </div>
+    </div>
+  </div>
+</div> 
+
+<script>
+  // Function to open the modal and display data
+  function openModal(picture, name, description, hours, checkinTime, checkoutTime, price) {
+    // Set modal content
+    document.getElementById('modal-picture').src = '../src/uploads/rates/' + picture;
+    document.getElementById('modal-name').textContent = name;
+    document.getElementById('modal-description').textContent = description;
+    document.getElementById('modal-hours').textContent = hours + ' hours';
+    document.getElementById('modal-checkin-time').textContent = checkinTime;
+    document.getElementById('modal-checkout-time').textContent = checkoutTime;
+    document.getElementById('modal-price').textContent = price;
+
+    // Show modal with fade-in effect
+    const modal = document.getElementById('rate-modal');
+    modal.classList.remove('hidden');
+    setTimeout(() => modal.classList.remove('opacity-0'), 10);  // Trigger the fade-in effect
+  }
+
+  // Close the modal when clicking the close button
+  document.getElementById('close-modal').addEventListener('click', function() {
+    const modal = document.getElementById('rate-modal');
+    modal.classList.add('opacity-0'); // Fade out
+    setTimeout(() => modal.classList.add('hidden'), 500);  // Hide after fade-out transition
+  });
+
+  // Close the modal when clicking outside of the modal
+  document.getElementById('rate-modal').addEventListener('click', function(event) {
+    if (event.target === document.getElementById('rate-modal')) {
+      const modal = document.getElementById('rate-modal');
+      modal.classList.add('opacity-0'); // Fade out
+      setTimeout(() => modal.classList.add('hidden'), 500);  // Hide after fade-out transition
+    }
+  });
+
+  
+</script>
 
 
 <script>
-// JavaScript to open the modal with the correct data
-document.querySelectorAll('.rate-card').forEach(card => {
-  card.addEventListener('click', function() {
-    const modal = document.getElementById('rate-modal');
-    
-    // Debugging: Log the clicked card data
-    console.log("Card clicked", this);
-    
-    // Populate modal with data from clicked card
-    const name = this.getAttribute('data-name');
-    const price = this.getAttribute('data-price');
-    const hoursOfStay = this.getAttribute('data-hours-of-stay');
-    const checkinTime = this.getAttribute('data-checkin-time');
-    const checkoutTime = this.getAttribute('data-checkout-time');
-    const description = this.getAttribute('data-description');
-    const picture = this.getAttribute('data-picture');
+  // Function to open the add-on modal and display data with animation
+  function openAddonModal(picture, name, description, price) {
+    // Set modal content
+    document.getElementById('addon-modal-picture').src = '../src/uploads/addons/' + picture;
+    document.getElementById('addon-modal-name').textContent = name;
+    document.getElementById('addon-modal-description').textContent = description;
+    document.getElementById('addon-modal-price').textContent = price;
 
-    // Log modal content being set
-    console.log("Setting modal data:", { name, price, hoursOfStay, checkinTime, checkoutTime, description, picture });
-
-    document.getElementById('modal-name').innerText = name;
-    document.getElementById('modal-price').innerText = '₱' + price;
-    document.getElementById('modal-hours').innerText = hoursOfStay + ' hours';
-    document.getElementById('modal-checkin-time').innerText = checkinTime;
-    document.getElementById('modal-checkout-time').innerText = checkoutTime;
-    document.getElementById('modal-description').innerText = description;
-    document.getElementById('modal-picture').src = '../src/uploads/rates/' + picture;
+    // Show modal with fade-in and scale-up effect
+    const modal = document.getElementById('addon-modal');
+    const modalContent = modal.querySelector('div');
     
-    // Show the modal
+    // Remove hidden and apply transition styles
     modal.classList.remove('hidden');
-  });
-});
+    modal.style.opacity = 0;
+    modal.style.transition = "opacity 0.5s ease-in-out";
+    modalContent.style.transform = "scale(0.95)";
+    modalContent.style.transition = "transform 0.5s ease-in-out";
 
-// Close the modal when the close button (X) is clicked
-document.getElementById('close-modal').addEventListener('click', function() {
-  console.log("Closing modal");
-  document.getElementById('rate-modal').classList.add('hidden');
-});
+    setTimeout(function() {
+      modal.style.opacity = 1;
+      modalContent.style.transform = "scale(1)";
+    }, 10);  // Allow styles to take effect before transitioning
+  }
+
+  // Close the add-on modal when clicking the close button with smooth transition
+  document.getElementById('close-addon-modal').addEventListener('click', function() {
+    const modal = document.getElementById('addon-modal');
+    const modalContent = modal.querySelector('div');
+
+    // Apply fade-out and scale-down effect
+    modal.style.opacity = 0;
+    modalContent.style.transform = "scale(0.95)";
+    
+    // Set a timeout for the animation to complete before hiding the modal
+    setTimeout(function() {
+      modal.classList.add('hidden');
+    }, 500); // Match duration of transition
+  });
+
+  // Close the modal when clicking outside of the modal
+  document.getElementById('addon-modal').addEventListener('click', function(event) {
+    if (event.target === document.getElementById('addon-modal')) {
+      const modal = document.getElementById('addon-modal');
+      const modalContent = modal.querySelector('div');
+      
+      modal.style.opacity = 0;
+      modalContent.style.transform = "scale(0.95)";
+      
+      setTimeout(function() {
+        modal.classList.add('hidden');
+      }, 500); // Match duration of transition
+    }
+  });
 </script>
+
+
+
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js"></script>
