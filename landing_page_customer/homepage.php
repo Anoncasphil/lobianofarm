@@ -65,7 +65,7 @@ $stmt->close();
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
     <script src="../scripts/newhomes.js"></script>
-    <link rel="stylesheet" href="../styles/newhome.css">
+    <link rel="stylesheet" href="../styles/newhomes.css">
 
     <style>
           /* Minimalist scrollbar styles */
