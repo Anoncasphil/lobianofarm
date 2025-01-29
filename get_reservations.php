@@ -5,13 +5,14 @@ function getReservations() {
     global $conn;
     
     $sql = "SELECT 
-        reservation_id,
-        first_name,
-        last_name,
-        reservation_check_in_date,
-        title 
-    FROM reservation 
-    ORDER BY reservation_check_in_date DESC";
+        id AS reservation_id,
+        user_tbl.first_name,
+        user_tbl.last_name,
+        reservations.check_in_date AS reservation_check_in_date,
+        reservations.status AS title 
+    FROM reservations
+    JOIN user_tbl ON reservations.user_id = user_tbl.user_id
+    ORDER BY reservations.check_in_date DESC";
     
     $result = $conn->query($sql);
     $reservations = [];
