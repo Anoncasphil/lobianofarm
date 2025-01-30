@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jan 27, 2025 at 03:33 PM
+-- Generation Time: Jan 30, 2025 at 09:03 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -177,20 +177,17 @@ CREATE TABLE `reservations` (
   `invoice_number` varchar(50) NOT NULL,
   `total_price` decimal(10,2) NOT NULL,
   `payment_receipt` varchar(255) NOT NULL,
-  `status` enum('Pending','Confirmed','Completed') DEFAULT 'Pending',
+  `status` enum('Pending','Approved','Completed') DEFAULT 'Pending',
   `payment_status` enum('Pending','Paid','Failed') DEFAULT 'Pending',
   `contact_number` varchar(20) DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
-  `rate_id` int(11) DEFAULT NULL
+  `rate_id` int(11) DEFAULT NULL,
+  `first_name` varchar(100) NOT NULL,
+  `last_name` varchar(100) NOT NULL,
+  `email` varchar(255) NOT NULL,
+  `mobile_number` varchar(20) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `reservations`
---
-
-INSERT INTO `reservations` (`id`, `user_id`, `check_in_date`, `check_out_date`, `check_in_time`, `check_out_time`, `reference_number`, `invoice_date`, `invoice_number`, `total_price`, `payment_receipt`, `status`, `payment_status`, `contact_number`, `created_at`, `updated_at`, `rate_id`) VALUES
-(1, 25, '2025-01-27', '2025-01-28', '19:00:00', '07:00:00', '12312312312', '2025-01-27', 'INV-786222', 29500.00, 'payment_receipt_1737978372_9599.jpg', 'Pending', 'Pending', '09672634499', '2025-01-27 11:46:12', '2025-01-27 11:46:12', 62);
 
 -- --------------------------------------------------------
 
@@ -203,14 +200,6 @@ CREATE TABLE `reservation_addons` (
   `addon_id` int(11) DEFAULT NULL,
   `reservation_addons_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `reservation_addons`
---
-
-INSERT INTO `reservation_addons` (`reservation_id`, `addon_id`, `reservation_addons_id`) VALUES
-(1, 17, 1),
-(1, 18, 2);
 
 -- --------------------------------------------------------
 
@@ -376,13 +365,13 @@ ALTER TABLE `rates`
 -- AUTO_INCREMENT for table `reservations`
 --
 ALTER TABLE `reservations`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `reservation_addons`
 --
 ALTER TABLE `reservation_addons`
-  MODIFY `reservation_addons_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `reservation_addons_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `reviews`
