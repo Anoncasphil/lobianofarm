@@ -156,13 +156,15 @@ html {
     <!-- Cart, Profile, and Hamburger -->
     <div class="flex items-center md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">
 
-    <button type="button" class="flex text-lg dark:bg-blue-900 rounded-lg md:me-0 px-4 py-4 p-2 hover:bg-white/10">
+    <button type="button" class="flex text-lg dark:bg-blue-900 rounded-lg md:me-0 px-4 py-4 p-2 hover:bg-white/10" 
+      onclick="window.location.href='customer_reservation.php'">
       <span class="sr-only">Open cart</span>
       <!-- Cart Icon using Google Material Icons with fixed size -->
       <span class="material-icons text-white text-2xl bg-opacity-100 hover:bg-opacity-10">
           shopping_cart
       </span>
     </button>
+
 
     <!-- Profile button -->
     <button type="button" class="flex items-center ml-2 space-x-3 text-sm dark:bg-blue-900 hover:bg-white/10 rounded-lg px-4 py-2">
