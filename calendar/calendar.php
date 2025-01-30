@@ -156,7 +156,7 @@ if (!isset($_SESSION['admin_id'])) {
 						<span class="close" id="closeModal">&times;</span>
 						<h2>Reservation Details</h2>
 						<p><strong>Reservation ID:</strong> <span id="modal-id"></span></p>
-						<p><strong>User ID:</strong> <span id="modal-user-id"></span></p>
+						<p><strong>Guest Name:</strong> <span id="modal-name"></span></p>
 						<p><strong>Check-in Date:</strong> <span id="modal-reservation-date"></span></p>
 						<p><strong>Check-in Time:</strong> <span id="modal-checkin-time"></span></p>
 						<p><strong>Check-out Date:</strong> <span id="modal-desired-date"></span></p>

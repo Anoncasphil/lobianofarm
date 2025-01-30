@@ -440,11 +440,26 @@ document.addEventListener('DOMContentLoaded', function () {
         return re.test(String(email).toLowerCase());
     }
     });
+    document.getElementById("contact_input").addEventListener("input", function (event) {
+    let input = this.value.replace(/\D/g, ""); // Remove non-numeric characters
+    this.value = input.slice(0, 11); // Restrict to max 11 digits
+
+    // Show error if input is less than 11 digits
+    const errorMessage = document.getElementById("contact_error");
+    if (this.value.length < 11) {
+        errorMessage.classList.remove("hidden");
+    } else {
+        errorMessage.classList.add("hidden");
+    }
+});
+
 document.getElementById("contact_input").addEventListener("keydown", function (event) {
+    // Prevent entering 'e', 'E', '+', and '-'
     if (event.key === "e" || event.key === "E" || event.key === "+" || event.key === "-") {
         event.preventDefault();
     }
 });
+
 
 </script>
 </body>

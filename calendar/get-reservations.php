@@ -2,7 +2,7 @@
 include('../db_connection.php');
 
 // Prepare the SQL query to fetch reservation data
-$sql = "SELECT id, user_id, check_in_date, check_out_date, check_in_time, check_out_time, status 
+$sql = "SELECT id, user_id, check_in_date, check_out_date, check_in_time, check_out_time, status, first_name, last_name 
         FROM reservations";
 
 // Execute the query
@@ -32,15 +32,15 @@ while ($row = $result->fetch_assoc()) {
 
     $reservations[] = array(
         'id' => $row['id'], // Map id
+        'userId' => $row['user_id'], // Include user id
+        'firstName' => $row['first_name'], // Include first name
+        'lastName' => $row['last_name'], // Include last name
         'title' => $row['status'], // Use status as title
+        'checkInTime' => $row['check_in_time'], // Include check-in time
+        'checkOutTime' => $row['check_out_time'], // Include check-out time 
         'start' => $checkInDateFormatted,
         'end' => $checkOutDateFormatted,
-        'extendedProps' => array(
-            'userId' => $row['user_id'], // Include user ID
-            'checkInTime' => $row['check_in_time'], // Include check-in time
-            'checkOutTime' => $row['check_out_time'], // Include check-out time
-            'status' => $row['status']
-        ),
+        'status' => $row['status'], // Include status
         'backgroundColor' => $row['status'] === 'Pending' ? '#FFA500' : '#008000' // Conditional color coding  
     );
 }

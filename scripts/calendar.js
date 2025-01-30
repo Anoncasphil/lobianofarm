@@ -3,10 +3,11 @@ document.addEventListener('DOMContentLoaded', function () {
     const modal = document.getElementById('dateModal');
     const closeModal = document.getElementById('closeModal');
     const approveButton = document.querySelector('.approve-button');
+    const declineButton = document.querySelector('.decline-button');
     let currentReservation = null; // Holds data for the currently selected reservation
 
     const modalId = document.getElementById('modal-id'); // Reference for modal-id
-    const modalUserId = document.getElementById('modal-user-id'); // Reference for modal-user-id
+    const modalName = document.getElementById('modal-name'); // Reference for modal-name
     const modalReservationDate = document.getElementById('modal-reservation-date');
     const modalDesiredDate = document.getElementById('modal-desired-date');
     const modalCheckinTime = document.getElementById('modal-checkin-time'); 
@@ -26,7 +27,9 @@ document.addEventListener('DOMContentLoaded', function () {
             // Populate the currentReservation object with all necessary details
             currentReservation = {
                 id: info.event.id,
-                userId: info.event.extendedProps.userId, // Use extendedProps for user ID
+                userId: info.event.extendedProps.userId, // Include user id
+                firstName: info.event.extendedProps.firstName, // Include first name
+                lastName: info.event.extendedProps.lastName, // Include last name
                 checkInDate: info.event.startStr, // Use startStr for check-in date
                 checkOutDate: info.event.endStr || info.event.startStr, // Use endStr for check-out date, or startStr if endStr is null
                 checkInTime: info.event.extendedProps.checkInTime, // Use extendedProps for check-in time
@@ -40,7 +43,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
             // Populate modal fields
             modalId.textContent = currentReservation.id; // Display reservation ID
-            modalUserId.textContent = currentReservation.userId; // Display user ID
+            modalName.textContent = currentReservation.firstName + ' ' + currentReservation.lastName; // Display full name
             modalReservationDate.textContent = currentReservation.checkInDate;
             modalDesiredDate.textContent = currentReservation.checkOutDate;
             modalCheckinTime.textContent = currentReservation.checkInTime; // Display check-in time
@@ -72,7 +75,67 @@ document.addEventListener('DOMContentLoaded', function () {
                 const newTitle = 'Approved';
 
                 // Send update request to the server
-                const response = await fetch('../calendar/update_status.php', {
+                const response = await fetch('../api/update_status.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        reservationId: currentReservation.id,
+                        userId: currentReservation.userId, // Send user id
+                        firstName: currentReservation.firstName, // Send first name
+                        lastName: currentReservation.lastName, // Send last name
+                        checkInDate: currentReservation.checkInDate,
+                        checkOutDate: currentReservation.checkOutDate,
+                        checkInTime: currentReservation.checkInTime, // Send check-in time
+                        checkOutTime: currentReservation.checkOutTime, // Send check-out time
+                        title: newTitle, // Send the new title
+                    }),
+                });
+
+                const result = await response.json();
+                console.log('Response from server:', result); // Debug server response
+
+                if (result.success) {
+                    alert('Reservation Approved!');
+
+                    // Update the calendar event title
+                    const event = calendar.getEventById(currentReservation.id);
+                    if (event) {
+                        event.setProp('title', newTitle); // Update the title on the calendar
+                        event.setExtendedProp('status', 'Approved'); // Update the status on the calendar
+                    }
+
+                    calendar.refetchEvents(); // Refresh the events
+
+                    // Close the modal
+                    modal.style.display = 'none';
+                } else {
+                    alert(result.message || 'Failed to approve reservation.');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred while approving the reservation.');
+            }
+        });
+    }
+
+    // Decline Button Handler
+    if (declineButton) {
+        declineButton.addEventListener('click', async function () {
+            try {
+                if (!currentReservation) {
+                    alert('No reservation selected!');
+                    return;
+                }
+
+                console.log('Sending data:', currentReservation); // Debug sent data
+
+                // Define the new title for the reservation
+                const newTitle = 'Declined';
+
+                // Send update request to the server
+                const response = await fetch('../api/update_status.php', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -92,7 +155,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 console.log('Response from server:', result); // Debug server response
 
                 if (result.success) {
-                    alert('Reservation approved successfully!');
+                    alert('Reservation Declined!');
 
                     // Update the calendar event title
                     const event = calendar.getEvents().find(
@@ -103,7 +166,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
                     if (event) {
                         event.setProp('title', newTitle); // Update the title on the calendar
-                        event.setExtendedProp('status', 'Approved'); // Update the status on the calendar
+                        event.setExtendedProp('status', 'Declined'); // Update the status on the calendar
                     }
 
                     calendar.refetchEvents(); // Refresh the events
@@ -111,11 +174,11 @@ document.addEventListener('DOMContentLoaded', function () {
                     // Close the modal
                     modal.style.display = 'none';
                 } else {
-                    alert(result.message || 'Failed to approve reservation.');
+                    alert(result.message || 'Failed to decline reservation.');
                 }
             } catch (error) {
                 console.error('Error:', error);
-                alert('An error occurred while approving the reservation.');
+                alert('An error occurred while declining the reservation.');
             }
         });
     }
