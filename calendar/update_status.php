@@ -11,11 +11,13 @@ try {
 
     // Prepare the SQL query to update the status
     $sql = "UPDATE reservations 
-        SET status = 'Approved' 
-        WHERE id = ? 
-        AND user_id = ? 
-        AND check_in_date = ? 
-        AND status = 'Pending'";
+            SET status = 'Approved' 
+            WHERE id = ? 
+            AND user_id = ? 
+            AND first_name = ? 
+            AND last_name = ? 
+            AND check_in_date = ? 
+            AND status = 'Pending'";
 
     // Prepare the statement
     $stmt = $conn->prepare($sql);
@@ -25,9 +27,11 @@ try {
     }
 
     // Bind the parameters
-    $stmt->bind_param("iis", 
+    $stmt->bind_param("iisss", 
         $data['reservationId'], 
         $data['userId'], 
+        $data['firstName'], 
+        $data['lastName'], 
         $data['checkInDate']
     );
 
@@ -42,7 +46,8 @@ try {
     echo json_encode([
         'success' => $success,
         'rowsAffected' => $rowsAffected,
-        'data' => $data
+        'data' => $data,
+        'newTitle' => 'Approved' // Include the new title in the response
     ]);
 
 } catch (Exception $e) {
