@@ -33,7 +33,7 @@ if (!isset($_SESSION['admin_id'])) {
 			<li><a href="../index.php"><i class='bx bxs-dashboard icon' ></i> Dashboard</a></li>
 
 			<li class="divider" data-text="management">Management</li>
-			<li class="active"><a href="reservation/reservation_admin.php" class="active"><i class='bx bx-list-ol icon' ></i> Reservations</a></li>
+			<li><a href="../reservation/reservation_admin.php"><i class='bx bx-list-ol icon' ></i> Reservations</a></li>
             <li><a href="../calendar/calendar.php"><i class='bx bxs-calendar icon' ></i> Calendar</a></li>
 			<li><a href="../rates/rates.php"><i class="bx bxs-star icon min-w-[48px] flex justify-center items-center mr-2"></i>Rates</a></li>
 			<li><a href="../addons/addons.php"><i class='bx bxs-cart-add icon' ></i> Add-ons</a></li>
@@ -180,19 +180,24 @@ if (!isset($_SESSION['admin_id'])) {
                     <?php 
                     $reservations = getReservations();
                     if (!empty($reservations)) {
+                        // Sort reservations by id in ascending order
+                        usort($reservations, function($a, $b) {
+                            return $a['id'] - $b['id'];
+                        });
+
                         foreach ($reservations as $reservation) {
                             $userDetails = getUserDetails($reservation['user_id'], $conn);
                             $userName = htmlspecialchars($userDetails['first_name']) . ' ' . htmlspecialchars($userDetails['last_name']);
                             $statusColor = match($reservation['status']) {
                                 'Approved' => 'text-green-500 dark:text-green-400',
                                 'Pending' => 'text-orange-500 dark:text-orange-400',
-                                'Rescheduled' => 'text-blue-500 dark:text-blue-400',
+                                'Completed' => 'text-blue-500 dark:text-blue-400',
                                 default => 'text-gray-500'
                             };
                             echo "<tr class='bg-gray-50 border-b dark:bg-gray-900 dark:border-gray-800'>";
 							echo "<td class='py-2 px-4 border-b text-gray-700'>" . $reservation['id'] . "</td>";
                             echo "<td class='py-2 px-4 border-b text-gray-700'>" . $userName . "</td>";
-                            echo "<td class='py-2 px-4 border-b text-gray-700'>" . htmlspecialchars($reservation['formatted_date']) . "</td>";
+                            echo "<td class='py-2 px-4 border-b text-gray-700'>" . htmlspecialchars($reservation['check_in_date']) . "</td>";
                             echo "<td class='py-2 px-4 border-b font-medium " . $statusColor . "'>" . htmlspecialchars($reservation['status']) . "</td>";
                             echo "<td class='py-2 px-4 border-b'>
         <button 

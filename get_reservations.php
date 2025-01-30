@@ -12,7 +12,7 @@ function getReservations() {
         reservations.status AS title 
     FROM reservations
     JOIN user_tbl ON reservations.user_id = user_tbl.user_id
-    ORDER BY reservations.check_in_date DESC";
+    ORDER BY reservations.check_in_date ASC";
     
     $result = $conn->query($sql);
     $reservations = [];
