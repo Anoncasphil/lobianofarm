@@ -60,10 +60,13 @@ $stmt->close();
     <title>Lobiano's Farm Resort</title>
     <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" rel="stylesheet"/>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="stylesheet" href="../styles/booking.css">
+    <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css">
     
 
     <style>
@@ -139,7 +142,50 @@ html {
   transform: scale(1.1); /* Zoom effect on thumb hover */
 }
 
-    </style>
+.swiper-wrapper {
+  width: 100%;
+  height: max-content !important;
+  padding-bottom: 64px !important;
+  -webkit-transition-timing-function: linear !important;
+  transition-timing-function: linear !important;
+  position: relative;
+}
+
+.swiper-pagination-bullet {
+  background: #4F46E5;
+}
+
+.swiper-pagination-bullet-active {
+  background: #4F46E5 !important;
+}
+
+  <style>
+    /* Ensure swiper container takes full width and height */
+    .swiper-container {
+      width: 100%;
+      height: 100%;
+    }
+
+    /* Style for swiper slides */
+    .swiper-slide {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    /* Ensure images are properly sized and fit the container */
+    .swiper-slide img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;  /* Keeps the image aspect ratio and prevents shrinking */
+      border-radius: 15px; /* Optional: Adds rounded corners to images */
+    }
+
+    /* Ensure the arrows are always visible */
+    .swiper-button-next, .swiper-button-prev {
+      color: #4F46E5;
+    }
+  </style>
 
 </head>
 <body>
@@ -447,51 +493,80 @@ html {
 </section>
 
 <section id="album" class="bg-white min-h-screen flex items-center justify-center pt-16 px-4">
-  <div class="max-w-screen-xl mx-auto text-center">
-    <h2 class="text-3xl font-extrabold text-gray-900 mb-4">Our Album</h2>
-    <p class="mt-4 text-lg text-gray-600 text-gray-700">Explore some of the beautiful moments captured at our resort.</p>
+    <div class="max-w-screen-xl mx-auto text-center">
+      <h2 class="text-3xl font-extrabold text-gray-900 mb-4">Our Album</h2>
+      <p class="mt-4 text-lg text-gray-600 text-gray-700">Explore some of the beautiful moments captured at our resort.</p>
 
-    <!-- Gallery Container -->
-    <div class="grid gap-4 mt-12">
-      <?php
-        $directory = "../src/uploads/album/";  // Specify the path to the image folder
-        $images = glob($directory . "*.jpg");  // Adjust the file type if needed (e.g., .png, .jpeg)
+      <!-- Swiper Container -->
+      <div class="w-full relative">
+        <div class="swiper centered-slide-carousel swiper-container">
+          <div class="swiper-wrapper">
+            <?php
+              $directory = "../src/uploads/album/";  // Specify the path to the image folder
+              $images = glob($directory . "*.jpg");  // Adjust the file type if needed (e.g., .png, .jpeg)
 
-        $mainImage = array_shift($images);  // Get the first image for the main image (optional)
-        $imageName = basename($mainImage);  // Get the image file name for the main image
-        echo '<div>';
-        // Main Image
-        echo '<img id="main-image" class="h-auto max-w-full rounded-lg" src="' . $directory . $imageName . '" alt="' . $imageName . '">';
-        echo '</div>';
-
-        // Small Images Below
-        echo '<div class="grid grid-cols-5 gap-4">';
-        foreach ($images as $image) {
-          $imageName = basename($image);  // Get the image file name
-          echo '<div>';
-          echo '<img class="h-auto max-w-full rounded-lg" src="' . $directory . $imageName . '" alt="' . $imageName . '">';
-          echo '</div>';
-        }
-        echo '</div>';
-      ?>
+              // Loop through the images and create swiper-slide for each image
+              foreach ($images as $image) {
+                $imageName = basename($image);  // Get the image file name
+                echo '<div class="swiper-slide">';
+                echo '<img class="h-auto max-w-full rounded-lg" src="' . $directory . $imageName . '" alt="' . $imageName . '">';
+                echo '</div>';
+              }
+            ?>
+          </div>
+          <!-- Swiper Pagination -->
+          <div class="swiper-pagination"></div>
+          <!-- Swiper Navigation -->
+          <div class="swiper-button-next"></div>
+          <div class="swiper-button-prev"></div>
+        </div>
+      </div>
     </div>
-  </div>
-</section>
+  </section>
 
-<script>
-  // Get all the images in the directory
-  const images = <?php echo json_encode($images); ?>;
-  let currentIndex = 0;
+  <!-- Include Swiper JS -->
+  <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
+  
+  <script>
+    // Initialize Swiper after DOM is loaded
+    document.addEventListener("DOMContentLoaded", function() {
+      var swiper = new Swiper(".centered-slide-carousel", {
+        centeredSlides: true,
+        loop: true,
+        spaceBetween: 30,  // Adds space between slides
+        slidesPerView: 3,  // Display 3 slides (previous, center, next)
+        slideToClickedSlide: true,
+        autoplay: {
+          delay: 3000,  // Change slide every 3 seconds
+          disableOnInteraction: false,  // Continue autoplay after user interaction
+        },
+        pagination: {
+          el: ".swiper-pagination",
+          clickable: true,
+        },
+        navigation: {
+          nextEl: ".swiper-button-next",
+          prevEl: ".swiper-button-prev",
+        },
+        breakpoints: {
+          1920: {
+            slidesPerView: 4,
+            spaceBetween: 30
+          },
+          1028: {
+            slidesPerView: 2,
+            spaceBetween: 10
+          },
+          990: {
+            slidesPerView: 1,
+            spaceBetween: 0
+          }
+        }
+      });
+    });
+  </script>
 
-  function changeImage() {
-    currentIndex = (currentIndex + 1) % images.length;  // Loop back to the first image
-    const newImage = images[currentIndex];
-    document.getElementById('main-image').src = newImage;  // Change the source of the main image
-  }
 
-  // Change the image every 2 seconds
-  setInterval(changeImage, 2000);
-</script>
 
 <!-- Video Tour Section -->
 <section id="video-tour" class="bg-gray-50 dark:bg-gray-800 min-h-screen flex items-center justify-center pt-16">

@@ -143,7 +143,7 @@ html {
     </style>
 
 </head>
-<body>
+<body class="bg-gray-100">
 
  <!-- Navbar -->
 <nav class="bg-white border-blue-200 dark:bg-blue-900 fixed top-0 left-0 w-full z-50">
@@ -206,60 +206,155 @@ html {
     </div>
   </div>
 </nav>
-<?php
-// Check if the user is logged in
-if (!isset($_SESSION['user_id'])) {
-    header("Location: login.php"); // Redirect to login page if not logged in
-    exit();
-}
 
-$user_id = $_SESSION['user_id']; // Get the logged-in user's ID
 
-$query = "SELECT r.*, GROUP_CONCAT(a.name SEPARATOR ', ') as addons 
-          FROM reservations r 
-          LEFT JOIN reservation_addons ra ON r.id = ra.reservation_id
-          LEFT JOIN addons a ON ra.addon_id = a.id
-          WHERE r.user_id = ? 
-          GROUP BY r.id
-          ORDER BY r.created_at DESC";
+<div class="max-w-7xl mx-auto my-8 px-6 mt-30">
+    <h2 class="text-3xl font-semibold text-center text-gray-800 mb-6">Your Reservations</h2>
 
-$stmt = $conn->prepare($query);
-$stmt->bind_param("i", $user_id);
-$stmt->execute();
-$result = $stmt->get_result();
-$reservations = $result->fetch_all(MYSQLI_ASSOC);
-?>
+    <?php
+    // Start the session to check for the logged-in user
+    include('../db_connection.php');
+    $user_id = $_SESSION['user_id'];
 
-<section class="p-6">
-    <h1 class="text-2xl font-semibold text-gray-800 mb-4">My Reservations</h1>
+    if (!$conn) {
+        die("Connection failed: " . mysqli_connect_error());
+    }
 
-    <div class="overflow-x-auto bg-white shadow-md rounded-lg p-4">
-        <table class="w-full border-collapse border border-gray-200">
-            <thead class="bg-blue-900 text-white">
-                <tr>
-                    <th class="p-3 text-left">Reference</th>
-                    <th class="p-3 text-left">Status</th>
-                    <th class="p-3 text-left">Check-in</th>
-                    <th class="p-3 text-left">Check-out</th>
-                    <th class="p-3 text-left">Total Price</th>
-                    <th class="p-3 text-left">Add-ons</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php foreach ($reservations as $reservation) : ?>
-                <tr class="border-b border-gray-200 hover:bg-gray-100">
-                    <td class="p-3"><?= $reservation['reference_number'] ?></td>
-                    <td class="p-3"><?= $reservation['status'] ?></td>
-                    <td class="p-3"><?= $reservation['check_in_date'] ?> <?= $reservation['check_in_time'] ?></td>
-                    <td class="p-3"><?= $reservation['check_out_date'] ?> <?= $reservation['check_out_time'] ?></td>
-                    <td class="p-3">₱<?= number_format($reservation['total_price'], 2) ?></td>
-                    <td class="p-3"><?= $reservation['addons'] ?: 'None' ?></td>
-                </tr>
-                <?php endforeach; ?>
-            </tbody>
-        </table>
+    // Query to retrieve data for the logged-in user, including rate details
+    $sql = "SELECT r.id as reservation_id, r.first_name, r.last_name, r.check_in_date, r.check_in_time, r.status,
+    rt.id as rate_id, rt.name as rate_name, rt.picture as rate_picture, rt.price as rate_price,
+    rt.price as total_price
+    FROM reservations r
+    JOIN rates rt ON r.rate_id = rt.id
+    WHERE r.user_id = ?";  // Filter by user_id
+
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("i", $user_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    // Check if data is available
+    if ($result->num_rows > 0) {
+        // Loop through reservations
+        while ($row = $result->fetch_assoc()) {
+            $full_name = $row["first_name"] . " " . $row["last_name"];
+            $check_in = date('F j, Y - g:i A', strtotime($row["check_in_date"] . ' ' . $row["check_in_time"])); // Format date
+            $status_class = '';
+            $status_text = '';
+            $rate_picture = $row["rate_picture"];
+            $rate_name = $row["rate_name"];
+            $rate_id = $row["rate_id"];
+            $total_price = $row["total_price"];
+
+            // Calculate downpayment and new total
+            $downpayment = $total_price / 2;
+            $new_total =  $total_price - $downpayment;
+
+            // Add conditional styling based on the status
+            switch ($row["status"]) {
+                case 'Pending':
+                    $status_class = 'bg-orange-200 text-orange-800'; // Pending: Orange
+                    $status_text = 'Pending';
+                    break;
+                case 'Confirmed':
+                    $status_class = 'bg-green-200 text-green-800'; // Confirmed: Green
+                    $status_text = 'Confirmed';
+                    break;
+                case 'Completed':
+                    $status_class = 'bg-blue-200 text-blue-800'; // Completed: Blue
+                    $status_text = 'Completed';
+                    break;
+            }
+
+            echo "<div class='mb-8 bg-white shadow-lg rounded-lg cursor-pointer hover:scale-105 transform transition-all w-[500px] mx-auto' onclick='openModal(" . $row["reservation_id"] . ", \"" . $rate_name . "\", \"" . $check_in . "\", \"" . number_format($downpayment, 2) . "\", \"" . number_format($total_price, 2) . "\", \"" . number_format($new_total, 2) . "\", \"" . $rate_picture . "\")'>"; // Centered card
+
+            // Reservation Card
+            echo "<div class='p-6'>
+            <div class='flex items-center justify-between'>
+                <!-- Picture -->
+                <img src='../src/uploads/rates/" . $rate_picture . "' alt='Rate Image' class='w-24 h-24 object-cover rounded-md shadow-lg'>
+    
+                <!-- Rate Name & Status -->
+                <div class='ml-4 flex-1'>
+                    <div class='flex items-center justify-between mt-[-100]'> <!-- Removed margin-top here -->
+                        <h3 class='text-xl font-semibold text-gray-800'>" . $rate_name . "</h3>
+                        <span class='px-3 py-1 rounded-full " . $status_class . "'>" . $status_text . "</span>
+                    </div>
+    
+                    <!-- Date and Time -->
+                    <span class='text-sm text-gray-500 mt-2 block'>" . $check_in . "</span>
+                </div>
+            </div>
+    
+
+                    <div class='mt-4'>
+                        <!-- Price Information -->
+                        <div class='text-right'>
+                            <h4 class='text-gray-600 font-medium'>Downpayment: ₱" . number_format($downpayment, 2) . "</h4>
+                            <h4 class='text-gray-600 font-medium'>Total Price: ₱" . number_format($total_price, 2) . "</h4>
+                            <h4 class='text-gray-600 font-medium'>New Total: ₱" . number_format($new_total, 2) . "</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>";
+        }
+    } else {
+        echo "<p class='text-center text-gray-500 py-4'>No reservations found.</p>";
+    }
+
+    $stmt->close();
+    $conn->close();
+    ?>
+</div>
+
+<!-- Modal -->
+<div id="reservationModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden">
+    <div class="bg-white w-96 p-6 rounded-lg shadow-lg">
+        <h2 class="text-2xl font-semibold text-center text-gray-800 mb-4">Reservation Details</h2>
+        <div id="modalContent">
+            <!-- Dynamic content will be loaded here -->
+        </div>
+        <div class="mt-4 flex justify-end">
+            <button onclick="closeModal()" class="px-4 py-2 bg-gray-500 text-white rounded-lg">Close</button>
+        </div>
     </div>
-</section>
+</div>
+
+<script>
+    function openModal(reservationId, rateName, checkIn, downpayment, totalPrice, newTotal, ratePicture) {
+        const modal = document.getElementById('reservationModal');
+        const modalContent = document.getElementById('modalContent');
+
+        modalContent.innerHTML = `
+            <div class="flex items-center justify-center mb-4">
+                <img src="../src/uploads/rates/${ratePicture}" alt="Rate Image" class="w-24 h-24 object-cover rounded-md shadow-lg">
+                <div class="ml-4">
+                    <h3 class="text-xl font-semibold text-gray-800">${rateName}</h3>
+                    <span class="text-sm text-gray-500">${checkIn}</span>
+                    <div class="mt-2">
+                        <p><strong>Downpayment:</strong> ₱${downpayment}</p>
+                        <p><strong>Total Price:</strong> ₱${totalPrice}</p>
+                        <p><strong>New Total:</strong> ₱${newTotal}</p>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        modal.classList.remove('hidden');
+    }
+
+    function closeModal() {
+        const modal = document.getElementById('reservationModal');
+        modal.classList.add('hidden');
+    }
+</script>
+
+
+
+
+
+
+
 
 
 <script src="../scripts/customer_reservation.js"></script>

@@ -257,7 +257,7 @@ function submitReservation() {
     .then(result => {
         if (result.includes("Reservation successfully added")) {
             // Call the completeReservation function instead of sending the email
-            sendEmail();
+            completeReservation();
 
             // Show the success modal after reservation is complete
             document.getElementById('success-modal').classList.remove('hidden');
