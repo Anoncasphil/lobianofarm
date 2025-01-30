@@ -256,27 +256,23 @@ function submitReservation() {
     .then(response => response.text())
     .then(result => {
         if (result.includes("Reservation successfully added")) {
-            // Send the confirmation email first
-            sendEmail(firstName, lastName, email, referenceNumber, invoiceNumber)
-                .then(() => {
-                    // Show the success modal after email is sent
-                    document.getElementById('success-modal').classList.remove('hidden');
+            // Call the completeReservation function instead of sending the email
+            sendEmail();
 
-                    // Countdown for redirect
-                    let countdown = 5;
-                    const countdownElement = document.getElementById('countdown-timer');
-                    const interval = setInterval(() => {
-                        countdownElement.textContent = countdown;
-                        if (countdown === 0) {
-                            clearInterval(interval);
-                            window.location.href = "homepage.php";
-                        }
-                        countdown--;
-                    }, 1000);
-                })
-                .catch(error => {
-                    console.error('Email Error:', error);
-                });
+            // Show the success modal after reservation is complete
+            document.getElementById('success-modal').classList.remove('hidden');
+
+            // Countdown for redirect
+            let countdown = 5;
+            const countdownElement = document.getElementById('countdown-timer');
+            const interval = setInterval(() => {
+                countdownElement.textContent = countdown;
+                if (countdown === 0) {
+                    clearInterval(interval);
+                    window.location.href = "homepage.php";
+                }
+                countdown--;
+            }, 1000);
         } else {
             alert(result); // Handle error or failure
         }
@@ -286,14 +282,11 @@ function submitReservation() {
     });
 }
 
+
 // Function to redirect to homepage.php when the button is clicked
 function redirectHome() {
     window.location.href = "homepage.php"; // Redirect to the homepage
 }
-
-
-
-// Function to collect form and invoice data and send it to PHP
  // Function to collect the data and send it via AJAX
  function sendEmail() {
     var reservationData = {

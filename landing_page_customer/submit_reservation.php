@@ -22,6 +22,10 @@ $invoice_number = $_POST['invoice_number'];
 $total_price = $_POST['total_price'];
 $contact_number = $_POST['mobile_number'];
 $rate_id = $_POST['rate_id'];  // Collect rate_id from the POST data
+$first_name = $_POST['first_name'];  // Collect first name
+$last_name = $_POST['last_name'];    // Collect last name
+$email = $_POST['email'];            // Collect email
+$mobile_number = $_POST['mobile_number']; // Collect mobile number
 
 // Handle the payment receipt file upload
 if (isset($_FILES['payment_receipt']) && $_FILES['payment_receipt']['error'] === UPLOAD_ERR_OK) {
@@ -56,12 +60,16 @@ $invoice_number = mysqli_real_escape_string($conn, $invoice_number);
 $total_price = mysqli_real_escape_string($conn, $total_price);
 $contact_number = mysqli_real_escape_string($conn, $contact_number);
 $rate_id = mysqli_real_escape_string($conn, $rate_id);  // Escape rate_id
+$first_name = mysqli_real_escape_string($conn, $first_name);  // Escape first_name
+$last_name = mysqli_real_escape_string($conn, $last_name);    // Escape last_name
+$email = mysqli_real_escape_string($conn, $email);            // Escape email
+$mobile_number = mysqli_real_escape_string($conn, $mobile_number); // Escape mobile_number
 $addon_ids = isset($_POST['addon_ids']) ? json_decode($_POST['addon_ids'], true) : [];
 
 // Prepare SQL query to insert into reservations table
 $sql = "INSERT INTO reservations 
-        (user_id, check_in_date, check_out_date, check_in_time, check_out_time, reference_number, invoice_date, invoice_number, total_price, payment_receipt, status, payment_status, contact_number, rate_id) 
-        VALUES ('$user_id', '$check_in_date', '$check_out_date', '$check_in_time', '$check_out_time', '$reference_number', '$invoice_date', '$invoice_number', '$total_price', '$payment_receipt', 'Pending', 'Pending', '$contact_number', '$rate_id')";
+        (user_id, check_in_date, check_out_date, check_in_time, check_out_time, reference_number, invoice_date, invoice_number, total_price, payment_receipt, status, payment_status, contact_number, rate_id, first_name, last_name, email, mobile_number) 
+        VALUES ('$user_id', '$check_in_date', '$check_out_date', '$check_in_time', '$check_out_time', '$reference_number', '$invoice_date', '$invoice_number', '$total_price', '$payment_receipt', 'Pending', 'Pending', '$contact_number', '$rate_id', '$first_name', '$last_name', '$email', '$mobile_number')";
 
 // Execute the query for the reservation
 if (mysqli_query($conn, $sql)) {
