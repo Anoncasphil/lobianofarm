@@ -30,13 +30,13 @@ document.addEventListener("DOMContentLoaded", () => {
                 const reservation = data.data;
 
                 // Update Reservation Details Tab
-                document.getElementById("modal-reservation-id").textContent = reservation.reservation_id;
+                document.getElementById("modal-reservation-id").textContent = reservation.id;
                 document.getElementById("modal-name").textContent = `${reservation.first_name} ${reservation.last_name}`;
                 document.getElementById("modal-email").textContent = reservation.email;
-                document.getElementById("modal-phone-number").textContent = reservation.phone_number;
+                document.getElementById("modal-phone-number").textContent = reservation.contact_number;
                 document.getElementById("modal-check-in").textContent = reservation.check_in_date;
                 document.getElementById("modal-check-out").textContent = reservation.check_out_date;
-                document.getElementById("modal-total-amount").textContent = `₱${reservation.total_amount.toFixed(2)}`;
+                document.getElementById("modal-total-amount").textContent = `₱${reservation.total_price.toFixed(2)}`;
 
                 // Update Invoice Tab (Rate and Addons)
                 document.getElementById("modal-rate-name").textContent = reservation.rate_name;
@@ -55,7 +55,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 document.getElementById("modal-total-price").textContent = `₱${totalPrice.toFixed(2)}`;
 
                 // Update Payment Tab
-                document.getElementById("modal-payment-proof").setAttribute('src', reservation.payment_proof);
+                document.getElementById("modal-payment-proof").setAttribute('src', reservation.payment_receipt);
 
                 // Open the modal
                 modal.classList.remove("hidden");
