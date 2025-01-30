@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", function () {
   // Fetch reserved dates
-  fetch('get_reserved_dates.php')
+  fetch('../api/get_reserved_dates.php')
     .then(response => response.json())
     .then(reservedDateRanges => {
       const reservedDates = [];

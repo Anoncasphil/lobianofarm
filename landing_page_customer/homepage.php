@@ -63,7 +63,7 @@ $stmt->close();
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <link rel="stylesheet" href="../styles/newhome.css">
+    <link rel="stylesheet" href="../styles/booking.css">
     
 
     <style>
@@ -314,7 +314,7 @@ html {
                     // Add data attributes for modal
                     echo "
                     <div class='flex-none mb-5 mt-5 max-w-sm rounded-2xl shadow-lg relative rate-card animate-card' onclick=\"openModal('$picture', '$name', '$description', '$hours_of_stay', '$check_in_time', '$check_out_time', '$price')\">
-                        <img class='rounded-t-2xl w-full h-[200px] object-cover' src='../src/uploads/rates/$picture' alt='$name'>
+                        <img class='rounded-t-2xl w-[300px] h-[250px] object-cover' src='../src/uploads/rates/$picture' alt='$name'>
 
                         <div class='p-5'>
                             <h2 class='text-2xl font-bold text-gray-800'>$name</h2>
@@ -386,7 +386,7 @@ html {
                         // Add data attributes for modal
                         echo "
                         <div class='flex-none mb-5 mt-5 max-w-sm rounded-2xl shadow-lg relative addons-card animate-card' onclick='openAddonModal(\"$picture\", \"$name\", \"$description\", \"$price\")'>
-                            <img class='rounded-t-2xl w-full h-[173px] object-cover' src='../src/uploads/addons/$picture' alt='$name'>
+                            <img class='rounded-t-2xl w-[300px] h-[250px] object-cover' src='../src/uploads/addons/$picture' alt='$name'>
 
                             <div class='p-5'>
                                 <h2 class='text-2xl font-bold text-gray-800'>$name</h2>

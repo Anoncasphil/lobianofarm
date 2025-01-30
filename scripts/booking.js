@@ -466,7 +466,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // Fetch reserved dates (to grey out in calendar)
   async function fetchReservedDates() {
     try {
-      const response = await fetch('get_reserved_dates.php');
+      const response = await fetch('../api/get_reserved_dates.php');
       const reservedDates = await response.json();
       return reservedDates.map(date => {
         return {

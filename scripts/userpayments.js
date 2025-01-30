@@ -210,12 +210,19 @@ function submitReservation() {
     const referenceNumber = document.getElementById('reference-number').value;
     const invoiceDate = new Date().toISOString().split('T')[0]; // Get current date in YYYY-MM-DD format
     const invoiceNumber = document.getElementById('invoice-no').innerText;
-    const totalPrice = parseFloat(document.getElementById('total-price').innerText.replace('₱', '').trim()); // Assuming the price is formatted
+    const totalPrice = parseFloat(document.getElementById('total-price').innerText.replace('₱', '').trim());
+
+    // Update total price display
+    document.getElementById('total-price').innerText = totalPrice.toFixed(2);
+
+    // Calculate and update the downpayment (50% of total price)
+    const downpayment = totalPrice / 2;
+    document.getElementById('downpayment').innerText = downpayment.toFixed(2);
 
     // Gather rate and addon information from the selections
     const selections = JSON.parse(localStorage.getItem('selections'));
     const rateId = selections ? selections.rate.rateId : null;
-    const addonIds = selections ? selections.addons : []; // Array of selected addon IDs
+    const addonIds = selections ? selections.addons : [];
 
     if (!rateId) {
         alert("Rate is not selected.");
@@ -233,12 +240,13 @@ function submitReservation() {
     formData.append('check_in_time', checkInTime);
     formData.append('check_out_time', checkOutTime);
     formData.append('reference_number', referenceNumber);
-    formData.append('invoice_date', invoiceDate); // Use current date as invoice date
+    formData.append('invoice_date', invoiceDate);
     formData.append('invoice_number', invoiceNumber);
     formData.append('total_price', totalPrice);
-    formData.append('payment_receipt', paymentReceipt); // Append the image
-    formData.append('rate_id', rateId); // Append the selected rate ID
-    formData.append('addon_ids', JSON.stringify(addonIds)); // Append the selected addon IDs as a JSON string
+    formData.append('downpayment', downpayment);
+    formData.append('payment_receipt', paymentReceipt);
+    formData.append('rate_id', rateId);
+    formData.append('addon_ids', JSON.stringify(addonIds));
 
     // Send reservation data using Fetch API
     fetch('submit_reservation.php', {
@@ -248,23 +256,27 @@ function submitReservation() {
     .then(response => response.text())
     .then(result => {
         if (result.includes("Reservation successfully added")) {
-            // Show the success modal
-            document.getElementById('success-modal').classList.remove('hidden');
+            // Send the confirmation email first
+            sendEmail(firstName, lastName, email, referenceNumber, invoiceNumber)
+                .then(() => {
+                    // Show the success modal after email is sent
+                    document.getElementById('success-modal').classList.remove('hidden');
 
-            // Countdown for redirect
-            let countdown = 5;
-            const countdownElement = document.getElementById('countdown-timer');
-            const interval = setInterval(() => {
-                countdownElement.textContent = countdown;
-                if (countdown === 0) {
-                    clearInterval(interval);
-                    window.location.href = "homepage.php"; // Redirect to the home page after countdown
-                }
-                countdown--;
-            }, 1000); // Update every second
-
-            // Send the confirmation email after the reservation is successful
-            sendEmail(firstName, lastName, email, referenceNumber, invoiceNumber);
+                    // Countdown for redirect
+                    let countdown = 5;
+                    const countdownElement = document.getElementById('countdown-timer');
+                    const interval = setInterval(() => {
+                        countdownElement.textContent = countdown;
+                        if (countdown === 0) {
+                            clearInterval(interval);
+                            window.location.href = "homepage.php";
+                        }
+                        countdown--;
+                    }, 1000);
+                })
+                .catch(error => {
+                    console.error('Email Error:', error);
+                });
         } else {
             alert(result); // Handle error or failure
         }
@@ -273,42 +285,6 @@ function submitReservation() {
         console.error('Error:', error);
     });
 }
-
-// Function to send email (you need to implement this function on your server or use an API)
-function sendEmail(firstName, lastName, email, referenceNumber, invoiceNumber) {
-    // Example of email details you might want to include in the email
-    const emailBody = `
-        Reservation Confirmation:
-        Name: ${firstName} ${lastName}
-        Email: ${email}
-        Reference Number: ${referenceNumber}
-        Invoice Number: ${invoiceNumber}
-        Thank you for your reservation!`;
-
-    // You can use a server-side service or API to send the email
-    // This example assumes you have a function that sends the email.
-    fetch('send_email.php', {
-        method: 'POST',
-        body: JSON.stringify({
-            to: email,
-            subject: "Reservation Confirmation",
-            body: emailBody
-        }),
-        headers: {
-            'Content-Type': 'application/json'
-        }
-    })
-    .then(response => response.text())
-    .then(result => {
-        console.log('Email sent:', result);
-    })
-    .catch(error => {
-        console.error('Error sending email:', error);
-    });
-}
-
-
-
 
 // Function to redirect to homepage.php when the button is clicked
 function redirectHome() {
@@ -368,19 +344,8 @@ function redirectHome() {
   }
 
 
-// Assuming totalPrice is already defined or fetched
-const totalPrice = parseFloat(document.getElementById('total-price').innerText.replace('₱', '').trim());
 
-// Calculate the downpayment (50% of totalPrice)
-const downpayment = totalPrice / 2;
-
-// Update the total price display
-document.getElementById('total-price').innerText = '₱' + totalPrice.toFixed(2);
-
-// Update the downpayment display
-document.getElementById('downpayment').innerText = '₱' + downpayment.toFixed(2);
-
-
+w
 
 
 
