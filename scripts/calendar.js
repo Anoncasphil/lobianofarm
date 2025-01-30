@@ -3,6 +3,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const modal = document.getElementById('dateModal');
     const closeModal = document.getElementById('closeModal');
     const approveButton = document.querySelector('.approve-button');
+    const declineButton = document.querySelector('.decline-button');
     let currentReservation = null; // Holds data for the currently selected reservation
 
     const modalId = document.getElementById('modal-id'); // Reference for modal-id
@@ -74,7 +75,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 const newTitle = 'Approved';
 
                 // Send update request to the server
-                const response = await fetch('../calendar/update_status.php', {
+                const response = await fetch('../api/update_status.php', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -96,7 +97,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 console.log('Response from server:', result); // Debug server response
 
                 if (result.success) {
-                    alert('Reservation approved successfully!');
+                    alert('Reservation Approved!');
 
                     // Update the calendar event title
                     const event = calendar.getEventById(currentReservation.id);
@@ -115,6 +116,69 @@ document.addEventListener('DOMContentLoaded', function () {
             } catch (error) {
                 console.error('Error:', error);
                 alert('An error occurred while approving the reservation.');
+            }
+        });
+    }
+
+    // Decline Button Handler
+    if (declineButton) {
+        declineButton.addEventListener('click', async function () {
+            try {
+                if (!currentReservation) {
+                    alert('No reservation selected!');
+                    return;
+                }
+
+                console.log('Sending data:', currentReservation); // Debug sent data
+
+                // Define the new title for the reservation
+                const newTitle = 'Declined';
+
+                // Send update request to the server
+                const response = await fetch('../api/update_status.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        reservationId: currentReservation.id,
+                        userId: currentReservation.userId, // Send user ID
+                        checkInDate: currentReservation.checkInDate,
+                        checkOutDate: currentReservation.checkOutDate,
+                        checkInTime: currentReservation.checkInTime, // Send check-in time
+                        checkOutTime: currentReservation.checkOutTime, // Send check-out time
+                        title: newTitle, // Send the new title
+                    }),
+                });
+
+                const result = await response.json();
+                console.log('Response from server:', result); // Debug server response
+
+                if (result.success) {
+                    alert('Reservation Declined!');
+
+                    // Update the calendar event title
+                    const event = calendar.getEvents().find(
+                        (ev) =>
+                            ev.extendedProps.userId === currentReservation.userId &&
+                            ev.startStr === currentReservation.checkInDate
+                    );
+
+                    if (event) {
+                        event.setProp('title', newTitle); // Update the title on the calendar
+                        event.setExtendedProp('status', 'Declined'); // Update the status on the calendar
+                    }
+
+                    calendar.refetchEvents(); // Refresh the events
+
+                    // Close the modal
+                    modal.style.display = 'none';
+                } else {
+                    alert(result.message || 'Failed to decline reservation.');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred while declining the reservation.');
             }
         });
     }
