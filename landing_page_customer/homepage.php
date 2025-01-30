@@ -166,16 +166,41 @@ html {
     </button>
 
 
-    <!-- Profile button -->
-    <button type="button" class="flex items-center ml-2 space-x-3 text-sm dark:bg-blue-900 hover:bg-white/10 rounded-lg px-4 py-2">
+    <!-- Profile button with dropdown -->
+<div class="relative inline-block text-left">
+    <button id="profileButton" type="button" class="flex items-center ml-2 space-x-3 text-sm dark:bg-blue-900 hover:bg-white/10 rounded-lg px-4 py-2">
         <span class="sr-only">Open user menu</span>
-        <!-- Display user profile picture -->
         <img class="w-10 h-10 rounded-full" src="../src/uploads/<?php echo htmlspecialchars($user_picture); ?>" alt="User Photo">
-        <!-- Display user first name and last name to the right -->
         <span class="text-white font-medium"><?php echo htmlspecialchars($full_name); ?></span>
+        <!-- Down arrow icon -->
+        <svg class="w-4 h-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+        </svg>
     </button>
+    
+    <!-- Dropdown menu -->
+    <div id="dropdownMenu" class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-2 hidden">
+        <a href="#" class="block px-4 py-2 text-gray-700 hover:bg-gray-200">Profile</a>
+        <a href="logout.php" class="block px-4 py-2 text-gray-700 hover:bg-gray-200">Logout</a>
+    </div>
+</div>
 
-
+<script>
+    document.getElementById('profileButton').addEventListener('click', function() {
+        var dropdown = document.getElementById('dropdownMenu');
+        dropdown.classList.toggle('hidden');
+    });
+    
+    // Close dropdown if clicked outside
+    document.addEventListener('click', function(event) {
+        var profileButton = document.getElementById('profileButton');
+        var dropdownMenu = document.getElementById('dropdownMenu');
+        
+        if (!profileButton.contains(event.target) && !dropdownMenu.contains(event.target)) {
+            dropdownMenu.classList.add('hidden');
+        }
+    });
+</script>
       <!-- Hamburger menu -->
       <button data-collapse-toggle="navbar-user" type="button" class="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-white rounded-lg md:hidden hover:bg-gray-100 dark:text-gray-400 hover:bg-white/10" aria-controls="navbar-user" aria-expanded="false">
         <span class="sr-only">Open main menu</span>
