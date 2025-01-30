@@ -166,12 +166,16 @@ html {
     </button>
 
 
-    <!-- Profile button -->
-    <div class="relative inline-block text-left">
+    <!-- Profile button with dropdown -->
+<div class="relative inline-block text-left">
     <button id="profileButton" type="button" class="flex items-center ml-2 space-x-3 text-sm dark:bg-blue-900 hover:bg-white/10 rounded-lg px-4 py-2">
         <span class="sr-only">Open user menu</span>
         <img class="w-10 h-10 rounded-full" src="../src/uploads/<?php echo htmlspecialchars($user_picture); ?>" alt="User Photo">
         <span class="text-white font-medium"><?php echo htmlspecialchars($full_name); ?></span>
+        <!-- Down arrow icon -->
+        <svg class="w-4 h-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+        </svg>
     </button>
     
     <!-- Dropdown menu -->
@@ -197,9 +201,6 @@ html {
         }
     });
 </script>
-
-
-
       <!-- Hamburger menu -->
       <button data-collapse-toggle="navbar-user" type="button" class="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-white rounded-lg md:hidden hover:bg-gray-100 dark:text-gray-400 hover:bg-white/10" aria-controls="navbar-user" aria-expanded="false">
         <span class="sr-only">Open main menu</span>
