@@ -7,13 +7,6 @@ if (!isset($_SESSION['user_id'])) {
     header("Location: login.php");
     exit(); // Make sure no further code is executed
 }
-
-if (isset($_SESSION['user_id'])) {
-    echo "User ID is: " . $_SESSION['user_id']; // Debugging line
-} else {
-    echo "User ID is not available.";
-}
-
 // Include the database connection
 include('../db_connection.php'); // Adjust the path if necessary
 
@@ -247,22 +240,27 @@ $stmt->close();
 </div>
 
 <!-- 2-Column Wide Div -->
-<div id="payment-div" class="flex-2 bg-white p-6 rounded-3xl shadow-lg h-full">
+<div id="payment-div" class="flex-2 bg-white p-6 rounded-3xl shadow-lg h--[105px]">
 <!-- QR Code Section -->
 <div class="flex justify-center">
   <img src="../src/uploads/paymentqr/qr.jpg" alt="Payment QR Code" class="w-80 h-auto max-w-xl object-contain shadow-lg rounded-md" />
 </div>
 
+<div class="flex flex-col justify-center items-center mt-5">
+  <span id="downpayment" class="text-xl font-bold text-blue-600">₱0.00</span>
+  <span class="text-xl font-bold text-gray-700 mt-2">Downpayment (50%)</span>
+</div>
+
 <!-- Reference Number Input -->
-<div class="relative mt-10 w-[80%] mx-auto">
+<div class="relative mt-5 w-[80%] mx-auto">
   <input type="text" id="reference-number" class="peer font-semibold p-3 pt-5 w-full border justify-center border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-transparent text-blue-950" placeholder=" " required/>
   <label for="reference-number" class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-600 text-sm font-medium transition-all duration-200">Reference Number<span class="text-red-500"> *</span></label>
 </div>
 
 
 <!-- File Attachment Section -->
-<div class="flex items-center justify-center w-full mt-10">
-  <label for="dropzone-file" class="flex flex-col items-center justify-center w-80 h-50 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 dark:bg-whitedark:hover:bg-gray-600 relative overflow-hidden">
+<div class="flex items-center justify-center w-full mt-5">
+  <label for="dropzone-file" class="flex flex-col items-center justify-center w-80 h-30 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 dark:bg-whitedark:hover:bg-gray-600 relative overflow-hidden">
     <!-- Background Image Preview -->
     <div id="preview" class="absolute inset-0 bg-center bg-cover bg-opacity-40"></div>
 
@@ -323,7 +321,7 @@ $stmt->close();
   <p id="modal-message" class="text-center">Please fill in the required fields</p>
 </div>
 
-
+</script>
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js"></script>

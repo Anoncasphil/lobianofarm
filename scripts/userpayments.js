@@ -6,22 +6,35 @@ function populateForm() {
     if (selectionsJSON) {
         const selections = JSON.parse(selectionsJSON);
 
-        // Populate user details
-        document.getElementById('first-name-p').value = selections.user.firstName || '';
-        document.getElementById('last-name-p').value = selections.user.lastName || '';
-        document.getElementById('email-p').value = selections.user.email || '';
-        document.getElementById('mobile-number-p').value = selections.user.mobileNumber || '';
+        // Populate user details if elements exist
+        const firstNameElement = document.getElementById('first-name-p');
+        const lastNameElement = document.getElementById('last-name-p');
+        const emailElement = document.getElementById('email-p');
+        const mobileNumberElement = document.getElementById('mobile-number-p');
 
-        // Populate reservation details
-        document.getElementById('check-in-date').value = selections.reservation.checkInDate || '';
-        document.getElementById('check-out-date').value = selections.reservation.checkOutDate || '';
-        document.getElementById('check-in-time').value = selections.reservation.checkInTime || '';
-        document.getElementById('check-out-time').value = selections.reservation.checkOutTime || '';
+        if (firstNameElement) firstNameElement.value = selections.user.firstName || '';
+        if (lastNameElement) lastNameElement.value = selections.user.lastName || '';
+        if (emailElement) emailElement.value = selections.user.email || '';
+        if (mobileNumberElement) mobileNumberElement.value = selections.user.mobileNumber || '';
+
+        // Populate reservation details if elements exist
+        const checkInDateElement = document.getElementById('check-in-date');
+        const checkOutDateElement = document.getElementById('check-out-date');
+        const checkInTimeElement = document.getElementById('check-in-time');
+        const checkOutTimeElement = document.getElementById('check-out-time');
+
+        if (checkInDateElement) checkInDateElement.value = selections.reservation.checkInDate || '';
+        if (checkOutDateElement) checkOutDateElement.value = selections.reservation.checkOutDate || '';
+        if (checkInTimeElement) checkInTimeElement.value = selections.reservation.checkInTime || '';
+        if (checkOutTimeElement) checkOutTimeElement.value = selections.reservation.checkOutTime || '';
 
         // Optional: Populate rate and add-ons (if needed)
-        document.getElementById('rate-id-field').value = selections.rate.rateId || '';
-        document.getElementById('addon-ids-field').value = selections.addons.join(',') || '';
-        
+        const rateIdField = document.getElementById('rate-id-field');
+        const addonIdsField = document.getElementById('addon-ids-field');
+
+        if (rateIdField) rateIdField.value = selections.rate.rateId || '';
+        if (addonIdsField) addonIdsField.value = selections.addons.join(',') || '';
+
         // Optional: Log the populated data for debugging
         console.log('Form populated with selections:', selections);
     } else {
@@ -29,8 +42,9 @@ function populateForm() {
     }
 }
 
-// Call the function when the page loads
+
 window.onload = populateForm;
+
 async function populateInvoice() {
     // Retrieve selections from localStorage
     const selections = JSON.parse(localStorage.getItem('selections'));
@@ -97,6 +111,10 @@ async function populateInvoice() {
     // Update the total price
     document.getElementById('total-price').innerText = totalPrice.toFixed(2);
 
+    // Calculate the downpayment (50% of total price)
+    const downpayment = totalPrice / 2;
+    document.getElementById('downpayment').innerText = downpayment.toFixed(2);  // Assuming there's an element with ID 'downpayment'
+
     // Now, create the JSON object based on the populated invoice
     const populatedInvoice = {
         invoiceDate: invoiceDate,
@@ -113,7 +131,8 @@ async function populateInvoice() {
                 price: addon.price
             }))
         ],
-        totalPrice: totalPrice.toFixed(2)
+        totalPrice: totalPrice.toFixed(2),
+        downpayment: downpayment.toFixed(2)  // Add downpayment to the invoice data
     };
 
     // Store the populated invoice JSON in localStorage
@@ -349,7 +368,17 @@ function redirectHome() {
   }
 
 
+// Assuming totalPrice is already defined or fetched
+const totalPrice = parseFloat(document.getElementById('total-price').innerText.replace('₱', '').trim());
 
+// Calculate the downpayment (50% of totalPrice)
+const downpayment = totalPrice / 2;
+
+// Update the total price display
+document.getElementById('total-price').innerText = '₱' + totalPrice.toFixed(2);
+
+// Update the downpayment display
+document.getElementById('downpayment').innerText = '₱' + downpayment.toFixed(2);
 
 
 

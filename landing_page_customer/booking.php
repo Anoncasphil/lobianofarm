@@ -165,8 +165,12 @@ $stmt->close();
           <input type="text" id="mobile-number" class="peer p-3 pt-5 font-semibold w-full max-w-xs border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-transparent text-blue-950" placeholder=" " value="mobilenumber" required/>
           <label for="mobile-number" class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-600 text-sm font-medium transition-all duration-200">Mobile Number</label>
         </div>
+
+        <!-- add additional field here -->
       </div>
     </div>
+
+    
 
 
 <!-- Rates -->
@@ -200,7 +204,7 @@ $stmt->close();
       
       // Generate the rate card with dynamic data and JavaScript functionality
       echo "
-      <div class='flex-none max-w-sm bg-white border border-gray-200 rounded-lg shadow-sm relative rate-card hover:scale-105 hover:shadow-2xl transition duration-300'>
+      <div class='flex-none max-w-sm bg-white border border-gray-200 rounded-lg shadow-sm relative rate-card hover:scale-105 hover:shadow-2xl transition duration-300' data-id='$id'>
           <a href='#'>
               <img class='rounded-t-lg w-[284.18px] h-[160px] object-fill' src='../src/uploads/rates/$picture' alt='$name' />
           </a>
@@ -220,13 +224,14 @@ $stmt->close();
                   <i class='fas fa-info-circle text-2xl'></i>
               </button>
               <div class='mt-4 text-center'>
-                <button onclick='selectRate(\"$id\", \"$name\", \"$price\")' class='select-button bg-blue-600 text-white w-full font-bold py-2 px-4 rounded-md hover:bg-blue-700 transition duration-200' data-id='$id' data-price='$price' data-name='$name'>
-                    Select
-                </button>
+                  <button onclick='selectRate(\"$id\", \"$name\", \"$price\")' class='select-button bg-blue-600 text-white w-full font-bold py-2 px-4 rounded-md hover:bg-blue-700 transition duration-200' data-id='$id' data-price='$price' data-name='$name'>
+                      Select
+                  </button>
               </div>
           </div>
       </div>
       ";
+      
     }
       
         // Close the scrollable wrapper
@@ -332,7 +337,7 @@ $stmt->close();
     
     <!-- Check-Out Date (non-interactable) -->
     <div class="relative">
-      <input type="date" id="check-out-date" class="p-3 pt-5 w-full max-w-xs border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-transparent text-blue-950" placeholder=" " readonly />
+      <input type="date" id="check-out-date" class="p-3 pt-5 w-full max-w-xs border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-transparent text-blue-950" placeholder=" " disabled />
       <label for="check-out-date" class="px-2 bg-white absolute left-3 top-[-10px] text-gray-600 text-sm font-medium"> Check-Out Date </label>
     </div>
   </div>
@@ -352,44 +357,46 @@ $stmt->close();
   </div>
 
 <!-- Item and Price Section -->
-<div class="mt-6 p-4 border border-gray-300 rounded-md shadow-sm flex justify-center">
-  <div class="w-full max-w-xl">
-    <h3 class="text-lg font-bold text-gray-700 mb-4 text-center">Summary</h3>
-    <div class="grid grid-cols-2 gap-4 justify-center items-center">
+<div class="mt-6 p-6 bg-white border border-gray-200 rounded-lg shadow-lg">
+  <div class="w-full max-w-xl mx-auto">
+    <h3 class="text-2xl font-semibold text-gray-800 mb-6 text-center">Summary</h3>
+
+    <!-- Grid Layout for Items and Prices -->
+    <div class="grid grid-cols-2 gap-6">
+      
       <!-- Item Column -->
-      <div class="flex justify-center items-center">
-        <div>
-          <p class="text-gray-600 font-bold text-center">Item</p>
-          <ul id="selected-items" class="text-gray-700 text-center">
-            <!-- Selected rate and addons will be inserted here -->
-          </ul>
-        </div>
+      <div class="flex flex-col items-center">
+        <p class="text-gray-600 font-semibold text-lg">Item</p>
+        <ul id="selected-items" class="text-gray-700 text-center space-y-2">
+          <!-- Selected rate and addons will be inserted here -->
+        </ul>
       </div>
+      
       <!-- Price Column -->
       <div class="text-center">
-        <p class="text-gray-600 font-bold">Price</p>
-        <ul id="selected-prices" class="text-gray-700">
+        <p class="text-gray-600 font-semibold text-lg">Price</p>
+        <ul id="selected-prices" class="text-gray-700 space-y-2">
           <!-- Selected rates and addons prices will be inserted here -->
         </ul>
       </div>
     </div>
 
-    <!-- Total Below the Grid -->
-    <div class="mt-10 text-center">
-      <div class="grid grid-cols-2 gap-4 justify-items-center items-center">
-        <p class="text-gray-700 font-bold">Total</p>
-        <p id="total-price" class="text-gray-700 font-bold text-right">₱0.00</p>
+    <!-- Total Section Below the Grid -->
+    <div class="mt-8 border-t pt-6">
+      <div class="flex justify-between items-center">
+        <p class="text-gray-700 font-semibold text-xl">Total</p>
+        <p id="total-price" class="text-gray-900 font-bold text-xl">₱0.00</p>
       </div>
     </div>
 
-    <!-- Hidden rate ID field and addon ID field -->
-    <form id="summary-form" action="/submit-booking" method="POST">
-      <input type="text" id="rate-id-field" name="rate_id" hidden />
-      <input type="text" id="addon-ids-field" name="addon_ids" hidden />
-      <!-- Hidden field will be added dynamically when a rate is selected -->
+    <!-- Hidden rate ID and addon ID fields -->
+    <form id="summary-form" action="/submit-booking" method="POST" class="hidden">
+      <input type="text" id="rate-id-field" name="rate_id" />
+      <input type="text" id="addon-ids-field" name="addon_ids" />
     </form>
   </div>
 </div>
+
 
 
 
@@ -426,6 +433,8 @@ $stmt->close();
   </div>
 </div>
 
+<script src="../scripts/booking.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js"></script>

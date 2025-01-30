@@ -58,13 +58,11 @@ $stmt->close();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lobiano's Farm Resort</title>
-
     <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <script src="../scripts/homepage_animation.js"></script>
-    <script src="../scripts/newhomes.js"></script>
     <link rel="stylesheet" href="../styles/newhome.css">
     
 
@@ -387,8 +385,8 @@ html {
 
                         // Add data attributes for modal
                         echo "
-                        <div class='ml-[16px] flex-none mb-5 mt-5 max-w-sm rounded-2xl shadow-lg relative addons-card animate-card' onclick='openAddonModal(\"$picture\", \"$name\", \"$description\", \"$price\")'>
-                            <img class='rounded-t-2xl w-full h-[200px] object-cover' src='../src/uploads/addons/$picture' alt='$name'>
+                        <div class='flex-none mb-5 mt-5 max-w-sm rounded-2xl shadow-lg relative addons-card animate-card' onclick='openAddonModal(\"$picture\", \"$name\", \"$description\", \"$price\")'>
+                            <img class='rounded-t-2xl w-full h-[173px] object-cover' src='../src/uploads/addons/$picture' alt='$name'>
 
                             <div class='p-5'>
                                 <h2 class='text-2xl font-bold text-gray-800'>$name</h2>
@@ -410,18 +408,6 @@ html {
     </div>
   </div>
 </section>
-
-
-
-
-
-
-
-
-
-
-
-
 
   </div>
 </section>
@@ -545,59 +531,6 @@ html {
 </div>
 
 
-<!-- Add-ons Section -->
-<section id="addons-section" class="bg-white flex flex-col items-center justify-center pt-16 px-4">
-  <div class="max-w-screen-xl mx-auto">
-
-    <div class="mb-10">
-        <h2 class="text-3xl font-extrabold text-center text-gray-900">Our Add-ons</h2>
-        <p class="mt-4 text-lg text-center text-gray-600">Check out our affordable pricing plans designed for everyone.</p>
-
-        <!-- Scrollable Horizontal Add-ons Cards -->
-        <div class="mt-8 overflow-x-auto w-full px-5 py-2 scrollable-container">
-          <div class="flex space-x-6 min-w-max" id="addons-container">
-            <?php
-                // Include database connection
-                include '../db_connection.php';
-
-                // Fetch add-ons from the database
-                $sql = "SELECT * FROM addons WHERE status = 'active'";
-                $result = $conn->query($sql);
-
-                if ($result->num_rows > 0) {
-                    while ($row = $result->fetch_assoc()) {
-                        $id = $row['id'];
-                        $name = $row['name'];
-                        $price = $row['price'];
-                        $description = $row['description'];
-                        $picture = $row['picture'];
-
-                        // Add data attributes for modal
-                        echo "
-                        <div class=' ml-[16px] flex-none mb-5 mt-5 max-w-sm rounded-2xl shadow-lg relative addons-card hover:scale-105 hover:shadow-2xl transition-transform duration-300' onclick='openAddonModal(\"$picture\", \"$name\", \"$description\", \"$price\")'>
-                            <img class='rounded-t-2xl w-full h-[200px] object-cover' src='../src/uploads/addons/$picture' alt='$name'>
-
-                            <div class='p-5'>
-                                <h2 class='text-2xl font-bold text-gray-800'>$name</h2>
-
-                                <p class='text-gray-800 font-semibold text-xl mt-4'>₱$price</p>
-                            </div>
-                        </div>";
-                    }
-                } else {
-                    echo "<p class='text-gray-600'>No active add-ons available.</p>";
-                }
-
-                // Close the database connection
-                $conn->close();
-            ?>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
 <!-- Modal for displaying detailed information -->
 <div id="rate-modal" class="fixed inset-0 bg-black/30 flex justify-center items-center hidden z-50 opacity-0 transition-opacity duration-500 ease-in-out">
   <div class="bg-white p-8 rounded-lg max-w-lg w-full">
@@ -629,12 +562,12 @@ html {
         <p class="text-gray-800 font-semibold text-xl mt-4">₱<span id="modal-price"></span></p>
         <p id="modal-description" class="text-gray-600 mt-4 max-w-2xl"></p>
         <!-- Close button -->
-        <button id="close-modal" class="mt-6 px-4 py-2 bg-blue-600 text-white rounded-lg w-full">Close</button>
+        <button id="close-modal" class="mt-6 px-4 py-2 bg-blue-600 text-white rounded-lg w-full hover:bg-blue-700">Close</button>
       </div>
-      
     </div>
   </div>
-</div> 
+</div>
+
 
 <!-- Modal for displaying Add-on Details -->
 <div id="addon-modal" class="fixed inset-0 bg-black/30 flex justify-center items-center hidden z-50">
@@ -659,103 +592,8 @@ html {
   </div>
 </div> 
 
-<script>
-  // Function to open the modal and display data
-  function openModal(picture, name, description, hours, checkinTime, checkoutTime, price) {
-    // Set modal content
-    document.getElementById('modal-picture').src = '../src/uploads/rates/' + picture;
-    document.getElementById('modal-name').textContent = name;
-    document.getElementById('modal-description').textContent = description;
-    document.getElementById('modal-hours').textContent = hours + ' hours';
-    document.getElementById('modal-checkin-time').textContent = checkinTime;
-    document.getElementById('modal-checkout-time').textContent = checkoutTime;
-    document.getElementById('modal-price').textContent = price;
-
-    // Show modal with fade-in effect
-    const modal = document.getElementById('rate-modal');
-    modal.classList.remove('hidden');
-    setTimeout(() => modal.classList.remove('opacity-0'), 10);  // Trigger the fade-in effect
-  }
-
-  // Close the modal when clicking the close button
-  document.getElementById('close-modal').addEventListener('click', function() {
-    const modal = document.getElementById('rate-modal');
-    modal.classList.add('opacity-0'); // Fade out
-    setTimeout(() => modal.classList.add('hidden'), 500);  // Hide after fade-out transition
-  });
-
-  // Close the modal when clicking outside of the modal
-  document.getElementById('rate-modal').addEventListener('click', function(event) {
-    if (event.target === document.getElementById('rate-modal')) {
-      const modal = document.getElementById('rate-modal');
-      modal.classList.add('opacity-0'); // Fade out
-      setTimeout(() => modal.classList.add('hidden'), 500);  // Hide after fade-out transition
-    }
-  });
-
-  
-</script>
-
-
-<script>
-  // Function to open the add-on modal and display data with animation
-  function openAddonModal(picture, name, description, price) {
-    // Set modal content
-    document.getElementById('addon-modal-picture').src = '../src/uploads/addons/' + picture;
-    document.getElementById('addon-modal-name').textContent = name;
-    document.getElementById('addon-modal-description').textContent = description;
-    document.getElementById('addon-modal-price').textContent = price;
-
-    // Show modal with fade-in and scale-up effect
-    const modal = document.getElementById('addon-modal');
-    const modalContent = modal.querySelector('div');
-    
-    // Remove hidden and apply transition styles
-    modal.classList.remove('hidden');
-    modal.style.opacity = 0;
-    modal.style.transition = "opacity 0.5s ease-in-out";
-    modalContent.style.transform = "scale(0.95)";
-    modalContent.style.transition = "transform 0.5s ease-in-out";
-
-    setTimeout(function() {
-      modal.style.opacity = 1;
-      modalContent.style.transform = "scale(1)";
-    }, 10);  // Allow styles to take effect before transitioning
-  }
-
-  // Close the add-on modal when clicking the close button with smooth transition
-  document.getElementById('close-addon-modal').addEventListener('click', function() {
-    const modal = document.getElementById('addon-modal');
-    const modalContent = modal.querySelector('div');
-
-    // Apply fade-out and scale-down effect
-    modal.style.opacity = 0;
-    modalContent.style.transform = "scale(0.95)";
-    
-    // Set a timeout for the animation to complete before hiding the modal
-    setTimeout(function() {
-      modal.classList.add('hidden');
-    }, 500); // Match duration of transition
-  });
-
-  // Close the modal when clicking outside of the modal
-  document.getElementById('addon-modal').addEventListener('click', function(event) {
-    if (event.target === document.getElementById('addon-modal')) {
-      const modal = document.getElementById('addon-modal');
-      const modalContent = modal.querySelector('div');
-      
-      modal.style.opacity = 0;
-      modalContent.style.transform = "scale(0.95)";
-      
-      setTimeout(function() {
-        modal.classList.add('hidden');
-      }, 500); // Match duration of transition
-    }
-  });
-</script>
-
-
-
+<script src="../scripts/homepage_animation.js"></script>
+<script src="../scripts/newhomes.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js"></script>

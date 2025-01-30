@@ -81,7 +81,7 @@ document.addEventListener("DOMContentLoaded", function () {
     window.closeModal = closeModal;
   });
   
-  let currentSlide = 0;
+  currentSlide = 1;
 
 function moveCarousel(direction) {
   const carousel = document.getElementById('carousel');
@@ -117,7 +117,7 @@ function moveCarousel(direction) {
           console.error("Error fetching user data:", data.message);
         }
       })
-      .catch((error) => console.error("Error:", error));
+
   });
 
   let selectedRate = null;  // Track selected rate
@@ -452,40 +452,51 @@ document.addEventListener("DOMContentLoaded", () => {
     checkInDateInput.value = selectedDate.checkIn; // Set the value in the check-in date input
   }
 
-  // Fetch rate details from the server
+  // Fetch rate details (check-in time, hours of stay, etc.)
   async function fetchRateDetails(rateId) {
     try {
       const response = await fetch(`../api/get-rate-details.php?id=${rateId}`);
-      const responseText = await response.text();
-
-      // Try parsing the response as JSON
-      const rate = JSON.parse(responseText);
+      const rate = await response.json();
       return rate;
     } catch (error) {
       console.error('Error fetching rate details:', error);
     }
   }
 
-  function calculateCheckoutDate(checkInDate, checkInTime, hoursOfStay) {
-    const validDate = Date.parse(`${checkInDate}T${checkInTime}`);
-    if (isNaN(validDate)) {
-      console.error('Invalid date or time format');
-      return { checkoutDate: '', checkoutTime: '' }; 
+  // Fetch reserved dates (to grey out in calendar)
+  async function fetchReservedDates() {
+    try {
+      const response = await fetch('get_reserved_dates.php');
+      const reservedDates = await response.json();
+      return reservedDates.map(date => {
+        return {
+          from: new Date(date.start),
+          to: new Date(date.end)
+        };
+      });
+    } catch (error) {
+      console.error('Error fetching reserved dates:', error);
+      return [];
     }
-  
+  }
+
+  function calculateCheckoutDate(checkInDate, checkInTime, hoursOfStay) {
+    // Create a new Date object for the check-in date and time
     const checkInDateTime = new Date(`${checkInDate}T${checkInTime}`);
+  
+    // Add hours of stay to the check-in time
     checkInDateTime.setHours(checkInDateTime.getHours() + hoursOfStay);
   
-    const totalHours = hoursOfStay + checkInDateTime.getHours();
+    // Extract the new checkout date and time
+    const checkoutDate = checkInDateTime.toISOString().split("T")[0]; // Get the date in YYYY-MM-DD format
+    const checkoutTime = checkInDateTime.toTimeString().split(":").slice(0, 2).join(":"); // Get the time in HH:MM format
   
-    if (totalHours > 48) {
-      checkInDateTime.setDate(checkInDateTime.getDate() + 2);
-    } else if (totalHours > 24) {
-      checkInDateTime.setDate(checkInDateTime.getDate() + 1);
+    // If the checkout date goes past midnight, adjust the date correctly
+    if (checkInDateTime.getDate() !== new Date(`${checkInDate}T${checkInTime}`).getDate()) {
+      const nextDay = new Date(checkInDateTime);
+      nextDay.setDate(checkInDateTime.getDate() + 1); // Add 1 day if the checkout crosses midnight
+      return { checkoutDate: nextDay.toISOString().split("T")[0], checkoutTime };
     }
-  
-    const checkoutDate = checkInDateTime.toISOString().split("T")[0]; 
-    const checkoutTime = checkInDateTime.toTimeString().split(":").slice(0, 2).join(":"); 
   
     return { checkoutDate, checkoutTime };
   }
@@ -494,42 +505,47 @@ document.addEventListener("DOMContentLoaded", () => {
     if (selectedRate && selectedRate.id === rateId) {
       return;
     }
-  
+
     const selectButton = document.querySelector(`button[data-id="${rateId}"]`);
     if (selectButton && selectButton.innerText === "Select") {
       return;
     }
-  
+
     fetchRateDetails(rateId).then((rate) => {
+      console.log("Fetched Rate:", rate); // Log fetched rate details
+      if (!rateId) {
+        console.error("Rate ID is missing or invalid.");
+        return;
+      }
       if (rate) {
         const { checkin_time, checkout_time, hoursofstay } = rate;
         selectedRate = rate;
-  
+
         const checkInTime = checkin_time || '14:00'; 
         const checkOutTime = checkout_time || '12:00';
-  
+
         checkInTimeInput.value = checkInTime;
         checkOutTimeInput.value = checkOutTime;
-  
+
         if (checkInDateInput.value) {
           const checkInDate = checkInDateInput.value;
           const checkInTime = checkInTimeInput.value;
-  
+
           const validCheckInDate = Date.parse(`${checkInDate}T${checkInTime}`);
           if (isNaN(validCheckInDate)) {
             console.error("Invalid check-in date or time:", checkInDate, checkInTime);
             return;
           }
-  
+
           const { checkoutDate, checkoutTime } = calculateCheckoutDate(
             checkInDate,
             checkInTime,
             hoursofstay
           );
-  
+
           checkOutDateInput.value = checkoutDate;
           checkOutTimeInput.value = checkoutTime;
-  
+
           localStorage.setItem(
             "selectedDate",
             JSON.stringify({ checkIn: checkInDateInput.value })
@@ -541,13 +557,17 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // Flatpickr initialization for date inputs
-  if (checkInDateInput && checkOutDateInput) {
+  // Initialize Flatpickr with reserved dates disabled and grey out past dates
+  async function initializeFlatpickr() {
+    const reservedDates = await fetchReservedDates();
+
+    const currentDate = new Date();  // Get current date
+    const formattedCurrentDate = currentDate.toISOString().split('T')[0];  // Format as YYYY-MM-DD
+
     flatpickr(checkInDateInput, {
       dateFormat: "Y-m-d",
-      defaultDate: selectedDate ? selectedDate.checkIn : null, // Use stored date as default if available
+      defaultDate: selectedDate ? selectedDate.checkIn : null,
       onChange: function(selectedDates, dateStr, instance) {
-        // When check-in date changes, recalculate checkout date
         if (selectedDates[0] && checkInTimeInput.value) {
           const checkInDate = selectedDates[0].toISOString().split("T")[0];
           const checkInTime = checkInTimeInput.value;
@@ -559,7 +579,18 @@ document.addEventListener("DOMContentLoaded", () => {
           checkOutDateInput.value = checkoutDate;
           checkOutTimeInput.value = checkoutTime;
         }
-      }
+      },
+      disable: [
+        ...reservedDates.map(date => ({
+          from: date.from,
+          to: date.to
+        })),
+        // Disable all dates before the current date (including today)
+        {
+          from: new Date("2000-01-01"),
+          to: formattedCurrentDate
+        }
+      ]
     });
 
     flatpickr(checkOutDateInput, {
@@ -573,6 +604,8 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  initializeFlatpickr();
+
   selectedItems.forEach((button) => {
     button.addEventListener("click", (e) => {
       const rateId = e.target.dataset.id;
@@ -582,3 +615,4 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 });
+
