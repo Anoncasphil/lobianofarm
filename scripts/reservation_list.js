@@ -89,4 +89,15 @@ document.addEventListener("DOMContentLoaded", () => {
             document.getElementById(tab.dataset.tab)?.classList.remove("hidden");
         });
     });
+
+    // Sort reservations by id in ascending order
+    const reservationRows = Array.from(document.querySelectorAll("tbody tr"));
+    reservationRows.sort((a, b) => {
+        const idA = parseInt(a.querySelector("td:first-child").textContent);
+        const idB = parseInt(b.querySelector("td:first-child").textContent);
+        return idA - idB;
+    });
+
+    const tbody = document.querySelector("tbody");
+    reservationRows.forEach(row => tbody.appendChild(row));
 });

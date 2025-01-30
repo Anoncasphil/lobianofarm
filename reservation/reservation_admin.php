@@ -180,6 +180,11 @@ if (!isset($_SESSION['admin_id'])) {
                     <?php 
                     $reservations = getReservations();
                     if (!empty($reservations)) {
+                        // Sort reservations by id in ascending order
+                        usort($reservations, function($a, $b) {
+                            return $a['id'] - $b['id'];
+                        });
+
                         foreach ($reservations as $reservation) {
                             $userDetails = getUserDetails($reservation['user_id'], $conn);
                             $userName = htmlspecialchars($userDetails['first_name']) . ' ' . htmlspecialchars($userDetails['last_name']);
