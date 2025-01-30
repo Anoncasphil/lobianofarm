@@ -33,7 +33,7 @@ try {
         $rate = $rate_result->fetch_assoc();
 
         // Prepare SQL to fetch addons details
-        $addons_sql = "SELECT a.* FROM addons a
+        $addons_sql = "SELECT a.name, a.price FROM addons a
                        JOIN reservation_addons ra ON a.id = ra.addon_id
                        WHERE ra.reservation_id = ?";
         $addons_stmt = $conn->prepare($addons_sql);

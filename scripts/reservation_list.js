@@ -30,29 +30,62 @@ document.addEventListener("DOMContentLoaded", () => {
                 const reservation = data.data;
 
                 // Update Reservation Details Tab
-                document.getElementById("modal-reservation-id").textContent = reservation.id;
-                document.getElementById("modal-name").textContent = `${reservation.first_name} ${reservation.last_name}`;
-                document.getElementById("modal-email").textContent = reservation.email;
-                document.getElementById("modal-phone-number").textContent = reservation.contact_number;
-                document.getElementById("modal-check-in").textContent = reservation.check_in_date;
-                document.getElementById("modal-check-out").textContent = reservation.check_out_date;
-                document.getElementById("modal-total-amount").textContent = `₱${reservation.total_price.toFixed(2)}`;
+                console.log("Updating Reservation Details Tab with:", reservation);
+                if (reservation.id) {
+                    document.getElementById("modal-reservation-id").textContent = reservation.id;
+                    console.log("Reservation ID:", reservation.id);
+                }
+                if (reservation.first_name && reservation.last_name) {
+                    document.getElementById("modal-name").textContent = `${reservation.first_name} ${reservation.last_name}`;
+                    console.log("Name:", `${reservation.first_name} ${reservation.last_name}`);
+                }
+                if (reservation.email) {
+                    document.getElementById("modal-email").textContent = reservation.email;
+                    console.log("Email:", reservation.email);
+                }
+                if (reservation.contact_number) {
+                    document.getElementById("modal-phone-number").textContent = reservation.contact_number;
+                    console.log("Phone Number:", reservation.contact_number);
+                }
+                if (reservation.check_in_date) {
+                    document.getElementById("modal-check-in").textContent = reservation.check_in_date;
+                    console.log("Check-in Date:", reservation.check_in_date);
+                }
+                if (reservation.check_out_date) {
+                    document.getElementById("modal-check-out").textContent = reservation.check_out_date;
+                    console.log("Check-out Date:", reservation.check_out_date);
+                }
+                if (reservation.total_price) {
+                    document.getElementById("modal-total-amount").textContent = `₱${reservation.total_price.toFixed(2)}`;
+                    console.log("Total Amount:", `₱${reservation.total_price.toFixed(2)}`);
+                }
 
                 // Update Invoice Tab (Rate and Addons)
-                document.getElementById("modal-rate-name").textContent = reservation.rate_name;
-                document.getElementById("modal-rate-price").textContent = `₱${reservation.rate_price.toFixed(2)}`;
+                if (reservation.rate_name) {
+                    document.getElementById("modal-rate-name").textContent = reservation.rate_name;
+                    console.log("Rate Name:", reservation.rate_name);
+                }
+                if (reservation.rate_price) {
+                    document.getElementById("modal-rate-price").textContent = `₱${reservation.rate_price.toFixed(2)}`;
+                    console.log("Rate Price:", `₱${reservation.rate_price.toFixed(2)}`);
+                }
 
                 if (reservation.addons_name) {
                     document.getElementById("modal-addons-name").textContent = reservation.addons_name;
+                    console.log("Addons Name:", reservation.addons_name);
                     document.getElementById("modal-addons-price").textContent = `₱${reservation.addons_price.toFixed(2)}`;
+                    console.log("Addons Price:", `₱${reservation.addons_price.toFixed(2)}`);
                 } else {
                     document.getElementById("modal-addons-name").textContent = "None";
+                    console.log("Addons Name: None");
                     document.getElementById("modal-addons-price").textContent = "₱0.00";
+                    console.log("Addons Price: ₱0.00");
                 }
 
                 // Update Total Price
                 const totalPrice = (reservation.rate_price + (reservation.addons_price || 0));
                 document.getElementById("modal-total-price").textContent = `₱${totalPrice.toFixed(2)}`;
+                console.log("Total Price:", `₱${totalPrice.toFixed(2)}`);
 
                 // Update Payment Tab
                 document.getElementById("modal-payment-proof").setAttribute('src', reservation.payment_receipt);
