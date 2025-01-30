@@ -167,13 +167,37 @@ html {
 
 
     <!-- Profile button -->
-    <button type="button" class="flex items-center ml-2 space-x-3 text-sm dark:bg-blue-900 hover:bg-white/10 rounded-lg px-4 py-2">
+    <div class="relative inline-block text-left">
+    <button id="profileButton" type="button" class="flex items-center ml-2 space-x-3 text-sm dark:bg-blue-900 hover:bg-white/10 rounded-lg px-4 py-2">
         <span class="sr-only">Open user menu</span>
-        <!-- Display user profile picture -->
         <img class="w-10 h-10 rounded-full" src="../src/uploads/<?php echo htmlspecialchars($user_picture); ?>" alt="User Photo">
-        <!-- Display user first name and last name to the right -->
         <span class="text-white font-medium"><?php echo htmlspecialchars($full_name); ?></span>
     </button>
+    
+    <!-- Dropdown menu -->
+    <div id="dropdownMenu" class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-2 hidden">
+        <a href="#" class="block px-4 py-2 text-gray-700 hover:bg-gray-200">Profile</a>
+        <a href="logout.php" class="block px-4 py-2 text-gray-700 hover:bg-gray-200">Logout</a>
+    </div>
+</div>
+
+<script>
+    document.getElementById('profileButton').addEventListener('click', function() {
+        var dropdown = document.getElementById('dropdownMenu');
+        dropdown.classList.toggle('hidden');
+    });
+    
+    // Close dropdown if clicked outside
+    document.addEventListener('click', function(event) {
+        var profileButton = document.getElementById('profileButton');
+        var dropdownMenu = document.getElementById('dropdownMenu');
+        
+        if (!profileButton.contains(event.target) && !dropdownMenu.contains(event.target)) {
+            dropdownMenu.classList.add('hidden');
+        }
+    });
+</script>
+
 
 
       <!-- Hamburger menu -->
