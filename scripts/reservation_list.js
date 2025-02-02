@@ -18,9 +18,13 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
         }
 
+        console.log(`Fetching details for reservation ID: ${reservationId}`);
+
         fetch(`get_details.php?id=${reservationId}`)
             .then(response => response.json())
             .then(data => {
+                console.log("Response data:", data);
+
                 if (data.status === 'error') {
                     console.error("Error:", data.message);
                     alert("Error loading reservation details.");

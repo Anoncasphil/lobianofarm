@@ -49,8 +49,11 @@ try {
         $response = [
             'status' => 'success',
             'data' => [
-                'reservation_id' => $reservation['id'],
+                'id' => $reservation['id'],
                 'user_id' => $reservation['user_id'],
+                'first_name' => $reservation['first_name'],
+                'last_name' => $reservation['last_name'],
+                'email' => $reservation['email'],
                 'check_in_date' => $reservation['check_in_date'],
                 'check_out_date' => $reservation['check_out_date'],
                 'check_in_time' => $reservation['check_in_time'],
