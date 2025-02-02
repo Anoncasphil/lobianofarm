@@ -173,22 +173,28 @@ if (!isset($_SESSION['admin_id'])) {
 			</div>
 			<i class='bx bx-trending-up icon'></i>
 		</div>
-		<span class="progress" data-value="40%"></span>
-		<span class="label">40%</span>
 	</div>
 
-				<div class="card">
-					<div class="head">
-						<div>
-							<h2>234</h2>
-							<p>Sales</p>
-						</div>
-						<i class='bx bx-trending-down icon down' ></i>
-					</div>
-					<span class="progress" data-value="60%"></span>
-					<span class="label">60%</span>
-				</div>
-				<div class="card">
+				<?php
+require_once 'db_connection.php';
+
+// Fetch confirmed reservations
+$query = "SELECT SUM(total_price) as total_sales FROM reservations WHERE status = 'Approved'";
+$result = $conn->query($query);
+$total_sales = $result->fetch_assoc()['total_sales'] ?? 0;
+?>
+
+<div class="card">
+    <div class="head">
+        <div>
+            <h2>₱<?php echo number_format($total_sales, 2); ?></h2>
+            <p>Sales</p>
+        </div>
+        <i class='bx bx-trending-down icon down'></i>
+    </div>
+</div>
+
+				<!-- <div class="card">
 					<div class="head">
 						<div>
 							<h2>465</h2>
@@ -198,19 +204,62 @@ if (!isset($_SESSION['admin_id'])) {
 					</div>
 					<span class="progress" data-value="30%"></span>
 					<span class="label">30%</span>
-				</div>
-				<div class="card">
-					<div class="head">
-						<div>
-							<h2>235</h2>
-							<p>Visitors</p>
-						</div>
-						<i class='bx bx-trending-up icon' ></i>
-					</div>
-					<span class="progress" data-value="80%"></span>
-					<span class="label">80%</span>
-				</div>
+				</div> -->
+
+
+
+				<?php
+require_once 'db_connection.php';
+
+// Fetch pending reservations count
+$pending_query = "SELECT COUNT(*) as pending_count FROM reservations WHERE status = 'Pending'";
+$pending_result = $conn->query($pending_query);
+$pending_count = $pending_result->fetch_assoc()['pending_count'] ?? 0;
+
+// Fetch approved reservations count
+$approved_query = "SELECT COUNT(*) as approved_count FROM reservations WHERE status = 'Approved'";
+$approved_result = $conn->query($approved_query);
+$approved_count = $approved_result->fetch_assoc()['approved_count'] ?? 0;
+
+// Fetch total reservations count
+$total_query = "SELECT COUNT(*) as total_count FROM reservations";
+$total_result = $conn->query($total_query);
+$total_count = $total_result->fetch_assoc()['total_count'] ?? 0;
+
+// Calculate percentage of pending reservations
+$pending_percentage = $total_count > 0 ? ($pending_count / $total_count) * 100 : 0;
+
+// Calculate percentage of approved reservations
+$approved_percentage = $total_count > 0 ? ($approved_count / $total_count) * 100 : 0;
+?>
+
+<div class="card">
+    <div class="head">
+        <div>
+            <h2><?php echo $pending_count; ?></h2>
+            <p>Pending Reservations</p>
+        </div>
+        <i class='bx bx-time-five icon'></i>
+    </div>
+    <span class="progress" data-value="<?php echo $pending_percentage; ?>%"></span>
+    <span class="label"><?php echo number_format($pending_percentage, 2); ?>%</span>
+</div>
+
+<div class="card">
+    <div class="head">
+        <div>
+            <h2><?php echo $approved_count; ?></h2>
+            <p>Approved Reservations</p>
+        </div>
+        <i class='bx bx-check-circle icon'></i>
+    </div>
+    <span class="progress" data-value="<?php echo $approved_percentage; ?>%"></span>
+    <span class="label"><?php echo number_format($approved_percentage, 2); ?>%</span>
+</div>
 			</div>
+
+			
+
 			<div class="data">
 
 				<!-- sales graph -->
