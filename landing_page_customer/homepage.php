@@ -296,7 +296,7 @@ html {
 <!-- Hero Section -->
 <section
   id="home"
-  class="bg-cover bg-center relative py-16"
+  class="bg-cover bg-center relative py-16 mb-16"
   style="background-image: url('../src/uploads/resort.png');"
 >
   <!-- Overlay -->
@@ -340,7 +340,7 @@ html {
 
 
 <!-- Rates & Add-ons Section -->
-<section id="rates-section" class="bg-white flex flex-col items-center justify-center pt-16 px-4">
+<section id="rates-section" class="bg-white flex flex-col items-center justify-center py-16 px-4 mb-16">
   <div class="max-w-screen-xl mx-auto">
     
     <!-- Rates Section -->
@@ -416,7 +416,7 @@ html {
 </section>
 
 <!-- Add-ons Section -->
-<section id="addons-section" class="bg-white flex flex-col items-center justify-center pt-16 px-4">
+<section id="addons-section" class="bg-white flex flex-col items-center justify-center py-16 px-4 mb-16">
   <div class="max-w-screen-xl mx-auto">
 
     <div class="mb-10 mr-5">
@@ -477,7 +477,7 @@ html {
 
 
 <!-- About Us Section -->
-<section id="about" class="bg-white flex items-center justify-center px-4">
+<section id="about" class="bg-white flex items-center justify-center px-4 mb-16">
   <div class="max-w-screen-xl mx-auto flex flex-col md:flex-row items-center gap-8">
     <!-- Image Section -->
     <div class="w-full md:w-1/2 flex justify-lef">
@@ -503,7 +503,7 @@ html {
   </div>
 </section>
 
-<section id="album" class="bg-white flex items-center justify-center pt-16 px-4">
+<section id="album" class="bg-white flex items-center justify-center py-16 px-4 mb-16">
   <div class="max-w-screen-xl mx-auto text-center">
     <h2 class="text-3xl font-extrabold text-gray-900 mb-4">Our Album</h2>
     <p class="mt-4 text-lg text-gray-600 text-gray-700">Explore some of the beautiful moments captured at our resort.</p>
