@@ -65,7 +65,7 @@ $stmt->close();
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <link rel="stylesheet" href="../styles/booking.css">
+    
     <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css">
     
 
@@ -152,11 +152,11 @@ html {
 }
 
 .swiper-pagination-bullet {
-  background: #4F46E5;
+  background:rgb(19, 0, 160);
 }
 
 .swiper-pagination-bullet-active {
-  background: #4F46E5 !important;
+  background:rgb(19, 0, 160) !important;
 }
 
   <style>
@@ -183,9 +183,22 @@ html {
 
     /* Ensure the arrows are always visible */
     .swiper-button-next, .swiper-button-prev {
-      color: #4F46E5;
+      color:rgb(11, 0, 210);
     }
-  </style>
+
+    #about {
+    opacity: 0;
+    transform: translateY(50px); /* Slide from the bottom */
+    transition: opacity 1s ease, transform 1s ease; /* Smooth transition for opacity and transform */
+    
+}
+
+#album {
+    opacity: 0;
+    transform: translateY(50px); /* Slide from the bottom */
+    transition: opacity 1s ease, transform 1s ease; /* Smooth transition for opacity and transform */
+}
+</style>
 
 </head>
 <body>
@@ -326,39 +339,12 @@ html {
 </section>
 
 
-<!-- Reservation Steps -->
-<section id="reserve" class="bg-gray-100 flex items-center justify-center pt-16 px-4">
-  <div class="max-w-screen-xl mx-auto flex flex-col md:flex-row items-center gap-8">
-    <!-- Text Section -->
-    <div id="reserve-text" class="w-full md:w-1/2 text-center md:text-left md:mx-8 opacity-0 transform translate-x-[-50px]">
-      <h2 class="text-3xl font-extrabold text-gray-900 mb-4">How to Reserve</h2>
-      <ol class="list-decimal text-gray-700 mb-10 text-justify space-y-3">
-        <li>View available dates, select your preferred date, and click <strong>"Book"</strong> to go to the reservation page.</li>
-        <li>Fill in your details and choose your preferred rates and add-ons.</li>
-        <li>Click <strong>"Proceed to Payment"</strong> to review your reservation and invoice.</li>
-        <li>Scan the QR code to pay 50% of the total amount.</li>
-        <li>Enter the payment reference number and upload the payment proof.</li>
-        <li>Click <strong>"Submit"</strong>. Your reservation will be reviewed, and you will receive a confirmation email.</li>
-      </ol>
-    </div>
-
-    <!-- Image Section -->
-    <div id="reserve-image" class="w-full md:w-1/2 flex justify-center mb-10 opacity-0 transform translate-x-[50px]">
-      <img 
-        src="../src/uploads/about/resort.png" 
-        alt="Reservation Steps Image" 
-        class="rounded-2xl shadow-lg w-full h-auto object-cover"
-      />
-    </div>
-  </div>
-</section>
-
 <!-- Rates & Add-ons Section -->
 <section id="rates-section" class="bg-white flex flex-col items-center justify-center pt-16 px-4">
   <div class="max-w-screen-xl mx-auto">
     
     <!-- Rates Section -->
-    <div>
+    <div class="mr-5">
       <h2 class="text-3xl font-extrabold text-center text-gray-900 header-rate">Our Rates</h2>
       <p class="mt-4 text-lg text-center text-gray-600 text-rate">Check out our affordable pricing plans designed for everyone.</p>
 
@@ -433,7 +419,7 @@ html {
 <section id="addons-section" class="bg-white flex flex-col items-center justify-center pt-16 px-4">
   <div class="max-w-screen-xl mx-auto">
 
-    <div class="mb-10">
+    <div class="mb-10 mr-5">
         <h2 class="text-3xl font-extrabold text-center text-gray-900 heading-addon">Our Add-ons</h2>
         <p class="mt-4 text-lg text-center text-gray-600 text-addon">Check out our affordable pricing plans designed for everyone.</p>
 
@@ -491,7 +477,7 @@ html {
 
 
 <!-- About Us Section -->
-<section id="about" class="bg-white flex items-center justify-center pt-16 px-4">
+<section id="about" class="bg-white flex items-center justify-center px-4">
   <div class="max-w-screen-xl mx-auto flex flex-col md:flex-row items-center gap-8">
     <!-- Image Section -->
     <div class="w-full md:w-1/2 flex justify-lef">
@@ -517,41 +503,38 @@ html {
   </div>
 </section>
 
-<section id="album" class="bg-white min-h-screen flex items-center justify-center pt-16 px-4">
-    <div class="max-w-screen-xl mx-auto text-center">
-      <h2 class="text-3xl font-extrabold text-gray-900 mb-4">Our Album</h2>
-      <p class="mt-4 text-lg text-gray-600 text-gray-700">Explore some of the beautiful moments captured at our resort.</p>
+<section id="album" class="bg-white flex items-center justify-center pt-16 px-4">
+  <div class="max-w-screen-xl mx-auto text-center">
+    <h2 class="text-3xl font-extrabold text-gray-900 mb-4">Our Album</h2>
+    <p class="mt-4 text-lg text-gray-600 text-gray-700">Explore some of the beautiful moments captured at our resort.</p>
 
-      <!-- Swiper Container -->
-      <div class="w-full relative">
-        <div class="swiper centered-slide-carousel swiper-container">
-          <div class="swiper-wrapper">
-            <?php
-              $directory = "../src/uploads/album/";  // Specify the path to the image folder
-              $images = glob($directory . "*.jpg");  // Adjust the file type if needed (e.g., .png, .jpeg)
+    <!-- Swiper Container -->
+    <div class="w-full relative">
+      <div class="swiper centered-slide-carousel swiper-container">
+        <div class="swiper-wrapper">
+          <?php
+            $directory = "../src/uploads/album/";  // Specify the path to the image folder
+            $images = glob($directory . "*.jpg");  // Adjust the file type if needed (e.g., .png, .jpeg)
 
-              // Loop through the images and create swiper-slide for each image
-              foreach ($images as $image) {
-                $imageName = basename($image);  // Get the image file name
-                echo '<div class="swiper-slide">';
-                echo '<img class="h-auto max-w-full rounded-lg" src="' . $directory . $imageName . '" alt="' . $imageName . '">';
-                echo '</div>';
-              }
-            ?>
-          </div>
-          <!-- Swiper Pagination -->
-          <div class="swiper-pagination"></div>
-          <!-- Swiper Navigation -->
-          <div class="swiper-button-next"></div>
-          <div class="swiper-button-prev"></div>
+            // Loop through the images and create swiper-slide for each image
+            foreach ($images as $image) {
+              $imageName = basename($image);  // Get the image file name
+              echo '<div class="swiper-slide overflow-visible mt-10">';
+              echo '<div class="relative w-full h-100">';  // Set a fixed height and width container
+              echo '<img class="object-cover w-full h-full rounded-lg shadow-lg filter" src="' . $directory . $imageName . '" alt="' . $imageName . '">'; // Apply blur and set object-cover
+              echo '</div>';
+              echo '</div>';
+            }
+          ?>
         </div>
+        <!-- Swiper Pagination -->
+        <div class="swiper-pagination"></div>
       </div>
     </div>
-  </section>
+  </div>
+</section>
 
-  <!-- Include Swiper JS -->
-  <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
-  
+
   <script>
     // Initialize Swiper after DOM is loaded
     document.addEventListener("DOMContentLoaded", function() {
@@ -594,20 +577,60 @@ html {
 
 
 <!-- Video Tour Section -->
-<section id="video-tour" class="bg-gray-50 dark:bg-gray-800 min-h-screen flex items-center justify-center pt-16">
-  <div class="text-center">
-    <h2 class="text-3xl font-extrabold text-gray-900 dark:text-white">Video Tour</h2>
-    <p class="mt-4 text-lg text-gray-600 dark:text-gray-400">Watch a tour of our facilities and see what we offer.</p>
+<section id="video-tour" class="bg-white px-4">
+  <div class="max-w-screen-xl mx-auto text-center">
+    <h2 class="text-3xl font-extrabold text-gray-900">Video Tour</h2>
+    <p class="mt-4 text-lg text-gray-700">
+      Watch a tour of our facilities and see what we offer.
+    </p>
     <div class="mt-8">
+      <!-- Responsive Video Container -->
+      <div class="relative" style="padding-bottom: 56.25%; height: 0; overflow: hidden;">
+        <iframe class="absolute top-0 left-0 w-full h-full"
+                src="https://www.youtube.com/embed/mx4AFPTWoFo"
+                title="Video Tour"
+                frameborder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowfullscreen>
+        </iframe>
+      </div>
     </div>
   </div>
 </section>
+
+
 
 <!-- Reviews Section -->
 <section id="reviews" class="bg-white dark:bg-gray-900 min-h-screen flex items-center justify-center pt-16">
   <div class="text-center">
     <h2 class="text-3xl font-extrabold text-gray-900 dark:text-white">Reviews</h2>
     <p class="mt-4 text-lg text-gray-600 dark:text-gray-400">Hear from our satisfied customers about their experiences.</p>
+  </div>
+</section>
+
+<section id="reserve" class="bg-gray-100 flex items-center justify-center pt-16 px-4">
+  <div class="max-w-screen-xl mx-auto px-4 md:px-8 flex flex-col md:flex-row items-center gap-8">
+    <!-- Text Section -->
+    <div id="reserve-text" class="w-full md:w-1/2 text-center md:text-left opacity-0 transform translate-x-[-50px] ml-8 ">
+      <h2 class="text-3xl font-extrabold text-gray-900 mb-4">How to Reserve</h2>
+      <ol class="list-decimal text-gray-700 mb-10 text-justify space-y-3 ml-5">
+        <li>View available dates, select your preferred date, and click <strong>"Book"</strong> to go to the reservation page.</li>
+        <li>Fill in your details and choose your preferred rates and add-ons.</li>
+        <li>Click <strong>"Proceed to Payment"</strong> to review your reservation and invoice.</li>
+        <li>Scan the QR code to pay 50% of the total amount.</li>
+        <li>Enter the payment reference number and upload the payment proof.</li>
+        <li>Click <strong>"Submit"</strong>. Your reservation will be reviewed, and you will receive a confirmation email.</li>
+      </ol>
+    </div>
+
+    <!-- Image Section -->
+    <div id="reserve-image" class="w-full md:w-1/2 flex justify-center opacity-0 transform translate-x-[50px] mr-8">
+      <img 
+        src="../src/uploads/about/resort.png" 
+        alt="Reservation Steps Image" 
+        class="rounded-2xl shadow-lg w-full h-auto object-cover"
+      />
+    </div>
   </div>
 </section>
 
@@ -671,6 +694,8 @@ html {
 </div>
 
 
+
+
 <!-- Modal for displaying Add-on Details -->
 <div id="addon-modal" class="fixed inset-0 bg-black/30 flex justify-center items-center hidden z-50">
   <div class="bg-white p-8 rounded-lg max-w-lg w-full">
@@ -694,8 +719,9 @@ html {
   </div>
 </div> 
 
-<script src="../scripts/homepage_animation.js"></script>
+<script src="../scripts/homepage_animations.js"></script>
 <script src="../scripts/newhomes.js"></script>
+<script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js"></script>
