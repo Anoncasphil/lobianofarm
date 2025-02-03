@@ -84,7 +84,7 @@ try {
                     'name' => $rate['name'],
                     'price' => (float)$rate['price']
                 ],
-                'addons' => $addons
+                'addons' => !empty($addons) ? $addons : 0 // Allow null in addons but set to 0 if empty
             ]
         ];
 
@@ -99,7 +99,7 @@ try {
 
     // Close the statements and connection
     $reservation_addons_stmt->close();
-    $addons_stmt->close();
+    if (isset($addons_stmt)) $addons_stmt->close();
     $rate_stmt->close();
     $stmt->close();
     $conn->close();
