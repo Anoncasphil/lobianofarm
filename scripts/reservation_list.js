@@ -95,7 +95,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
                     // Update Payment Tab
                     if (reservation.payment_receipt) {
-                        document.getElementById("modal-payment-proof").setAttribute('src', reservation.payment_receipt);
+                        const paymentReceiptPath = `../src/uploads/customerpayment/${reservation.payment_receipt}`;
+                        document.getElementById("modal-payment-proof").setAttribute('src', paymentReceiptPath);
+                        console.log("Payment Proof:", paymentReceiptPath);
                     } else {
                         document.getElementById("modal-payment-proof").setAttribute('src', '');
                         document.getElementById("modal-payment-proof").alt = 'No payment proof available';
