@@ -65,29 +65,29 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
 
                 // Update Invoice Tab (Rate and Addons)
-                if (reservation.rate_name) {
-                    document.getElementById("modal-rate-name").textContent = reservation.rate_name;
-                    console.log("Rate Name:", reservation.rate_name);
+                if (reservation.rate.name) {
+                    document.getElementById("modal-rate-name").textContent = reservation.rate.name;
+                    console.log("Rate Name:", reservation.rate.name);
                 }
-                if (reservation.rate_price) {
-                    document.getElementById("modal-rate-price").textContent = `₱${reservation.rate_price.toFixed(2)}`;
-                    console.log("Rate Price:", `₱${reservation.rate_price.toFixed(2)}`);
+                if (reservation.rate.price) {
+                    document.getElementById("modal-rate-price").textContent = `₱${reservation.rate.price.toFixed(2)}`;
+                    console.log("Rate Price:", `₱${reservation.rate.price.toFixed(2)}`);
                 }
 
-                if (reservation.addons_name) {
-                    document.getElementById("modal-addons-name").textContent = reservation.addons_name;
-                    console.log("Addons Name:", reservation.addons_name);
-                    document.getElementById("modal-addons-price").textContent = `₱${reservation.addons_price.toFixed(2)}`;
-                    console.log("Addons Price:", `₱${reservation.addons_price.toFixed(2)}`);
+                if (reservation.addons && reservation.addons.length > 0) {
+                    const addonsNames = reservation.addons.map(addon => addon.name).join("<br>");
+                    const addonsPrices = reservation.addons.map(addon => `₱${parseFloat(addon.price).toFixed(2)}`).join("<br>");
+                    document.getElementById("modal-addons-name").innerHTML = addonsNames;
+                    document.getElementById("modal-addons-price").innerHTML = addonsPrices;
+                    console.log("Addons Names:", addonsNames);
+                    console.log("Addons Prices:", addonsPrices);
                 } else {
                     document.getElementById("modal-addons-name").textContent = "None";
-                    console.log("Addons Name: None");
                     document.getElementById("modal-addons-price").textContent = "₱0.00";
-                    console.log("Addons Price: ₱0.00");
                 }
 
                 // Update Total Price
-                const totalPrice = (reservation.rate_price + (reservation.addons_price || 0));
+                const totalPrice = (reservation.rate.price + reservation.addons.reduce((sum, addon) => sum + parseFloat(addon.price), 0));
                 document.getElementById("modal-total-price").textContent = `₱${totalPrice.toFixed(2)}`;
                 console.log("Total Price:", `₱${totalPrice.toFixed(2)}`);
 

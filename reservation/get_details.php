@@ -24,6 +24,30 @@ try {
         // Fetch the reservation data
         $reservation = $result->fetch_assoc();
 
+        // Prepare SQL to fetch reservation_addons details
+        $reservation_addons_sql = "SELECT addon_id FROM reservation_addons WHERE reservation_id = ?";
+        $reservation_addons_stmt = $conn->prepare($reservation_addons_sql);
+        $reservation_addons_stmt->bind_param('i', $reservation_id);
+        $reservation_addons_stmt->execute();
+        $reservation_addons_result = $reservation_addons_stmt->get_result();
+        $addon_ids = [];
+        while ($row = $reservation_addons_result->fetch_assoc()) {
+            $addon_ids[] = $row['addon_id'];
+        }
+
+        // Fetch addons details
+        $addons = [];
+        if (!empty($addon_ids)) {
+            $addons_sql = "SELECT id, name, price FROM addons WHERE id IN (" . implode(',', array_fill(0, count($addon_ids), '?')) . ")";
+            $addons_stmt = $conn->prepare($addons_sql);
+            $addons_stmt->bind_param(str_repeat('i', count($addon_ids)), ...$addon_ids);
+            $addons_stmt->execute();
+            $addons_result = $addons_stmt->get_result();
+            while ($addon = $addons_result->fetch_assoc()) {
+                $addons[] = $addon;
+            }
+        }
+
         // Prepare SQL to fetch rate details
         $rate_sql = "SELECT * FROM rates WHERE id = ?";
         $rate_stmt = $conn->prepare($rate_sql);
@@ -31,19 +55,6 @@ try {
         $rate_stmt->execute();
         $rate_result = $rate_stmt->get_result();
         $rate = $rate_result->fetch_assoc();
-
-        // Prepare SQL to fetch addons details
-        $addons_sql = "SELECT a.name, a.price FROM addons a
-                       JOIN reservation_addons ra ON a.id = ra.addon_id
-                       WHERE ra.reservation_id = ?";
-        $addons_stmt = $conn->prepare($addons_sql);
-        $addons_stmt->bind_param('i', $reservation_id);
-        $addons_stmt->execute();
-        $addons_result = $addons_stmt->get_result();
-        $addons = [];
-        while ($addon = $addons_result->fetch_assoc()) {
-            $addons[] = $addon;
-        }
 
         // Prepare the response data
         $response = [
@@ -87,8 +98,9 @@ try {
     }
 
     // Close the statements and connection
-    $rate_stmt->close();
+    $reservation_addons_stmt->close();
     $addons_stmt->close();
+    $rate_stmt->close();
     $stmt->close();
     $conn->close();
 } catch (Exception $e) {

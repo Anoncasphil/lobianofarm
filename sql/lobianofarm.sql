@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jan 30, 2025 at 09:03 PM
+-- Generation Time: Feb 03, 2025 at 07:43 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -177,7 +177,7 @@ CREATE TABLE `reservations` (
   `invoice_number` varchar(50) NOT NULL,
   `total_price` decimal(10,2) NOT NULL,
   `payment_receipt` varchar(255) NOT NULL,
-  `status` enum('Pending','Approved','Completed') DEFAULT 'Pending',
+  `status` enum('Pending','Approved','Completed','Declined') DEFAULT 'Pending',
   `payment_status` enum('Pending','Paid','Failed') DEFAULT 'Pending',
   `contact_number` varchar(20) DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
@@ -188,6 +188,15 @@ CREATE TABLE `reservations` (
   `email` varchar(255) NOT NULL,
   `mobile_number` varchar(20) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `reservations`
+--
+
+INSERT INTO `reservations` (`id`, `user_id`, `check_in_date`, `check_out_date`, `check_in_time`, `check_out_time`, `reference_number`, `invoice_date`, `invoice_number`, `total_price`, `payment_receipt`, `status`, `payment_status`, `contact_number`, `created_at`, `updated_at`, `rate_id`, `first_name`, `last_name`, `email`, `mobile_number`) VALUES
+(1, 25, '2025-02-03', '2025-02-06', '08:00:00', '07:00:00', '12312312', '2025-01-30', 'INV-916919', 44500.00, 'payment_receipt_1738267752_6434.png', 'Approved', 'Pending', '09672634499', '2025-01-30 20:09:12', '2025-02-02 17:28:12', 64, 'John Henrei', 'Cabuquin', 'johncabuquin02@gmail.com', '09672634499'),
+(2, 25, '2025-02-13', '2025-02-14', '19:00:00', '07:00:00', '12312382748273', '2025-01-31', 'INV-539794', 30500.00, 'payment_receipt_1738301360_2078.png', 'Pending', 'Pending', '09672634499', '2025-01-31 05:29:20', '2025-01-31 05:29:20', 62, 'John Henrei', 'Cabuquin', 'johncabuquin02@gmail.com', '09672634499'),
+(3, 25, '2025-02-28', '2025-02-14', '19:00:00', '07:00:00', '348237839749283', '2025-01-31', 'INV-85977', 30500.00, 'payment_receipt_1738301425_5062.png', 'Pending', 'Pending', '09672634499', '2025-01-31 05:30:25', '2025-01-31 05:30:25', 62, 'John Henrei', 'Cabuquin', 'johncabuquin02@gmail.com', '09672634499');
 
 -- --------------------------------------------------------
 
@@ -200,6 +209,20 @@ CREATE TABLE `reservation_addons` (
   `addon_id` int(11) DEFAULT NULL,
   `reservation_addons_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `reservation_addons`
+--
+
+INSERT INTO `reservation_addons` (`reservation_id`, `addon_id`, `reservation_addons_id`) VALUES
+(1, 17, 1),
+(1, 18, 2),
+(2, 17, 3),
+(2, 18, 4),
+(2, 19, 5),
+(3, 17, 6),
+(3, 18, 7),
+(3, 19, 8);
 
 -- --------------------------------------------------------
 
@@ -365,13 +388,13 @@ ALTER TABLE `rates`
 -- AUTO_INCREMENT for table `reservations`
 --
 ALTER TABLE `reservations`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `reservation_addons`
 --
 ALTER TABLE `reservation_addons`
-  MODIFY `reservation_addons_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `reservation_addons_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `reviews`
