@@ -75,7 +75,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 const newTitle = 'Approved';
 
                 // Send update request to the server
-                const response = await fetch('../api/update_status.php', {
+                const response = await fetch('../calendar/update_status.php', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
