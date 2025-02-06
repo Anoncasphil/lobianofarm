@@ -136,7 +136,7 @@ $stmt->close();
   <div class="max-w-screen-xl mx-auto flex gap-8 mt-10">
 
   <div id="reservation-status" class="p-8 rounded-lg mt-5 max-w-4xl mx-auto">
-    <div class="space-y-6 rounded-lg border border-gray-700 bg-gray-900 p-6 shadow-sm dark:border-gray-200 dark:bg-white">
+    <div class="space-y-6 rounded-lg border border-gray-700 bg-gray-900 p-6 shadow-lg dark:border-gray-200 dark:bg-white">
       <h3 class="text-xl font-semibold text-white dark:text-gray-900">Reservation Status</h3>
 
       <ol class="relative ms-3 border-s border-gray-700 dark:border-gray-200" id="steps">

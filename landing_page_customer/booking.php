@@ -181,7 +181,7 @@ $stmt->close();
   <!-- Card View Section with Minimalistic Scrollbar -->
   <div class=" mt-6 overflow-x-auto flex space-x-6 scrollbar-none">
     <!-- Card 1 -->
-<?php
+    <?php
     // Include database connection
     include '../db_connection.php';
 
@@ -191,50 +191,46 @@ $stmt->close();
 
     // Check if there are any results
     if ($result->num_rows > 0) {
-        // Add a wrapper with overflow-x-auto and flex to make the cards scrollable
-        echo "<div class='pb-6 overflow-x-auto flex space-x-6 scrollbar-hide scrollable-container'>"; // Apply scrollable-container class here
-        
-    // Assuming the result from the database is already fetched into $result
-    while ($row = $result->fetch_assoc()) {
-      $id = $row['id'];
-      $name = $row['name'];
-      $price = $row['price'];
-      $hours_of_stay = $row['hoursofstay'];
-      $picture = $row['picture'];
-      
-      // Generate the rate card with dynamic data and JavaScript functionality
-      echo "
-      <div class='flex-none max-w-sm bg-white border border-gray-200 rounded-lg shadow-sm relative rate-card hover:scale-105 hover:shadow-2xl transition duration-300' data-id='$id'>
-          <a href='#'>
-              <img class='rounded-t-lg w-[284.18px] h-[160px] object-fill' src='../src/uploads/rates/$picture' alt='$name' />
-          </a>
-          <div class='p-5'>
-              <a href='#'>
-                  <h5 class='mb-3 text-2xl font-semibold tracking-tight dark:text-blue-950'>$name</h5>
-              </a>
-              <div class='mb-2'>
-                  <span class='text-lg font-medium text-gray-700'>₱$price</span>
-              </div>
-              <div class='mb-5'>
-                  <span class='text-sm text-gray-600 mt-[-2]'>
-                      <i class='fas fa-clock'></i> $hours_of_stay hours
-                  </span>
-              </div>
-              <button onclick='openModal(\"$id\")' class='absolute top-2 right-2 text-white hover:text-blue-500'>
-                  <i class='fas fa-info-circle text-2xl'></i>
-              </button>
-              <div class='mt-4 text-center'>
-                  <button onclick='selectRate(\"$id\", \"$name\", \"$price\")' class='select-button bg-blue-600 text-white w-full font-bold py-2 px-4 rounded-md hover:bg-blue-700 transition duration-200' data-id='$id' data-price='$price' data-name='$name'>
-                      Select
-                  </button>
-              </div>
-          </div>
-      </div>
-      ";
-      
-    }
-      
-        // Close the scrollable wrapper
+        echo "<div class='pb-6 overflow-x-auto flex space-x-6 scrollbar-hide scrollable-container'>";
+
+        while ($row = $result->fetch_assoc()) {
+            $id = $row['id'];
+            $name = $row['name'];
+            $price = $row['price'];
+            $hours_of_stay = $row['hoursofstay'];
+            $picture = $row['picture'];
+
+            // Generate the rate card with dynamic data
+            echo "
+            <div class='flex-none max-w-sm bg-white border border-gray-200 rounded-lg shadow-sm relative rate-card hover:scale-105 hover:shadow-2xl transition duration-300' data-id='$id'>
+                <a href='#'>
+                    <img class='rounded-t-lg w-[284.18px] h-[160px] object-fill' src='../src/uploads/rates/$picture' alt='$name' />
+                </a>
+                <div class='p-5'>
+                    <a href='#'>
+                        <h5 class='mb-3 text-2xl font-semibold tracking-tight dark:text-blue-950'>$name</h5>
+                    </a>
+                    <div class='mb-2'>
+                        <span class='text-lg font-medium text-gray-700'>₱$price</span>
+                    </div>
+                    <div class='mb-5'>
+                        <span class='text-sm text-gray-600 mt-[-2]'>
+                            <i class='fas fa-clock'></i> $hours_of_stay hours
+                        </span>
+                    </div>
+                    <button onclick='openModal(\"$id\")' class='absolute top-2 right-2 text-white hover:text-blue-500'>
+                        <i class='fas fa-info-circle text-2xl'></i>
+                    </button>
+                    <div class='mt-4 text-center'>
+                        <button onclick='selectRate(\"$id\", \"$name\", \"$price\")' class='select-button bg-blue-600 text-white w-full font-bold py-2 px-4 rounded-md hover:bg-blue-700 transition duration-200' data-id='$id' data-price='$price' data-name='$name'>
+                            Select
+                        </button>
+                    </div>
+                </div>
+            </div>
+            ";
+        }
+
         echo "</div>";
     } else {
         echo "No active rates available.";
@@ -243,6 +239,7 @@ $stmt->close();
     // Close the database connection
     $conn->close();
 ?>
+
   </div>
 </div>
 
@@ -323,16 +320,31 @@ $stmt->close();
 
 <!-- 2-Column Wide Div -->
 <div id="right-div" class="flex-2 bg-white p-6 rounded-3xl shadow-lg h-full">
+
+<div id="info-alert" class="flex items-center p-4 mb-4 text-sm text-blue-800 rounded-lg bg-blue-200 dark:text-blue-900 hidden" role="alert">
+  <svg class="shrink-0 inline w-4 h-4 me-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+    <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 1 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
+  </svg>
+  <span class="sr-only">Info</span>
+  <div>
+    <span class="font-medium" id="alert-title">Info alert!</span> 
+    <span id="alert-message"></span>
+  </div>
+</div>
+
+
   <h2 class="text-2xl font-extrabold text-gray-700">Reservation Dates</h2>
   <p class="mt-2 text-gray-600">The system will automatically fill some fields based on your selected rate.</p>
 
   <!-- Check-In and Check-Out -->
   <div class="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
     <!-- Check-In Date -->
+
     <div class="relative">
-      <input type="date" id="check-in-date" class="p-3 pt-5 w-full max-w-xs border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-transparent text-blue-950" required/>
-      <label for="check-in-date" class="px-2 bg-white absolute left-3 top-[-10px] text-gray-600 text-sm font-medium"> Check-In Date </label>
-    </div>
+  <!-- Change input type to 'date' for testing, Flatpickr should open -->
+  <input type="date" id="check-in-date" class="p-3 pt-5 w-full max-w-xs border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-transparent text-blue-950" required/>
+  <label for="check-in-date" class="px-2 bg-white absolute left-3 top-[-10px] text-gray-600 text-sm font-medium"> Check-In Date </label>
+</div>
 
     
     <!-- Check-Out Date (non-interactable) -->
