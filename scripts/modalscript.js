@@ -75,6 +75,78 @@ function fetchRateData(id) {
             console.error('Element with id "updateRateId" not found');
         }
 
+        // Check if rate_type is available in the data
+        const rateType = data.rate_type || 'Daytime'; // Default to 'Daytime' if NULL or not set
+        console.log('Rate Type:', rateType); // Log to see what rate_type value is being set
+
+        function fetchRateData(id) {
+            fetch(`../rates/fetch-rate.php?id=${id}`)
+            .then(response => response.json())
+            .then(data => {
+                console.log('Data received:', data);
+        
+                // Populate fields with fetched data
+                document.getElementById('updatename').value = data.name || ''; 
+                document.getElementById('updateprice').value = data.price || ''; 
+                document.getElementById('updatedescription').value = data.description || ''; 
+                document.getElementById('updatehoursofstay').value = data.hoursofstay || ''; 
+        
+                // Ensure the check-in and check-out time inputs are correctly populated
+                document.getElementById('updatecheckin').value = data.checkin_time ? data.checkin_time.slice(0, 5) : ''; // Slice off seconds if needed
+                document.getElementById('updatecheckout').value = data.checkout_time ? data.checkout_time.slice(0, 5) : ''; // Slice off seconds if needed
+        
+                const updateRateIdElement = document.getElementById('updateRateId');
+                if (updateRateIdElement) {
+                    updateRateIdElement.value = id;
+                } else {
+                    console.error('Element with id "updateRateId" not found');
+                }
+        
+                // Check the rate_type value and set the dropdown option accordingly
+                const rateType = data.rate_type || 'Daytime'; // Default to 'Daytime' if NULL or not set
+                console.log('Rate Type:', rateType); // Log to see what rate_type value is being set
+        
+                // Set the dropdown selection manually
+                const rateTypeSelect = document.getElementById('update-rate-type');
+                if (rateTypeSelect) {
+                    if (rateType === 'Daytime') {
+                        rateTypeSelect.value = 'Daytime';
+                    } else if (rateType === 'Nighttime') {
+                        rateTypeSelect.value = 'Nighttime';
+                    } else if (rateType === 'WholeDay') {
+                        rateTypeSelect.value = 'Whole Day';
+                    } else {
+    
+                    }
+                } else {
+                    console.error('Element with id "update-rate-type" not found');
+                }
+        
+                // Clear existing image previews
+                const imagePreviewContainerDb = document.getElementById('image-preview-from-db');
+                const imagePreviewContainerNew = document.getElementById('image-preview-new');
+                imagePreviewContainerDb.innerHTML = ''; // Clear previous image
+                imagePreviewContainerNew.innerHTML = ''; // Clear new image preview container
+        
+                if (data.picture) {
+                    const imgElementDb = document.createElement('img');
+                    imgElementDb.src = data.picture; // Use the correct picture path
+                    imgElementDb.className = "w-full h-auto object-cover rounded-lg img-zoom-out";
+                    imgElementDb.alt = "Rate Image from DB";
+                    imgElementDb.style.height = '100px';
+                    imagePreviewContainerDb.appendChild(imgElementDb);
+                    imagePreviewContainerDb.classList.remove('hidden'); // Make sure it's visible
+                } else {
+                    imagePreviewContainerDb.classList.add('hidden'); // Hide if no image exists
+                }
+        
+                // Make sure modal is displayed
+                document.getElementById("update-rate-modal").classList.remove('hidden');
+            })
+            .catch(error => console.error('Error fetching rate data:', error));
+        }
+        
+
         // Clear existing image previews
         const imagePreviewContainerDb = document.getElementById('image-preview-from-db');
         const imagePreviewContainerNew = document.getElementById('image-preview-new');
@@ -98,6 +170,9 @@ function fetchRateData(id) {
     })
     .catch(error => console.error('Error fetching rate data:', error));
 }
+
+
+
 
 
 
@@ -334,4 +409,51 @@ function closeModal() {
     // Hide the modal
     const modal = document.getElementById('archiveModal');
     modal.classList.add('hidden');
+}
+
+function calculateCheckout() {
+    const hoursInput = document.getElementById("hours").value;
+    const checkinTime = document.getElementById("checkin").value;
+
+    if (hoursInput && checkinTime) {
+        const [checkinHour, checkinMinute] = checkinTime.split(":").map(Number);
+        let checkoutHour = checkinHour + parseInt(hoursInput);
+        const checkoutMinute = checkinMinute;
+
+        if (checkoutHour >= 24) {
+            checkoutHour -= 24;
+        }
+
+        const formattedCheckoutHour = checkoutHour.toString().padStart(2, "0");
+        const formattedCheckoutMinute = checkoutMinute.toString().padStart(2, "0");
+
+        document.getElementById("checkout").value = `${formattedCheckoutHour}:${formattedCheckoutMinute}`;
+    }
+}
+
+function calculateCheckoutUpdate() {
+    // Get the values from the input fields
+    const hoursInput = document.getElementById("updatehoursofstay").value;
+    const checkinTime = document.getElementById("updatecheckin").value;
+
+    // Check if both inputs have values
+    if (hoursInput && checkinTime) {
+        // Split the check-in time into hours and minutes
+        const [checkinHour, checkinMinute] = checkinTime.split(":").map(Number);
+
+        // Calculate the checkout hour by adding the hours of stay
+        let checkoutHour = checkinHour + parseInt(hoursInput);
+
+        // Handle overflow (if checkout hour is 24 or more)
+        if (checkoutHour >= 24) {
+            checkoutHour -= 24;
+        }
+
+        // Format the checkout hour and minute to always have two digits
+        const formattedCheckoutHour = checkoutHour.toString().padStart(2, "0");
+        const formattedCheckoutMinute = checkinMinute.toString().padStart(2, "0");
+
+        // Update the checkout field with the calculated time
+        document.getElementById("updatecheckout").value = `${formattedCheckoutHour}:${formattedCheckoutMinute}`;
+    }
 }

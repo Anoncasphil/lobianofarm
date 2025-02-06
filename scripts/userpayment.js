@@ -1,3 +1,38 @@
+document.querySelectorAll('.peer').forEach(input => {
+    const label = input.nextElementSibling;
+  
+    input.addEventListener('focus', () => {
+      label.classList.add('top-0', 'mt-3');
+      label.classList.remove('top-1/2');
+    });
+  
+    input.addEventListener('blur', () => {
+      if (input.value === '') {
+        label.classList.remove('top-0', 'mt-3');
+        label.classList.add('top-1/2');
+      }
+    });
+  
+    // Initial check in case the field already has a value
+    if (input.value !== '') {
+      label.classList.add('top-0', 'mt-3');
+      label.classList.remove('top-1/2');
+    }
+  });
+  
+  document.addEventListener("DOMContentLoaded", function () {
+    // Check if any input already has a value and trigger the label float
+    const inputs = document.querySelectorAll('.peer');
+    
+    inputs.forEach(input => {
+      if (input.value !== "") {
+        const label = input.nextElementSibling;
+        label.classList.add("peer-focus");
+      }
+    });
+  });
+
+  
 function populateForm() {
     // Retrieve the stored selections from localStorage
     const selectionsJSON = localStorage.getItem('selections');
@@ -12,10 +47,10 @@ function populateForm() {
         const emailElement = document.getElementById('email-p');
         const mobileNumberElement = document.getElementById('mobile-number-p');
 
-        if (firstNameElement) firstNameElement.value = selections.user.firstName || '';
-        if (lastNameElement) lastNameElement.value = selections.user.lastName || '';
-        if (emailElement) emailElement.value = selections.user.email || '';
-        if (mobileNumberElement) mobileNumberElement.value = selections.user.mobileNumber || '';
+        if (firstNameElement) firstNameElement.value = selections.user?.firstName || '';
+        if (lastNameElement) lastNameElement.value = selections.user?.lastName || '';
+        if (emailElement) emailElement.value = selections.user?.email || '';
+        if (mobileNumberElement) mobileNumberElement.value = selections.user?.mobileNumber || '';
 
         // Populate reservation details if elements exist
         const checkInDateElement = document.getElementById('check-in-date');
@@ -23,24 +58,29 @@ function populateForm() {
         const checkInTimeElement = document.getElementById('check-in-time');
         const checkOutTimeElement = document.getElementById('check-out-time');
 
-        if (checkInDateElement) checkInDateElement.value = selections.reservation.checkInDate || '';
-        if (checkOutDateElement) checkOutDateElement.value = selections.reservation.checkOutDate || '';
-        if (checkInTimeElement) checkInTimeElement.value = selections.reservation.checkInTime || '';
-        if (checkOutTimeElement) checkOutTimeElement.value = selections.reservation.checkOutTime || '';
+        if (checkInDateElement) checkInDateElement.value = selections.reservation?.checkInDate || '';
+        if (checkOutDateElement) checkOutDateElement.value = selections.reservation?.checkOutDate || '';
+        if (checkInTimeElement) checkInTimeElement.value = selections.reservation?.checkInTime || '';
+        if (checkOutTimeElement) checkOutTimeElement.value = selections.reservation?.checkOutTime || '';
+
+        // Retrieve rateId from localStorage
+        const rateId = selections?.rate?.rateId || '';
+        console.log('Retrieved rateId from localStorage:', rateId);
 
         // Optional: Populate rate and add-ons (if needed)
         const rateIdField = document.getElementById('rate-id-field');
         const addonIdsField = document.getElementById('addon-ids-field');
 
-        if (rateIdField) rateIdField.value = selections.rate.rateId || '';
-        if (addonIdsField) addonIdsField.value = selections.addons.join(',') || '';
+        if (rateIdField) rateIdField.value = rateId;
+        if (addonIdsField) addonIdsField.value = selections.addons?.join(',') || '';
 
         // Optional: Log the populated data for debugging
         console.log('Form populated with selections:', selections);
     } else {
         console.log('No selections found in localStorage');
     }
-}
+}  
+
 
 
 window.onload = populateForm;
@@ -187,8 +227,93 @@ fileInput.addEventListener('change', function(event) {
   }
 });
 
+/**
+ * Fetches the rate type from the API using the stored rateId
+ * @returns {Promise<string>} - A promise that resolves to the rate type
+ */
+function fetchRateType() {
+    // Retrieve rateId from localStorage
+    const storedSelections = JSON.parse(localStorage.getItem('selections'));
+    const rateId = storedSelections?.rate?.rateId || '';
+
+    if (!rateId) {
+        console.error("No rateId found in localStorage.");
+        return Promise.resolve("XX"); // Default fallback
+    }
+
+    return fetch(`../api/get_rate_type.php?rate_id=${rateId}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.success && data.rate_type) {
+                return data.rate_type;
+            } else {
+                throw new Error("Failed to retrieve rate type.");
+            }
+        })
+        .catch(error => {
+            console.error('Error fetching rate type:', error);
+            return "XX"; // Default fallback
+        });
+}
+
+/**
+ * Generates a unique reservation code based on the retrieved rate type
+ * @returns {Promise<string>} - A promise that resolves to the generated reservation code
+ */
+function generateReservationCode() {
+    return fetchRateType().then(rateType => {
+        let prefix = "";
+        switch (rateType) {
+            case "Daytime":
+                prefix = "DT";
+                break;
+            case "Nighttime":
+                prefix = "NT";
+                break;
+            case "WholeDay":
+                prefix = "WD";
+                break;
+            default:
+                prefix = "XX"; // Default fallback if rateType is unknown
+        }
+
+        let lastNumber = localStorage.getItem("lastReservationNumber") || 0;
+        lastNumber = parseInt(lastNumber) + 1;
+        localStorage.setItem("lastReservationNumber", lastNumber);
+
+        const formattedNumber = String(lastNumber).padStart(5, "0");
+        return `${prefix}-${formattedNumber}`;
+    });
+}
+
+generateReservationCode().then(reservationCode => {
+    console.log("Generated Reservation Code:", reservationCode);
+    // You can now use reservationCode where needed
+});
+
+/**
+ * Displays the generated reservation code in the span with id="code"
+ */
+function displayReservationCode() {
+    generateReservationCode().then(reservationCode => {
+        const codeElement = document.getElementById("code");
+        if (codeElement) {
+            codeElement.textContent = reservationCode;
+        } else {
+            console.error("Element with ID 'code' not found.");
+        }
+    });
+}
+
+// Call this function when the page loads
+document.addEventListener("DOMContentLoaded", displayReservationCode);
+
+
 function submitReservation() {
-    // Gather values from input fields
+    const submitButton = document.getElementById('submitButton');
+    submitButton.innerHTML = 'Submitting <span class="spinner"></span>';
+    submitButton.disabled = true;
+
     const firstName = document.getElementById('first-name-p').value;
     const lastName = document.getElementById('last-name-p').value;
     const email = document.getElementById('email-p').value;
@@ -197,90 +322,100 @@ function submitReservation() {
     const checkOutDate = document.getElementById('check-out-date').value;
     const checkInTime = document.getElementById('check-in-time').value;
     const checkOutTime = document.getElementById('check-out-time').value;
-
-    // Get the file input for payment receipt
     const paymentReceipt = document.getElementById('dropzone-file').files[0];
 
     if (!paymentReceipt) {
         alert("Please upload the payment receipt.");
+        submitButton.innerHTML = 'Submit';
+        submitButton.disabled = false;
         return;
     }
 
-    // Retrieve additional values from the invoice section
     const referenceNumber = document.getElementById('reference-number').value;
-    const invoiceDate = new Date().toISOString().split('T')[0]; // Get current date in YYYY-MM-DD format
+    const invoiceDate = new Date().toISOString().split('T')[0];
     const invoiceNumber = document.getElementById('invoice-no').innerText;
     const totalPrice = parseFloat(document.getElementById('total-price').innerText.replace('₱', '').trim());
-
-    // Update total price display
-    document.getElementById('total-price').innerText = totalPrice.toFixed(2);
-
-    // Calculate and update the downpayment (50% of total price)
     const downpayment = totalPrice / 2;
-    document.getElementById('downpayment').innerText = downpayment.toFixed(2);
 
-    // Gather rate and addon information from the selections
     const selections = JSON.parse(localStorage.getItem('selections'));
     const rateId = selections ? selections.rate.rateId : null;
     const addonIds = selections ? selections.addons : [];
 
     if (!rateId) {
         alert("Rate is not selected.");
+        submitButton.innerHTML = 'Submit';
+        submitButton.disabled = false;
         return;
     }
 
-    // Create FormData to send the reservation data
-    const formData = new FormData();
-    formData.append('first_name', firstName);
-    formData.append('last_name', lastName);
-    formData.append('email', email);
-    formData.append('mobile_number', mobileNumber);
-    formData.append('check_in_date', checkInDate);
-    formData.append('check_out_date', checkOutDate);
-    formData.append('check_in_time', checkInTime);
-    formData.append('check_out_time', checkOutTime);
-    formData.append('reference_number', referenceNumber);
-    formData.append('invoice_date', invoiceDate);
-    formData.append('invoice_number', invoiceNumber);
-    formData.append('total_price', totalPrice);
-    formData.append('downpayment', downpayment);
-    formData.append('payment_receipt', paymentReceipt);
-    formData.append('rate_id', rateId);
-    formData.append('addon_ids', JSON.stringify(addonIds));
+    const amountPaidInput = document.getElementById('amount-paid-input');
+    const amountPaid = parseFloat(amountPaidInput.value) || 0;
+    const validAmountPaid = amountPaid > 0 ? amountPaid : 0;
+    const newTotal = totalPrice - validAmountPaid;
 
-    // Send reservation data using Fetch API
-    fetch('submit_reservation.php', {
-        method: 'POST',
-        body: formData
-    })
-    .then(response => response.text())
-    .then(result => {
-        if (result.includes("Reservation successfully added")) {
-            // Call the completeReservation function instead of sending the email
-            completeReservation();
+    // Call generateReservationCode to get the reservation code
+    generateReservationCode().then(reservationCode => {
+        // Append all data to FormData
+        const formData = new FormData();
+        formData.append('first_name', firstName);
+        formData.append('last_name', lastName);
+        formData.append('email', email);
+        formData.append('mobile_number', mobileNumber);
+        formData.append('check_in_date', checkInDate);
+        formData.append('check_out_date', checkOutDate);
+        formData.append('check_in_time', checkInTime);
+        formData.append('check_out_time', checkOutTime);
+        formData.append('reference_number', referenceNumber);
+        formData.append('invoice_date', invoiceDate);
+        formData.append('invoice_number', invoiceNumber);
+        formData.append('total_price', totalPrice);
+        formData.append('downpayment', downpayment);
+        formData.append('payment_receipt', paymentReceipt);
+        formData.append('rate_id', rateId);
+        formData.append('addon_ids', JSON.stringify(addonIds));
+        formData.append('new_total', newTotal);
+        formData.append('amount_paid', validAmountPaid);
+        formData.append('reservation_code', reservationCode); // Add reservation code to formData
 
-            // Show the success modal after reservation is complete
-            document.getElementById('success-modal').classList.remove('hidden');
+        // Submit the form
+        fetch('submit_reservation.php', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.text())
+        .then(result => {
+            if (result.includes("Reservation successfully added")) {
+                sendEmail(); // Call sendEmail only if reservation is successful
+                document.getElementById('success-modal').classList.remove('hidden');
 
-            // Countdown for redirect
-            let countdown = 5;
-            const countdownElement = document.getElementById('countdown-timer');
-            const interval = setInterval(() => {
-                countdownElement.textContent = countdown;
-                if (countdown === 0) {
-                    clearInterval(interval);
-                    window.location.href = "homepage.php";
-                }
-                countdown--;
-            }, 1000);
-        } else {
-            alert(result); // Handle error or failure
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
+                let countdown = 5;
+                const countdownElement = document.getElementById('countdown-timer');
+                const interval = setInterval(() => {
+                    countdownElement.textContent = countdown;
+                    if (countdown === 0) {
+                        clearInterval(interval);
+                        window.location.href = "homepage.php"; // Redirect to homepage
+                    }
+                    countdown--;
+                }, 1000);
+            } else {
+                alert(result); // Show error message
+                submitButton.innerHTML = 'Submit';
+                submitButton.disabled = false;
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            submitButton.innerHTML = 'Submit';
+            submitButton.disabled = false;
+        });
     });
 }
+
+
+
+
+
 
 
 // Function to redirect to homepage.php when the button is clicked
@@ -336,9 +471,42 @@ function redirectHome() {
     return items;
   }
 
+// Get the input field, the display span for amount paid, and the display for the new total
+const amountPaidInput = document.getElementById('amount-paid-input');
+const amountPaidDisplay = document.getElementById('amount-paid-display');
+const totalPriceElement = document.getElementById('total-price');
+const newTotalElement = document.getElementById('new-total');
+
+// Function to update the amount paid and new total
+function updateAmountPaidAndNewTotal() {
+    // Get the value from the input for amount paid
+    const amountPaid = parseFloat(amountPaidInput.value);
+
+    // If the amount paid is a valid number, update the display, otherwise show 0.00
+    if (!isNaN(amountPaid)) {
+        amountPaidDisplay.innerText = '-' + amountPaid.toFixed(2);
+    } else {
+        amountPaidDisplay.innerText = '- 0.00';
+    }
+
+    // Ensure the total price is retrieved from the total price element and parsed correctly
+    const totalPrice = parseFloat(totalPriceElement.innerText.replace('₱', '').trim());
+
+    // Calculate the new total (totalPrice - amountPaid)
+    const validAmountPaid = isNaN(amountPaid) ? 0 : amountPaid;
+    const newTotal = totalPrice - validAmountPaid;
+
+    // Update the new total display
+    newTotalElement.innerText = '₱' + newTotal.toFixed(2); // Format as currency (₱0.00)
+}
+
+// Add event listener to update both displays in real time as user types in amount paid input
+amountPaidInput.addEventListener('input', updateAmountPaidAndNewTotal);
+
+// Optionally, update on page load to ensure it's displayed correctly if amount paid has a value
+updateAmountPaidAndNewTotal();
 
 
-w
 
 
 

@@ -1,0 +1,41 @@
+
+  /* Styles for the Pending status */
+  .status-step.pending span {
+    background-color: #1e3a8a; /* Blue */
+  }
+
+  .pending-svg {
+    color: #ffffff; /* Change to any color you like */
+  }
+  
+  .status-step.pending h4 {
+    color: #1e3a8a; /* Dark Blue */
+  }
+  
+  /* Styles for the Confirmed status */
+  .status-step.confirmed span {
+    background-color: #1e3a8a; /* Green */
+  }
+  
+  .status-step.confirmed h4 {
+    color: #1e3a8a; /* Dark Green */
+  }
+
+  .confirmed-svg {
+    color: #ffffff; /* Change to any color you like */
+  }
+  
+  /* Styles for the Completed status */
+  .status-step.completed span {
+    background-color: #1e3a8a; /* Gray */
+  }
+  
+  .status-step.completed h4 {
+    color: #1e3a8a; /* Dark Gray */
+  }
+  
+  .completed-svg {
+    color: #ffffff; /* Change to any color you like */
+  }
+
+  

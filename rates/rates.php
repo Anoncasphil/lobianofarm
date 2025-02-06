@@ -267,13 +267,13 @@ if (!isset($_SESSION['admin_id'])) {
 							echo "</td>";
 							echo "<td class='py-2 px-4 border-b text-gray-700'>
 									<button type='button' class='text-white bg-blue-500 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2' onclick='showDetails(" . $row['id'] . ");'>
-										<i class='fa-solid fa-box-archive'></i> View
+										<i class='fa-solid fa-eye'></i>
 									</button>
 									<button type='button' class='text-white bg-blue-500 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2' onclick='fetchRateData(" . $row['id'] . "); toggleUpdateRateModal();'>
-										<i class='fa-solid fa-pen-to-square'></i> Update
+										<i class='fa-solid fa-pen-to-square'></i>
 									</button>
 									<button type='button' class='text-white bg-red-500 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2' onclick='archiveConfirmation(" . $row['id'] . ");'>
-										<i class='fa-solid fa-box-archive'></i> Archive
+										<i class='fa-solid fa-box-archive'></i>
 									</button>
 								</td>";
 							echo "</tr>";
@@ -326,13 +326,13 @@ if (!isset($_SESSION['admin_id'])) {
 							echo "</td>";
 							echo "<td class='py-2 px-4 border-b text-gray-700'>
 								<button type='button' class='text-white bg-blue-500 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2' onclick='showDetails(" . $row['id'] . ");'>
-									<i class='fa-solid fa-box-archive'></i> View
+									<i class='fa-solid fa-eye'></i>
 								</button>
 								<button type='button' class='text-white bg-blue-500 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2' onclick='fetchRateData(" . $row['id'] . "); toggleUpdateRateModal();'>
-									<i class='fa-solid fa-pen-to-square'></i> Update
+									<i class='fa-solid fa-pen-to-square'></i>
 								</button>
 								<button type='button' class='text-white bg-green-500 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2' onclick='restoreRate(" . $row['id'] . ");'>
-									<i class='fa-solid fa-undo'></i> Restore
+									<i class='fa-solid fa-undo'></i>
 								</button>
 							</td>";
 							echo "</tr>";
@@ -412,8 +412,8 @@ if (!isset($_SESSION['admin_id'])) {
 
 
 				
-<!-- Add Rate Main modal -->
-<div id="add-rate-modal" onsubmit="addRate(event)" tabindex="-1" aria-hidden="true" class="hidden fixed inset-0 z-50 flex justify-center items-center">
+		<!-- Add Rate Main modal -->
+		<div id="add-rate-modal" onsubmit="addRate(event)" tabindex="-1" aria-hidden="true" class="hidden fixed inset-0 z-50 flex justify-center items-center">
 			<div class="relative p-4 w-full max-w-md max-h-full">
 				<!-- Modal content -->
 				<div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
@@ -442,19 +442,28 @@ if (!isset($_SESSION['admin_id'])) {
 							</div>
 							<div class="col-span-2 sm:col-span-1">
 								<label for="hours" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Hours of Stay</label>
-								<input type="number" name="hours" id="hours" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="12" required="">
+								<input type="number" name="hours" id="hours" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="12" required="" oninput="calculateCheckout()">
 							</div>
 
 							<div class="col-span-2 sm:col-span-1">
 								<label for="checkin" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Check-in Time</label>
-								<input type="time" name="checkin" id="checkin" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Select Check-in Time" required>
+								<input type="time" name="checkin" id="checkin" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Select Check-in Time" required oninput="calculateCheckout()">
 							</div>
 
 							<div class="col-span-2 sm:col-span-1">
 								<label for="checkout" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Check-out Time</label>
-								<input type="time" name="checkout" id="checkout" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Select Check-out Time" required>
+								<input type="time" name="checkout" id="checkout" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Select Check-out Time" required readonly>
 							</div>
 
+							<!-- Daytime, Nighttime, WholeDay Selection -->
+							<div class="col-span-2 sm:col-span-1">
+								<label for="type" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Type</label>
+								<select name="type" id="type" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
+									<option value="daytime">Daytime</option>
+									<option value="nighttime">Nighttime</option>
+									<option value="wholeDay">Whole Day</option>
+								</select>
+							</div>
 
 							<div class="col-span-2">
 								<label for="description" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Rate Description</label>
@@ -481,6 +490,7 @@ if (!isset($_SESSION['admin_id'])) {
 				</div>
 			</div>
 		</div>
+
 
 
 
@@ -518,17 +528,27 @@ if (!isset($_SESSION['admin_id'])) {
 							</div>
 							<div class="col-span-2 sm:col-span-1">
 								<label for="hoursofstay" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Hours of Stay</label>
-								<input type="number" name="hoursofstay" id="updatehoursofstay" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"  required="">
+								<input type="number" name="hoursofstay" id="updatehoursofstay" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" oninput="calculateCheckoutUpdate()" required="">
 							</div>
 
 							<div class="col-span-2 sm:col-span-1">
 								<label for="checkin" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Check-in Time</label>
-								<input type="time" name="checkin" id="updatecheckin" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Select Check-in Time" required>
+								<input type="time" name="checkin" id="updatecheckin" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Select Check-in Time" oninput="calculateCheckoutUpdate()" required>
 							</div>
 
 							<div class="col-span-2 sm:col-span-1">
 								<label for="checkout" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Check-out Time</label>
 								<input type="time" name="checkout" id="updatecheckout" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Select Check-out Time" required>
+							</div>
+
+							<!-- Daytime, Nighttime, WholeDay Selection -->
+							<div class="col-span-2 sm:col-span-1">
+								<label for="type" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Type</label>
+								<select name="type" id="update-rate-type" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
+									<option value="daytime">Daytime</option>
+									<option value="nighttime">Nighttime</option>
+									<option value="wholeDay">Whole Day</option>
+								</select>
 							</div>
 
 							<div class="col-span-2">
@@ -630,7 +650,6 @@ function closeDetailsModal() {
     // Hide the modal
     document.getElementById('detailsModal').classList.add('hidden');
 }
-wwa
 function closeModal() {
     // Hide the modal
     const modal = document.getElementById('archiveModal');
@@ -670,10 +689,11 @@ function restoreRate(rateId) {
     };
     xhr.send("rate_id=" + rateId);
 }
+
+
 	</script>
-	<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 	<script src="../scripts/script.js"></script>
-	<script src="../scripts/modalscripts.js" defer></script>
+	<script src="../scripts/modalscript.js" defer></script>
 
 </body>
 </html>

@@ -12,6 +12,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $hoursofstay = $_POST['hoursofstay'];
     $checkin_time = $_POST['checkin'];
     $checkout_time = $_POST['checkout'];
+    $rate_type = $_POST['type'];  // Get the new field "type" mapped to "rate_type" in the database
 
     // Handle file upload (if any)
     $picture = null;
@@ -45,11 +46,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
     }
 
-    // Prepare the SQL query for updating the rate
+    // Prepare the SQL query for updating the rate, including "rate_type"
     if ($picture) {
-        $sql = "UPDATE rates SET name = '$name', price = '$price', description = '$description', hoursofstay = '$hoursofstay', checkin_time = '$checkin_time', checkout_time = '$checkout_time', picture = '$picture' WHERE id = '$id'";
+        $sql = "UPDATE rates SET name = '$name', price = '$price', description = '$description', hoursofstay = '$hoursofstay', checkin_time = '$checkin_time', checkout_time = '$checkout_time', picture = '$picture', rate_type = '$rate_type' WHERE id = '$id'";
     } else {
-        $sql = "UPDATE rates SET name = '$name', price = '$price', description = '$description', hoursofstay = '$hoursofstay', checkin_time = '$checkin_time', checkout_time = '$checkout_time' WHERE id = '$id'";
+        $sql = "UPDATE rates SET name = '$name', price = '$price', description = '$description', hoursofstay = '$hoursofstay', checkin_time = '$checkin_time', checkout_time = '$checkout_time', rate_type = '$rate_type' WHERE id = '$id'";
     }
 
     // Execute the query
@@ -64,5 +65,3 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $conn->close();
 }
 ?>
-
-<!-- The modal form code (already provided by you) will be displayed here -->

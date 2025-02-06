@@ -62,8 +62,7 @@ $stmt->close();
     <link href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <script src="../scripts/booking.js" defer></script>
-    <script src="../scripts/userpayments.js" defer></script>
+    <script src="../scripts/userpayment.js" defer></script>
     <link rel="stylesheet" href="../styles/booking.css">
     <link href="../dist/output.css" rel="stylesheet">
 
@@ -232,16 +231,32 @@ $stmt->close();
   </div>
 
   <!-- Total Price Section -->
-  <div class="mt-6 flex justify-between items-center border-t pt-4">
-    <span class="text-xl font-bold text-gray-700">Total</span>
-    <span id="total-price" class="text-xl font-bold text-blue-600">₱0.00</span>
-  </div>
+    <div class="mt-6 flex justify-between items-center border-t pt-4">
+      <span class="text-xl font-semibold text-white dark:text-gray-900"></span>
+      <span id="total-price" class="text-medium font-bold text-gray-500">₱0.00</span>
+    </div>
+
+    <div class="flex justify-between items-center pt-4">
+      <span class="text-sm font-semibold text-white dark:text-gray-900"></span>
+      <span id="amount-paid-display" class="text-sm font-bold text-gray-500"></span>
+    </div>
+
+    <div class="flex justify-between items-center pt-4">
+      <span class="text-xl font-semibold text-white dark:text-gray-900">Total</span>
+      <span id="new-total" class="text-xl font-bold text-blue-900">₱0.00</span>
+    </div>
+
 </div>
 </div>
 
 <!-- 2-Column Wide Div -->
 <div id="payment-div" class="flex-2 bg-white p-6 rounded-3xl shadow-lg h--[105px]">
 <!-- QR Code Section -->
+<div class="flex flex-col justify-center items-center mt-5">
+  <span id="reservation-code" class="text-xl font-bold text-gray-700">Reservation Code:</span>
+  <span id="code" class="text-xl font-bold text-gray-700 mt-2"></span>
+</div>
+
 <div class="flex justify-center">
   <img src="../src/uploads/paymentqr/qr.jpg" alt="Payment QR Code" class="w-80 h-auto max-w-xl object-contain shadow-lg rounded-md" />
 </div>
@@ -253,8 +268,14 @@ $stmt->close();
 
 <!-- Reference Number Input -->
 <div class="relative mt-5 w-[80%] mx-auto">
-  <input type="text" id="reference-number" class="peer font-semibold p-3 pt-5 w-full border justify-center border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-transparent text-blue-950" placeholder=" " required/>
+  <input type="number" id="reference-number" class="peer font-semibold p-3 pt-5 w-full border justify-center border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-transparent text-blue-950" placeholder=" " required/>
   <label for="reference-number" class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-600 text-sm font-medium transition-all duration-200">Reference Number<span class="text-red-500"> *</span></label>
+</div>
+
+<!-- Amount Paid Input -->
+<div class="relative mt-5 w-[80%] mx-auto">
+  <input type="number" id="amount-paid-input" class="peer font-semibold p-3 pt-5 w-full border justify-center border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-transparent text-blue-950" placeholder=" " required/>
+  <label for="amount-paid-input" class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-600 text-sm font-medium transition-all duration-200">Amount Paid<span class="text-red-500"> *</span></label>
 </div>
 
 
@@ -285,8 +306,8 @@ $stmt->close();
 
   <!-- Proceed to Payment Button -->
   <div class="mt-6 flex justify-center">
-    <button type="button" onclick="submitReservation()" class="bg-blue-600 text-white font-bold py-3 w-80 px-6 rounded-md shadow-lg hover:bg-blue-700 transition duration-200">
-      Submit
+    <button type="button" onclick="submitReservation()" id="submitButton" class="bg-blue-600 text-white font-bold py-3 w-80 px-6 rounded-md shadow-lg hover:bg-blue-700 transition duration-200">
+    Submit
     </button>
 </div>
 

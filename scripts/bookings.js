@@ -130,65 +130,77 @@ function moveCarousel(direction) {
   
     let rateCard = null;
     for (let card of allRateCards) {
-      if (card.getAttribute('data-id') === id.toString()) {
-        rateCard = card;
-        break;
-      }
+        if (card.getAttribute('data-id') === id.toString()) {
+            rateCard = card;
+            break;
+        }
     }
   
     if (!rateCard) {
-      console.error(`Rate card with id ${id} not found!`);
-      return;
+        console.error(`Rate card with id ${id} not found!`);
+        return;
     }
   
     const selectButton = rateCard.getElementsByClassName('select-button')[0];
   
     // Deselect previous rate if any
     if (selectedRate) {
-      const rateItem = document.querySelector(`#selected-items li[data-id='${selectedRate.id}']`);
-      const priceItem = document.querySelector(`#selected-prices li[data-id='${selectedRate.id}']`);
-      if (rateItem && priceItem) {
-        rateItem.remove();
-        priceItem.remove();
-      }
-      document.querySelector(`input[name="rate_id"][value="${selectedRate.id}"]`)?.remove();
+        const rateItem = document.querySelector(`#selected-items li[data-id='${selectedRate.id}']`);
+        const priceItem = document.querySelector(`#selected-prices li[data-id='${selectedRate.id}']`);
+        if (rateItem && priceItem) {
+            rateItem.remove();
+            priceItem.remove();
+        }
+        // Remove the previous hidden input for the rate ID if any
+        const hiddenInput = document.querySelector(`input[name="rate_id"][value="${selectedRate.id}"]`);
+        if (hiddenInput) {
+            hiddenInput.remove();
+        }
     }
   
     // If rate is already selected, unselect it
     if (selectedRate && selectedRate.id === id) {
-      unselectRate(selectButton, id, allRateCards);
+        unselectRate(selectButton, id, allRateCards);
     } else {
-      selectedRate = { id, name, price };  // Set the selected rate correctly
+        selectedRate = { id, name, price };  // Set the selected rate correctly
   
-      // Add rate to the summary
-      selectedItems.innerHTML += `<li data-id="${id}">${name} <button onclick="removeRate(${id})"></button></li>`;
-      selectedPrices.innerHTML += `<li data-id="${id}">₱${price}</li>`;
+        // Add rate to the summary
+        selectedItems.innerHTML += `<li data-id="${id}">${name} <button onclick="removeRate(${id})"></button></li>`;
+        selectedPrices.innerHTML += `<li data-id="${id}">₱${price}</li>`;
   
-      // Add hidden input for the selected rate
-      const hiddenInput = document.createElement("input");
-      hiddenInput.type = "hidden";
-      hiddenInput.name = "rate_id";
-      hiddenInput.value = id;
-      document.getElementById("summary-form").appendChild(hiddenInput);
+        // Create and append hidden input for rateId (optional if you want to store it in a form)
+        const hiddenInput = document.createElement("input");
+        hiddenInput.type = "hidden";
+        hiddenInput.name = "rate_id"; // Ensure this name matches the expected form name
+        hiddenInput.value = id; // Set the rateId value
+        document.getElementById("summary-form").appendChild(hiddenInput);
   
-      // Change button to 'Unselect'
-      selectButton.innerText = "Unselect";
-      selectButton.classList.remove('bg-blue-600');
-      selectButton.classList.add('bg-red-600');
+        // Change button to 'Unselect'
+        selectButton.innerText = "Unselect";
+        selectButton.classList.remove('bg-blue-600');
+        selectButton.classList.add('bg-red-600');
   
-      // Disable other rate cards
-      for (let card of allRateCards) {
-        if (card.getAttribute('data-id') !== id.toString()) {
-          card.classList.add('opacity-50', 'cursor-not-allowed');
-          const button = card.getElementsByClassName('select-button')[0];
-          button.disabled = true;
+        // Disable other rate cards
+        for (let card of allRateCards) {
+            if (card.getAttribute('data-id') !== id.toString()) {
+                card.classList.add('opacity-50', 'cursor-not-allowed');
+                const button = card.getElementsByClassName('select-button')[0];
+                button.disabled = true;
+            }
         }
-      }
     }
   
     // Update the total price and store selections
     updateTotalPrice();
-  }
+  
+    // Capture and store rateId in the hidden field (this will be passed to storeSelections)
+    const rateIdField = document.getElementById('rate-id-field');
+    rateIdField.value = id; // Store the selected rateId in the hidden field
+  
+    // Call storeSelections after selecting the rate
+    storeSelections(); // This function will now capture and store all the data
+}
+
   
   function unselectRate(selectButton, id, allRateCards) {
     // Reset selectedRate to null
@@ -298,37 +310,42 @@ function moveCarousel(direction) {
   }
   
   function updateSummary() {
-      const itemsList = document.getElementById('selected-items');
-      const pricesList = document.getElementById('selected-prices');
-      const totalPriceElement = document.getElementById('total-price');
-      let total = 0;
-  
-      // Clear current summary
-      itemsList.innerHTML = '';
-      pricesList.innerHTML = '';
-  
-      // Add selected rate to the summary
-      if (selectedRate) {
-          itemsList.innerHTML += `<li data-id="${selectedRate.id}">${selectedRate.name}</li>`;
-          pricesList.innerHTML += `<li data-id="${selectedRate.id}">₱${selectedRate.price}</li>`;
-          total += parseFloat(selectedRate.price);
-      }
-  
-      // Add selected addons to the summary
-      for (let id in selectedAddons) {
-          const addon = selectedAddons[id];
-          itemsList.innerHTML += `<li>${addon.name}</li>`;
-          pricesList.innerHTML += `<li>₱${addon.price}</li>`;
-          total += parseFloat(addon.price);
-      }
-  
-      // Update total price
-      totalPriceElement.textContent = '₱' + total.toFixed(2);
-  
-      // Update hidden fields with the current selection
-      document.getElementById('rate-id-field').value = selectedRate ? selectedRate.id : '';
-      document.getElementById('addon-ids-field').value = Object.keys(selectedAddons).join(',');
-  }
+    const itemsList = document.getElementById('selected-items');
+    const pricesList = document.getElementById('selected-prices');
+    const totalPriceElement = document.getElementById('total-price');
+    let total = 0;
+
+    // Clear current summary
+    itemsList.innerHTML = '';
+    pricesList.innerHTML = '';
+
+    // Add selected rate to the summary
+    if (selectedRate) {
+        itemsList.innerHTML += `<li data-id="${selectedRate.id}">${selectedRate.name}</li>`;
+        pricesList.innerHTML += `<li data-id="${selectedRate.id}">₱${selectedRate.price}</li>`;
+        total += parseFloat(selectedRate.price);
+
+        // Get the rateId from the selectedRate object
+        const rateId = selectedRate.id;
+        console.log('Captured rateId from selectedRate:', rateId);  // Log the rateId
+    }
+
+    // Add selected addons to the summary
+    for (let id in selectedAddons) {
+        const addon = selectedAddons[id];
+        itemsList.innerHTML += `<li>${addon.name}</li>`;
+        pricesList.innerHTML += `<li>₱${addon.price}</li>`;
+        total += parseFloat(addon.price);
+    }
+
+    // Update total price
+    totalPriceElement.textContent = '₱' + total.toFixed(2);
+
+    // Update hidden fields with the current selection
+    document.getElementById('rate-id-field').value = selectedRate ? selectedRate.id : '';
+    document.getElementById('addon-ids-field').value = Object.keys(selectedAddons).join(',');
+}
+
   // Function to update the total price
   function updateTotalPrice() {
       const totalPriceElement = document.getElementById('total-price');
@@ -371,28 +388,31 @@ function moveCarousel(direction) {
   
   function storeSelections() {
     // Get the input values from the form
-    const firstName = document.getElementById('first-name').value;
-    const lastName = document.getElementById('last-name').value;
-    const email = document.getElementById('email').value;
-    const mobileNumber = document.getElementById('mobile-number').value;
-    const checkInDate = document.getElementById('check-in-date').value;
-    const checkOutDate = document.getElementById('check-out-date').value;
-    const checkInTime = document.getElementById('check-in-time').value;
-    const checkOutTime = document.getElementById('check-out-time').value;
+    const firstName = document.getElementById('first-name').value || '';  
+    const lastName = document.getElementById('last-name').value || '';
+    const email = document.getElementById('email').value || '';
+    const mobileNumber = document.getElementById('mobile-number').value || '';
+    const checkInDate = document.getElementById('check-in-date').value || '';
+    const checkOutDate = document.getElementById('check-out-date').value || '';
+    const checkInTime = document.getElementById('check-in-time').value || '';
+    const checkOutTime = document.getElementById('check-out-time').value || '';
 
-    // Capture rate ID from the hidden field in the form
+    // Capture rate ID from the <input> field
     const rateIdField = document.getElementById('rate-id-field');
-    const rateId = rateIdField ? rateIdField.value : ''; // Use rate ID from the hidden field
+    const rateId = rateIdField ? rateIdField.value.trim() : ''; // Use trim() to remove extra spaces
 
-    // Check if rateId is missing or empty
+    // Log the rateId to the console
+
+
+    // Check if the rateId is valid (not empty)
     if (!rateId) {
-        console.log("Rate ID is missing or not selected.");
+        console.log("No rateId found or rateId is empty.");
         return; // Prevent storing selections if no rate is selected
     }
 
-    // Capture selected add-on IDs from the hidden field in the form
+    // Capture selected add-on IDs from the hidden field in the form (set to empty array if none)
     const addonIdsField = document.getElementById('addon-ids-field');
-    const addonIds = addonIdsField ? addonIdsField.value.split(',') : []; // Assuming the add-ons are stored as a comma-separated string
+    const addonIds = addonIdsField ? addonIdsField.value.split(',') : [];  // Make sure it's an array
 
     // Prepare the selections object
     const selections = {
@@ -404,24 +424,27 @@ function moveCarousel(direction) {
         },
         reservation: {
             checkInDate: checkInDate,
-            checkOutDate: checkOutDate, // Store the calculated checkout date
-            checkInTime: checkInTime,   // Store the check-in time
-            checkOutTime: checkOutTime  // Store the calculated check-out time
+            checkOutDate: checkOutDate,  
+            checkInTime: checkInTime,    
+            checkOutTime: checkOutTime   
         },
         rate: {
-            rateId: rateId // Store the rate ID
+            rateId: rateId  // Ensure rateId is stored
         },
-        addons: addonIds // Store the selected add-on IDs
+        addons: addonIds.length ? addonIds : []  // Store add-ons even if empty
     };
-
-    // Log the selections object to the consol
 
     // Convert the selections object to JSON
     const selectionsJSON = JSON.stringify(selections);
 
-    // Store it in localStorage (or use any other storage method)
+    // Store it in localStorage
     localStorage.setItem('selections', selectionsJSON);
+
+    // Log the stored selections object to the console
+    // console.log('Stored selections:', selections);
 }
+
+
 
 
 function redirectToPayment() {

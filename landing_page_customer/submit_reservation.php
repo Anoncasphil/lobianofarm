@@ -27,6 +27,13 @@ $last_name = $_POST['last_name'];    // Collect last name
 $email = $_POST['email'];            // Collect email
 $mobile_number = $_POST['mobile_number']; // Collect mobile number
 
+// Collect the new total and valid amount paid from the POST data
+$new_total = $_POST['new_total'];  // New total price after adjustments
+$amount_paid = $_POST['amount_paid'];  // Valid amount paid for the reservation
+
+// Collect the reservation code
+$reservation_code = $_POST['reservation_code'];  // Collect reservation code from the POST data
+
 // Handle the payment receipt file upload
 if (isset($_FILES['payment_receipt']) && $_FILES['payment_receipt']['error'] === UPLOAD_ERR_OK) {
     $upload_dir = '../src/uploads/customerpayment/';  // Directory where payment receipts are saved
@@ -64,12 +71,13 @@ $first_name = mysqli_real_escape_string($conn, $first_name);  // Escape first_na
 $last_name = mysqli_real_escape_string($conn, $last_name);    // Escape last_name
 $email = mysqli_real_escape_string($conn, $email);            // Escape email
 $mobile_number = mysqli_real_escape_string($conn, $mobile_number); // Escape mobile_number
+
 $addon_ids = isset($_POST['addon_ids']) ? json_decode($_POST['addon_ids'], true) : [];
 
-// Prepare SQL query to insert into reservations table
+// Prepare the SQL query to insert into the reservations table, including new total, valid amount paid, and reservation code
 $sql = "INSERT INTO reservations 
-        (user_id, check_in_date, check_out_date, check_in_time, check_out_time, reference_number, invoice_date, invoice_number, total_price, payment_receipt, status, payment_status, contact_number, rate_id, first_name, last_name, email, mobile_number) 
-        VALUES ('$user_id', '$check_in_date', '$check_out_date', '$check_in_time', '$check_out_time', '$reference_number', '$invoice_date', '$invoice_number', '$total_price', '$payment_receipt', 'Pending', 'Pending', '$contact_number', '$rate_id', '$first_name', '$last_name', '$email', '$mobile_number')";
+        (user_id, check_in_date, check_out_date, check_in_time, check_out_time, reference_number, invoice_date, invoice_number, total_price, new_total, valid_amount_paid, payment_receipt, status, payment_status, contact_number, rate_id, first_name, last_name, email, mobile_number, reservation_code) 
+        VALUES ('$user_id', '$check_in_date', '$check_out_date', '$check_in_time', '$check_out_time', '$reference_number', '$invoice_date', '$invoice_number', '$total_price', '$new_total', '$amount_paid', '$payment_receipt', 'Pending', 'Pending', '$contact_number', '$rate_id', '$first_name', '$last_name', '$email', '$mobile_number', '$reservation_code')";
 
 // Execute the query for the reservation
 if (mysqli_query($conn, $sql)) {

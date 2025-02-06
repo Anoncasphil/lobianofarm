@@ -266,37 +266,38 @@ html {
                     break;
             }
 
-            echo "<div class='mb-8 bg-white shadow-lg rounded-lg cursor-pointer hover:scale-105 transform transition-all w-[500px] mx-auto' onclick='openModal(" . $row["reservation_id"] . ", \"" . $rate_name . "\", \"" . $check_in . "\", \"" . number_format($downpayment, 2) . "\", \"" . number_format($total_price, 2) . "\", \"" . number_format($new_total, 2) . "\", \"" . $rate_picture . "\")'>"; // Centered card
+           // Reservation display code
+    echo "<div class='mb-8 bg-white shadow-lg rounded-lg cursor-pointer hover:scale-105 transform transition-all w-[500px] mx-auto' onclick='storeReservationId(" . $row["reservation_id"] . ")'>"; 
 
             // Reservation Card
             echo "<div class='p-6'>
-            <div class='flex items-center justify-between'>
-                <!-- Picture -->
-                <img src='../src/uploads/rates/" . $rate_picture . "' alt='Rate Image' class='w-24 h-24 object-cover rounded-md shadow-lg'>
-    
-                <!-- Rate Name & Status -->
-                <div class='ml-4 flex-1'>
-                    <div class='flex items-center justify-between mt-[-100]'> <!-- Removed margin-top here -->
-                        <h3 class='text-xl font-semibold text-gray-800'>" . $rate_name . "</h3>
-                        <span class='px-3 py-1 rounded-full " . $status_class . "'>" . $status_text . "</span>
+                <div class='flex items-center justify-between'>
+                    <!-- Picture -->
+                    <img src='../src/uploads/rates/" . $rate_picture . "' alt='Rate Image' class='w-24 h-24 object-cover rounded-md shadow-lg'>
+
+                    <!-- Rate Name & Status -->
+                    <div class='ml-4 flex-1'>
+                        <div class='flex items-center justify-between mt-[-100]'>
+                            <h3 class='text-xl font-semibold text-gray-800'>" . $rate_name . "</h3>
+                            <span class='px-3 py-1 rounded-full " . $status_class . "'>" . $status_text . "</span>
+                        </div>
+
+                        <!-- Date and Time -->
+                        <span class='text-sm text-gray-500 mt-2 block'>" . $check_in . "</span>
                     </div>
-    
-                    <!-- Date and Time -->
-                    <span class='text-sm text-gray-500 mt-2 block'>" . $check_in . "</span>
+                </div>
+
+                <div class='mt-4'>
+                    <!-- Price Information -->
+                    <div class='text-right'>
+                        <h4 class='text-gray-600 font-medium'>Downpayment: ₱" . number_format($downpayment, 2) . "</h4>
+                        <h4 class='text-gray-600 font-medium'>Total Price: ₱" . number_format($total_price, 2) . "</h4>
+                        <h4 class='text-gray-600 font-medium'>New Total: ₱" . number_format($new_total, 2) . "</h4>
+                    </div>
                 </div>
             </div>
-    
-
-                    <div class='mt-4'>
-                        <!-- Price Information -->
-                        <div class='text-right'>
-                            <h4 class='text-gray-600 font-medium'>Downpayment: ₱" . number_format($downpayment, 2) . "</h4>
-                            <h4 class='text-gray-600 font-medium'>Total Price: ₱" . number_format($total_price, 2) . "</h4>
-                            <h4 class='text-gray-600 font-medium'>New Total: ₱" . number_format($new_total, 2) . "</h4>
-                        </div>
-                    </div>
-                </div>
             </div>";
+
         }
     } else {
         echo "<p class='text-center text-gray-500 py-4'>No reservations found.</p>";
@@ -307,59 +308,17 @@ html {
     ?>
 </div>
 
-<!-- Modal -->
-<div id="reservationModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden">
-    <div class="bg-white w-96 p-6 rounded-lg shadow-lg">
-        <h2 class="text-2xl font-semibold text-center text-gray-800 mb-4">Reservation Details</h2>
-        <div id="modalContent">
-            <!-- Dynamic content will be loaded here -->
-        </div>
-        <div class="mt-4 flex justify-end">
-            <button onclick="closeModal()" class="px-4 py-2 bg-gray-500 text-white rounded-lg">Close</button>
-        </div>
-    </div>
-</div>
 
 <script>
-    function openModal(reservationId, rateName, checkIn, downpayment, totalPrice, newTotal, ratePicture) {
-        const modal = document.getElementById('reservationModal');
-        const modalContent = document.getElementById('modalContent');
-
-        modalContent.innerHTML = `
-            <div class="flex items-center justify-center mb-4">
-                <img src="../src/uploads/rates/${ratePicture}" alt="Rate Image" class="w-24 h-24 object-cover rounded-md shadow-lg">
-                <div class="ml-4">
-                    <h3 class="text-xl font-semibold text-gray-800">${rateName}</h3>
-                    <span class="text-sm text-gray-500">${checkIn}</span>
-                    <div class="mt-2">
-                        <p><strong>Downpayment:</strong> ₱${downpayment}</p>
-                        <p><strong>Total Price:</strong> ₱${totalPrice}</p>
-                        <p><strong>New Total:</strong> ₱${newTotal}</p>
-                    </div>
-                </div>
-            </div>
-        `;
-
-        modal.classList.remove('hidden');
-    }
-
-    function closeModal() {
-        const modal = document.getElementById('reservationModal');
-        modal.classList.add('hidden');
-    }
+  function storeReservationId(reservationId) {
+    // Store the reservation ID as JSON in localStorage
+    localStorage.setItem('reservation_id', JSON.stringify(reservationId));
+    // Redirect to the details page
+    window.location.href = 'customer_reservation_details.php';
+  }
 </script>
 
-
-
-
-
-
-
-
-
 <script src="../scripts/customer_reservation.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js"></script>
-    
+
 </body>
 </html>

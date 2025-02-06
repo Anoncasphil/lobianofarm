@@ -9,6 +9,7 @@ $description = $_POST['description'];
 $hoursofstay = $_POST['hours'];
 $checkin_time = $_POST['checkin'];
 $checkout_time = $_POST['checkout'];
+$rate_type = $_POST['type'];  // Capture the new field "type" (mapped to "rate_type" in the database)
 
 // Set the status to "active" by default
 $status = isset($_POST['status']) ? $_POST['status'] : 'active'; // Check if status is set, otherwise default to "active"
@@ -43,9 +44,9 @@ if (in_array($imageFileType, $valid_types)) {
     exit;
 }
 
-// Insert data into the database
-$sql = "INSERT INTO rates (name, price, description, hoursofstay, checkin_time, checkout_time, picture, status)
-        VALUES ('$name', '$price', '$description', '$hoursofstay', '$checkin_time', '$checkout_time', '$picture', '$status')";
+// Insert data into the database, including the new "rate_type" field
+$sql = "INSERT INTO rates (name, price, description, hoursofstay, checkin_time, checkout_time, picture, status, rate_type)
+        VALUES ('$name', '$price', '$description', '$hoursofstay', '$checkin_time', '$checkout_time', '$picture', '$status', '$rate_type')";
 
 if ($conn->query($sql) === TRUE) {
     echo "New record created successfully";

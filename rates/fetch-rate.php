@@ -6,7 +6,7 @@ require '../db_connection.php'; // Include database connection
 
 if (isset($_GET['id'])) {
     $id = intval($_GET['id']); // Sanitize input
-    $sql = "SELECT name, price, description, hoursofstay, checkin_time, checkout_time, picture FROM rates WHERE id = ?";
+    $sql = "SELECT name, price, description, hoursofstay, checkin_time, checkout_time, picture, rate_type FROM rates WHERE id = ?";
     $stmt = $conn->prepare($sql);
     if (!$stmt) {
         die('Error in SQL prepare: ' . $conn->error);
@@ -30,6 +30,7 @@ if (isset($_GET['id'])) {
             'hoursofstay' => $row['hoursofstay'],
             'checkin_time' => $row['checkin_time'],
             'checkout_time' => $row['checkout_time'],
+            'rate_type' => $row['rate_type'], // Include rate_type here
             'picture' => $picturePath
         ];
 
