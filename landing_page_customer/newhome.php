@@ -37,6 +37,7 @@ $reviews = $reviews_query->get_result();
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" rel="stylesheet">
     <link rel="stylesheet" href="../styles/newhome.css">
+    <script src="../scripts/newhome.js"></script>
 
 </head>
 <body>
@@ -110,7 +111,7 @@ $reviews = $reviews_query->get_result();
       <div class="inline-flex flex-col sm:flex-row border border-yellow-300 rounded-lg overflow-hidden shadow-sm dark:border-yellow-500">
         <!-- Check-In Date -->
         <input
-          type="text"
+          type="date"
           id="check-in"
           name="check-in"
           class="px-6 py-3 w-56 sm:w-48 border-r-2 border-yellow-500 opacity-90 focus:ring-2 focus:ring-blue-500 focus:outline-none dark:bg-white dark:text-black"
@@ -322,9 +323,6 @@ $reviews = $reviews_query->get_result();
 </footer>
 
 
-
-
-<script src="../scripts/newhome.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js"></script>

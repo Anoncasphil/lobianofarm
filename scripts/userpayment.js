@@ -2,7 +2,7 @@ document.querySelectorAll('.peer').forEach(input => {
     const label = input.nextElementSibling;
   
     input.addEventListener('focus', () => {
-      label.classList.add('top-0', 'mt-3');
+      label.classList.add('top-0', '                ');
       label.classList.remove('top-1/2');
     });
   
@@ -311,7 +311,7 @@ document.addEventListener("DOMContentLoaded", displayReservationCode);
 
 function submitReservation() {
     const submitButton = document.getElementById('submitButton');
-    submitButton.innerHTML = 'Submitting <span class="spinner"></span>';
+    submitButton.innerHTML = 'Submitted';
     submitButton.disabled = true;
 
     const firstName = document.getElementById('first-name-p').value;

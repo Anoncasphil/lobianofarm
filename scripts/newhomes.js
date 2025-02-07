@@ -1,71 +1,3 @@
-document.addEventListener("DOMContentLoaded", function () {
-  // Fetch reserved dates
-  fetch('../api/get_reserved_dates.php')
-    .then(response => response.json())
-    .then(reservedDateRanges => {
-      const reservedDates = [];
-      reservedDateRanges.forEach(range => {
-        let start = new Date(range.start);
-        let end = new Date(range.end);
-        while (start <= end) {
-          reservedDates.push(start.toISOString().split('T')[0]);
-          start.setDate(start.getDate() + 1);
-        }
-      });
-
-      const disabledDates = [...reservedDates];
-      const today = new Date();
-      const startDate = new Date();
-      startDate.setDate(today.getDate() - 30);
-
-      let day = new Date(startDate);
-      while (day <= today) {
-        disabledDates.push(day.toISOString().split('T')[0]);
-        day.setDate(day.getDate() + 1);
-      }
-
-      // Initialize Flatpickr
-      flatpickr("#check-in", {
-        disable: disabledDates,
-        dateFormat: "Y-m-d",
-        onChange: function (selectedDates) {
-          if (selectedDates.length > 0) {
-            document.getElementById("check-in").value = formatDate(selectedDates[0]);
-          }
-        },
-      });
-    })
-    .catch(error => console.error('Error fetching reserved dates:', error));
-
-  // Function to format date to YYYY-MM-DD
-  function formatDate(date) {
-    const d = new Date(date);
-    const year = d.getFullYear();
-    const month = String(d.getMonth() + 1).padStart(2, '0');
-    const day = String(d.getDate()).padStart(2, '0');
-    return `${year}-${month}-${day}`;
-  }
-
-  // Event listener for the Book button
-  const bookButton = document.getElementById("book-btn");
-  if (bookButton) {
-    bookButton.addEventListener("click", () => {
-      const checkInDate = document.getElementById("check-in").value;
-
-      if (!checkInDate) {
-        openModal(); // Show modal if no date is selected
-        return;
-      }
-
-      // Save the selected date as JSON in localStorage
-      const selectedData = { checkIn: checkInDate };
-      localStorage.setItem("selectedDate", JSON.stringify(selectedData));
-
-      // Redirect to the next page
-      window.location.href = "booking.php";
-    });
-  }
-
 
   // Slideshow functionality
   const slideshow = document.getElementById("slideshow");
@@ -107,7 +39,7 @@ document.addEventListener("DOMContentLoaded", function () {
       });
     });
   }
-});
+
 
 // Function to show the success modal with a message
 function showSuccessModal(message) {
@@ -232,3 +164,73 @@ document.getElementById('rate-modal').addEventListener('click', function(event) 
       }, 500); // Match duration of transition
     }
   });
+
+  document.addEventListener("DOMContentLoaded", function() {
+    initializeFlatpickr();  // Initialize Flatpickr when the DOM is ready
+  });
+  
+  async function fetchReservedDates() {
+    try {
+      const response = await fetch('/api/get_reserved_dates_booking.php');
+      const reservedDates = await response.json();
+  
+      if (!reservedDates || !reservedDates.reservedDaytime || !reservedDates.reservedNighttime || !reservedDates.reservedWholeDay) {
+        console.error('Expected structure but received:', reservedDates);
+        return { reservedDaytime: [], reservedNighttime: [], reservedWholeDay: [] };
+      }
+  
+      return reservedDates;
+    } catch (error) {
+      console.error('Error fetching reserved dates:', error);
+      return { reservedDaytime: [], reservedNighttime: [], reservedWholeDay: [] };
+    }
+  }
+  
+  async function initializeFlatpickr() {
+    const { reservedDaytime, reservedNighttime, reservedWholeDay } = await fetchReservedDates();
+  
+    const checkInDateInput = document.getElementById("check-in");
+  
+    // Initialize Flatpickr
+    flatpickr(checkInDateInput, {
+      dateFormat: "Y-m-d",
+      onChange: function (selectedDates, dateStr, instance) {
+        if (selectedDates[0]) {
+          console.log(`Check-In Date Selected: ${selectedDates[0].toISOString().split("T")[0]}`);
+        }
+      },
+      disable: [
+        { from: "1970-01-01", to: new Date().toISOString().split("T")[0] },  // Disable past dates
+        ...reservedWholeDay.map(date => ({ from: date, to: date })),  // Disable whole day reserved dates
+        ...reservedDaytime.filter(date => reservedNighttime.includes(date)).map(date => ({
+          from: date,
+          to: date
+        }))
+      ]
+    });
+  
+    // Add event listener to the "Book" button
+    const bookButton = document.getElementById("book-btn");
+    bookButton.addEventListener("click", function(event) {
+      event.preventDefault(); // Prevent the default form submission
+  
+      const selectedDate = checkInDateInput.value; // Get the selected date
+  
+      if (selectedDate) {
+        // Store the selected date in localStorage
+        localStorage.setItem("selectedDate", JSON.stringify({ checkIn: selectedDate }));
+  
+        // Redirect to booking.php
+        window.location.href = "booking.php";  // You can change this path to wherever your booking page is located
+      } else {
+        // Optional: Show an alert or a message if no date is selected
+        alert("Please select a check-in date.");
+      }
+    });
+  }
+  
+  document.addEventListener("DOMContentLoaded", function() {
+    // Initialize flatpickr and other events after the page is loaded
+    initializeFlatpickr();
+  });
+  
