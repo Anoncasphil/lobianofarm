@@ -165,7 +165,7 @@ if (!isset($_SESSION['admin_id'])) {
 							<img id="modal-qr" src="https://via.placeholder.com/150" alt="QR Code">
 						</div>
 						<div class="modal-buttons">
-							<button class="approve-button">Approve</button>
+							<button class="confirm-button">Confirm</button> <!-- Change to confirm button -->
 							<button class="decline-button">Decline</button>
 						</div>
 					</div>

@@ -2,7 +2,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // Constants and Variables
     const modal = document.getElementById('dateModal');
     const closeModal = document.getElementById('closeModal');
-    const approveButton = document.querySelector('.approve-button');
+    const confirmButton = document.querySelector('.confirm-button'); // Change to confirm button
     const declineButton = document.querySelector('.decline-button');
     let currentReservation = null; // Holds data for the currently selected reservation
 
@@ -20,8 +20,8 @@ document.addEventListener('DOMContentLoaded', function () {
         events: '../calendar/get-reservations.php', // Endpoint to fetch events
         eventClick: function (info) {
             
-            if (info.event.extendedProps.status === 'Approved') {
-                return; // Exit the handler if the event is approved
+            if (info.event.extendedProps.status === 'Confirmed') { // Change to confirmed
+                return; // Exit the handler if the event is confirmed
             }
 
             // Populate the currentReservation object with all necessary details
@@ -60,9 +60,9 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    // Approve Button Handler
-    if (approveButton) {
-        approveButton.addEventListener('click', async function () {
+    // Confirm Button Handler
+    if (confirmButton) {
+        confirmButton.addEventListener('click', async function () {
             try {
                 if (!currentReservation) {
                     alert('No reservation selected!');
@@ -72,7 +72,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 console.log('Sending data:', currentReservation); // Debug sent data
 
                 // Define the new title for the reservation
-                const newTitle = 'Approved';
+                const newTitle = 'Confirmed'; // Change to confirmed
 
                 // Send update request to the server
                 const response = await fetch('../calendar/update_status.php', {
@@ -97,13 +97,13 @@ document.addEventListener('DOMContentLoaded', function () {
                 console.log('Response from server:', result); // Debug server response
 
                 if (result.success) {
-                    alert('Reservation Approved!');
+                    alert('Reservation Confirmed!'); // Change to confirmed
 
                     // Update the calendar event title
                     const event = calendar.getEventById(currentReservation.id);
                     if (event) {
                         event.setProp('title', newTitle); // Update the title on the calendar
-                        event.setExtendedProp('status', 'Approved'); // Update the status on the calendar
+                        event.setExtendedProp('status', 'Confirmed'); // Update the status on the calendar
                     }
 
                     calendar.refetchEvents(); // Refresh the events
@@ -111,11 +111,11 @@ document.addEventListener('DOMContentLoaded', function () {
                     // Close the modal
                     modal.style.display = 'none';
                 } else {
-                    alert(result.message || 'Failed to approve reservation.');
+                    alert(result.message || 'Failed to confirm reservation.'); // Change to confirm
                 }
             } catch (error) {
                 console.error('Error:', error);
-                alert('An error occurred while approving the reservation.');
+                alert('An error occurred while confirming the reservation.'); // Change to confirm
             }
         });
     }
