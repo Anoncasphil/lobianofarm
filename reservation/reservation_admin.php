@@ -235,33 +235,6 @@ if (!isset($_SESSION['admin_id'])) {
     </tbody>
 </table>
 
-
-<<<<<<< HEAD
-                        foreach ($reservations as $reservation) {
-                            $userDetails = getUserDetails($reservation['user_id'], $conn);
-                            $userName = htmlspecialchars($userDetails['first_name']) . ' ' . htmlspecialchars($userDetails['last_name']);
-                            $statusColor = match($reservation['status']) {
-                                'Approved' => 'text-green-500 dark:text-green-400',
-                                'Pending' => 'text-orange-500 dark:text-orange-400',
-                                'Completed' => 'text-blue-500 dark:text-blue-400',
-                                default => 'text-gray-500'
-                            };
-                            echo "<tr class='bg-gray-50 border-b dark:bg-gray-900 dark:border-gray-800'>";
-							echo "<td class='py-2 px-4 border-b text-gray-700'>" . $reservation['id'] . "</td>";
-                            echo "<td class='py-2 px-4 border-b text-gray-700'>" . $userName . "</td>";
-                            echo "<td class='py-2 px-4 border-b text-gray-700'>" . formatDate($reservation['check_in_date']) . "</td>";
-                            echo "<td class='py-2 px-4 border-b font-medium " . $statusColor . "'>" . htmlspecialchars($reservation['status']) . "</td>";
-                            echo "<td class='py-2 px-4 border-b'>
-        <button 
-            type='button' 
-            class='view-button text-white bg-blue-500 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2' 
-            data-id='" . $reservation['id'] . "'>
-            View
-        </button>
-      </td>";
-=======
->>>>>>> 196e1bcfcc718b822302da67b3c7e0abb736344a
-
         </div>
     </div>
 
