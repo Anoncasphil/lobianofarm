@@ -12,6 +12,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const modalDesiredDate = document.getElementById('modal-desired-date');
     const modalCheckinTime = document.getElementById('modal-checkin-time'); 
     const modalCheckoutTime = document.getElementById('modal-checkout-time'); 
+    const modalPaymentReceipt = document.getElementById('modal-payment-receipt'); // Reference for modal-payment-receipt
 
     // Initialize FullCalendar
     const calendarEl = document.getElementById('calendar');
@@ -33,7 +34,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 checkInDate: info.event.startStr, // Use startStr for check-in date
                 checkOutDate: info.event.endStr || info.event.startStr, // Use endStr for check-out date, or startStr if endStr is null
                 checkInTime: info.event.extendedProps.checkInTime, // Use extendedProps for check-in time
-                checkOutTime: info.event.extendedProps.checkOutTime // Use extendedProps for check-out time
+                checkOutTime: info.event.extendedProps.checkOutTime, // Use extendedProps for check-out time
+                paymentReceipt: info.event.extendedProps.paymentReceipt // Include payment receipt
             };
             console.log('Stored reservation data:', currentReservation); // Debug log
             // Ensure the check-out date is set to the same as the check-in date if they are the same
@@ -48,6 +50,7 @@ document.addEventListener('DOMContentLoaded', function () {
             modalDesiredDate.textContent = currentReservation.checkOutDate;
             modalCheckinTime.textContent = currentReservation.checkInTime; // Display check-in time
             modalCheckoutTime.textContent = currentReservation.checkOutTime; // Display check-out time
+            modalPaymentReceipt.src = currentReservation.paymentReceipt; // Display payment receipt
 
             // Show the modal
             modal.style.display = 'flex';

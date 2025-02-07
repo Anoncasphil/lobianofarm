@@ -2,7 +2,7 @@
 include('../db_connection.php');
 
 // Prepare the SQL query to fetch reservation data
-$sql = "SELECT id, user_id, check_in_date, check_out_date, check_in_time, check_out_time, status, first_name, last_name 
+$sql = "SELECT id, user_id, check_in_date, check_out_date, check_in_time, check_out_time, status, first_name, last_name, CONCAT('../src/uploads/customerpayment/', payment_receipt) AS payment_receipt 
         FROM reservations";
 
 // Execute the query
@@ -41,7 +41,8 @@ while ($row = $result->fetch_assoc()) {
         'start' => $checkInDateFormatted,
         'end' => $checkOutDateFormatted,
         'status' => $row['status'], // Include status
-        'backgroundColor' => $row['status'] === 'Pending' ? '#FFA500' : '#008000' // Conditional color coding  
+        'backgroundColor' => $row['status'] === 'Pending' ? '#FFA500' : '#008000', // Conditional color coding  
+        'paymentReceipt' => $row['payment_receipt'] // Include payment receipt
     );
 }
 

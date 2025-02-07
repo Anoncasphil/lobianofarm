@@ -160,9 +160,11 @@ if (!isset($_SESSION['admin_id'])) {
 						<p><strong>Check-in Date:</strong> <span id="modal-reservation-date"></span></p>
 						<p><strong>Check-in Time:</strong> <span id="modal-checkin-time"></span></p>
 						<p><strong>Check-out Date:</strong> <span id="modal-desired-date"></span></p>
-						<p><strong>Check-out Time:</strong> <span id="modal-checkout-time"></span></p>
-						<div class="qr-code">
-							<img id="modal-qr" src="https://via.placeholder.com/150" alt="QR Code">
+						<p><strong>Check-out Time:</strong> <span id="modal-checkout-time"></span></p><br>
+						
+						<div class="payment-receipt">
+							<h3>Payment Receipt</h3><br>
+							<img id="modal-payment-receipt" src="https://via.placeholder.com/150" alt="Payment Receipt">
 						</div>
 						<div class="modal-buttons">
 							<button class="confirm-button">Confirm</button> <!-- Change to confirm button -->
