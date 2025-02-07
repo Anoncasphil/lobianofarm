@@ -196,7 +196,7 @@ if (!isset($_SESSION['admin_id'])) {
                             echo "<tr class='bg-gray-50 border-b dark:bg-gray-900 dark:border-gray-800'>";
 							echo "<td class='py-2 px-4 border-b text-gray-700'>" . $reservation['id'] . "</td>";
                             echo "<td class='py-2 px-4 border-b text-gray-700'>" . $userName . "</td>";
-                            echo "<td class='py-2 px-4 border-b text-gray-700'>" . htmlspecialchars($reservation['check_in_date']) . "</td>";
+                            echo "<td class='py-2 px-4 border-b text-gray-700'>" . formatDate($reservation['check_in_date']) . "</td>";
                             echo "<td class='py-2 px-4 border-b font-medium " . $statusColor . "'>" . htmlspecialchars($reservation['status']) . "</td>";
                             echo "<td class='py-2 px-4 border-b'>
         <button 
@@ -307,5 +307,9 @@ function getUserDetails($user_id, $conn) {
     $stmt->execute();
     $result = $stmt->get_result();
     return $result->fetch_assoc();
+}
+
+function formatDate($dateString) {
+    return date('F j, Y', strtotime($dateString));
 }
 ?>
