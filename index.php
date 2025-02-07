@@ -179,7 +179,7 @@ if (!isset($_SESSION['admin_id'])) {
 require_once 'db_connection.php';
 
 // Fetch confirmed reservations
-$query = "SELECT SUM(total_price) as total_sales FROM reservations WHERE status = 'Approved'";
+$query = "SELECT SUM(total_price) as total_sales FROM reservations WHERE status = 'Confirmed'";
 $result = $conn->query($query);
 $total_sales = $result->fetch_assoc()['total_sales'] ?? 0;
 ?>
@@ -217,7 +217,7 @@ $pending_result = $conn->query($pending_query);
 $pending_count = $pending_result->fetch_assoc()['pending_count'] ?? 0;
 
 // Fetch approved reservations count
-$approved_query = "SELECT COUNT(*) as approved_count FROM reservations WHERE status = 'Approved'";
+$approved_query = "SELECT COUNT(*) as approved_count FROM reservations WHERE status = 'Confirmed'";
 $approved_result = $conn->query($approved_query);
 $approved_count = $approved_result->fetch_assoc()['approved_count'] ?? 0;
 
@@ -303,7 +303,7 @@ $approved_percentage = $total_count > 0 ? ($approved_count / $total_count) * 100
                     if (!empty($reservations)) {
                         foreach ($reservations as $reservation) {
                             $statusColor = match($reservation['title']) {
-                                'Approved' => 'text-green-500 dark:text-green-400',
+                                'Confirmed' => 'text-green-500 dark:text-green-400',
                                 'Pending' => 'text-orange-500 dark:text-orange-400',
                                 'Rescheduled' => 'text-blue-500 dark:text-blue-400',
                                 default => 'text-gray-500'

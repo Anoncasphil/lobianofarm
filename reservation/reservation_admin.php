@@ -292,7 +292,26 @@ if (!isset($_SESSION['admin_id'])) {
                 </div>
 
                 <div id="reschedule" class="tab-content hidden h-full">
-                    <p class="text-sm text-gray-700">Rescheduling options will go here.</p>
+                    <div id="right-div" class="flex-2 bg-white p-6 rounded-3xl shadow-lg h-full">
+                    <div class="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <!-- Check-In Date -->
+
+                            <div class="relative">
+    <!-- Change input type to 'date' for testing, Flatpickr should open -->
+                                <input type="date" id="check-in-date" class="p-3 pt-5 w-full max-w-xs border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-transparent text-blue-950" required/>
+                                <label for="check-in-date" class="px-2 bg-white absolute left-3 top-[-10px] text-gray-600 text-sm font-medium"> Check-In Date </label>
+                            </div>
+
+                                
+                                <!-- Check-Out Date (non-interactable) -->
+                            <div class="relative">
+                                <input type="date" id="check-out-date" class="p-3 pt-5 w-full max-w-xs border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-transparent text-blue-950" placeholder=" " disabled />
+                                <label for="check-out-date" class="px-2 bg-white absolute left-3 top-[-10px] text-gray-600 text-sm font-medium"> Check-Out Date </label>
+                            </div>
+                        </div>
+
+                        <!-- Check-In and Check-Out Times -->
+                       
                 </div>
             </div>
         </div>
@@ -307,7 +326,7 @@ if (!isset($_SESSION['admin_id'])) {
 		<!-- MAIN -->
 	</section>
 	<!-- NAVBAR -->
-
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 	<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 	<script src="../scripts/reservation_list.js"></script>
 	
