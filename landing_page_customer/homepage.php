@@ -159,7 +159,6 @@ html {
   background:rgb(19, 0, 160) !important;
 }
 
-  <style>
     /* Ensure swiper container takes full width and height */
     .swiper-container {
       width: 100%;

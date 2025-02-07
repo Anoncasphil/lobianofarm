@@ -2,7 +2,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // Constants and Variables
     const modal = document.getElementById('dateModal');
     const closeModal = document.getElementById('closeModal');
-    const approveButton = document.querySelector('.approve-button');
+    const confirmButton = document.querySelector('.confirm-button'); // Change to confirm button
     const declineButton = document.querySelector('.decline-button');
     let currentReservation = null; // Holds data for the currently selected reservation
 
@@ -12,6 +12,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const modalDesiredDate = document.getElementById('modal-desired-date');
     const modalCheckinTime = document.getElementById('modal-checkin-time'); 
     const modalCheckoutTime = document.getElementById('modal-checkout-time'); 
+    const modalPaymentReceipt = document.getElementById('modal-payment-receipt'); // Reference for modal-payment-receipt
 
     // Initialize FullCalendar
     const calendarEl = document.getElementById('calendar');
@@ -20,8 +21,8 @@ document.addEventListener('DOMContentLoaded', function () {
         events: '../calendar/get-reservations.php', // Endpoint to fetch events
         eventClick: function (info) {
             
-            if (info.event.extendedProps.status === 'Approved') {
-                return; // Exit the handler if the event is approved
+            if (info.event.extendedProps.status === 'Confirmed') { // Change to confirmed
+                return; // Exit the handler if the event is confirmed
             }
 
             // Populate the currentReservation object with all necessary details
@@ -33,7 +34,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 checkInDate: info.event.startStr, // Use startStr for check-in date
                 checkOutDate: info.event.endStr || info.event.startStr, // Use endStr for check-out date, or startStr if endStr is null
                 checkInTime: info.event.extendedProps.checkInTime, // Use extendedProps for check-in time
-                checkOutTime: info.event.extendedProps.checkOutTime // Use extendedProps for check-out time
+                checkOutTime: info.event.extendedProps.checkOutTime, // Use extendedProps for check-out time
+                paymentReceipt: info.event.extendedProps.paymentReceipt // Include payment receipt
             };
             console.log('Stored reservation data:', currentReservation); // Debug log
             // Ensure the check-out date is set to the same as the check-in date if they are the same
@@ -48,6 +50,7 @@ document.addEventListener('DOMContentLoaded', function () {
             modalDesiredDate.textContent = currentReservation.checkOutDate;
             modalCheckinTime.textContent = currentReservation.checkInTime; // Display check-in time
             modalCheckoutTime.textContent = currentReservation.checkOutTime; // Display check-out time
+            modalPaymentReceipt.src = currentReservation.paymentReceipt; // Display payment receipt
 
             // Show the modal
             modal.style.display = 'flex';
@@ -60,9 +63,9 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    // Approve Button Handler
-    if (approveButton) {
-        approveButton.addEventListener('click', async function () {
+    // Confirm Button Handler
+    if (confirmButton) {
+        confirmButton.addEventListener('click', async function () {
             try {
                 if (!currentReservation) {
                     alert('No reservation selected!');
@@ -72,7 +75,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 console.log('Sending data:', currentReservation); // Debug sent data
 
                 // Define the new title for the reservation
-                const newTitle = 'Approved';
+                const newTitle = 'Confirmed'; // Change to confirmed
 
                 // Send update request to the server
                 const response = await fetch('../calendar/update_status.php', {
@@ -97,13 +100,13 @@ document.addEventListener('DOMContentLoaded', function () {
                 console.log('Response from server:', result); // Debug server response
 
                 if (result.success) {
-                    alert('Reservation Approved!');
+                    alert('Reservation Confirmed!'); // Change to confirmed
 
                     // Update the calendar event title
                     const event = calendar.getEventById(currentReservation.id);
                     if (event) {
                         event.setProp('title', newTitle); // Update the title on the calendar
-                        event.setExtendedProp('status', 'Approved'); // Update the status on the calendar
+                        event.setExtendedProp('status', 'Confirmed'); // Update the status on the calendar
                     }
 
                     calendar.refetchEvents(); // Refresh the events
@@ -111,11 +114,11 @@ document.addEventListener('DOMContentLoaded', function () {
                     // Close the modal
                     modal.style.display = 'none';
                 } else {
-                    alert(result.message || 'Failed to approve reservation.');
+                    alert(result.message || 'Failed to confirm reservation.'); // Change to confirm
                 }
             } catch (error) {
                 console.error('Error:', error);
-                alert('An error occurred while approving the reservation.');
+                alert('An error occurred while confirming the reservation.'); // Change to confirm
             }
         });
     }

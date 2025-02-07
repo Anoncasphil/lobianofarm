@@ -11,6 +11,11 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
     }
 
+    function formatDate(dateString) {
+        const options = { year: 'numeric', month: 'long', day: 'numeric' };
+        return new Date(dateString).toLocaleDateString(undefined, options);
+    }
+
     function openModal(reservationId) {
         if (!reservationId) {
             console.error("Invalid reservation ID.");
@@ -54,12 +59,12 @@ document.addEventListener("DOMContentLoaded", () => {
                         console.log("Phone Number:", reservation.contact_number);
                     }
                     if (reservation.check_in_date) {
-                        document.getElementById("modal-check-in").textContent = reservation.check_in_date;
-                        console.log("Check-in Date:", reservation.check_in_date);
+                        document.getElementById("modal-check-in").textContent = formatDate(reservation.check_in_date);
+                        console.log("Check-in Date:", formatDate(reservation.check_in_date));
                     }
                     if (reservation.check_out_date) {
-                        document.getElementById("modal-check-out").textContent = reservation.check_out_date;
-                        console.log("Check-out Date:", reservation.check_out_date);
+                        document.getElementById("modal-check-out").textContent = formatDate(reservation.check_out_date);
+                        console.log("Check-out Date:", formatDate(reservation.check_out_date));
                     }
                     if (reservation.total_price) {
                         document.getElementById("modal-total-amount").textContent = `₱${reservation.total_price.toFixed(2)}`;

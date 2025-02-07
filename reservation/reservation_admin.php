@@ -235,8 +235,6 @@ if (!isset($_SESSION['admin_id'])) {
     </tbody>
 </table>
 
-
-
         </div>
     </div>
 
@@ -345,5 +343,9 @@ function getUserDetails($user_id, $conn) {
     $stmt->execute();
     $result = $stmt->get_result();
     return $result->fetch_assoc();
+}
+
+function formatDate($dateString) {
+    return date('F j, Y', strtotime($dateString));
 }
 ?>

@@ -11,7 +11,7 @@ try {
 
     // Prepare the SQL query to update the status
     $sql = "UPDATE reservations 
-            SET status = 'Approved' 
+            SET status = 'Confirmed' 
             WHERE id = ? 
             AND user_id = ? 
             AND first_name = ? 
@@ -47,7 +47,7 @@ try {
         'success' => $success,
         'rowsAffected' => $rowsAffected,
         'data' => $data,
-        'newTitle' => 'Approved' // Include the new title in the response
+        'newTitle' => 'Confirmed' // Include the new title in the response
     ]);
 
 } catch (Exception $e) {
