@@ -1,0 +1,125 @@
+html {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(0, 0, 0, 0.5) transparent; /* Default opacity 20% */
+  }
+  
+  ::-webkit-scrollbar {
+    width: 8px; /* Width for vertical scrollbar */
+    height: 8px; /* Height for horizontal scrollbar */
+  }
+  
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 0, 0, 0.2); /* Dark color for the scrollbar thumb with 20% opacity */
+    border-radius: 4px;
+    transition: background-color 0.3s, opacity 0.3s, transform 0.3s; /* Smooth transition */
+    transform: scale(1.1); /* Zoom effect */
+  }
+  
+  ::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(0, 0, 0, 0.5); /* Slightly darker when hovered */
+    opacity: 0.8; /* Ensure opacity stays at 80% when thumb is hovered */
+    transform: scale(1.1); /* Zoom effect on thumb hover */
+  }
+  
+      .logo {
+      height: 3rem; /* Adjust this as needed */
+      width: auto;
+      object-fit: contain;
+    }
+            /* Minimalist scrollbar styles */
+            .scrollable-container {
+    overflow-x: auto;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(0, 0, 0, 0.1) transparent; /* Default opacity 20% */
+    scroll-behavior: smooth; /* Enable smooth scrolling */
+  }
+  
+  .scrollable-container:hover {
+    scrollbar-color: rgba(0, 0, 0, 0.5) transparent; /* On hover, opacity 80% */
+  }
+  
+  .scrollable-container::-webkit-scrollbar {
+    height: 8px; /* Height for horizontal scrollbar */
+  }
+  
+  .scrollable-container::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  
+  .scrollable-container::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 0, 0, 0.2); /* Dark color for the scrollbar thumb with 20% opacity */
+    border-radius: 4px;
+    transition: background-color 0.3s, opacity 0.3s, transform 0.3s; /* Smooth transition */
+  }
+  
+  .scrollable-container:hover::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 0, 0, 0.8); /* On hover, 80% opacity for the thumb */
+    opacity: 0.8; /* Set opacity to 80% */
+    transform: scale(1.1); /* Zoom effect on hover */
+  }
+  
+  .scrollable-container::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(0, 0, 0, 0.5); /* Slightly darker when hovered */
+    opacity: 0.8; /* Ensure opacity stays at 80% when thumb is hovered */
+    transform: scale(1.1); /* Zoom effect on thumb hover */
+  }
+  
+  .swiper-wrapper {
+    width: 100%;
+    height: max-content !important;
+    padding-bottom: 64px !important;
+    -webkit-transition-timing-function: linear !important;
+    transition-timing-function: linear !important;
+    position: relative;
+  }
+  
+  .swiper-pagination-bullet {
+    background:rgb(19, 0, 160);
+  }
+  
+  .swiper-pagination-bullet-active {
+    background:rgb(19, 0, 160) !important;
+  }
+  
+      /* Ensure swiper container takes full width and height */
+      .swiper-container {
+        width: 100%;
+        height: 100%;
+      }
+  
+      /* Style for swiper slides */
+      .swiper-slide {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+  
+      /* Ensure images are properly sized and fit the container */
+      .swiper-slide img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;  /* Keeps the image aspect ratio and prevents shrinking */
+        border-radius: 15px; /* Optional: Adds rounded corners to images */
+      }
+  
+      /* Ensure the arrows are always visible */
+      .swiper-button-next, .swiper-button-prev {
+        color:rgb(11, 0, 210);
+      }
+  
+      #about {
+      opacity: 0;
+      transform: translateY(50px); /* Slide from the bottom */
+      transition: opacity 1s ease, transform 1s ease; /* Smooth transition for opacity and transform */
+      
+  }
+  
+  #album {
+      opacity: 0;
+      transform: translateY(50px); /* Slide from the bottom */
+      transition: opacity 1s ease, transform 1s ease; /* Smooth transition for opacity and transform */
+  }
