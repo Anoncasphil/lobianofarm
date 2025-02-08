@@ -281,7 +281,7 @@ function generateReservationCode() {
         lastNumber = parseInt(lastNumber) + 1;
         localStorage.setItem("lastReservationNumber", lastNumber);
 
-        const formattedNumber = String(lastNumber).padStart(5, "0");
+        const formattedNumber = String(lastNumber).padStart(6, "0");
         return `${prefix}-${formattedNumber}`;
     });
 }

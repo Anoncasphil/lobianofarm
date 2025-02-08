@@ -1,7 +1,10 @@
 <?php
 include('../db_connection.php'); // Include your DB connection file
 
-header('Content-Type: application/json'); // Set response type to JSON
+// Start output buffering to prevent unwanted output before JSON response
+ob_start();
+header('Content-Type: application/json');
+error_reporting(0); // Temporarily suppress errors for debugging
 
 try {
     // Check if the `id` parameter exists and is numeric
@@ -38,9 +41,14 @@ try {
         // Fetch addons details
         $addons = [];
         if (!empty($addon_ids)) {
-            $addons_sql = "SELECT id, name, price FROM addons WHERE id IN (" . implode(',', array_fill(0, count($addon_ids), '?')) . ")";
+            // Use placeholders to prevent SQL injection
+            $placeholders = implode(',', array_fill(0, count($addon_ids), '?'));
+            $addons_sql = "SELECT id, name, price FROM addons WHERE id IN ($placeholders)";
             $addons_stmt = $conn->prepare($addons_sql);
-            $addons_stmt->bind_param(str_repeat('i', count($addon_ids)), ...$addon_ids);
+
+            // Bind parameters dynamically
+            $addon_types = str_repeat('i', count($addon_ids)); // 'i' for integers
+            $addons_stmt->bind_param($addon_types, ...$addon_ids);
             $addons_stmt->execute();
             $addons_result = $addons_stmt->get_result();
             while ($addon = $addons_result->fetch_assoc()) {
@@ -48,13 +56,16 @@ try {
             }
         }
 
-        // Prepare SQL to fetch rate details
-        $rate_sql = "SELECT * FROM rates WHERE id = ?";
-        $rate_stmt = $conn->prepare($rate_sql);
-        $rate_stmt->bind_param('i', $reservation['rate_id']);
-        $rate_stmt->execute();
-        $rate_result = $rate_stmt->get_result();
-        $rate = $rate_result->fetch_assoc();
+        // Prepare SQL to fetch rate details (Check if `rate_id` is NULL)
+        $rate = null;
+        if (!empty($reservation['rate_id'])) {
+            $rate_sql = "SELECT id, name, price FROM rates WHERE id = ?";
+            $rate_stmt = $conn->prepare($rate_sql);
+            $rate_stmt->bind_param('i', $reservation['rate_id']);
+            $rate_stmt->execute();
+            $rate_result = $rate_stmt->get_result();
+            $rate = $rate_result->fetch_assoc();
+        }
 
         // Prepare the response data
         $response = [
@@ -79,35 +90,36 @@ try {
                 'contact_number' => $reservation['contact_number'],
                 'created_at' => $reservation['created_at'],
                 'updated_at' => $reservation['updated_at'],
-                'rate' => [
+                'rate' => $rate ? [
                     'id' => $rate['id'],
                     'name' => $rate['name'],
                     'price' => (float)$rate['price']
-                ],
-                'addons' => !empty($addons) ? $addons : 0 // Allow null in addons but set to 0 if empty
+                ] : null,
+                'addons' => !empty($addons) ? $addons : null // If no addons, return null
             ]
         ];
 
-        echo json_encode($response); // Send the response as JSON
+        // Clean buffer and return JSON response
+        ob_end_clean();
+        echo json_encode($response);
+        exit;
     } else {
-        // If no reservation found
-        echo json_encode([
-            'status' => 'error',
-            'message' => 'Reservation not found.'
-        ]);
+        throw new Exception('Reservation not found.');
     }
-
-    // Close the statements and connection
-    $reservation_addons_stmt->close();
-    if (isset($addons_stmt)) $addons_stmt->close();
-    $rate_stmt->close();
-    $stmt->close();
-    $conn->close();
 } catch (Exception $e) {
-    // Handle exceptions
+    // Clean buffer and return JSON error response
+    ob_end_clean();
     echo json_encode([
         'status' => 'error',
         'message' => $e->getMessage()
     ]);
+    exit;
+} finally {
+    // Close statements and database connection
+    if (isset($stmt)) $stmt->close();
+    if (isset($reservation_addons_stmt)) $reservation_addons_stmt->close();
+    if (isset($addons_stmt)) $addons_stmt->close();
+    if (isset($rate_stmt)) $rate_stmt->close();
+    $conn->close();
 }
 ?>

@@ -18,6 +18,16 @@ if (!isset($_SESSION['admin_id'])) {
 	<link href='https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css' rel='stylesheet'>
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/all.min.css" integrity="sha512-5Hs3dF2AEPkpNAR7UiOHba+lRSJNeM2ECkwxUIxC1Q/FLycGTbNapWXB4tP889k5T5Ju8fs4b1P5z/iB4nMfSQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 	<link rel="stylesheet" href="../styles/style.css">
+    <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" rel="stylesheet"/>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
+    <link rel="stylesheet" href="../styles/booking.css">
+    <link href="../dist/output.css" rel="stylesheet">
 	
 	<title>Admin</title>
 </head>
@@ -168,6 +178,7 @@ if (!isset($_SESSION['admin_id'])) {
             <table class="table-auto w-full text-left border-collapse">
     <thead class="bg-gray-100">
         <tr>
+            <th class="py-3 px-4 border-b text-gray-600 hidden">ID</th>
             <th class="py-3 px-4 border-b text-gray-600">Reservation Code</th>
             <th class="py-3 px-4 border-b text-gray-600">Name</th>
             <th class="py-3 px-4 border-b text-gray-600">Date</th>
@@ -187,6 +198,7 @@ if (!isset($_SESSION['admin_id'])) {
                 $userDetails = getUserDetails($reservation['user_id'], $conn);
                 $userName = htmlspecialchars($userDetails['first_name']) . ' ' . htmlspecialchars($userDetails['last_name']);
                 echo "<tr class='bg-gray-50 border-b dark:bg-gray-900 dark:border-gray-800'>";
+                echo "<td class='py-2 px-4 border-b text-gray-700 hidden'>" . htmlspecialchars($reservation['id']) . "</td>";
                 echo "<td class='py-2 px-4 border-b text-gray-700'>" . htmlspecialchars($reservation['reservation_code']) . "</td>";
                 echo "<td class='py-2 px-4 border-b text-gray-700'>" . $userName . "</td>";
                 echo "<td class='py-2 px-4 border-b text-gray-700'>" . htmlspecialchars($reservation['check_in_date']) . "</td>";
@@ -209,37 +221,26 @@ if (!isset($_SESSION['admin_id'])) {
                 echo "<td class='py-2 px-4 border-b'>
                     <button 
                             type='button' 
-                            class='view-button text-white  bg-blue-500 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-xs px-3 py-1.5 mb-1' 
+                            class='view-button text-white bg-blue-500 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-xs px-3 py-1.5 mb-1' 
                             data-id='" . $reservation['id'] . "'>
                             <i class='fa-solid fa-eye'></i>
-                        </button>
-                        <button 
-                            type='button' 
-                            class='confirm-button text-white bg-green-500 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-xs px-3 py-1.5 mb-1 ml-2' 
-                            data-id='" . $reservation['id'] . "'>
-                            <i class='bx bxs-check-square'></i>
-                        </button>
-                        <button 
-                            type='button' 
-                            class='deny-button text-white bg-red-500 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-xs px-3 py-1.5 mb-1 ml-2' 
-                            data-id='" . $reservation['id'] . "'>
-                            <i class='bx bx-no-entry'></i>
                         </button>
                 </td>";
                 echo "</tr>";
             }
         } else {
-            echo "<tr><td colspan='5' class='py-2 px-4 border-b text-gray-700'>No reservations found</td></tr>";
+            echo "<tr><td colspan='6' class='py-2 px-4 border-b text-gray-700'>No reservations found</td></tr>";
         }
         ?>
     </tbody>
 </table>
 
+
         </div>
     </div>
 
 <!-- Modal -->
-<div id="reservationModal" class="fixed inset-0 flex items-center justify-center hidden">
+<div id="reservationModal" class="fixed inset-0 flex items-center justify-center hidden bg-black bg-opacity-50 z-100 fixed">
     <div class="bg-white rounded-lg shadow-lg w-full max-w-3xl h-[85vh] overflow-hidden">
         <div class="px-6 py-4 flex justify-between items-center">
             <h2 class="text-lg font-semibold text-gray-800">Reservation Details</h2>
@@ -292,12 +293,24 @@ if (!isset($_SESSION['admin_id'])) {
                 <div id="reschedule" class="tab-content hidden h-full">
                     <div id="right-div" class="flex-2 bg-white p-6 rounded-3xl shadow-lg h-full">
                     <div class="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            <!-- Check-In Date -->
+                            
+                    <input class="hidden "type="text" id="rate-id-field" name="rate_id" />
 
                             <div class="relative">
-    <!-- Change input type to 'date' for testing, Flatpickr should open -->
+                                <!-- Change input type to 'date' for testing, Flatpickr should open -->
                                 <input type="date" id="check-in-date" class="p-3 pt-5 w-full max-w-xs border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-transparent text-blue-950" required/>
                                 <label for="check-in-date" class="px-2 bg-white absolute left-3 top-[-10px] text-gray-600 text-sm font-medium"> Check-In Date </label>
+                            </div>
+
+                            <div id="info-alert" class="flex items-center p-4 mb-4 text-sm text-blue-800 rounded-lg bg-blue-200 dark:text-blue-900 hidden" role="alert">
+                                <svg class="shrink-0 inline w-4 h-4 me-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 1 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
+                                </svg>
+                                <span class="sr-only">Info</span>
+                                <div>
+                                    <span class="font-medium" id="alert-title">Info alert!</span> 
+                                    <span id="alert-message"></span>
+                                </div>
                             </div>
 
                                 
@@ -306,7 +319,21 @@ if (!isset($_SESSION['admin_id'])) {
                                 <input type="date" id="check-out-date" class="p-3 pt-5 w-full max-w-xs border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-transparent text-blue-950" placeholder=" " disabled />
                                 <label for="check-out-date" class="px-2 bg-white absolute left-3 top-[-10px] text-gray-600 text-sm font-medium"> Check-Out Date </label>
                             </div>
-                        </div>
+                            </div>
+
+                            <!-- Check-In and Check-Out Times -->
+                            <div class="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <!-- Check-In Time (auto-filled by system) -->
+                                <div class="relative">
+                                <input type="time" id="check-in-time" class="p-3 pt-5 w-full max-w-xs border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-transparent text-blue-950" placeholder=" " disabled />
+                                <label for="check-in-time" class="px-2 bg-white absolute left-3 top-[-10px] text-gray-600 text-sm font-medium"> Check-In Time </label>
+                                </div>
+                                <!-- Check-Out Time (auto-filled by system) -->
+                                <div class="relative">
+                                <input type="time" id="check-out-time" class="p-3 pt-5 w-full max-w-xs border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-transparent text-blue-950" placeholder=" " disabled />
+                                <label for="check-out-time" class="px-2 bg-white absolute left-3 top-[-10px] text-gray-600 text-sm font-medium"> Check-Out Time </label>
+                                </div>
+                            </div>
 
                         <!-- Check-In and Check-Out Times -->
                        
@@ -317,17 +344,19 @@ if (!isset($_SESSION['admin_id'])) {
 </div>
 
 
-
-
 </main>
 
 		<!-- MAIN -->
 	</section>
 	<!-- NAVBAR -->
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 	<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js"></script>
 	<script src="../scripts/reservation_list.js"></script>
     <script src="../scripts/script.js"></script>
+    
 	
 </body>
 </html>
@@ -350,3 +379,4 @@ function formatDate($dateString) {
     return date('F j, Y', strtotime($dateString));
 }
 ?>
+
