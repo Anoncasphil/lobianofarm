@@ -1,5 +1,6 @@
 <?php
 include '../db_connection.php';
+session_start(); // Move session_start() to top of file
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -9,6 +10,7 @@ include '../db_connection.php';
     <title>Login</title>
     <link rel="stylesheet" href="../styles/styles.css">
     <link rel="stylesheet" href="../styles/normal.css">
+    <link rel="stylesheet" href="../styles/error.css">
     <link rel="icon" href="../src/images/logo.png" type="image/x-icon">
 </head>
 <body class="flex overflow-hidden flex-row items-center justify-between m-0">
@@ -27,9 +29,6 @@ include '../db_connection.php';
     <div id="login_form" class="flex flex-col justify-center rounded-tl-3xl rounded-bl-3xl w-[40%] h-full bg-white">
 
     <?php
-        session_start(); // Move session_start() to top of file
-        include '../db_connection.php';
-
         if (isset($_POST["logme"])) {
             $input = $_POST["email"];
             $password = $_POST["password"];
@@ -43,30 +42,27 @@ include '../db_connection.php';
                 $result = $stmt->get_result();
                 if ($result->num_rows === 1) {
                     $user = $result->fetch_assoc();
-                    $_SESSION['user_id'] = $user['user_id'];
-                    $_SESSION['first_name'] = $user['first_name'];
-                    $_SESSION['last_name'] = $user['last_name'];
-                    $_SESSION['user_email'] = $user['email'];
-                    $_SESSION['contact_no'] = $user['contact_no']; // Add this line
-                    header("Location: homepage.php");
-                    exit();
+                    // Debug user data
+                    error_log("User data found: " . print_r($user, true));
+
+                    if (password_verify($password, $user["password"])) {
+                        $_SESSION['user_id'] = $user['user_id'];
+                        $_SESSION['first_name'] = $user['first_name'];
+                        $_SESSION['last_name'] = $user['last_name'];
+                        $_SESSION['user_email'] = $user['email'];
+                        $_SESSION['contact_no'] = $user['contact_no']; // Add this line
+                        
+                        // Debug session data
+                        error_log("Session data set: " . print_r($_SESSION, true));
+                        
+                        header("Location: homepage.php");
+                        exit();
+                    } else {
+                        $loginError = true;
+                    }
+                } else {
+                    $loginError = true;
                 }
-            }
-
-            // Debug user data
-            error_log("User data found: " . print_r($user, true));
-
-            if ($user && password_verify($password, $user["password"])) {
-                $_SESSION["user_id"] = $user["user_id"];
-                $_SESSION["user_email"] = $user["email"];
-                $_SESSION["first_name"] = $user["first_name"];
-                $_SESSION["last_name"] = $user["last_name"];
-                
-                // Debug session data
-                error_log("Session data set: " . print_r($_SESSION, true));
-                
-                header("Location: newhome.php");
-                exit();
             } else {
                 $loginError = true;
             }
@@ -78,20 +74,22 @@ include '../db_connection.php';
             <h2 id="login_tag" class="text-3xl mb-5 font-bold">Login to Account</h2>
             <p id="input_tag" class="tracking-wide text-base">Please enter your email and password to continue</p>
             <?php if (isset($_POST["logme"]) && $loginError): ?>
-                <p class="text-red-600 text-md mt-2">Invalid credentials</p>
+                <p id="credentials_error" class="text-red-600 text-md mt-2 error-message">Invalid credentials</p>
             <?php endif; ?>
 
             <!-- email -->
             <div id="email_container" class="flex flex-col justify-start items-start w-[80%] px-6 mt-10">
                 <div class="relative flex flex-row justify-between w-full">
-                    <label for="email_input" class="text-left w-[50%] mb-2">
+                    <label for="email_input" class="text-left w-[50%] mb-2"></label>
                         Email Address:
                     </label>
                 </div>
                 <div class="relative w-full">
-                    <i class="fa-solid fa-envelope absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500"></i>
+                <i class="fa-solid fa-envelope absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500"></i>
                     <input type="email" id="email_input" name="email" placeholder="Email Address:" 
-                           class="w-full border border-gray-500 rounded-lg p-2 pl-10" required autocomplete="off">
+                           class="w-full border border-gray-500 rounded-lg p-2 pl-10" 
+                           required autocomplete="off">
+                    <small class="text-red-500 mt-1 hidden error-message">Please enter a valid email address ending with @gmail.com.</small>
                 </div>
             </div>
     
@@ -107,6 +105,7 @@ include '../db_connection.php';
                     <i class="fa-solid fa-lock absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500"></i>
                     <input type="password" id="password_input" name="password" placeholder="Enter your Password" 
                            class="w-full border border-gray-500 rounded-lg p-2 pl-10" required autocomplete="off">
+                    <small class="text-red-500 mt-1 hidden error-message">Password must be at least 8 characters.</small>
                 </div>
             </div>
             
@@ -122,5 +121,6 @@ include '../db_connection.php';
     
 
     <script src="https://kit.fontawesome.com/26528a6def.js" crossorigin="anonymous"></script>
+    <script src="../scripts/login.js"></script>
 </body>
 </html>

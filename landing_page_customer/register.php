@@ -73,6 +73,8 @@
 
     <!-- php registration -->
     <?php
+    require_once "../db_connection.php"; // Adjust the path to your database connection file
+
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $email = trim($_POST['email']);  
         $firstname = trim($_POST['firstname']);
@@ -81,6 +83,7 @@
         $contact_no = trim($_POST['contactno']);
         $password = $_POST['password'];
         $passwordRepeat = $_POST['repeat_password'];
+        $otp = trim($_POST['otp']);
         $passwordHash = password_hash($password, PASSWORD_DEFAULT); 
 
         $errors = []; 
@@ -116,55 +119,47 @@
             $errors[] = "Passwords do not match.";
         }
 
-        // Check if email already exists
+        if (empty($otp)) {
+            $errors[] = "OTP is required.";
+        } else {
+            // Validate OTP
+            $stmt = $conn->prepare("SELECT otp_code, otp_expires_at FROM user_tbl WHERE email = ?");
+            $stmt->bind_param("s", $email);
+            $stmt->execute();
+            $stmt->bind_result($otpCode, $otpExpiresAt);
+            $stmt->fetch();
+            $stmt->close();
+
+            if ($otpCode !== $otp) {
+                $errors[] = "Invalid OTP.";
+            } elseif (strtotime($otpExpiresAt) < time()) {
+                $errors[] = "OTP has expired.";
+            }
+        }
+
+        // Insert user data if no errors
         if (empty($errors)) {
-            require_once "../db_connection.php";
-
             try {
-                $stmt = $conn->prepare("SELECT * FROM user_tbl WHERE email = ?");
-                $stmt->bind_param("s", $email);
+                $role = 'customer'; 
+                // Insert values into the database
+                $stmt = $conn->prepare("UPDATE user_tbl SET role = ?, password = ?, first_name = ?, middle_name = ?, last_name = ?, contact_no = ? WHERE email = ?");
+                $stmt->bind_param("sssssss", $role, $passwordHash, $firstname, $middlename, $lastname, $contact_no, $email);
                 $stmt->execute();
-                $result = $stmt->get_result();
-
-                if ($result->num_rows > 0) {
-                    $errors[] = "Email address is already registered.";
-                }
+                $stmt->close();
+                echo "<script>
+                    alert('Registration successful!');
+                    window.location.href = 'login.php';
+                </script>";
             } catch (Exception $e) {
-                $errors[] = "Error checking email: " . $e->getMessage();
+                $errors[] = "Error: " . $e->getMessage();
             }
         }
 
         // Display errors if any
         if (!empty($errors)) {
             echo "<script>
-                document.addEventListener('DOMContentLoaded', function() {
-                    const errorMessages = " . json_encode($errors) . ";
-                    errorMessages.forEach(function(errorMessage) {
-                        const errorElement = document.createElement('small');
-                        errorElement.classList.add('text-red-500', 'mt-1');
-                        errorElement.innerText = errorMessage;
-                        document.querySelector('form').appendChild(errorElement);
-                    });
-                });
+                alert('" . implode("\\n", $errors) . "');
             </script>";
-        } else {
-            // Insert values into the database
-            try {
-                $stmt = $conn->prepare(
-                    "INSERT INTO user_tbl (email, password, first_name, middle_name, last_name, contact_no, role) 
-                     VALUES (?, ?, ?, ?, ?, ?, ?)"
-                );
-                $defaultRole = 'customer'; // Set the default role
-                $stmt->bind_param("sssssss", $email, $passwordHash, $firstname, $middlename, $lastname, $contact_no, $defaultRole);
-            
-                if ($stmt->execute()) {
-                    echo "<script>alert('User has registered successfully.'); window.location.href = 'login.php';</script>";
-                } else {
-                    echo "<script>alert('An unexpected error occurred. Please try again later.');</script>";
-                }
-            } catch (Exception $e) {
-                echo "<script>alert('Error: " . addslashes($e->getMessage()) . "');</script>";
-            }
         }
     }
     ?>
@@ -279,6 +274,22 @@
                     class="w-full border border-gray-500 rounded-lg p-2 pl-10" required>
                 <small id="verify_password_error" class="text-red-500 mt-1 hidden error-message">Passwords do not match.</small>
             </div>
+        </div>
+
+        <!-- OTP Code -->
+        <div id="otp_container" class="flex flex-col justify-start items-start w-[80%] mt-5 relative-container">
+            <div class="relative flex flex-row justify-between w-full">
+                <label for="otp_input" class="text-left w-[50%] mb-2">
+                    OTP Code:
+                </label>
+            </div>
+            <div class="relative w-full">
+                <i class="fa-solid fa-key absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500"></i>
+                <input type="text" id="otp_input" name="otp" placeholder="Enter OTP Code" 
+                       class="w-full border border-gray-500 rounded-lg p-2 pl-10" minlength="6" maxlength="6" required>
+                <small id="otp_error" class="text-red-500 mt-1 hidden error-message">OTP code must be exactly 6 digits.</small>
+            </div>
+            <button type="button" id="send_otp_button" class="mt-2 bg-blue-700 text-white px-4 py-2 rounded-lg">Send OTP</button>
         </div>
     
         <!-- submit button -->
