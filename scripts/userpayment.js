@@ -85,6 +85,21 @@ function populateForm() {
 
 window.onload = populateForm;
 
+// Function to remove an add-on
+function removeAddon(event) {
+    const addonRow = event.target.closest('tr');
+    const addonId = addonRow.dataset.addonId;
+    addonRow.remove();
+
+    // Update localStorage
+    const selections = JSON.parse(localStorage.getItem('selections'));
+    selections.addons = selections.addons.filter(id => id !== addonId);
+    localStorage.setItem('selections', JSON.stringify(selections));
+
+    // Recalculate total price
+    populateInvoice();
+}
+
 async function populateInvoice() {
     // Retrieve selections from localStorage
     const selections = JSON.parse(localStorage.getItem('selections'));
@@ -119,6 +134,7 @@ async function populateInvoice() {
     let totalPrice = parseFloat(rateData.price);
     let itemHtml = `
         <tr>
+            <td class="py-2"></td>
             <td class="py-2">Rate</td>
             <td class="py-2">${rateData.name}</td>
             <td class="py-2 text-right">${rateData.price}</td>
@@ -130,7 +146,10 @@ async function populateInvoice() {
     if (addonsData.length > 0) {
         addonsData.forEach(addon => {
             itemHtml += `
-                <tr>
+                <tr data-addon-id="${addon.id}">
+                    <td class="py-2 text-right">
+                        <i class="ico-times text-gray-500 text-xs cursor-pointer hover:text-red-500" role="img" aria-label="Remove"></i>
+                    </td>
                     <td class="py-2">Add-on</td>
                     <td class="py-2">${addon.name}</td>
                     <td class="py-2 text-right">${addon.price}</td>
@@ -139,10 +158,15 @@ async function populateInvoice() {
             totalPrice += parseFloat(addon.price);
         });
         invoiceItemsDiv.innerHTML = itemHtml;
+
+        // Add event listeners to remove icons
+        document.querySelectorAll('.ico-times').forEach(icon => {
+            icon.addEventListener('click', removeAddon);
+        });
     } else {
         itemHtml += `
             <tr>
-                <td class="py-2 text-gray-500" colspan="3">No add-ons selected</td>
+                <td class="py-2 text-gray-500" colspan="4">No add-ons selected</td>
             </tr>
         `;
         invoiceItemsDiv.innerHTML = itemHtml;
@@ -153,7 +177,7 @@ async function populateInvoice() {
 
     // Calculate the downpayment (50% of total price)
     const downpayment = totalPrice / 2;
-    document.getElementById('downpayment').innerText = downpayment.toFixed(2);  // Assuming there's an element with ID 'downpayment'
+    document.getElementById('downpayment').innerText = downpayment.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
     // Now, create the JSON object based on the populated invoice
     const populatedInvoice = {
