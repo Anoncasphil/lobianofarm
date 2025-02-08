@@ -196,7 +196,7 @@ $stmt->close();
         while ($row = $result->fetch_assoc()) {
             $id = $row['id'];
             $name = $row['name'];
-            $price = $row['price'];
+            $price = number_format($row['price'], 2); // Format the price with commas
             $hours_of_stay = $row['hoursofstay'];
             $picture = $row['picture'];
 
@@ -270,7 +270,7 @@ $stmt->close();
         while ($row = $result->fetch_assoc()) {
           $id = $row['id'];
           $name = $row['name'];
-          $price = $row['price'];
+          $price = number_format($row['price'], 2); // Format the price with commas
           $description = $row['description'];
           $picture = $row['picture'];
           
@@ -429,7 +429,6 @@ $stmt->close();
 </section>
 
 <script>
-  
 </script>
 
 <!-- Modal for displaying more details -->

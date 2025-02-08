@@ -1,5 +1,3 @@
-
-
 document.querySelectorAll('.peer').forEach(input => {
   const label = input.nextElementSibling;
 
@@ -429,25 +427,23 @@ function unselectRate(selectButton, id, availableRateCards) {
 
     // Add selected rate to the summary
     if (selectedRate) {
+        const ratePrice = parseFloat(selectedRate.price.replace(/,/g, '')); // Remove commas before parsing
         itemsList.innerHTML += `<li data-id="${selectedRate.id}">${selectedRate.name}</li>`;
-        pricesList.innerHTML += `<li data-id="${selectedRate.id}">₱${selectedRate.price}</li>`;
-        total += parseFloat(selectedRate.price);
-
-        // Get the rateId from the selectedRate object
-        const rateId = selectedRate.id;
-        console.log('Captured rateId from selectedRate:', rateId);  // Log the rateId
+        pricesList.innerHTML += `<li data-id="${selectedRate.id}">₱${ratePrice.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</li>`;
+        total += ratePrice;
     }
 
     // Add selected addons to the summary
     for (let id in selectedAddons) {
         const addon = selectedAddons[id];
+        const addonPrice = parseFloat(addon.price.replace(/,/g, '')); // Remove commas before parsing
         itemsList.innerHTML += `<li>${addon.name}</li>`;
-        pricesList.innerHTML += `<li>₱${addon.price}</li>`;
-        total += parseFloat(addon.price);
+        pricesList.innerHTML += `<li>₱${addonPrice.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</li>`;
+        total += addonPrice;
     }
 
     // Update total price
-    totalPriceElement.textContent = '₱' + total.toFixed(2);
+    totalPriceElement.textContent = '₱' + total.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
     // Update hidden fields with the current selection
     document.getElementById('rate-id-field').value = selectedRate ? selectedRate.id : '';
@@ -461,17 +457,19 @@ function unselectRate(selectButton, id, availableRateCards) {
   
       // Add selected rate price to the total
       if (selectedRate) {
-          total += parseFloat(selectedRate.price);
+          const ratePrice = parseFloat(selectedRate.price.replace(/,/g, '')); // Remove commas before parsing
+          total += ratePrice;
       }
   
       // Add selected addon prices to the total
       for (let id in selectedAddons) {
           const addon = selectedAddons[id];
-          total += parseFloat(addon.price);
+          const addonPrice = parseFloat(addon.price.replace(/,/g, '')); // Remove commas before parsing
+          total += addonPrice;
       }
   
-      // Update the total price display
-      totalPriceElement.textContent = '₱' + total.toFixed(2);
+      // Update the total price display with commas
+      totalPriceElement.textContent = '₱' + total.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   }
   
   function validateForm() {
