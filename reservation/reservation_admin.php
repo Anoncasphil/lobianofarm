@@ -145,7 +145,7 @@ if (!isset($_SESSION['admin_id'])) {
 <!-- MAIN -->
 <main class="relative">
     <!-- PHP CONNECTION -->
-    <?php include('get_reservations.php'); ?>
+    <?php include ('get_reservations.php'); ?>
 
     <div class="main flex-1 p-6">
         <header class="mb-6">
@@ -327,6 +327,7 @@ if (!isset($_SESSION['admin_id'])) {
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 	<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 	<script src="../scripts/reservation_list.js"></script>
+    <script src="../scripts/script.js"></script>
 	
 </body>
 </html>
