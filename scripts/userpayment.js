@@ -177,7 +177,7 @@ async function populateInvoice() {
 
     // Calculate the downpayment (50% of total price)
     const downpayment = totalPrice / 2;
-    document.getElementById('downpayment').innerText = downpayment.toFixed(2);  // Assuming there's an element with ID 'downpayment'
+    document.getElementById('downpayment').innerText = downpayment.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
     // Now, create the JSON object based on the populated invoice
     const populatedInvoice = {
