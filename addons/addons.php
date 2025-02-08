@@ -162,7 +162,7 @@ if (!isset($_SESSION['admin_id'])) {
 				<li class="divider">/</li>
 				<li><a href="#">Management</a></li>
 				<li class="divider">/</li>
-				<li><a href="#" class="active">Rates</a></li>
+				<li><a href="#" class="active">Add-ons</a></li>
 			</ul>
         </header>
 
