@@ -32,7 +32,7 @@ if (!isset($_SESSION['admin_id'])) {
 			<li><a href="../index.php"><i class='bx bxs-dashboard icon' ></i> Dashboard</a></li>
 
 			<li class="divider" data-text="management">Management</li>
-			<li><a href="../reservation/reservation_admin.php"><i class='bx bx-list-ol icon' ></i> Reservations</a></li>
+			<li><a href="../reservation/reservation_admin.php"class="active"><i class='bx bx-list-ol icon' ></i> Reservations</a></li>
             <li><a href="../calendar/calendar.php"><i class='bx bxs-calendar icon' ></i> Calendar</a></li>
 			<li><a href="../rates/rates.php"><i class="bx bxs-star icon min-w-[48px] flex justify-center items-center mr-2"></i>Rates</a></li>
 			<li><a href="../addons/addons.php"><i class='bx bxs-cart-add icon' ></i> Add-ons</a></li>
@@ -145,7 +145,7 @@ if (!isset($_SESSION['admin_id'])) {
 <!-- MAIN -->
 <main class="relative">
     <!-- PHP CONNECTION -->
-    <?php include('get_reservations.php'); ?>
+    <?php include ('get_reservations.php'); ?>
 
     <div class="main flex-1 p-6">
         <header class="mb-6">
@@ -155,7 +155,7 @@ if (!isset($_SESSION['admin_id'])) {
 				<li class="divider">/</li>
 				<li><a href="#">Management</a></li>
 				<li class="divider">/</li>
-				<li><a href="#" class="active">Rates</a></li>
+				<li><a href="#" class="active">Reservations</a></li>
 			</ul>
         </header>
 
@@ -290,7 +290,26 @@ if (!isset($_SESSION['admin_id'])) {
                 </div>
 
                 <div id="reschedule" class="tab-content hidden h-full">
-                    <p class="text-sm text-gray-700">Rescheduling options will go here.</p>
+                    <div id="right-div" class="flex-2 bg-white p-6 rounded-3xl shadow-lg h-full">
+                    <div class="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <!-- Check-In Date -->
+
+                            <div class="relative">
+    <!-- Change input type to 'date' for testing, Flatpickr should open -->
+                                <input type="date" id="check-in-date" class="p-3 pt-5 w-full max-w-xs border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-transparent text-blue-950" required/>
+                                <label for="check-in-date" class="px-2 bg-white absolute left-3 top-[-10px] text-gray-600 text-sm font-medium"> Check-In Date </label>
+                            </div>
+
+                                
+                                <!-- Check-Out Date (non-interactable) -->
+                            <div class="relative">
+                                <input type="date" id="check-out-date" class="p-3 pt-5 w-full max-w-xs border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-transparent text-blue-950" placeholder=" " disabled />
+                                <label for="check-out-date" class="px-2 bg-white absolute left-3 top-[-10px] text-gray-600 text-sm font-medium"> Check-Out Date </label>
+                            </div>
+                        </div>
+
+                        <!-- Check-In and Check-Out Times -->
+                       
                 </div>
             </div>
         </div>
@@ -305,9 +324,10 @@ if (!isset($_SESSION['admin_id'])) {
 		<!-- MAIN -->
 	</section>
 	<!-- NAVBAR -->
-
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 	<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 	<script src="../scripts/reservation_list.js"></script>
+    <script src="../scripts/script.js"></script>
 	
 </body>
 </html>

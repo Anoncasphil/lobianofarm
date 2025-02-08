@@ -20,8 +20,7 @@ if (!isset($_SESSION['admin_id'])) {
     <script src="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"></script>
 	<link rel="stylesheet" href="../styles/style.css">
     <link rel="stylesheet" href="../styles/rate.css">
-    <script src="../scripts/script.js"></script>
-	<script src="addonss.js"></script>
+
 
 	<title>Admin</title>
 </head>
@@ -162,7 +161,7 @@ if (!isset($_SESSION['admin_id'])) {
 				<li class="divider">/</li>
 				<li><a href="#">Management</a></li>
 				<li class="divider">/</li>
-				<li><a href="#" class="active">Rates</a></li>
+				<li><a href="#" class="active">Add-ons</a></li>
 			</ul>
         </header>
 
@@ -497,3 +496,6 @@ if (!isset($_SESSION['admin_id'])) {
 
 </body>
 </html>
+
+<script src="../scripts/script.js"></script>
+<script src="addonss.js"></script>

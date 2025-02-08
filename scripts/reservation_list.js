@@ -156,3 +156,12 @@ document.addEventListener("DOMContentLoaded", () => {
     const tbody = document.querySelector("tbody");
     reservationRows.forEach(row => tbody.appendChild(row));
 });
+
+window.addEventListener("load", function () {
+    const checkInDate = document.getElementById("check-in-date");
+    const selectedDate = checkInDate.value;
+  
+    if (selectedDate) {
+        
+    }
+});
