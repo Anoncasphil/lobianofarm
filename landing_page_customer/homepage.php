@@ -562,7 +562,15 @@ $stmt->close();
 </div>
 
 
-
+<!-- Check-in Date Modal -->
+<div id="checkInModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden z-50">
+  <div class="bg-white rounded-lg p-6 max-w-sm mx-auto">
+    <div class="flex justify-between items-center">
+      <p id="modalMessage" class="text-gray-700">Please select a check-in date.</p>
+      <button onclick="closeModal()" class="text-gray-700 font-bold">X</button>
+    </div>
+  </div>
+</div>
 
 <!-- Modal for displaying Add-on Details -->
 <div id="addon-modal" class="fixed inset-0 bg-black/30 flex justify-center items-center hidden z-50">

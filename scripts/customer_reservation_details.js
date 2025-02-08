@@ -118,7 +118,7 @@ function fetchReservationDetails(reservationId) {
         try {
             const data = JSON.parse(text);  // Try parsing the text as JSON
 
-            if (data.status === 'success' || data.status === 'Pending') {
+            if (data.status === 'Confirmed' || data.status === 'Pending' || data.status === 'Completed') {
                 // Populate the invoice details
                 document.getElementById('invoice-date-details').innerText = data.invoice_date || 'N/A';
                 document.getElementById('invoice-no-details').innerText = data.invoice_number || 'N/A';
