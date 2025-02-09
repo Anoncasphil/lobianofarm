@@ -35,3 +35,11 @@
             text-decoration: none;
             cursor: pointer;
         }
+
+.text-blue-500 {
+    color: #3b82f6; /* Tailwind CSS blue-500 color */
+}
+
+.text-blue-500:hover {
+    color: #2563eb; /* Tailwind CSS blue-600 color */
+}
