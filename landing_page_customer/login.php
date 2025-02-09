@@ -80,7 +80,7 @@ session_start(); // Move session_start() to top of file
             <!-- email -->
             <div id="email_container" class="flex flex-col justify-start items-start w-[80%] px-6 mt-10">
                 <div class="relative flex flex-row justify-between w-full">
-                    <label for="email_input" class="text-left w-[50%] mb-2"></label>
+                    <label for="email_input" class="text-left w-[50%] mb-2">
                         Email Address:
                     </label>
                 </div>
