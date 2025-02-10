@@ -270,7 +270,7 @@ function populateFields(data) {
     setText("invoice-no", data.invoice_number);
     setText("total-price", formatCurrency(totalPrice));
     setText("valid_amount_paid", formatNegativeCurrency(validAmountPaid));
-    setText("new-total", formatCurrency(newTotal));
+    setText("new_total_amount", formatCurrency(newTotal));
 
     // Handle rates and addons in the invoice
     const invoiceItemsElement = document.getElementById("invoice-items");
@@ -836,17 +836,18 @@ function confirmAction() {
         // Store success message in localStorage
         localStorage.setItem('successMessage', 'Invoice successfully modified');
 
-        // Close all open modals first
         closeAllModals();
 
         // Reload the page after closing modals (with a slight delay to allow closing effect)
         setTimeout(() => {
-            // location.reload(); 
+            location.reload(); 
+            
         }, 500); // 500 milliseconds for smooth transition (adjust if necessary)
     } else {
         console.error('No reservation ID found');
     }
 }
+
 
 // Function to close all modals
 function closeAllModals() {

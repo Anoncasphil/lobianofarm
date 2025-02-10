@@ -27,6 +27,8 @@ if (!isset($_SESSION['admin_id'])) {
     <link href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" rel="stylesheet"/>
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 
+    <script src="../scripts/reservation_customer.js" defer></script>
+
     <link rel="stylesheet" href="../styles/booking.css">
     <link href="../dist/output.css" rel="stylesheet">
 	
@@ -280,12 +282,12 @@ if (!isset($_SESSION['admin_id'])) {
 
   <div class="flex justify-between items-center pt-4">
     <span class="text-sm font-semibold text-white dark:text-gray-900"></span>
-    <span id="valid_amount_paid" class="text-sm font-bold text-gray-500"></span>
+    <span id="valid_amount_paid" class="text-sm font-bold text-gray-500">₱0.00</span>
   </div>
 
   <div class="flex justify-between items-center pt-4">
     <span class="text-xl font-semibold text-white dark:text-gray-900">Total</span>
-    <span id="new-total" class="text-xl font-bold text-blue-900">₱0.00</span>
+    <span id="new_total_amount" class="text-xl font-bold text-blue-900">₱0.00</span>
   </div>
 </div>
 
@@ -549,6 +551,8 @@ if (!isset($_SESSION['admin_id'])) {
             });
         }
     });
+
+    
 </script>
 
 
@@ -599,7 +603,6 @@ if (!isset($_SESSION['admin_id'])) {
 	<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js"></script>
-	<script src="../scripts/reservation_customer.js"></script>
     <script src="../scripts/script.js"></script>
     
 	
