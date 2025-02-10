@@ -291,7 +291,7 @@ $stmt->close();
         rt.price as total_price
         FROM reservations r
         JOIN rates rt ON r.rate_id = rt.id
-        WHERE r.user_id = ? AND r.status = 'Approved'";  // Filter by user_id and status
+        WHERE r.user_id = ? AND r.status = 'Confirmed'";  // Filter by user_id and status
 
         $stmt = $conn->prepare($sql);
         $stmt->bind_param("i", $_SESSION['user_id']);
@@ -305,7 +305,7 @@ $stmt->close();
                 $full_name = $row["first_name"] . " " . $row["last_name"];
                 $check_in = date('F j, Y - g:i A', strtotime($row["check_in_date"] . ' ' . $row["check_in_time"])); // Format date
                 $status_class = 'bg-blue-200 text-blue-800'; // Upcoming: Blue
-                $status_text = 'Approved';
+                $status_text = 'Confirmed';
                 $rate_picture = $row["rate_picture"];
                 $rate_name = $row["rate_name"];
                 $rate_id = $row["rate_id"];

@@ -75,6 +75,9 @@
     <?php
     require_once "../db_connection.php"; // Adjust the path to your database connection file
 
+    $email = $firstname = $middlename = $lastname = $contact_no = $password = $passwordRepeat = $otp = "";
+    $errors = [];
+
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $email = trim($_POST['email']);  
         $firstname = trim($_POST['firstname']);
@@ -85,8 +88,6 @@
         $passwordRepeat = $_POST['repeat_password'];
         $otp = trim($_POST['otp']);
         $passwordHash = password_hash($password, PASSWORD_DEFAULT); 
-
-        $errors = []; 
 
         // Validation checks
         if (empty($email)) {
@@ -123,7 +124,7 @@
             $errors[] = "OTP is required.";
         } else {
             // Validate OTP
-            $stmt = $conn->prepare("SELECT otp_code, otp_expires_at FROM user_tbl WHERE email = ?");
+            $stmt = $conn->prepare("SELECT otp_code, otp_expires_at FROM otp_codes WHERE email = ?");
             $stmt->bind_param("s", $email);
             $stmt->execute();
             $stmt->bind_result($otpCode, $otpExpiresAt);
@@ -131,9 +132,9 @@
             $stmt->close();
 
             if ($otpCode !== $otp) {
-                $errors[] = "Invalid OTP.";
+                $errors[] = "Invalid OTP. Please try again.";
             } elseif (strtotime($otpExpiresAt) < time()) {
-                $errors[] = "OTP has expired.";
+                $errors[] = "OTP has expired. Please try again.";
             }
         }
 
@@ -142,8 +143,8 @@
             try {
                 $role = 'customer'; 
                 // Insert values into the database
-                $stmt = $conn->prepare("UPDATE user_tbl SET role = ?, password = ?, first_name = ?, middle_name = ?, last_name = ?, contact_no = ? WHERE email = ?");
-                $stmt->bind_param("sssssss", $role, $passwordHash, $firstname, $middlename, $lastname, $contact_no, $email);
+                $stmt = $conn->prepare("INSERT INTO user_tbl (role, email, password, first_name, middle_name, last_name, contact_no) VALUES (?, ?, ?, ?, ?, ?, ?)");
+                $stmt->bind_param("sssssss", $role, $email, $passwordHash, $firstname, $middlename, $lastname, $contact_no);
                 $stmt->execute();
                 $stmt->close();
                 echo "<script>
@@ -181,7 +182,7 @@
                 <input type="email" id="email_input" name="email" 
                     placeholder="Email Address" 
                     class="w-full border border-gray-500 rounded-lg p-2 pl-10"
-                    required autocomplete="off">
+                    required autocomplete="off" value="<?php echo htmlspecialchars($email); ?>">
                 <small id="email_error" class="text-red-500 mt-1 hidden error-message">Please enter a valid email address.</small>
             </div>
         </div>
@@ -198,7 +199,7 @@
                 <div class="relative w-full">
                     <i class="fa-solid fa-user absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500"></i>
                     <input type="text" id="firstname_input" name="firstname" placeholder="First Name" 
-                        class="w-full border border-gray-500 rounded-lg p-2 pl-10" minLength="3">
+                        class="w-full border border-gray-500 rounded-lg p-2 pl-10" minLength="3" value="<?php echo htmlspecialchars($firstname); ?>">
                     <small id="firstname_error" class="text-red-500 mt-1 hidden error-message">First Name is required.</small>
                 </div>
             </div>
@@ -212,7 +213,7 @@
                 <div class="relative w-full ">
                     <i class="fa-solid fa-user absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500"></i>
                     <input type="text" id="middlename_input" name="middlename" placeholder="Middle Name" 
-                        class="w-full border border-gray-500 rounded-lg p-2 pl-10" minLength="3">
+                        class="w-full border border-gray-500 rounded-lg p-2 pl-10" minLength="3" value="<?php echo htmlspecialchars($middlename); ?>">
                 </div>
             </div>
         </div>
@@ -226,7 +227,7 @@
             <div class="relative w-full">
                 <i class="fa-solid fa-user absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500"></i>
                 <input type="text" id="lastname_input" name="lastname" placeholder="Last Name" 
-                       class="w-full border border-gray-500 rounded-lg p-2 pl-10" minLength="3">
+                       class="w-full border border-gray-500 rounded-lg p-2 pl-10" minLength="3" value="<?php echo htmlspecialchars($lastname); ?>">
                 <small id="lastname_error" class="text-red-500 mt-1 hidden error-message">Last Name is required.</small>
             </div>
         </div>
@@ -241,7 +242,7 @@
             <div class="relative w-full">
                 <i class="fa-solid fa-user absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500"></i>
                 <input type="number" id="contact_input" name="contactno" placeholder="Contact No:" 
-                       class="w-full border border-gray-500 rounded-lg p-2 pl-10" minlength="11" maxlength="11" required>
+                       class="w-full border border-gray-500 rounded-lg p-2 pl-10" minlength="11" maxlength="11" required value="<?php echo htmlspecialchars($contact_no); ?>">
                 <small id="contact_error" class="text-red-500 mt-1 hidden error-message">Contact number must be exactly 11 digits.</small>
             </div>
         </div>
@@ -256,7 +257,7 @@
             <div class="relative w-full">
                 <i class="fa-solid fa-lock absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500"></i>
                 <input type="password" id="password_input" name="password" placeholder="Password" 
-                       class="w-full border border-gray-500 rounded-lg p-2 pl-10" minlength="8" required>
+                       class="w-full border border-gray-500 rounded-lg p-2 pl-10" minlength="8" required value="<?php echo htmlspecialchars($password); ?>">
                 <small id="password_error" class="text-red-500 mt-1 hidden error-message">Password must be at least 8 characters.</small>
             </div>
         </div>
@@ -271,25 +272,27 @@
             <div class="relative w-full">
                 <i class="fa-solid fa-check absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500"></i>
                 <input type="password" id="verify_password_input" name="repeat_password" placeholder="Retype your Password" 
-                    class="w-full border border-gray-500 rounded-lg p-2 pl-10" required>
+                    class="w-full border border-gray-500 rounded-lg p-2 pl-10" required value="<?php echo htmlspecialchars($passwordRepeat); ?>">
                 <small id="verify_password_error" class="text-red-500 mt-1 hidden error-message">Passwords do not match.</small>
             </div>
         </div>
 
         <!-- OTP Code -->
         <div id="otp_container" class="flex flex-col justify-start items-start w-[80%] mt-5 relative-container">
-            <div class="relative flex flex-row justify-between w-full">
-                <label for="otp_input" class="text-left w-[50%] mb-2">
-                    OTP Code:
+            <div class="relative flex flex-row justify-between w-full items-center">
+                <label for="otp_input" class="text-left w-[30%] mb-2">
+                    OTP Code:       <button type="button" id="send_otp_button" class="text-blue-500">Send OTP</button>
                 </label>
+                
+                <span id="timer" class="text-gray-500 ml-2"></span>
             </div>
             <div class="relative w-full">
                 <i class="fa-solid fa-key absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500"></i>
                 <input type="text" id="otp_input" name="otp" placeholder="Enter OTP Code" 
-                       class="w-full border border-gray-500 rounded-lg p-2 pl-10" minlength="6" maxlength="6" required>
+                       class="w-full border border-gray-500 rounded-lg p-2 pl-10" minlength="6" maxlength="6" required value="<?php echo htmlspecialchars($otp); ?>">
                 <small id="otp_error" class="text-red-500 mt-1 hidden error-message">OTP code must be exactly 6 digits.</small>
             </div>
-            <button type="button" id="send_otp_button" class="mt-2 bg-blue-700 text-white px-4 py-2 rounded-lg">Send OTP</button>
+           
         </div>
     
         <!-- submit button -->

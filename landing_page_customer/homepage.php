@@ -491,6 +491,9 @@ $stmt->close();
       </ol>
     </div>
 
+
+    
+
     <!-- Image Section -->
     <div id="reserve-image" class="w-full md:w-1/2 flex justify-center opacity-0 transform translate-x-[50px] mr-8">
       <img 
@@ -501,6 +504,71 @@ $stmt->close();
     </div>
   </div>
 </section>
+
+<!-- FAQ Section -->
+<section id="faq" class="bg-white flex items-center justify-center py-16 px-4 mb-16">
+  <div class="max-w-screen-xl mx-auto">
+    <h2 class="text-3xl font-extrabold text-center text-gray-900 mb-8">Frequently Asked Questions</h2>
+    <div class="space-y-4">
+      <!-- FAQ Item 1 -->
+      <div class="border border-gray-200 rounded-lg shadow-sm">
+        <button class="w-full text-left px-4 py-3 text-gray-900 font-medium focus:outline-none" onclick="toggleFaq('faq1')">
+          Question 1
+      </button>
+        <div id="faq1" class="hidden px-4 py-3 text-gray-700">
+          Answer 1
+        </div>
+      </div>
+      <!-- FAQ Item 2 -->
+      <div class="border border-gray-200 rounded-lg shadow-sm">
+        <button class="w-full text-left px-4 py-3 text-gray-900 font-medium focus:outline-none" onclick="toggleFaq('faq2')">
+          Question 2
+        </button>
+        <div id="faq2" class="hidden px-4 py-3 text-gray-700">
+          ANSWER 2
+        </div>
+      </div>
+      <!-- FAQ Item 3 -->
+      <div class="border border-gray-200 rounded-lg shadow-sm">
+        <button class="w-full text-left px-4 py-3 text-gray-900 font-medium focus:outline-none" onclick="toggleFaq('faq3')">
+          Question 3
+        </button>
+        <div id="faq3" class="hidden px-4 py-3 text-gray-700">
+          ANSWER 3
+        </div>
+      </div>
+      <!-- FAQ Item 4 -->
+      <div class="border border-gray-200 rounded-lg shadow-sm">
+        <button class="w-full text-left px-4 py-3 text-gray-900 font-medium focus:outline-none" onclick="toggleFaq('faq4')">
+          Question 4
+        </button>
+        <div id="faq4" class="hidden px-4 py-3 text-gray-700">
+          ANSWER 4
+        </div>
+      </div>
+      <!-- FAQ Item 5 -->
+      <div class="border border-gray-200 rounded-lg shadow-sm">
+        <button class="w-full text-left px-4 py-3 text-gray-900 font-medium focus:outline-none" onclick="toggleFaq('faq5')">
+          Question 5
+        </button>
+        <div id="faq5" class="hidden px-4 py-3 text-gray-700">
+          ANSWER 5
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  function toggleFaq(faqId) {
+    const faqElement = document.getElementById(faqId);
+    if (faqElement.classList.contains('hidden')) {
+      faqElement.classList.remove('hidden');
+    } else {
+      faqElement.classList.add('hidden');
+    }
+  }
+</script>
 
 <!-- Footer Section -->
 <footer class="bg-gray-900 dark:bg-gray-800 py-8">
@@ -562,7 +630,15 @@ $stmt->close();
 </div>
 
 
-
+<!-- Check-in Date Modal -->
+<div id="checkInModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden z-50">
+  <div class="bg-white rounded-lg p-6 max-w-sm mx-auto">
+    <div class="flex justify-between items-center">
+      <p id="modalMessage" class="text-gray-700">Please select a check-in date.</p>
+      <button onclick="closeModal()" class="text-gray-700 font-bold">X</button>
+    </div>
+  </div>
+</div>
 
 <!-- Modal for displaying Add-on Details -->
 <div id="addon-modal" class="fixed inset-0 bg-black/30 flex justify-center items-center hidden z-50">

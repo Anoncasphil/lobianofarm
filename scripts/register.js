@@ -14,7 +14,10 @@ document.addEventListener('DOMContentLoaded', function () {
     const otpInput = document.getElementById('otp_input');
     const otpError = otpInput.nextElementSibling;
     const sendOtpButton = document.getElementById('send_otp_button');
+    const otpTimer = document.getElementById('timer');
     const form = document.querySelector('form');
+
+    let timerInterval;
 
     sendOtpButton.addEventListener('click', async function() {
         if (validateEmail(emailInput.value)) {
@@ -30,6 +33,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 
                 if (data.success) {
                     alert('OTP has been sent to your email.');
+                    startOtpTimer();
                 } else {
                     alert('Failed to send OTP. Please try again.');
                     console.error('Error:', data.error);
@@ -44,6 +48,43 @@ document.addEventListener('DOMContentLoaded', function () {
             emailError.classList.remove('hidden');
         }
     });
+
+    function startOtpTimer() {
+        let timeLeft = 60;
+        otpTimer.textContent = `Time left: ${timeLeft}s`;
+        otpTimer.style.display = 'inline';
+
+        clearInterval(timerInterval);
+        timerInterval = setInterval(async () => {
+            timeLeft--;
+            otpTimer.textContent = `Time left: ${timeLeft}s`;
+
+            if (timeLeft <= 0) {
+                clearInterval(timerInterval);
+                otpTimer.style.display = 'none';
+                alert('OTP expired. Please try again.');
+                await removeExpiredOtp(emailInput.value);
+            }
+        }, 1000);
+    }
+
+    async function removeExpiredOtp(email) {
+        try {
+            const response = await fetch('remove_expired_otp.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `email=${encodeURIComponent(email)}`
+            });
+            const data = await response.json();
+            if (!data.success) {
+                console.error('Failed to remove expired OTP:', data.error);
+            }
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    }
 
     emailInput.addEventListener('input', async function() {
         if (validateEmail(emailInput.value)) {
