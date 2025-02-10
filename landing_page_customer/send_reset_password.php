@@ -42,7 +42,7 @@ if ($stmt->affected_rows) {
     }
 }
 echo "<script>
-    alert('A token has been sent to the given address.');
+    alert('A link has been sent to the given address.');
     window.location.href = 'login.php';
 </script>";
 
