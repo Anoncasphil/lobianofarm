@@ -8,7 +8,7 @@ header('Content-Type: application/json');
 try {
     // Query to fetch only active rates
     $query = "
-        SELECT r.id, r.name, r.price, r.rate_type
+        SELECT r.id  , r.name, r.price, r.rate_type
         FROM rates r
         WHERE r.status = 'active'
     ";
@@ -22,7 +22,7 @@ try {
         // Fetch each row and store it in the rates array
         while ($row = $result->fetch_assoc()) {
             $rates[] = [
-                'id' => $row['id'],
+                'id' => (string) $row['id'], // Ensure ID is a string
                 'name' => $row['name'],
                 'price' => $row['price'],
                 'rate_type' => $row['rate_type']

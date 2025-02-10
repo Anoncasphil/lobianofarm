@@ -171,17 +171,36 @@ if (!isset($_SESSION['admin_id'])) {
             </div>
           </div>
 
+
+          <div id="error-modal" class="max-w-screen-xl mx-auto flex gap-8 mt-10 items-center p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-200  hidden" role="alert">
+            <svg class="shrink-0 inline w-4 h-4 me-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 1 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
+            </svg>
+            <span class="sr-only">Info</span>
+            <div>
+              <span class="font-medium" id="alert-title">Info alert!</span> 
+              <span id="error-message-modal"></span>
+            </div>
+          </div>
+
 <div class="max-w-screen-xl mx-auto flex gap-8 mt-10">
 
-<!-- 4-Column Wide Div -->
+
  
 <div class="flex-4">
     
 <form id="reservation-form">
-  <div id="basic-details" class="flex-4 bg-white p-6 rounded-lg shadow-lg">
-    <h2 class="text-xl font-semibold text-gray-900">Details</h2>
 
-<!-- Personal Information Section -->
+
+
+<div class="bg-blue-900 text-white p-4 rounded-t-lg">
+    <span class="font-semibold">Reservation Code:</span>
+    <span id="reservation-code" class=" font-semibold ml-2">123456</span>
+</div>
+
+<div id="basic-details" class="flex-4 bg-white p-6 rounded-lg shadow-lg mt-[-20px] z-10">
+
+    <h2 class="text-xl font-semibold text-gray-900">Details</h2>
 <div class="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
     <input type="hidden" name="user_id" id="user_id" />
   <!-- First Name -->
@@ -216,22 +235,20 @@ if (!isset($_SESSION['admin_id'])) {
 <div id="Invoice" class="bg-white p-8 rounded-lg mt-5 shadow-xl max-w-4xl mx-auto">
   <!-- Invoice Header with Buttons -->
   <div class="flex justify-between items-center">
-    <h2 class="text-xl font-semibold text-gray-900">Invoice</h2>
-    <div class="space-x-2">
-    <button type="button" onclick="toggleModal('editModal')" class="bg-blue-500 text-white px-4 py-2 rounded">Edit</button>
-        
-      </button>
-<!-- View Payment Button -->
-<button type="button" onclick="openPaymentModal()" class="bg-gray-500 text-white px-4 py-2 rounded">
-  View Payment
-</button>
-
-
-
-
-
-    </div>
+  <h2 class="text-xl font-semibold text-gray-900">Invoice</h2>
+  <div class="flex space-x-4"> <!-- Updated flex container with space between buttons -->
+    <button type="button" onclick="toggleModal('editModal')" class="bg-blue-900 text-white w-24 font-bold text-sm py-2 px-3 rounded-md shadow-lg hover:bg-blue-700 transition duration-200">
+      Edit
+    </button>
+    
+    <!-- View Payment Button -->
+    <button type="button" onclick="openPaymentModal()" class="bg-blue-900 text-white w-24 font-bold text-sm py-2 px-3 rounded-md shadow-lg hover:bg-blue-700 transition duration-200">
+    Payment
+    </button>
   </div>
+</div>
+
+
 
   <!-- Invoice Date and Number -->
   <div class="mt-5 flex justify-between text-sm text-gray-600">
@@ -272,18 +289,19 @@ if (!isset($_SESSION['admin_id'])) {
   </div>
 </div>
 
+
 <!-- Edit Invoice Modal -->
 <div id="editModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-5000000">
-  <div class="bg-white p-6 rounded-lg shadow-lg w-96">
-    
-<div id="info-alert-modal" class="flex items-center p-4 mb-4 text-sm text-blue-800 rounded-lg bg-blue-200 dark:text-blue-900 hidden" role="alert">
+    <div class="bg-white p-6 rounded-lg shadow-lg w-96">
+        <div id="info-error-modal" class="flex items-center p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-200 dark:text-blue-900 hidden" role="alert">
+            <svg class="shrink-0 inline w-4 h-4 me-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20"></svg>
             <svg class="shrink-0 inline w-4 h-4 me-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
               <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 1 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
             </svg>
             <span class="sr-only">Info</span>
-            <div>
-              <span class="font-medium pl-1" id="alert-title">Info alert!</span> 
-              <span id="alert-message-modal"></span>
+            <div class="pl-3">
+              <span class="font-medium" id="alert-title">Info alert!</span> 
+              <span id="error-message-modal" class=""></span>
             </div>
           </div>
     <h3 class="text-lg font-semibold mb-4">Edit Invoice</h3>
@@ -291,15 +309,18 @@ if (!isset($_SESSION['admin_id'])) {
     <!-- Hidden Rate ID Input -->
     <input type="hidden" id="rateId" value="" />
 
-    <label for="rateSelected" class="block text-gray-700 font-medium mb-2">New Rate</label>
+    <label for="rateSelected" class="block text-gray-700 font-medium mb-2">Selected Rate</label>
     <select id="rateSelected" class="w-full px-3 py-2 border rounded-md mb-4">
       <!-- Options will be populated dynamically -->
     </select>
 
-    <!-- Rate Details Section -->
-    <div id="rateDetails" class="mb-4">
-      <!-- Dynamically populated rate details (e.g., price, description) -->
-    </div>
+<div id="rateDisplay-div" class="w-full relative">
+    <input type="text" id="rateInput" class="w-full px-3 py-2 border rounded-md mb-4 shadow-sm text-gray-700 bg-white" readonly>
+    <span id="rateDisplay" class="absolute inset-0 px-3 pt-4 border rounded-md bg-gray-100 text-gray-700 shadow-sm flex items-center"></span>
+</div>
+
+
+
 
     <!-- Addons Dropdown -->
     <label for="addonsSelect" class="block text-gray-700 font-medium mb-2">Add Addons</label>
@@ -308,7 +329,7 @@ if (!isset($_SESSION['admin_id'])) {
         <option value="">-- Select an Addon --</option>
         <!-- Addons will be populated dynamically -->
       </select>
-      <button id="addAddonBtn" type="button" class="px-4 py-2 bg-blue-600 text-white hover:bg-blue-700 rounded-lg">
+      <button id="addAddonBtn" type="button" class="px-4 py-2 bg-blue-900 text-white hover:bg-blue-700 rounded-md">
         Add
       </button>
     </div>
@@ -321,8 +342,8 @@ if (!isset($_SESSION['admin_id'])) {
 
     <!-- Action Buttons -->
     <div class="flex justify-end mt-4 space-x-2">
-      <button onclick="toggleModal('editModal')" class="px-4 py-2 bg-gray-300 hover:bg-gray-400 rounded-lg">Cancel</button>
-      <button type="button" onclick="toggleModal('validation-modal')" class="bg-blue-500 text-white px-4 py-2 rounded">Edit</button>
+      <button onclick="toggleModal('editModal')" class="py-2.5 px-5 ms-3 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-sm border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700">Cancel</button>
+      <button type="button" onclick="toggleModal('validation-modal')" class="bg-blue-900 text-white px-4 py-2 rounded-md">Edit</button>
     </div>
   </div>
 </div>
@@ -334,8 +355,8 @@ if (!isset($_SESSION['admin_id'])) {
 <!-- Modal -->
 <div id="validation-modal" tabindex="-1" class=" hidden overflow-y-auto overflow-x-hidden fixed top-0 left-0 w-full h-full flex justify-center items-center z-50000000">
     <div class="relative p-4 w-full max-w-md max-h-full">
-        <div class="relative bg-white rounded-lg shadow-sm dark:bg-gray-700">
-            <button type="button" class="absolute top-3 end-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-hide="popup-modal">
+        <div class="relative bg-white rounded-sm shadow-sm dark:bg-gray-700">
+            <button type="button" class="absolute top-3 end-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-sm text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-hide="popup-modal">
                 <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
                 </svg>
@@ -346,13 +367,13 @@ if (!isset($_SESSION['admin_id'])) {
                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 11V6m0 8h.01M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
                 </svg>
                 <h3 class="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">Are you sure about the changes you made?</h3>
-                <button id="confirmButton" data-modal-hide="popup-modal" type="button" class="text-white bg-blue-900 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center"
+                <button id="confirmButton" data-modal-hide="popup-modal" type="button" class="text-white bg-blue-900 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-md text-sm inline-flex items-center px-5 py-2.5 text-center"
                     onclick="confirmAction()">
                     Yes, I'm sure
                 </button>
 
 
-                <button data-modal-hide="no-validation" onclick="toggleModal('validation-modal')" type="button" class="py-2.5 px-5 ms-3 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">No, cancel</button>
+                <button data-modal-hide="no-validation" onclick="toggleModal('validation-modal')" type="button" class="py-2.5 px-5 ms-3 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-md border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700">No, cancel</button>
             </div>
         </div>
     </div>
@@ -385,7 +406,7 @@ if (!isset($_SESSION['admin_id'])) {
     </div>
     
     <div class="flex justify-end mt-4">
-      <button onclick="toggleModal('payment-modal')" class="px-4 py-2 bg-blue-600 text-white hover:bg-blue-700 rounded-lg">Close</button>
+      <button onclick="toggleModal('payment-modal')" class="px-4 py-2 bg-blue-900 text-white hover:bg-blue-700 rounded-sm">Close</button>
     </div>
   </div>
 </div>
@@ -394,31 +415,25 @@ if (!isset($_SESSION['admin_id'])) {
 
 </div>
 
-<!-- 2-Column Wide Div -->
-<!-- 2-Column Wide Div -->
+
 <div id="sidebar-div" class="flex-2 bg-white p-6 rounded-lg shadow-lg">
 
-<div class="relative">
+
+
+<div>
+
+<div class="relative mt-10">
   <label for="status-dropdown" class="px-2 bg-white absolute left-3 top-[-10px] text-gray-600 text-sm font-medium">Status</label>
   <select id="status-dropdown" class="p-3 pt-5 w-full border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-blue-950 transition" onchange="updateStatusColor(this)">
-    <option value="pending" class="text-orange-500">Pending</option>
-    <option value="confirmed" class="text-green-500">Confirmed</option>
-    <option value="completed" class="text-blue-500">Completed</option>
-    <option value="cancelled" class="text-red-500">Cancelled</option>
+
   </select>
+  <div id="selected-status" class="mt-5 ml-2 text-sm font-medium text-gray-600"></div>
 </div>
 
 
 
-  <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-10">
-        <input class="hidden" type="text" id="rate-id-field" name="rate_id" />
 
-        <div class="relative">
-          <input type="date" id="check-in-date" class="p-3 pt-5 w-full border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-blue-950" required />
-          <label for="check-in-date" class="px-2 bg-white absolute left-3 top-[-10px] text-gray-600 text-sm font-medium">Check-In Date</label>
-        </div>
-
-        <div id="info-alert" class="flex items-center p-3 mb-3 text-sm text-blue-800 rounded-lg bg-blue-200 hidden">
+<div id="info-alert" class="flex items-center p-3 mb-3 mt-5 text-sm text-blue-800 rounded-lg bg-blue-200 hidden">
           <svg class="shrink-0 w-4 h-4 me-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
             <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 1 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
           </svg>
@@ -427,6 +442,17 @@ if (!isset($_SESSION['admin_id'])) {
             <span id="alert-message"></span>
           </div>
         </div>
+
+  <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-10">
+
+  
+        <input class="hidden" type="text" id="rate-id-field" name="rate_id" />
+
+        <div class="relative">
+          <input type="date" id="check-in-date" class="p-3 pt-5 w-full border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-blue-950" required />
+          <label for="check-in-date" class="px-2 bg-white absolute left-3 top-[-10px] text-gray-600 text-sm font-medium">Check-In Date</label>
+        </div>
+
 
         <div class="relative">
           <input type="date" id="check-out-date" class="p-3 pt-5 w-full border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-blue-950" disabled />
@@ -445,34 +471,89 @@ if (!isset($_SESSION['admin_id'])) {
         </div>
       </div>
 
-        <div id="reschedule-request" class="p-4 mb-4 mt-5 text-blue-800 border border-blue-300 rounded-lg bg-blue-50 dark:bg-gray-800 dark:text-blue-400 dark:border-blue-800" role="alert">
-        <div class="flex items-center">
-            <svg class="shrink-0 w-4 h-4 me-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-            <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
-            </svg>
-            <span class="sr-only">Info</span>
-            <h3 class="text-lg font-medium pl-3">Reservation Request</h3>
-        </div>
+      <div id="reschedule-request" class="p-4 mb-4 mt-5 text-blue-800 border border-blue-300 rounded-lg bg-blue-50 dark:bg-gray-800 dark:text-blue-400 dark:border-blue-800 " role="alert">
+    <div class="flex items-center">
+        <svg class="shrink-0 w-4 h-4 me-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 1 1 1 1v4h1a1 1 0 1 1 0 2Z"/>
+        </svg>
+        <span class="sr-only">Info</span>
+        <h3 class="text-lg font-medium pl-3">Reschedule Request</h3>
+    </div>
 
-        <div class="mt-2 mb-4 text-sm">
-            More info about this info alert goes here. This example text is going to run a bit longer so that you can see how spacing within an alert works with this kind of content.
-        </div>
+    <div id="reschedule-message" class="mt-2 mb-4 text-sm">
+    </div>
 
-        <div class="flex">
-            <button type="button" class="text-white bg-blue-800 hover:bg-blue-900 focus:ring-4 focus:outline-none focus:ring-blue-200 font-medium rounded-lg text-xs px-3 py-1.5 me-2 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-            <svg class="me-2 h-3 w-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 14">
-                <path d="M10 0C4.612 0 0 5.336 0 7c0 1.742 3.546 7 10 7 6.454 0 10-5.258 10-7 0-1.664-4.612-7-10-7Zm0 10a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z"/>
-            </svg>
-            View more
-            </button>
-            <button type="button" class="text-blue-800 bg-transparent border border-blue-800 hover:bg-blue-900 ml-3 hover:text-white focus:ring-4 focus:outline-none focus:ring-blue-200 font-medium rounded-lg text-xs px-3 py-1.5 text-center dark:hover:bg-blue-600 dark:border-blue-600 dark:text-blue-400 dark:hover:text-white dark:focus:ring-blue-800" data-dismiss-target="#alert-additional-content-1" aria-label="Close">
-            Dismiss
-            </button>
-        </div>
-        </div>
+    <div class="flex">
+        <button id="acceptRequest" type="button" class="text-white bg-blue-900 hover:bg-green-700 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-sm text-xs px-3 py-1.5 me-2 text-center inline-flex items-center">
+            Accept
+        </button>
+        <button id="declineRequest" type="button" class="text-white ml-5 bg-gray-700 hover:bg-red-700 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-sm text-xs px-3 py-1.5 text-center">
+            Decline
+        </button>
+    </div>
+</div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        let reservationId = localStorage.getItem("reservationID_admin");
+
+        if (!reservationId) {
+            console.error("No reservation ID found in localStorage.");
+            return;
+        }
+
+        fetch(`../api/get_reschedule_request.php?reservation_id=${reservationId}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === "success" && data.request) {
+                    const request = data.request;
+                    document.getElementById("reschedule-message").textContent = 
+                        `Customer wants to reschedule date from ${request.check_in_date} to ${request.check_out_date}.`;
+
+                    document.getElementById("reschedule-request").classList.remove("hidden");
+
+                    // Add event listeners to accept and decline buttons
+                    document.getElementById("acceptRequest").addEventListener("click", function () {
+                        updateRequestStatus(request.request_id, "Approved");
+                    });
+
+                    document.getElementById("declineRequest").addEventListener("click", function () {
+                        updateRequestStatus(request.request_id, "Denied");
+                    });
+                } else {
+                    console.warn("No reschedule request found.");
+                }
+            })
+            .catch(error => {
+                console.error("Error fetching reschedule request:", error);
+            });
+
+        function updateRequestStatus(requestId, status) {
+            fetch("../api/update_reschedule_status.php", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ request_id: requestId, status: status })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === "success") {
+                    console.log(`Request ${status} successfully.`);
+                    document.getElementById("reschedule-request").classList.add("hidden");
+                } else {
+                    console.error("Error updating request:", data.message);
+                }
+            })
+            .catch(error => {
+                console.error("Error updating request:", error);
+            });
+        }
+    });
+</script>
+
 
         <div class="mt-6 flex justify-center">
-    <button type="button" onclick="applyChanges()" id="applyButton" class="bg-blue-600 text-white w-full font-bold py-3 w-80 px-6 rounded-md shadow-lg hover:bg-blue-700 transition duration-200">
+    <button type="button"  onclick="toggleModal('submit-validation')" id="applyButton" class="bg-blue-900 text-white w-full font-bold py-3 w-80 px-6 rounded-md shadow-lg hover:bg-blue-700 transition duration-200">
     Submit
     </button>
 </div>
@@ -480,6 +561,32 @@ if (!isset($_SESSION['admin_id'])) {
     
 </div>
 
+<!-- Modal -->
+<div id="submit-validation" tabindex="-1" class=" hidden overflow-y-auto overflow-x-hidden fixed top-0 left-0 w-full h-full flex justify-center items-center z-50000000">
+    <div class="relative p-4 w-full max-w-md max-h-full">
+        <div class="relative bg-white rounded-lg shadow-sm dark:bg-gray-700">
+            <button type="button" class="absolute top-3 end-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-hide="popup-modal">
+                <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                </svg>
+                <span class="sr-only">Close modal</span>
+            </button>
+            <div class="p-4 md:p-5 text-center">
+                <svg class="mx-auto mb-4 text-gray-900 w-12 h-12 dark:text-gray-200" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 11V6m0 8h.01M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
+                </svg>
+                <h3 class="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">Are you sure about the changes you made?</h3>
+                <button id="submitBTN" data-modal-hide="popup-modal" type="button" class="text-white bg-blue-900 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center"
+                    >
+                    Yes, I'm sure
+                </button>
+
+
+                <button data-modal-hide="no-validation" onclick="toggleModal('submit-validation')" type="button" class="py-2.5 px-5 ms-3 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">No, cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 </main>
 

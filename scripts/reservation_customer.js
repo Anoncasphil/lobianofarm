@@ -398,28 +398,104 @@ function openPaymentModal() {
       
   }
 
-  // Function to fetch and populate the rates dropdown
-function populateRates() {
-    fetch('../api/get_rates.php')
-      .then(response => response.json())
-      .then(data => {
-        if (data.status === 'success') {
-          const rateSelected = document.getElementById('rateSelected');
-          rateSelected.innerHTML = ''; // Clear any existing options
-  
-          // Populate the rates dropdown
-          data.rates.forEach(rate => {
-            const option = document.createElement('option');
-            option.value = rate.id;
-            option.textContent = rate.name
-            rateSelected.appendChild(option);
-          });
-        } else {
-          console.error('Error fetching rates:', data.message);
+  async function loadRateDetails(rateId) {
+    try {
+        const response = await fetch(`../api/get_reservations_rates_admin.php?reservation_id=${rateId}`);
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
         }
-      })
-      .catch(error => console.error('Error fetching rates:', error));
-  }
+
+        const data = await response.json();
+        console.log('Rate API Response:', data); // Log the rate response
+
+        if (data.status === 'success' && data.reservation) {
+            const { rate_id, rate_name, rate_price, rate_type, check_in_date } = data.reservation;
+
+            console.log('Rate ID:', rate_id);
+            console.log('Rate Name:', rate_name);
+            console.log('Rate Price:', rate_price);
+            console.log('Rate Type:', rate_type);
+            console.log('Check-in Date:', check_in_date);
+
+            // Store the rate price for later use
+            window.ratePrice = parseFloat(rate_price);
+
+            // Check if the selected rate is already booked for the check-in date
+            const isRateReserved = 
+                (rate_type === 'Nighttime' && reservedDates.reservedDaytime.includes(check_in_date)) ||
+                (rate_type === 'Daytime' && reservedDates.reservedNighttime.includes(check_in_date));
+
+            const rateSelected = document.getElementById('rateSelected');
+            if (!rateSelected) {
+                console.error('Rate selection dropdown not found');
+                return;
+            }
+
+            rateSelected.disabled = isRateReserved;
+            if (isRateReserved) {
+                showError('Cannot change rate. The rate is already booked for this date.');
+                return;
+            }
+
+            // Fetch all rates
+            const allRatesResponse = await fetch('../api/get_rates.php');
+            if (!allRatesResponse.ok) {
+                throw new Error('Failed to fetch all rates');
+            }
+            const allRatesData = await allRatesResponse.json();
+            
+            if (allRatesData.status === 'success' && Array.isArray(allRatesData.rates)) {
+                console.log('Rate dropdown found');
+
+                // Clear existing options
+                rateSelected.innerHTML = '';
+
+                // Convert rate_id to string to ensure consistency
+                const rateIdStr = String(rate_id);
+
+                // Populate the dropdown with all available rates
+                let rateFound = false;
+                allRatesData.rates.forEach(rate => {
+                    const rateOption = document.createElement('option');
+                    rateOption.value = String(rate.id); // Ensure ID is a string
+                    rateOption.textContent = rate.name;
+                    rateSelected.appendChild(rateOption);
+
+                    if (String(rate.id) === rateIdStr) {
+                        rateFound = true;
+                    }
+                });
+
+                // If the rate is missing, add it manually
+                if (!rateFound) {
+                    console.warn(`Rate ID ${rateIdStr} not found in available rates. Adding it manually.`);
+                    
+                    const missingRateOption = document.createElement('option');
+                    missingRateOption.value = rateIdStr;
+                    missingRateOption.textContent = `${rate_name} (Not in list)`;
+                    missingRateOption.selected = true;
+                    rateSelected.appendChild(missingRateOption);
+                } else {
+                    rateSelected.value = rateIdStr;
+                }
+
+                console.log('Rate options populated');
+            } else {
+                console.error('Failed to fetch available rates');
+            }
+
+            // Fetch and display addons
+            await loadAddons(rate_id);
+        } else {
+            console.error('Error fetching reservation details for rate:', data.message);
+        }
+    } catch (error) {
+        console.error('Error fetching reservation rate details:', error);
+    }
+}
+
+
+
   
   // Function to fetch and populate the addons dropdown
   function populateAddons() {
@@ -476,91 +552,126 @@ function populateRates() {
 
 async function loadRateDetails(rateId) {
     try {
-        const response = await fetch(`../api/get_reservation_rates_id.php?reservation_id=${rateId}`);
-        if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
-        }
+        // Fetch reservation details
+        const response = await fetch(`../api/get_reservations_rates_admin.php?reservation_id=${rateId}`);
+        if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
 
         const data = await response.json();
-        console.log('Rate API Response:', data); // Log the rate response
-
-        if (data.status === 'success' && data.reservation) {
-            const { rate_id, rate_name, rate_price, rate_type, check_in_date } = data.reservation;
-
-            console.log('Rate ID:', rate_id);
-            console.log('Rate Name:', rate_name);
-            console.log('Rate Price:', rate_price);
-            console.log('Rate Type:', rate_type);
-            console.log('Check in Date:', check_in_date);
-
-            // Store the rate price for later use
-            window.ratePrice = parseFloat(rate_price);
-
-            // Check if the selected rate is already booked for the check-in date
-            const isRateReserved = 
-                (rate_type === 'Nighttime' && reservedDates.reservedDaytime.includes(check_in_date)) ||
-                (rate_type === 'Daytime' && reservedDates.reservedNighttime.includes(check_in_date));
-
-            if (isRateReserved) {
-                // Disable the rate selection dropdown if the rate is reserved
-                const rateSelected = document.getElementById('rateSelected');
-                if (rateSelected) {
-                    rateSelected.disabled = true; // Disable the dropdown
-                }
-
-                showError('Cannot change rate. The rate is already booked for this date.');
-                return;
-            } else {
-                // Enable the rate selection dropdown if no conflict
-                const rateSelected = document.getElementById('rateSelected');
-                if (rateSelected) {
-                    rateSelected.disabled = false; // Enable the dropdown
-                }
-            }
-
-            // Fetch all rates (Assuming your API provides this data or a separate API endpoint)
-            const allRatesResponse = await fetch('../api/get_all_rates.php');
-            if (!allRatesResponse.ok) {
-                throw new Error('Failed to fetch all rates');
-            }
-            const allRatesData = await allRatesResponse.json();
-            if (allRatesData.status === 'success' && allRatesData.rates) {
-                const rateSelected = document.getElementById('rateSelected');
-                if (rateSelected) {
-                    console.log('Rate dropdown found');
-
-                    // Clear existing options
-                    rateSelected.innerHTML = '';
-
-                    // Populate the dropdown with all available rates
-                    allRatesData.rates.forEach(rate => {
-                        const rateOption = document.createElement('option');
-                        rateOption.value = rate.rate_id;
-                        rateOption.textContent = rate.rate_name;
-
-                        // Set the default selected rate
-                        if (rate.rate_id === rate_id) {
-                            rateOption.selected = true;
-                        }
-
-                        rateSelected.appendChild(rateOption);
-                    });
-
-                    console.log('Rate options populated');
-                }
-            } else {
-                console.error('Failed to fetch available rates');
-            }
-
-            // Fetch and display addons
-            await loadAddons(rate_id);
-        } else {
-            console.error('Error fetching reservation details for rate:', data.message);
+        if (data.status !== 'success' || !data.reservation) {
+            console.error("Error fetching reservation details:", data.message);
+            return;
         }
+
+        const { rate_id, rate_name, rate_price, rate_type, check_in_date } = data.reservation;
+        console.log("Fetched Rate ID from Reservation API:", rate_id);
+
+        // Store the rate price for later use
+        window.ratePrice = parseFloat(rate_price);
+
+        // Fetch all available rates
+        const allRatesResponse = await fetch('../api/get_rates.php');
+        if (!allRatesResponse.ok) throw new Error('Failed to fetch all rates');
+
+        const allRatesData = await allRatesResponse.json();
+        if (allRatesData.status !== 'success' || !Array.isArray(allRatesData.rates)) {
+            console.error("Error fetching available rates");
+            return;
+        }
+
+        // Log the fetched rates for debugging
+        console.log("Fetched Rates:", allRatesData.rates);
+
+        // Extract available rate IDs
+        const availableRateIds = allRatesData.rates.map(rate => String(rate.id));
+        console.log("Available Rate IDs:", availableRateIds);
+
+        // Check if the rate ID exists in available rates
+        const rateExists = availableRateIds.includes(String(rate_id));
+
+        const rateSelected = document.getElementById('rateSelected');
+        const rateDisplay = document.getElementById('rateDisplay');
+        if (!rateSelected || !rateDisplay) {
+            console.error('Rate selection dropdown or display element not found');
+            return;
+        }
+
+        // Clear existing options
+        rateSelected.innerHTML = '';
+
+        // Populate the dropdown with available rates
+        allRatesData.rates.forEach(rate => {
+            const rateOption = document.createElement('option');
+            rateOption.value = rate.id;
+            rateOption.textContent = rate.name;
+            rateSelected.appendChild(rateOption);
+        });
+
+        // Set the selected rate
+        if (rateExists) {
+            rateSelected.value = String(rate_id);
+        } else {
+            console.warn(`Rate ID ${rate_id} not found in available rates`);
+
+            // Force adding the missing rate
+            const missingRateOption = document.createElement('option');
+            missingRateOption.value = rate_id;
+            missingRateOption.textContent = `${rate_name} (Not in list)`;
+            rateSelected.appendChild(missingRateOption);
+            rateSelected.value = rate_id;
+        }
+
+        console.log('Rate options populated successfully');
+
+        // Check if the selected rate conflicts with existing reservations
+        if (isRateAlreadyBooked(rate_type, check_in_date)) {
+            showError("Conflict detected: Rate selection disabled.");
+
+            // Disable the dropdown and show the rate in a read-only format
+            rateSelected.style.display = 'none'; // Hide the dropdown
+            rateDisplay.style.display = 'inline'; // Show the display element
+            rateDisplay.textContent = rate_name; // Display the rate name
+
+            showError("Cannot change rate. The other rate type is already booked for this date.");
+        } else {
+            // Enable the dropdown and hide the display element
+            rateSelected.style.display = 'inline'; // Show the dropdown
+            rateDisplay.style.display = 'none'; // Hide the display element
+            rateSelected.disabled = false;
+
+                // Hide the rate input field and display the rate name
+            const rateInput = document.getElementById('rateInput');
+            if (rateInput) {
+            rateInput.style.display = 'none'; // Hide the input field when there's no conflict
+            }
+
+        }
+
+        // Fetch and display add-ons
+        await loadAddons(rate_id);
     } catch (error) {
-        console.error('Error fetching reservation rate details:', error);
+        console.error("Error in loadRateDetails:", error);
     }
 }
+/**
+/**
+ * Checks if the selected rate type conflicts with an existing reservation.
+ * Disables the selection dropdown if a conflict is found.
+ * @param {string} rateType - The selected rate type ('Daytime' or 'Nighttime').
+ * @param {string} checkInDate - The reservation date.
+ * @returns {boolean} - Returns true if there is a conflict.
+ */
+function isRateAlreadyBooked(rateType, checkInDate) {
+    // Assuming `reservedDates` is a global object that contains reserved dates for each rate type
+    if (
+        (rateType === 'Nighttime' && reservedDates.reservedDaytime.includes(checkInDate)) ||
+        (rateType === 'Daytime' && reservedDates.reservedNighttime.includes(checkInDate))
+    ) {
+        console.warn("Conflict detected: Rate selection disabled.");
+        return true;
+    }
+    return false;
+}
+
 
 
 
@@ -568,58 +679,54 @@ async function loadRateDetails(rateId) {
 // Function to fetch and display reservation addons
 async function loadAddons(reservationId) {
     try {
+        console.log('Fetching addons for reservation ID:', reservationId);
+        
         const response = await fetch(`../api/get_reservation_rates_id.php?reservation_id=${reservationId}`);
+        console.log('API Request URL:', response.url);
+        
         if (!response.ok) {
             throw new Error(`HTTP error! Status: ${response.status}`);
         }
 
         const data = await response.json();
-        console.log('Addons API Response:', data); // Log the addons response
+        console.log('Addons API Response:', data);
 
         if (data.status === 'success' && data.addons) {
             const addonsDiv = document.getElementById('addonsDisplay');
-            console.log('Addons Display Div:', addonsDiv); // Check if it exists in the DOM
+            console.log('Addons Display Div:', addonsDiv);
 
-            let totalAddonPrice = 0; // Initialize total addon price
+            let totalAddonPrice = 0;
 
             if (addonsDiv) {
-                // Clear the existing content
                 addonsDiv.innerHTML = '';
 
-                // Add a title to the addons section
                 const addonsTitle = document.createElement('h3');
                 addonsTitle.textContent = 'Addons for this reservation:';
                 addonsTitle.classList.add('text-lg', 'font-semibold', 'text-gray-800');
                 addonsDiv.appendChild(addonsTitle);
 
-                // Check if addons is an array and contains items
                 if (Array.isArray(data.addons) && data.addons.length > 0) {
                     data.addons.forEach(addon => {
                         const addonDiv = document.createElement('div');
                         addonDiv.id = `addon-${addon.addon_id}`;
                         addonDiv.classList.add('flex', 'items-center', 'justify-between', 'bg-gray-100', 'p-2', 'mt-2', 'rounded-lg', 'shadow-sm');
 
-                        // Add addon name and price
                         const addonText = document.createElement('span');
                         addonText.textContent = `${addon.addon_name} - ₱${addon.addon_price}`;
                         addonText.classList.add('text-sm', 'font-medium', 'text-gray-700');
                         addonDiv.appendChild(addonText);
 
-                        // Add the price of the addon to the total
                         totalAddonPrice += parseFloat(addon.addon_price);
 
-                        // Create the "X" button to remove the addon
                         const removeButton = document.createElement('button');
                         removeButton.textContent = 'X';
                         removeButton.classList.add('text-red-500', 'font-bold', 'hover:text-red-700', 'cursor-pointer');
                         removeButton.onclick = () => removeAddon(addon.addon_id);
                         addonDiv.appendChild(removeButton);
 
-                        // Append the addon div to the container
                         addonsDiv.appendChild(addonDiv);
                     });
                 } else {
-                    // If no addons, display a message
                     const noAddonsMessage = document.createElement('p');
                     noAddonsMessage.textContent = 'No addons for this reservation.';
                     noAddonsMessage.classList.add('text-sm', 'text-gray-500');
@@ -629,27 +736,23 @@ async function loadAddons(reservationId) {
                 console.error('Addons display div not found');
             }
 
-            // Calculate the total price (rate + addons)
             const totalPrice = window.ratePrice + totalAddonPrice;
-
-            // Display the total price in the total price section with comma formatting
             const totalPriceDisplay = document.getElementById('total-price');
+            
             if (totalPriceDisplay) {
-                totalPriceDisplay.textContent = `₱${totalPrice.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,')}`; // Add commas to total price
+                totalPriceDisplay.textContent = `₱${totalPrice.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,')}`;
             } else {
                 console.error('Total Price display div not found');
             }
 
-            // Update the total price in the database (optional)
             updateTotalPrice(reservationId, totalPrice);
-
-        } else {
-            console.error('Error fetching reservation details for addons:', data.message);
-        }
+        } 
+        
     } catch (error) {
         console.error('Error fetching reservation addons details:', error);
     }
 }
+
 
 // Function to display the total price (on the page and in the console)
 
@@ -719,6 +822,7 @@ async function fetchReservedDates() {
 }
 
 
+
 function confirmAction() {
     const reservationId = localStorage.getItem("reservationID_admin"); // Get the reservation ID from localStorage
     const newRateId = document.getElementById('rateSelected').value; // Get the new selected rate ID
@@ -729,15 +833,34 @@ function confirmAction() {
         // Update the rate in the reservation
         updateRate(newRateId, reservationId);
 
-        // Show the success message modal
-        showSuccessMessage();
+        // Store success message in localStorage
+        localStorage.setItem('successMessage', 'Invoice successfully modified');
 
-        // Reload the page after 2 seconds (or adjust time as needed)
+        // Close all open modals first
+        closeAllModals();
+
+        // Reload the page after closing modals (with a slight delay to allow closing effect)
         setTimeout(() => {
-            location.reload(); // This will reload the page
-        }, 2000); // 2000 milliseconds = 2 seconds
+            // location.reload(); 
+        }, 500); // 500 milliseconds for smooth transition (adjust if necessary)
     } else {
         console.error('No reservation ID found');
+    }
+}
+
+// Function to close all modals
+function closeAllModals() {
+    // Get the modals by their IDs
+    const editModal = document.getElementById('editModal');
+    const validationModal = document.getElementById('validation-modal');
+    
+    // Add 'hidden' class to hide modals
+    if (editModal && !editModal.classList.contains('hidden')) {
+        editModal.classList.add('hidden'); // Close the edit modal
+    }
+
+    if (validationModal && !validationModal.classList.contains('hidden')) {
+        validationModal.classList.add('hidden'); // Close the validation modal
     }
 }
 
@@ -745,20 +868,48 @@ function confirmAction() {
 function showSuccessMessage() {
     const alertModal = document.getElementById('alert-modal');
     const alertMessage = document.getElementById('alert-message-modal');
-
-    // Set the success message
-    alertMessage.textContent = 'Invoice successfully modified';
-
-    // Show the modal by removing the 'hidden' class
-    alertModal.classList.remove('hidden');
-    alertModal.classList.add('block'); // Make the modal visible
-
-    // Optionally, hide it after a few seconds
-    setTimeout(() => {
-        alertModal.classList.remove('block');
-        alertModal.classList.add('hidden'); // Hide the modal after 5 seconds
-    }, 5000); // 5000 milliseconds = 5 seconds
+    
+    // Get the success message from localStorage
+    const successMessage = localStorage.getItem('successMessage');
+    const errorMessage = localStorage.getItem('updateReservationError');
+    
+    // Check for the success message first
+    if (successMessage) {
+        alertMessage.textContent = successMessage; // Set the success message text
+        
+        // Show the alert modal
+        if (alertModal) {
+            alertModal.classList.remove('hidden'); // Show the modal
+        }
+        
+        // Remove the success message from localStorage after 5 seconds
+        setTimeout(() => {
+            localStorage.removeItem('successMessage');  // Remove success message from localStorage
+            alertModal.classList.add('hidden');         // Hide the alert modal after 5 seconds
+        }, 5000); // 5000 milliseconds = 5 seconds
+    }
+    // If there's an error message, show it instead
+    else if (errorMessage) {
+        alertMessage.textContent = errorMessage; // Set the error message text
+        
+        // Show the alert modal
+        if (alertModal) {
+            alertModal.classList.remove('hidden'); // Show the modal
+        }
+        
+        // Remove the error message from localStorage after 5 seconds
+        setTimeout(() => {
+            localStorage.removeItem('updateReservationError');  // Remove error message from localStorage
+            alertModal.classList.add('hidden');                 // Hide the alert modal after 5 seconds
+        }, 5000); // 5000 milliseconds = 5 seconds
+    }
 }
+
+// Check if there's a success or error message in localStorage when the page loads
+document.addEventListener('DOMContentLoaded', () => {
+    showSuccessMessage(); // Display the message (if exists)
+});
+
 
 
 // Function to save the selected addons to the reservation
@@ -792,9 +943,11 @@ function saveAddons(reservationId) {
         });
 }
 
-// Function to update the rate in the reservation
 function updateRate(newRateId, reservationId) {
-    // Prepare the data for the POST request to update the rate
+    console.log('Updating rate...');
+    console.log('New Rate ID:', newRateId, 'Type:', typeof newRateId);
+    console.log('Reservation ID:', reservationId, 'Type:', typeof reservationId);
+
     const formData = new FormData();
     formData.append('reservation_id', reservationId);
     formData.append('new_rate_id', newRateId);
@@ -803,26 +956,26 @@ function updateRate(newRateId, reservationId) {
         method: 'POST',
         body: formData
     })
-        .then(response => response.text())  // Use .text() to inspect the raw response
-        .then(text => {
-            console.log('Raw response:', text); // Log the raw response
-            try {
-                const data = JSON.parse(text);  // Attempt to parse the response as JSON
-                if (data.status === 'success') {
-                    console.log('Rate updated successfully');
-                    // Optionally, you can reload the rate details or update the UI
-                    loadRateDetails(reservationId);  // Call the function to update the UI
-                } else {
-                    console.error('Error updating rate:', data.message);
-                }
-            } catch (error) {
-                console.error('Error parsing JSON:', error);
+    .then(response => response.text())  // Inspect raw response
+    .then(text => {
+        console.log('Raw response:', text); // Log raw response
+        try {
+            const data = JSON.parse(text);
+            if (data.status === 'success') {
+                console.log('Rate updated successfully');
+                loadRateDetails(reservationId);
+            } else {
+                console.error('Error updating rate:', data.message);
             }
-        })
-        .catch(error => {
-            console.error('Error updating rate:', error);
-        });
+        } catch (error) {
+            console.error('Error parsing JSON:', error);
+        }
+    })
+    .catch(error => {
+        console.error('Error updating rate:', error);
+    });
 }
+
 
 // Function to remove an addon from the list
 function removeAddon(addonId) {
@@ -891,8 +1044,8 @@ function addAddonToList(addonId, addonName) {
 
 // Function to show error message
 function showError(message) {
-    const modal = document.getElementById('info-alert-modal');
-    const alertMessage = document.getElementById('alert-message-modal');
+    const modal = document.getElementById('info-error-modal');
+    const alertMessage = document.getElementById('error-message-modal');
 
     // Set the error message
     alertMessage.textContent = message;
@@ -908,10 +1061,261 @@ function showError(message) {
     }, 10000); // Adjust the duration as needed
 }
 
-// Example of how to use the showError function
-// This will show an error when the addon is already added.
+// Function to populate the status dropdown with all possible status options
+// Function to populate the status dropdown with all possible status options
+async function populateStatusDropdown(reservationId) {
+    try {
+        // Fetch reservation details from the server
+        const response = await fetch(`../api/get_reservations_status.php?id=${reservationId}`);
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        
+        const data = await response.json();
+
+        if (data.status) {
+            // Get the status dropdown element
+            const statusDropdown = document.getElementById("status-dropdown");
+
+            // Define all possible status options
+            const statuses = ["Pending", "Confirmed", "Completed", "Cancelled"];
+
+            // Populate the dropdown with the status options
+            statuses.forEach(status => {
+                const option = document.createElement("option");
+                option.value = status.toLowerCase();
+                option.textContent = status;
+                statusDropdown.appendChild(option);
+            });
+
+            // Set the selected status in the dropdown based on the fetched status
+            const status = data.status || "Pending"; // Default to Pending if no status is found
+            statusDropdown.value = status.toLowerCase(); // Ensure the dropdown matches the fetched status
+
+            // Get the selected status element
+            const selectedStatusElement = document.getElementById("selected-status");
+
+            // Define dynamic background color based on status
+            let bgColorClass = '';
+            switch (status) {
+                case "Pending":
+                    bgColorClass = 'bg-orange-500 text-white ';
+                    break;
+                case "Confirmed":
+                    bgColorClass = 'bg-green-600 text-white';
+                    break;
+                case "Completed":
+                    bgColorClass = 'bg-blue-600 text-white';
+                    break;
+                case "Cancelled":
+                    bgColorClass = 'bg-red-600 text-white';
+                    break;
+                default:
+                    bgColorClass = 'bg-gray-600 text-white';
+                    break;
+            }
+
+            // Update the status display with the appropriate class
+            selectedStatusElement.innerHTML = `Current Status: <span class='${bgColorClass} text-xs font-medium me-2 px-2 py-2 rounded-full'>
+                                                 ${status}
+                                               </span>`;
+
+            console.log("Dropdown Updated with Status:", status);
+        } else {
+            console.error("Error: No status returned", data.error);
+        }
+    } catch (error) {
+        console.error("Error fetching reservation details:", error);
+    }
+}
+
+
+// Call the function to load reservation details
+const reservationId = localStorage.getItem("reservationID_admin");
+console.log("Reservation ID from localStorage:", reservationId);
+
+if (reservationId) {
+    populateStatusDropdown(reservationId);
+} else {
+    console.error("No reservation ID found in localStorage.");
+}
 
 
 
 
-  
+document.addEventListener("DOMContentLoaded", function () {
+    const submitButton = document.getElementById("applyButton");
+    const confirmButton = document.getElementById("submitBTN");
+    const modal = document.getElementById("submit-validation");
+
+    // Show modal when clicking the submit button
+    submitButton.addEventListener("click", function () {
+        console.log("Submit button clicked"); // Debugging
+        if (modal) {
+            modal.classList.remove("hidden");
+            modal.style.display = "flex"; // Ensure visibility
+        } else {
+            console.error("Modal element not found");
+        }
+    });
+
+    // Hide modal when clicking the cancel button
+    document.querySelector("[data-modal-hide='no-validation']").addEventListener("click", function () {
+        if (modal) {
+            modal.classList.add("hidden");
+            modal.style.display = "none";
+        }
+    });
+
+    confirmButton.addEventListener("click", async function () {
+        if (modal) {
+            modal.classList.add("hidden");
+            modal.style.display = "none";
+        }
+    
+        // Retrieve reservationId from localStorage
+        let reservationId = localStorage.getItem("reservationID_admin");
+    
+        if (!reservationId) {
+            alert("Reservation ID not found. Please try again.");
+            return;
+        }
+    
+        const reservationData = {
+            reservation_id: reservationId, // Retrieved from localStorage
+            check_in_date: document.getElementById("check-in-date").value,
+            check_out_date: document.getElementById("check-out-date").value,
+            status: document.getElementById("status-dropdown").value,
+            first_name: document.getElementById("first-name-p").value,
+            last_name: document.getElementById("last-name-p").value,
+            email: document.getElementById("email-p").value,
+            mobile_number: document.getElementById("mobile-number-p").value
+        };
+    
+        if (!reservationData.check_in_date || !reservationData.check_out_date || !reservationData.status || 
+            !reservationData.first_name || !reservationData.last_name || !reservationData.email || !reservationData.mobile_number) {
+            alert("Please fill in all fields.");
+            return;
+        }
+    
+        try {
+            const response = await fetch("../api/submit_reservation.php", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(reservationData)
+            });
+    
+            const result = await response.json();
+    
+            if (result.status === "success") {
+                // Save success message to localStorage with a specific name
+                localStorage.setItem("successMessage", "Reservation updated successfully!");
+                location.reload(); // Reload page after successful update
+            } else {
+                // Save error message to localStorage with a specific name and reload page
+                localStorage.setItem("updateReservationError", "Error: " + result.message);
+                location.reload(); // Reload page after error
+            }
+        } catch (error) {
+            console.error("Error updating reservation:", error);
+            // Save error message to localStorage with a specific name and reload page
+            localStorage.setItem("updateReservationError", "An error occurred. Please try again.");
+            location.reload(); // Reload page after error
+        }
+    });
+    
+});
+
+document.addEventListener("DOMContentLoaded", function () {
+    let reservationId = localStorage.getItem("reservationID_admin");
+
+    if (!reservationId) {
+        console.error("No reservation ID found in localStorage.");
+        return;
+    }
+
+    fetch(`../api/get_reschedule_request.php?reservation_id=${reservationId}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === "success" && data.reschedule_request) {
+                let rescheduleRequestDiv = document.getElementById("reschedule-request");
+
+                // If the status is "Approved", hide the reschedule request section
+                if (data.reschedule_request.status === "Approved") {
+                    rescheduleRequestDiv.classList.add("hidden");
+                    return;
+                }
+
+                // Remove the hidden class to show the reschedule request section
+                rescheduleRequestDiv.classList.remove("hidden");
+
+                // Update the text with fetched data
+                let message = `Customer requested a reschedule from <strong>${data.reschedule_request.check_in_date}</strong> 
+                               to <strong>${data.reschedule_request.check_out_date}</strong>.`;
+
+                document.getElementById("reschedule-message").innerHTML = message;
+
+                // Set button actions
+                document.getElementById("acceptRequest").setAttribute(
+                    "onclick", `updateRescheduleStatus(${data.reschedule_request.request_id}, 'Approved')`
+                );
+                document.getElementById("declineRequest").setAttribute(
+                    "onclick", `updateRescheduleStatus(${data.reschedule_request.request_id}, 'Denied')`
+                );
+            }
+        })
+        .catch(error => console.error("Error fetching reschedule request:", error));
+});
+
+
+function updateRescheduleStatus(requestId, status) {
+    fetch('../api/update_reschedule_status.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            request_id: requestId,
+            status: status
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === "success") {
+            const successMessage = `Reschedule request ${status.toLowerCase()} successfully!`;
+            // Save success message to localStorage
+            localStorage.setItem("rescheduleSuccessMessage", successMessage);
+            location.reload(); // Refresh the page to reflect changes
+        } else {
+            const errorMessage = "Failed to update reschedule status.";
+            // Save error message to localStorage
+            localStorage.setItem("rescheduleErrorMessage", errorMessage);
+            location.reload(); // Refresh the page to reflect changes
+        }
+    })
+    .catch(error => console.error("Error updating reschedule status:", error));
+}
+
+
+document.addEventListener("DOMContentLoaded", function () {
+    // Get the reservation ID from localStorage
+    let reservationId = localStorage.getItem("reservationID_admin");
+
+    if (!reservationId) {
+        console.error("No reservation ID found in localStorage.");
+        return;
+    }
+
+    // Fetch the reservation code from the database using the reservation ID
+    fetch(`../api/get_reservation_code.php?reservation_id=${reservationId}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === "success" && data.reservation_code) {
+                // Update the reservation code in the HTML
+                document.getElementById("reservation-code").innerText = data.reservation_code;
+            } else {
+                console.error("Reservation code not found.");
+            }
+        })
+        .catch(error => console.error("Error fetching reservation code:", error));
+});

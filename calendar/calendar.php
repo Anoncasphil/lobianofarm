@@ -154,21 +154,8 @@ if (!isset($_SESSION['admin_id'])) {
 				<div id="dateModal" class="modal">
 					<div class="modal-content">
 						<span class="close" id="closeModal">&times;</span>
-						<h2>Reservation Details</h2>
-						<p><strong>Reservation ID:</strong> <span id="modal-id"></span></p>
-						<p><strong>Guest Name:</strong> <span id="modal-name"></span></p>
-						<p><strong>Check-in Date:</strong> <span id="modal-reservation-date"></span></p>
-						<p><strong>Check-in Time:</strong> <span id="modal-checkin-time"></span></p>
-						<p><strong>Check-out Date:</strong> <span id="modal-desired-date"></span></p>
-						<p><strong>Check-out Time:</strong> <span id="modal-checkout-time"></span></p><br>
 						
-						<div class="payment-receipt">
-							<h3>Payment Receipt</h3><br>
-							<img id="modal-payment-receipt" src="https://via.placeholder.com/150" alt="Payment Receipt">
-						</div>
-						<div class="modal-buttons">
-							<button class="confirm-button">Confirm</button> <!-- Change to confirm button -->
-							<button class="decline-button">Decline</button>
+						
 						</div>
 					</div>
 				</div>

@@ -31,4 +31,44 @@
   button:hover {
     background-color: #2b7bf7;
   }
+
+  /* Basic styling for the select element */
+.status-dropdown {
+  padding: 16px 16px 16px 16px; 
+  width: 100%;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 1rem;
+  color: #2d3748; /* Dark text */
+  background-color: white;
+  position: relative;
+  transition: border-color 0.3s ease-in-out;
+}
+
+/* Style for focus (when dropdown is selected) */
+.status-dropdown:focus {
+  outline: none;
+  border-color: #3182ce; /* Blue focus border */
+  box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.5); /* Blue glow */
+}
+
+/* Custom styling for the dropdown options */
+.status-dropdown option {
+  padding: 12px;
+  font-size: 1rem;
+  color: #2d3748; /* Default text color */
+  background-color: white;
+  transition: background-color 0.3s;
+}
+
+/* Hover effect on the options */
+.status-dropdown option:hover {
+  background-color: #f7fafc;
+}
+
+/* Style for selected option */
+.status-dropdown option:checked {
+  background-color: #e2e8f0;
+}
+
   
