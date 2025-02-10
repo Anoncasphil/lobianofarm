@@ -1,9 +1,97 @@
+<?php
+require_once "../db_connection.php"; // Adjust the path to your database connection file
+
+$email = $firstname = $middlename = $lastname = $contact_no = $password = $passwordRepeat = $otp = "";
+$errors = [];
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $email = trim($_POST['email']);  
+    $firstname = trim($_POST['firstname']);
+    $middlename = trim($_POST['middlename']);
+    $lastname = trim($_POST['lastname']);
+    $contact_no = trim($_POST['contactno']);
+    $password = $_POST['password'];
+    $passwordRepeat = $_POST['repeat_password'];
+    $otp = trim($_POST['otp']);
+    $passwordHash = password_hash($password, PASSWORD_DEFAULT); 
+
+    // Validation checks
+    if (empty($email)) {
+        $errors[] = "Email is required.";
+    } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $errors[] = "Invalid email format.";
+    }
+
+    if (empty($firstname)) {
+        $errors[] = "First Name is required.";
+    }
+
+    if (empty($lastname)) {
+        $errors[] = "Last Name is required.";
+    }
+
+    if (empty($contact_no)) {
+        $errors[] = "Contact number is required.";
+    } elseif (!preg_match('/^[0-9]{11}$/', $contact_no)) {
+        $errors[] = "Contact number must be exactly 11 digits.";
+    }
+
+    if (empty($password)) {
+        $errors[] = "Password is required.";
+    } elseif (strlen($password) < 8) {
+        $errors[] = "Password must be at least 8 characters.";
+    }
+
+    if ($password !== $passwordRepeat) {
+        $errors[] = "Passwords do not match.";
+    }
+
+    if (empty($otp)) {
+        $errors[] = "OTP is required.";
+    } else {
+        // Validate OTP
+        $stmt = $conn->prepare("SELECT otp_code, otp_expires_at FROM otp_codes WHERE email = ?");
+        $stmt->bind_param("s", $email);
+        $stmt->execute();
+        $stmt->bind_result($otpCode, $otpExpiresAt);
+        $stmt->fetch();
+        $stmt->close();
+
+        if ($otpCode !== $otp) {
+            $errors[] = "Invalid OTP. Please try again.";
+        } elseif (strtotime($otpExpiresAt) < time()) {
+            $errors[] = "OTP has expired. Please try again.";
+        }
+    }
+
+    // Insert user data if no errors
+    if (empty($errors)) {
+        try {
+            $role = 'customer'; 
+            // Insert values into the database
+            $stmt = $conn->prepare("INSERT INTO user_tbl (role, email, password, first_name, middle_name, last_name, contact_no) VALUES (?, ?, ?, ?, ?, ?, ?)");
+            $stmt->bind_param("sssssss", $role, $email, $passwordHash, $firstname, $middlename, $lastname, $contact_no);
+            $stmt->execute();
+            $stmt->close();
+            echo json_encode(['success' => true]);
+        } catch (Exception $e) {
+            $errors[] = "Error: " . $e->getMessage();
+            echo json_encode(['success' => false, 'error' => $e->getMessage()]);
+        }
+    } else {
+        echo json_encode(['success' => false, 'error' => implode("\\n", $errors)]);
+    }
+    exit;
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>888 Lobiano's Farm</title>
+
     <link rel="stylesheet" href="../styles/styles.css">
     <link rel="stylesheet" href="../styles/normal.css">
     <link rel="stylesheet" href="../styles/register.css">
@@ -58,6 +146,29 @@
 </head>
 <body class="flex overflow-hidden flex-row items-center justify-between m-0">
 
+    <!-- Alerts Section -->
+    <section class="absolute top-0 left-1/2 transform -translate-x-1/2 mt-5">
+        <div class="container mt-5">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div id="success-message" class="alert fade alert-simple alert-success alert-dismissible text-left font__family-montserrat font__size-16 font__weight-light brk-library-rendered rendered hidden" style="padding: 15px; border-radius: 10px; background-color:rgb(207, 248, 216); color: #238845;">
+                        <i class="start-icon far fa-check-circle faa-tada animated"></i>
+                        <strong class="font__weight-semibold">Congratulations!</strong> You have successfully registered your account.
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-sm-12">
+                    <div id="error-message" class="alert fade alert-simple alert-danger alert-dismissible text-left font__family-montserrat font__size-16 font__weight-light brk-library-rendered rendered hidden" role="alert" data-brk-library="component__alert" style="padding: 15px; border-radius: 10px;background-color:rgb(247, 216, 216); color: #DC143C;">
+                        <i class="start-icon far fa-times-circle faa-pulse animated"></i>
+                        <strong class="font__weight-semibold">Oh snap!</strong> Change a few things up and try submitting again.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <div id="slogan_container" class="flex h-2/5 w-3/5 items-center justify-center flex-col text-center m-0 text-white">
         <div id="main_slogan" class="flex w-[full] flex-row ">
             <img src="../src/images/logo.png" class="w-10 h-10" alt="Logo"><h2 class="text-[30px]">888 Lobiano's Farm</h2>
@@ -70,100 +181,6 @@
 
     <!-- login -->
     <div id="login_form" class="flex flex-col justify-center rounded-tl-3xl rounded-bl-3xl h-full w-[40%] bg-white overflow-y-auto">
-
-    <!-- php registration -->
-    <?php
-    require_once "../db_connection.php"; // Adjust the path to your database connection file
-
-    $email = $firstname = $middlename = $lastname = $contact_no = $password = $passwordRepeat = $otp = "";
-    $errors = [];
-
-    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-        $email = trim($_POST['email']);  
-        $firstname = trim($_POST['firstname']);
-        $middlename = trim($_POST['middlename']);
-        $lastname = trim($_POST['lastname']);
-        $contact_no = trim($_POST['contactno']);
-        $password = $_POST['password'];
-        $passwordRepeat = $_POST['repeat_password'];
-        $otp = trim($_POST['otp']);
-        $passwordHash = password_hash($password, PASSWORD_DEFAULT); 
-
-        // Validation checks
-        if (empty($email)) {
-            $errors[] = "Email is required.";
-        } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            $errors[] = "Invalid email format.";
-        }
-
-        if (empty($firstname)) {
-            $errors[] = "First Name is required.";
-        }
-
-        if (empty($lastname)) {
-            $errors[] = "Last Name is required.";
-        }
-
-        if (empty($contact_no)) {
-            $errors[] = "Contact number is required.";
-        } elseif (!preg_match('/^[0-9]{11}$/', $contact_no)) {
-            $errors[] = "Contact number must be exactly 11 digits.";
-        }
-
-        if (empty($password)) {
-            $errors[] = "Password is required.";
-        } elseif (strlen($password) < 8) {
-            $errors[] = "Password must be at least 8 characters.";
-        }
-
-        if ($password !== $passwordRepeat) {
-            $errors[] = "Passwords do not match.";
-        }
-
-        if (empty($otp)) {
-            $errors[] = "OTP is required.";
-        } else {
-            // Validate OTP
-            $stmt = $conn->prepare("SELECT otp_code, otp_expires_at FROM otp_codes WHERE email = ?");
-            $stmt->bind_param("s", $email);
-            $stmt->execute();
-            $stmt->bind_result($otpCode, $otpExpiresAt);
-            $stmt->fetch();
-            $stmt->close();
-
-            if ($otpCode !== $otp) {
-                $errors[] = "Invalid OTP. Please try again.";
-            } elseif (strtotime($otpExpiresAt) < time()) {
-                $errors[] = "OTP has expired. Please try again.";
-            }
-        }
-
-        // Insert user data if no errors
-        if (empty($errors)) {
-            try {
-                $role = 'customer'; 
-                // Insert values into the database
-                $stmt = $conn->prepare("INSERT INTO user_tbl (role, email, password, first_name, middle_name, last_name, contact_no) VALUES (?, ?, ?, ?, ?, ?, ?)");
-                $stmt->bind_param("sssssss", $role, $email, $passwordHash, $firstname, $middlename, $lastname, $contact_no);
-                $stmt->execute();
-                $stmt->close();
-                echo "<script>
-                    alert('Registration successful!');
-                    window.location.href = 'login.php';
-                </script>";
-            } catch (Exception $e) {
-                $errors[] = "Error: " . $e->getMessage();
-            }
-        }
-
-        // Display errors if any
-        if (!empty($errors)) {
-            echo "<script>
-                alert('" . implode("\\n", $errors) . "');
-            </script>";
-        }
-    }
-    ?>
 
     <!-- inside the form -->
     <form action="register.php" autocomplete="off" method="post" class="flex flex-col justify-center items-center w-full h-full overflow-x-auto">
@@ -294,7 +311,7 @@
             </div>
            
         </div>
-    
+
         <!-- submit button -->
         <button type="submit" name="regisme"class="text-white w-[50%] h-[35px] mt-[3%] bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-lg px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">Sign Up</button>
         <p class="mb-5">Have an account already? <span><a href="login.php" class="underline text-blue-600 hover:underline">Login</a></span></p>

@@ -171,8 +171,9 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    form.addEventListener('submit', function (event) {
-        // Prevent form submission if there are validation errors
+    form.addEventListener('submit', async function (event) {
+        event.preventDefault(); // Prevent default form submission
+
         let hasErrors = false;
 
         if (!validateEmail(emailInput.value)) {
@@ -211,8 +212,31 @@ document.addEventListener('DOMContentLoaded', function () {
             hasErrors = true;
         }
 
-        if (hasErrors) {
-            event.preventDefault();
+        if (!hasErrors) {
+            try {
+                const formData = new FormData(form);
+                const response = await fetch('register.php', {
+                    method: 'POST',
+                    body: formData
+                });
+                const data = await response.json();
+
+                if (data.success) {
+                    document.getElementById('success-message').innerHTML = '<i class="start-icon far fa-check-circle faa-tada animated"></i><strong class="font__weight-semibold">Congratulations!</strong> You have successfully registered your account.';
+                    document.getElementById('success-message').classList.remove('hidden');
+                    document.getElementById('error-message').classList.add('hidden');
+                    setTimeout(() => {
+                        window.location.href = 'login.php';
+                    }, 3000);
+                } else {
+                    document.getElementById('error-message').innerHTML = '<i class="start-icon far fa-times-circle faa-pulse animated"></i><strong class="font__weight-semibold">Oh snap!</strong> ' + data.error;
+                    document.getElementById('error-message').classList.remove('hidden');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('error-message').innerHTML = '<i class="start-icon far fa-times-circle faa-pulse animated"></i><strong class="font__weight-semibold">Oh snap!</strong> An error occurred during registration. Please try again.';
+                document.getElementById('error-message').classList.remove('hidden');
+            }
         }
     });
 
