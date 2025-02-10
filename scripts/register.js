@@ -32,15 +32,28 @@ document.addEventListener('DOMContentLoaded', function () {
                 const data = await response.json();
                 
                 if (data.success) {
-                    alert('OTP has been sent to your email.');
+                    document.getElementById('success-message').innerHTML = '<i class="start-icon far fa-check-circle faa-tada animated"></i><strong class="font__weight-semibold">Success!</strong> An OTP has been sent to your email.';
+                    document.getElementById('success-message').classList.remove('hidden');
+                    document.getElementById('error-message').classList.add('hidden');
+                    setTimeout(() => {
+                        document.getElementById('success-message').classList.add('hidden');
+                    }, 3000);
                     startOtpTimer();
                 } else {
-                    alert('Failed to send OTP. Please try again.');
+                    document.getElementById('error-message').innerHTML = '<i class="start-icon far fa-times-circle faa-pulse animated"></i><strong class="font__weight-semibold">Oh snap!</strong> Failed to send OTP. Please try again.';
+                    document.getElementById('error-message').classList.remove('hidden');
+                    setTimeout(() => {
+                        document.getElementById('error-message').classList.add('hidden');
+                    }, 3000);
                     console.error('Error:', data.error);
                 }
             } catch (error) {
                 console.error('Error:', error);
-                alert('An error occurred while sending OTP. Please try again.');
+                document.getElementById('error-message').innerHTML = '<i class="start-icon far fa-times-circle faa-pulse animated"></i><strong class="font__weight-semibold">Oh snap!</strong> An error occurred while sending OTP. Please try again.';
+                document.getElementById('error-message').classList.remove('hidden');
+                setTimeout(() => {
+                    document.getElementById('error-message').classList.add('hidden');
+                }, 3000);
             }
         } else {
             emailInput.classList.add('border-red-500');
@@ -62,7 +75,11 @@ document.addEventListener('DOMContentLoaded', function () {
             if (timeLeft <= 0) {
                 clearInterval(timerInterval);
                 otpTimer.style.display = 'none';
-                alert('OTP expired. Please try again.');
+                document.getElementById('error-message').innerHTML = '<i class="start-icon far fa-times-circle faa-pulse animated"></i><strong class="font__weight-semibold">Oh snap!</strong> OTP expired. Please try again.';
+                document.getElementById('error-message').classList.remove('hidden');
+                setTimeout(() => {
+                    document.getElementById('error-message').classList.add('hidden');
+                }, 3000);
                 await removeExpiredOtp(emailInput.value);
             }
         }, 1000);
@@ -226,16 +243,23 @@ document.addEventListener('DOMContentLoaded', function () {
                     document.getElementById('success-message').classList.remove('hidden');
                     document.getElementById('error-message').classList.add('hidden');
                     setTimeout(() => {
+                        document.getElementById('success-message').classList.add('hidden');
                         window.location.href = 'login.php';
                     }, 3000);
                 } else {
                     document.getElementById('error-message').innerHTML = '<i class="start-icon far fa-times-circle faa-pulse animated"></i><strong class="font__weight-semibold">Oh snap!</strong> ' + data.error;
                     document.getElementById('error-message').classList.remove('hidden');
+                    setTimeout(() => {
+                        document.getElementById('error-message').classList.add('hidden');
+                    }, 3000);
                 }
             } catch (error) {
                 console.error('Error:', error);
                 document.getElementById('error-message').innerHTML = '<i class="start-icon far fa-times-circle faa-pulse animated"></i><strong class="font__weight-semibold">Oh snap!</strong> An error occurred during registration. Please try again.';
                 document.getElementById('error-message').classList.remove('hidden');
+                setTimeout(() => {
+                    document.getElementById('error-message').classList.add('hidden');
+                }, 3000);
             }
         }
     });
