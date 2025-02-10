@@ -22,7 +22,7 @@ session_start(); // Move session_start() to top of file
                 <div class="col-sm-12">
                     <div id="success-message" class="alert fade alert-simple alert-success alert-dismissible text-left font__family-montserrat font__size-16 font__weight-light brk-library-rendered rendered hidden" style="padding: 15px; border-radius: 10px; background-color:rgb(207, 248, 216); color: #238845;">
                         <i class="start-icon far fa-check-circle faa-tada animated"></i>
-                        <strong class="font__weight-semibold"> Account Logged in.
+                        Account Logged in.
                     </div>
                 </div>
             </div>
@@ -31,7 +31,7 @@ session_start(); // Move session_start() to top of file
                 <div class="col-sm-12">
                     <div id="error-message" class="alert fade alert-simple alert-danger alert-dismissible text-left font__family-montserrat font__size-16 font__weight-light brk-library-rendered rendered hidden" role="alert" data-brk-library="component__alert" style="padding: 15px; border-radius: 10px;background-color:rgb(247, 216, 216); color: #DC143C;">
                         <i class="start-icon far fa-times-circle faa-pulse animated"></i>
-                        <strong class="font__weight-semibold">Oh snap!</strong> Invalid credentials.
+                        <strong class></strong> Invalid credentials.
                     </div>
                 </div>
             </div>
@@ -86,25 +86,37 @@ session_start(); // Move session_start() to top of file
                         </script>";
                         exit();
                     } else {
-                        $loginError = true;
+                        echo "<script>
+                            document.getElementById('error-message').classList.remove('hidden');
+                            setTimeout(() => {
+                                document.getElementById('error-message').classList.add('hidden');
+                            }, 3000);
+                        </script>";
                     }
                 } else {
-                    $loginError = true;
+                    echo "<script>
+                        document.getElementById('error-message').classList.remove('hidden');
+                        setTimeout(() => {
+                            document.getElementById('error-message').classList.add('hidden');
+                        }, 3000);
+                    </script>";
                 }
             } else {
-                $loginError = true;
+                echo "<script>
+                    document.getElementById('error-message').classList.remove('hidden');
+                    setTimeout(() => {
+                        document.getElementById('error-message').classList.add('hidden');
+                    }, 3000);
+                </script>";
             }
         }
-?>
+    ?>
 
     <!-- php logging in -->
         <form action="login.php" method="post" class="flex flex-col justify-center items-center w-full h-[80%]">
             <h2 id="login_tag" class="text-3xl mb-5 font-bold">Login to Account</h2>
             <p id="input_tag" class="tracking-wide text-base">Please enter your email and password to continue</p>
-            <?php if (isset($_POST["logme"]) && $loginError): ?>
-                <p id="credentials_error" class="text-red-600 text-md mt-2 error-message">Invalid credentials</p>
-            <?php endif; ?>
-
+           
             <!-- email -->
             <div id="email_container" class="flex flex-col justify-start items-start w-[80%] px-6 mt-10">
                 <div class="relative flex flex-row justify-between w-full">
@@ -142,7 +154,6 @@ session_start(); // Move session_start() to top of file
             <p>Don't have an account? <span><a href="register.php" class="underline text-blue-600 hover:underline">Create Account</a></span></p>
         </form>
     </div>
-    
 
     <script src="https://kit.fontawesome.com/26528a6def.js" crossorigin="anonymous"></script>
     <script src="../scripts/login.js"></script>
