@@ -38,8 +38,6 @@ $stmt->bind_result($first_name, $last_name, $picture);
 if ($stmt->fetch()) {
     // Combine first and last name
     $full_name = $first_name . ' ' . $last_name;
-    // Use the picture if it exists, otherwise set a default
-    $user_picture = !empty($picture) ? 'userpicture/' . $picture : 'default-avatar.jpg'; // Adjust the path for the profile picture
 } else {
     // If user not found, handle accordingly (e.g., redirect to login)
     header("Location: login.php");
@@ -94,8 +92,6 @@ $stmt->close();
     <!-- Profile button -->
     <button type="button" class="flex items-center ml-2 space-x-3 text-sm dark:bg-blue-900 hover:bg-white/10 rounded-lg px-4 py-2">
         <span class="sr-only">Open user menu</span>
-        <!-- Display user profile picture -->
-        <img class="w-10 h-10 rounded-full" src="../src/uploads/<?php echo htmlspecialchars($user_picture); ?>" alt="User Photo">
         <!-- Display user first name and last name to the right -->
         <span class="text-white font-medium"><?php echo htmlspecialchars($full_name); ?></span>
     </button>

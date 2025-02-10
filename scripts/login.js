@@ -3,9 +3,9 @@ document.addEventListener('DOMContentLoaded', function () {
     const emailError = emailInput.nextElementSibling;
     const passwordInput = document.getElementById('password_input');
     const passwordError = passwordInput.nextElementSibling;
-    const credentialsError = document.getElementById('credentials_error');
     const form = document.querySelector('form');
     const successMessage = document.getElementById('success_message');
+    const errorMessage = document.getElementById('error_message');
 
     emailInput.addEventListener('input', function () {
         if (validateEmail(emailInput.value)) {
@@ -51,9 +51,16 @@ document.addEventListener('DOMContentLoaded', function () {
         if (hasErrors) {
             event.preventDefault();
             credentialsError.classList.remove('hidden');
+            errorMessage.classList.remove('hidden');
+            setTimeout(() => {
+                errorMessage.classList.add('hidden');
+            }, 3000);
         } else {
             credentialsError.classList.add('hidden');
             successMessage.classList.remove('hidden');
+            setTimeout(() => {
+                successMessage.classList.add('hidden');
+            }, 3000);
         }
     });
 
