@@ -44,26 +44,95 @@ document.addEventListener("DOMContentLoaded", function () {
         .then(response => response.json())
         .then(data => {
             if (data.status) {
+                console.log("Reservation Status: " + data.status); // Log the reservation status
 
-                const rescheduleBtn = document.getElementById("reschedule-btn");
-                const cancelBtn = document.getElementById("cancel-btn");
-                const reviewBtn = document.getElementById("review-btn");
+                // Handle button visibility based on status
+                const cancelBtn = document.getElementById('cancel-btn');
+                const rescheduleBtn = document.getElementById('reschedule-btn');
+                const reviewBtn = document.getElementById('review-btn');
 
-                if (data.status == "Completed") {
-                    console.log("Reservation is confirmed. Enable reschedule and cancel buttons.");
-                    cancelBtn.remove();
-                    rescheduleBtn.remove();
-                } else if (data.status == "Pending") {
-                    console.log("Reservation is pending. Enable cancel button only.");
-                    reviewBtn.remove();
+                if (data.status === 'Pending') {
+                    if (cancelBtn) cancelBtn.classList.add('hidden');
+                    if (rescheduleBtn) rescheduleBtn.classList.add('hidden');
+                    if (reviewBtn) reviewBtn.classList.remove('hidden');
+                } else if (data.status === 'Completed') {
+                    if (cancelBtn) cancelBtn.classList.add('hidden');
+                    if (rescheduleBtn) rescheduleBtn.classList.add('hidden');
+                    if (reviewBtn) reviewBtn.classList.remove('hidden');
+                } else {
+                    if (cancelBtn) cancelBtn.classList.remove('hidden');
+                    if (rescheduleBtn) rescheduleBtn.classList.remove('hidden');
+                    if (reviewBtn) reviewBtn.classList.add('hidden');
                 }
 
-                console.log("Reservation Status: " + data.status); // Log the reservation status
-                
                 updateStatus(data.status.toLowerCase()); // Convert to lowercase for consistency
             }
         })
         .catch(error => console.error("Error fetching status:", error));
+
+    // Review Modal functionality
+    const reviewModal = document.getElementById('review-modal');
+    const reviewBtn = document.getElementById('review-btn');
+    const closeReviewBtn = document.getElementById('close-review-btn');
+    const reviewForm = document.getElementById('review-form');
+    const ratingStars = document.querySelectorAll('#rating svg');
+
+    // Open review modal
+    reviewBtn.addEventListener('click', function () {
+        reviewModal.classList.remove('hidden');
+    });
+
+    // Close review modal
+    closeReviewBtn.addEventListener('click', function () {
+        reviewModal.classList.add('hidden');
+    });
+
+    // Handle rating stars click
+    ratingStars.forEach(star => {
+        star.addEventListener('click', function () {
+            const rating = this.getAttribute('data-rating');
+            ratingStars.forEach(s => s.classList.remove('text-yellow-500'));
+            for (let i = 0; i < rating; i++) {
+                ratingStars[i].classList.add('text-yellow-500');
+            }
+            document.getElementById('rating').setAttribute('data-rating', rating);
+        });
+    });
+
+    // Handle review form submission
+    reviewForm.addEventListener('submit', function (event) {
+        event.preventDefault();
+
+        const reviewData = {
+            user_id: document.getElementById('user-id').value,
+            rating: document.getElementById('rating').getAttribute('data-rating'),
+            title: document.getElementById('title').value,
+            review_text: document.getElementById('review-text').value,
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString()
+        };
+
+        console.log('Review Data:', reviewData);
+
+        // Submit the review data to the server
+        fetch('../api/submit_review.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(reviewData)
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                console.log('Review submitted successfully');
+                reviewModal.classList.add('hidden');
+            } else {
+                console.error('Error submitting review:', data.message);
+            }
+        })
+        .catch(error => console.error('Error:', error));
+    });
 });
 
 // Wait for the DOM to fully load before running the script
