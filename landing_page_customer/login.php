@@ -15,6 +15,29 @@ session_start(); // Move session_start() to top of file
 </head>
 <body class="flex overflow-hidden flex-row items-center justify-between m-0">
 
+    <!-- Alerts Section -->
+    <section class="absolute top-0 left-1/2 transform -translate-x-1/2 mt-5">
+        <div class="container mt-5">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div id="success-message" class="alert fade alert-simple alert-success alert-dismissible text-left font__family-montserrat font__size-16 font__weight-light brk-library-rendered rendered hidden" style="padding: 15px; border-radius: 10px; background-color:rgb(207, 248, 216); color: #238845;">
+                        <i class="start-icon far fa-check-circle faa-tada animated"></i>
+                        <strong class="font__weight-semibold"> Account Logged in.
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-sm-12">
+                    <div id="error-message" class="alert fade alert-simple alert-danger alert-dismissible text-left font__family-montserrat font__size-16 font__weight-light brk-library-rendered rendered hidden" role="alert" data-brk-library="component__alert" style="padding: 15px; border-radius: 10px;background-color:rgb(247, 216, 216); color: #DC143C;">
+                        <i class="start-icon far fa-times-circle faa-pulse animated"></i>
+                        <strong class="font__weight-semibold">Oh snap!</strong> Invalid credentials.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <div id="slogan_container" class="flex h-2/5 w-3/5 items-center justify-center flex-col text-center m-0 text-white">
         <div id="main_slogan" class="flex w-[full] flex-row ">
             <img src="../src/images/logo.png" class="w-10 h-10" alt="Logo"><h2 class="text-[30px]">888 Lobiano's Farm</h2>
@@ -55,7 +78,12 @@ session_start(); // Move session_start() to top of file
                         // Debug session data
                         error_log("Session data set: " . print_r($_SESSION, true));
                         
-                        header("Location: homepage.php");
+                        echo "<script>
+                            document.getElementById('success-message').classList.remove('hidden');
+                            setTimeout(() => {
+                                window.location.href = 'homepage.php';
+                            }, 3000);
+                        </script>";
                         exit();
                     } else {
                         $loginError = true;
@@ -112,10 +140,6 @@ session_start(); // Move session_start() to top of file
             <!-- submit button -->
             <button type="submit" name="logme" class="text-white w-[50%] h-[10%] mt-[10%] bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-lg px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">Login</button>
             <p>Don't have an account? <span><a href="register.php" class="underline text-blue-600 hover:underline">Create Account</a></span></p>
-
-
-
-            
         </form>
     </div>
     

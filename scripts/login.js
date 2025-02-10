@@ -5,6 +5,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const passwordError = passwordInput.nextElementSibling;
     const credentialsError = document.getElementById('credentials_error');
     const form = document.querySelector('form');
+    const successMessage = document.getElementById('success_message');
 
     emailInput.addEventListener('input', function () {
         if (validateEmail(emailInput.value)) {
@@ -52,6 +53,7 @@ document.addEventListener('DOMContentLoaded', function () {
             credentialsError.classList.remove('hidden');
         } else {
             credentialsError.classList.add('hidden');
+            successMessage.classList.remove('hidden');
         }
     });
 
