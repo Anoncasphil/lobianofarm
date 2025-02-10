@@ -60,8 +60,8 @@ $stmt->close();
     <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <script src="../scripts/booking.js" defer></script>
-    <script src="../scripts/customer_reservation_details.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr@4.6.9/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr@4.6.9/dist/flatpickr.min.js"></script>
     <link rel="stylesheet" href="../styles/booking.css">
     <link rel="stylesheet" href="../styles/customer_reservation_details.css">
 </head>
@@ -135,7 +135,21 @@ $stmt->close();
     
   <div class="max-w-screen-xl mx-auto flex gap-8 mt-10">
 
+  
+
   <div id="reservation-status" class="p-8 rounded-lg mt-5 max-w-4xl mx-auto">
+
+  <div id="info-alert" class="flex items-center p-4 mb-4 text-sm text-blue-800 rounded-lg bg-blue-200 dark:text-blue-900 hidden" role="alert">
+  <svg class="shrink-0 inline w-4 h-4 me-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+    <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 1 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
+  </svg>
+  <span class="sr-only">Info</span>
+  <div>
+    <span class="font-medium" id="alert-title">Info alert!</span> 
+    <span id="alert-message"></span>
+  </div>
+</div>
+
     <div class="space-y-6 rounded-lg border border-gray-700 bg-gray-900 p-6 shadow-lg dark:border-gray-200 dark:bg-white">
       <h3 class="text-xl font-semibold text-white dark:text-gray-900">Reservation Status</h3>
 
@@ -170,18 +184,39 @@ $stmt->close();
           <p class="text-sm text-gray-400 dark:text-gray-600">Your reservation process is complete. Enjoy your stay!</p>
         </li>
       </ol>
-      
       <div class="gap-4 sm:flex sm:items-center">
         <button type="button" class="w-full rounded-lg border border-gray-700 bg-gray-900 px-5 py-2.5 text-sm font-medium text-white hover:bg-gray-800 hover:text-gray-300 focus:z-10 focus:outline-none focus:ring-4 focus:ring-gray-700 dark:border-gray-200 dark:bg-white dark:text-gray-700 dark:hover:bg-gray-100 dark:hover:text-gray-900 dark:focus:ring-gray-300">
           Cancel Reservation
         </button>
 
-        <a href="#" class="mt-4 flex w-full items-center justify-center rounded-lg bg-white px-5 py-2.5 text-sm font-medium text-blue-900 hover:bg-blue-100 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-900 dark:text-white dark:hover:bg-blue-700 dark:focus:ring-blue-600 sm:mt-0">
-          Reschedule Reservation
-        </a>
+
+
+
+        <button type="button" id="reschedule-btn" class="mt-4 flex w-full items-center justify-center rounded-lg bg-white px-5 py-2.5 text-sm font-medium text-blue-900 hover:bg-blue-100 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-900 dark:text-white dark:hover:bg-blue-700 dark:focus:ring-blue-600 sm:mt-0">
+  Reschedule Reservation
+</button>
+
+
+
+
+
+
+
+        
       </div>
     </div>
-
+   
+    
+    <div id="info-alert" class="flex items-center p-4 mb-4 text-sm text-blue-800 rounded-lg bg-blue-200 dark:text-blue-900 hidden" role="alert">
+  <svg class="shrink-0 inline w-4 h-4 me-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+    <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 1 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
+  </svg>
+  <span class="sr-only">Info</span>
+  <div>
+    <span class="font-medium" id="alert-title">Info alert!</span> 
+    <span id="alert-message"></span>
+  </div>
+</div>
 <!-- 4-Column Wide Div -->
  
 <div class="flex-4">
@@ -305,6 +340,111 @@ $stmt->close();
 </section>
 
 
+<!-- Main Modal -->
+<div id="reschedule-modal" tabindex="-1" aria-hidden="true" class="hidden bg-black/20 overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full flex">
+    <div class="relative p-4 w-full max-w-md max-h-full">
+        <!-- Modal content -->
+        <div class="relative bg-white rounded-lg shadow-sm">
+            <!-- Modal header -->
+            <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t border-gray-200">
+                <h3 class="text-lg font-semibold text-gray-900">
+                    Reschedule Request
+                </h3>
+                <button type="button" id="close-btn" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center">
+                    <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                    </svg>
+                    <span class="sr-only">Close modal</span>
+                </button>
+            </div>
+            <!-- Modal body -->
+
+            <div id="reservation-id-display"></div>
+
+            
+            <form id="reschedule-form" method="POST" class="p-4 md:p-5">
+
+              <div id="info-alert-modal" class="flex items-center p-4 mb-4 text-sm text-blue-800 rounded-lg bg-blue-200 dark:text-blue-900 hidden" role="alert">
+            <svg class="shrink-0 inline w-4 h-4 me-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 1 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
+            </svg>
+            <span class="sr-only">Info</span>
+            <div>
+              <span class="font-medium" id="alert-title">Info alert!</span> 
+              <span id="alert-message-modal"></span>
+            </div>
+          </div>
+
+    <div class="grid gap-4 mb-4 grid-cols-2">
+
     
+        <input type="hidden" id="reservation_id" name="reservation_id" value="">
+
+        <div class="relative">
+            <!-- Check-In Date (with Flatpickr) -->
+            <input type="date" id="check-in-date" name="check_in_date" class="p-3 pt-5 w-full max-w-xs border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-transparent text-blue-950" required />
+            <label for="check_in_date" class="px-2 bg-white absolute left-3 top-[-10px] text-gray-600 text-sm font-medium"> Check-In Date <span class="text-red-500">*</span> </label>
+        </div>
+
+        <!-- Check-Out Date (disabled, auto-filled based on Check-In Date) -->
+        <div class="relative">
+            <input type="date" id="check-out-date" name="check_out_date" class="p-3 pt-5 w-full max-w-xs border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-transparent text-blue-950" disabled />
+            <label for="check_out_date" class="px-2 bg-white absolute left-3 top-[-10px] text-gray-600 text-sm font-medium"> Check-Out Date </label>
+        </div>
+    </div>
+
+    <!-- Time Inputs (Disabled) -->
+    <div class="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div class="relative">
+            <!-- Check-In Time (auto-filled) -->
+            <input type="time" id="check-in-time" name="check_in_time" class="p-3 pt-5 w-full max-w-xs border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-transparent text-blue-950" disabled />
+            <label for="check-in-time" class="px-2 bg-white absolute left-3 top-[-10px] text-gray-600 text-sm font-medium"> Check-In Time </label>
+        </div>
+        <div class="relative">
+            <!-- Check-Out Time (auto-filled) -->
+            <input type="time" id="check-out-time" name="check_out_time" class="p-3 pt-5 w-full max-w-xs border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-transparent text-blue-950" disabled />
+            <label for="check-out-time" class="px-2 bg-white absolute left-3 top-[-10px] text-gray-600 text-sm font-medium"> Check-Out Time </label>
+        </div>
+    </div>
+
+    <!-- Reason for Reschedule -->
+    <div class="col-span-2 mb-5">
+        <label for="schedule_reason" class="block mb-2 text-sm font-medium text-black">Reason</label>
+        <textarea id="schedule_reason" name="description" rows="4" class="block p-2.5 w-full text-sm text-black bg-white rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500" placeholder="Write reason here"></textarea>
+    </div>
+
+    <!-- Hidden Fields -->
+    <input type="hidden" name="status" value="Pending">
+
+    <!-- Submit Button -->
+    <div class="flex justify-end">
+        <button type="button" id="submit-btn" class="mt-4 flex w-full items-center justify-center rounded-lg bg-white px-5 py-2.5 text-sm font-medium text-blue-900 hover:bg-blue-100 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-900 dark:text-white dark:hover:bg-blue-700 dark:focus:ring-blue-600 sm:mt-0">
+            <svg class="me-1 -ms-1 w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd"></path>
+            </svg>
+            Send
+        </button>
+    </div>
+</form>
+
+
+
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+    <script src="../scripts/booking.js" defer></script>
+    <script src="../scripts/customer_reservation_details.js" defer></script>
+    <script src="../scripts/flatpickr.js" defer></script>   
+    <script>
+    var userId = <?php echo json_encode($_SESSION['user_id']); ?>;
+    var reservation_id = <?php echo json_encode($_GET['reservation_id']); ?>; // Or set this dynamically
+</script>
 </body>
 </html>

@@ -1,0 +1,34 @@
+/* Modal overlay background (black with opacity) */
+#payment-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.2); /* Black background with 20% opacity */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 50; /* Ensure it's on top of other elements */
+    visibility: hidden; /* Hidden by default */
+    opacity: 0; /* Hidden by default */
+    transition: opacity 0.3s ease, visibility 0.3s ease; /* Smooth transition for opening and closing */
+  }
+  
+  /* Modal content */
+  #payment-modal .bg-white {
+    position: relative;
+    z-index: 60; /* Ensure the modal content appears above the overlay */
+  }
+  
+  /* Show the modal */
+  #payment-modal.show {
+    visibility: visible;
+    opacity: 1;
+  }
+  
+  /* Tailwind button hover effect */
+  button:hover {
+    background-color: #2b7bf7;
+  }
+  
