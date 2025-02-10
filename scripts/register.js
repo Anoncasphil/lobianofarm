@@ -37,14 +37,15 @@ document.addEventListener('DOMContentLoaded', function () {
                     document.getElementById('error-message').classList.add('hidden');
                     setTimeout(() => {
                         document.getElementById('success-message').classList.add('hidden');
-                    }, 3000);
+                    }, 10000);
+                    disableOtpButton();
                     startOtpTimer();
                 } else {
                     document.getElementById('error-message').innerHTML = '<i class="start-icon far fa-times-circle faa-pulse animated"></i><strong class="font__weight-semibold">Oh snap!</strong> Failed to send OTP. Please try again.';
                     document.getElementById('error-message').classList.remove('hidden');
                     setTimeout(() => {
                         document.getElementById('error-message').classList.add('hidden');
-                    }, 3000);
+                    }, 10000);
                     console.error('Error:', data.error);
                 }
             } catch (error) {
@@ -53,7 +54,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 document.getElementById('error-message').classList.remove('hidden');
                 setTimeout(() => {
                     document.getElementById('error-message').classList.add('hidden');
-                }, 3000);
+                }, 10000);
             }
         } else {
             emailInput.classList.add('border-red-500');
@@ -61,6 +62,18 @@ document.addEventListener('DOMContentLoaded', function () {
             emailError.classList.remove('hidden');
         }
     });
+
+    function disableOtpButton() {
+        sendOtpButton.disabled = true;
+        sendOtpButton.style.backgroundColor = 'white';
+        sendOtpButton.style.color = 'gray';
+    }
+
+    function enableOtpButton() {
+        sendOtpButton.disabled = false;
+        sendOtpButton.style.backgroundColor = '';
+        sendOtpButton.style.color = '';
+    }
 
     function startOtpTimer() {
         let timeLeft = 60;
@@ -79,7 +92,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 document.getElementById('error-message').classList.remove('hidden');
                 setTimeout(() => {
                     document.getElementById('error-message').classList.add('hidden');
-                }, 3000);
+                }, 10000);
+                enableOtpButton();
                 await removeExpiredOtp(emailInput.value);
             }
         }, 1000);
@@ -245,13 +259,13 @@ document.addEventListener('DOMContentLoaded', function () {
                     setTimeout(() => {
                         document.getElementById('success-message').classList.add('hidden');
                         window.location.href = 'login.php';
-                    }, 3000);
+                    }, 10000);
                 } else {
                     document.getElementById('error-message').innerHTML = '<i class="start-icon far fa-times-circle faa-pulse animated"></i><strong class="font__weight-semibold">Oh snap!</strong> ' + data.error;
                     document.getElementById('error-message').classList.remove('hidden');
                     setTimeout(() => {
                         document.getElementById('error-message').classList.add('hidden');
-                    }, 3000);
+                    }, 10000);
                 }
             } catch (error) {
                 console.error('Error:', error);
@@ -259,7 +273,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 document.getElementById('error-message').classList.remove('hidden');
                 setTimeout(() => {
                     document.getElementById('error-message').classList.add('hidden');
-                }, 3000);
+                }, 10000);
             }
         }
     });
