@@ -76,14 +76,14 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function startOtpTimer() {
-        let timeLeft = 60;
+        let timeLeft = 300; // 5 minutes
         otpTimer.textContent = `Time left: ${timeLeft}s`;
         otpTimer.style.display = 'inline';
 
         clearInterval(timerInterval);
         timerInterval = setInterval(async () => {
             timeLeft--;
-            otpTimer.textContent = `Time left: ${timeLeft}s`;
+            otpTimer.textContent = `Time left: ${timeLeft}s..`;
 
             if (timeLeft <= 0) {
                 clearInterval(timerInterval);

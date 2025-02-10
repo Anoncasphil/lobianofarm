@@ -13,7 +13,7 @@ date_default_timezone_set('Asia/Manila');
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = trim($_POST['email']);
     $otp = rand(100000, 999999); // Generate a 6-digit OTP
-    $otpExpiresAt = date('Y-m-d H:i:s', strtotime('+1 minute')); // OTP expires in 60 seconds
+    $otpExpiresAt = date('Y-m-d H:i:s', strtotime('+5 minutes')); // OTP expires in 60 seconds
 
     // Delete expired OTPs
     $deleteStmt = $conn->prepare("DELETE FROM otp_codes WHERE otp_expires_at < NOW()");
