@@ -185,24 +185,17 @@ $stmt->close();
         </li>
       </ol>
       <div class="gap-4 sm:flex sm:items-center">
-        <button type="button" class="w-full rounded-lg border border-gray-700 bg-gray-900 px-5 py-2.5 text-sm font-medium text-white hover:bg-gray-800 hover:text-gray-300 focus:z-10 focus:outline-none focus:ring-4 focus:ring-gray-700 dark:border-gray-200 dark:bg-white dark:text-gray-700 dark:hover:bg-gray-100 dark:hover:text-gray-900 dark:focus:ring-gray-300">
+        <button type="button" id="cancel-btn" class="w-full rounded-lg border border-gray-700 bg-gray-900 px-5 py-2.5 text-sm font-medium text-white hover:bg-gray-800 hover:text-gray-300 focus:z-10 focus:outline-none focus:ring-4 focus:ring-gray-700 dark:border-gray-200 dark:bg-white dark:text-gray-700 dark:hover:bg-gray-100 dark:hover:text-gray-900 dark:focus:ring-gray-300">
           Cancel Reservation
         </button>
 
-
-
-
         <button type="button" id="reschedule-btn" class="mt-4 flex w-full items-center justify-center rounded-lg bg-white px-5 py-2.5 text-sm font-medium text-blue-900 hover:bg-blue-100 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-900 dark:text-white dark:hover:bg-blue-700 dark:focus:ring-blue-600 sm:mt-0">
-  Reschedule Reservation
-</button>
+          Reschedule Reservation
+        </button>
 
-
-
-
-
-
-
-        
+        <button type="button" id="review-btn" class="mt-4 flex w-full items-center justify-center rounded-lg bg-white px-5 py-2.5 text-sm font-medium text-blue-900 hover:bg-blue-100 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-900 dark:text-white dark:hover:bg-blue-700 dark:focus:ring-blue-600 sm:mt-0">
+          Review Reservation
+        </button>
       </div>
     </div>
    
@@ -434,7 +427,74 @@ $stmt->close();
 </div>
 
 
+<!-- Review Modal -->
+<div id="review-modal" tabindex="-1" aria-hidden="true" class="hidden bg-black/20 overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full flex">
+    <div class="relative p-4 w-full max-w-md max-h-full">
+        <!-- Modal content -->
+        <div class="relative bg-white rounded-lg shadow-sm">
+            <!-- Modal header -->
+            <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t border-gray-200">
+                <h3 class="text-lg font-semibold text-gray-900">
+                    Leave a Review
+                </h3>
+                <button type="button" id="close-review-btn" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center">
+                    <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                    </svg>
+                    <span class="sr-only">Close modal</span>
+                </button>
+            </div>
+            <!-- Modal body -->
+            <form id="review-form" method="POST" class="p-4 md:p-5">
+                <input type="hidden" id="review-id" name="review_id" value="">
+                <input type="hidden" id="user-id" name="user_id" value="<?php echo htmlspecialchars($_SESSION['user_id']); ?>">
+                <input type="hidden" id="created-at" name="created_at" value="">
+                <input type="hidden" id="updated-at" name="updated_at" value="">
 
+                <!-- Rating -->
+                <div class="mb-4">
+                    <label for="rating" class="block mb-2 text-sm font-medium text-gray-900">Rating</label>
+                    <div id="rating" class="flex items-center">
+                        <svg class="w-6 h-6 text-gray-400 cursor-pointer" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" data-rating="1">
+                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.957a1 1 0 00.95.69h4.162c.969 0 1.371 1.24.588 1.81l-3.37 2.448a1 1 0 00-.364 1.118l1.286 3.957c.3.921-.755 1.688-1.54 1.118l-3.37-2.448a1 1 0 00-1.175 0l-3.37 2.448c-.784.57-1.84-.197-1.54-1.118l1.286-3.957a1 1 0 00-.364-1.118L2.049 9.384c-.783-.57-.38-1.81.588-1.81h4.162a1 1 0 00.95-.69l1.286-3.957z"></path>
+                        </svg>
+                        <svg class="w-6 h-6 text-gray-400 cursor-pointer" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" data-rating="2">
+                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.957a1 1 0 00.95.69h4.162c.969 0 1.371 1.24.588 1.81l-3.37 2.448a1 1 0 00-.364 1.118l1.286 3.957c.3.921-.755 1.688-1.54 1.118l-3.37-2.448a1 1 0 00-1.175 0l-3.37 2.448c-.784.57-1.84-.197-1.54-1.118l1.286-3.957a1 1 0 00-.364-1.118L2.049 9.384c-.783-.57-.38-1.81.588-1.81h4.162a1 1 0 00.95-.69l1.286-3.957z"></path>
+                        </svg>
+                        <svg class="w-6 h-6 text-gray-400 cursor-pointer" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" data-rating="3">
+                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.957a1 1 0 00.95.69h4.162c.969 0 1.371 1.24.588 1.81l-3.37 2.448a1 1 0 00-.364 1.118l1.286 3.957c.3.921-.755 1.688-1.54 1.118l-3.37-2.448a1 1 0 00-1.175 0l-3.37 2.448c-.784.57-1.84-.197-1.54-1.118l1.286-3.957a1 1 0 00-.364-1.118L2.049 9.384c-.783-.57-.38-1.81.588-1.81h4.162a1 1 0 00.95-.69l1.286-3.957z"></path>
+                        </svg>
+                        <svg class="w-6 h-6 text-gray-400 cursor-pointer" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" data-rating="4">
+                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.957a1 1 0 00.95.69h4.162c.969 0 1.371 1.24.588 1.81l-3.37 2.448a1 1 0 00-.364 1.118l1.286 3.957c.3.921-.755 1.688-1.54 1.118l-3.37-2.448a1 1 0 00-1.175 0l-3.37 2.448c-.784.57-1.84-.197-1.54-1.118l1.286-3.957a1 1 0 00-.364-1.118L2.049 9.384c-.783-.57-.38-1.81.588-1.81h4.162a1 1 0 00.95-.69l1.286-3.957z"></path>
+                        </svg>
+                        <svg class="w-6 h-6 text-gray-400 cursor-pointer" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" data-rating="5">
+                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.957a1 1 0 00.95.69h4.162c.969 0 1.371 1.24.588 1.81l-3.37 2.448a1 1 0 00-.364 1.118l1.286 3.957c.3.921-.755 1.688-1.54 1.118l-3.37-2.448a1 1 0 00-1.175 0l-3.37 2.448c-.784.57-1.84-.197-1.54-1.118l1.286-3.957a1 1 0 00-.364-1.118L2.049 9.384c-.783-.57-.38-1.81.588-1.81h4.162a1 1 0 00.95-.69l1.286-3.957z"></path>
+                        </svg>
+                    </div>
+                </div>
+
+                <!-- Title -->
+                <div class="mb-4">
+                    <label for="title" class="block mb-2 text-sm font-medium text-gray-900">Title</label>
+                    <input type="text" id="title" name="title" class="p-3 w-full border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-transparent text-blue-950" required>
+                </div>
+
+                <!-- Review Text -->
+                <div class="mb-4">
+                    <label for="review-text" class="block mb-2 text-sm font-medium text-gray-900">Review</label>
+                    <textarea id="review-text" name="review_text" rows="4" class="block p-2.5 w-full text-sm text-black bg-white rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500" placeholder="Write your review here" required></textarea>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="flex justify-end">
+                    <button type="submit" id="submit-review-btn" class="mt-4 flex w-full items-center justify-center rounded-lg bg-blue-900 px-5 py-2.5 text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-300">
+                        Submit Review
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 
 
 

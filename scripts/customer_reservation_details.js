@@ -1,4 +1,3 @@
-
 function updateStatus(status) {
     const steps = ["pending", "confirmed", "completed"];
     steps.forEach((step, index) => {
@@ -45,6 +44,22 @@ document.addEventListener("DOMContentLoaded", function () {
         .then(response => response.json())
         .then(data => {
             if (data.status) {
+
+                const rescheduleBtn = document.getElementById("reschedule-btn");
+                const cancelBtn = document.getElementById("cancel-btn");
+                const reviewBtn = document.getElementById("review-btn");
+
+                if (data.status == "Completed") {
+                    console.log("Reservation is confirmed. Enable reschedule and cancel buttons.");
+                    cancelBtn.remove();
+                    rescheduleBtn.remove();
+                } else if (data.status == "Pending") {
+                    console.log("Reservation is pending. Enable cancel button only.");
+                    reviewBtn.remove();
+                }
+
+                console.log("Reservation Status: " + data.status); // Log the reservation status
+                
                 updateStatus(data.status.toLowerCase()); // Convert to lowercase for consistency
             }
         })
@@ -105,6 +120,8 @@ function fetchReservationDetails(reservationId) {
             const data = JSON.parse(text);  // Try parsing the text as JSON
 
             if (data.status === 'Confirmed' || data.status === 'Pending' || data.status === 'Completed') {
+                console.log("Reservation Status: " + data.status); // Log the reservation status
+
                 // Populate the invoice details
                 document.getElementById('invoice-date-details').innerText = data.invoice_date || 'N/A';
                 document.getElementById('invoice-no-details').innerText = data.invoice_number || 'N/A';
@@ -440,3 +457,35 @@ function notificationSuccess() {
         console.error('Error fetching reservation code:', error);
     });
 }
+
+// Get elements
+const reviewBtn = document.getElementById("review-btn");
+const reviewModal = document.getElementById("review-modal");
+const closeReviewBtn = document.getElementById("close-review-btn");
+
+// Function to open the modal
+function openReviewModal() {
+  reviewModal.classList.remove("hidden");
+  reviewModal.setAttribute("aria-hidden", "false");
+  reviewModal.setAttribute("tabindex", "0");
+}
+
+// Function to close the modal
+function closeReviewModal() {
+  reviewModal.classList.add("hidden");
+  reviewModal.setAttribute("aria-hidden", "true");
+  reviewModal.setAttribute("tabindex", "-1");
+}
+
+// When the review button is clicked, open the modal
+reviewBtn.addEventListener("click", openReviewModal);
+
+// When the close button (X) is clicked, close the modal
+closeReviewBtn.addEventListener("click", closeReviewModal);
+
+// Close the modal if the user clicks outside the modal content
+window.addEventListener("click", function (event) {
+  if (event.target === reviewModal) {
+    closeReviewModal();
+  }
+});
