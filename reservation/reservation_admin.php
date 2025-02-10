@@ -221,8 +221,9 @@ if (!isset($_SESSION['admin_id'])) {
                 echo "<td class='py-2 px-4 border-b'>
                     <button 
                             type='button' 
-                            class='view-button text-white bg-blue-500 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-xs px-3 py-1.5 mb-1' 
-                            data-id='" . $reservation['id'] . "'>
+                            class='reserve-button text-white bg-green-500 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-xs px-3 py-1.5 mb-1' 
+                            data-id='" . $reservation['id'] . "' 
+                            onclick='storeReservationAndRedirect(this)'>
                             <i class='fa-solid fa-eye'></i>
                         </button>
                 </td>";
@@ -239,109 +240,6 @@ if (!isset($_SESSION['admin_id'])) {
         </div>
     </div>
 
-<!-- Modal -->
-<div id="reservationModal" class="fixed inset-0 flex items-center justify-center hidden bg-black bg-opacity-50 z-100 fixed">
-    <div class="bg-white rounded-lg shadow-lg w-full max-w-3xl h-[85vh] overflow-hidden">
-        <div class="px-6 py-4 flex justify-between items-center">
-            <h2 class="text-lg font-semibold text-gray-800">Reservation Details</h2>
-            <button id="closeModal" class="text-gray-500 hover:text-gray-700 text-xl">&times;</button>
-        </div>
-        <div class="flex flex-col h-full">
-            <!-- Tabs -->
-            <div class="tabs flex space-x-4 px-6 py-2 border-b border-gray-100">
-                <button class="tab-button active text-blue-500 font-medium" data-tab="details">Details</button>
-                <button class="tab-button text-gray-500 hover:text-blue-500 font-medium" data-tab="invoice">Invoice</button>
-                <button class="tab-button text-gray-500 hover:text-blue-500 font-medium" data-tab="payment">Payment</button>
-                <button class="tab-button text-gray-500 hover:text-blue-500 font-medium" data-tab="reschedule">Reschedule</button>
-            </div>
-
-            <!-- Tab Content -->
-            <div class="tab-content-container flex-1 overflow-auto px-6 py-4">
-                <div id="details" class="tab-content space-y-4 h-full">
-                    <p class="text-sm text-gray-700"><strong class="font-semibold">Reservation ID:</strong> <span id="modal-reservation-id" class="text-gray-600"></span></p>
-                    <p class="text-sm text-gray-700"><strong class="font-semibold">Name:</strong> <span id="modal-name" class="text-gray-600"></span></p>
-                    <p class="text-sm text-gray-700"><strong class="font-semibold">Email:</strong> <span id="modal-email" class="text-gray-600"></span></p>
-                    <p class="text-sm text-gray-700"><strong class="font-semibold">Phone Number:</strong> <span id="modal-phone-number" class="text-gray-600"></span></p>
-                    <p class="text-sm text-gray-700"><strong class="font-semibold">Check-In Date:</strong> <span id="modal-check-in" class="text-gray-600"></span></p>
-                    <p class="text-sm text-gray-700"><strong class="font-semibold">Check-Out Date:</strong> <span id="modal-check-out" class="text-gray-600"></span></p>
-                    <p class="text-sm text-gray-700"><strong class="font-semibold">Total Amount:</strong> <span id="modal-total-amount" class="text-gray-600"></span></p>
-                </div>
-
-                <div id="invoice" class="tab-content hidden space-y-4 h-full">
-                    <div class="flex justify-between text-sm text-gray-700">
-                        <div class="font-semibold">Name</div>
-                        <div class="font-semibold">Price</div>
-                    </div>
-                    <div class="flex justify-between text-sm text-gray-600">
-                        <div id="modal-rate-name"></div>
-                        <div id="modal-rate-price"></div>
-                    </div>
-                    <div class="flex justify-between text-sm text-gray-600">
-                        <div id="modal-addons-name"></div>
-                        <div id="modal-addons-price"></div>
-                    </div>
-                    <div class="mt-4 flex justify-between text-lg text-gray-800">
-                        <div class="font-semibold">Total</div>
-                        <div id="modal-total-price"></div>
-                    </div>
-                </div>
-
-                <div id="payment" class="tab-content hidden flex justify-center items-center h-full">
-                    <img id="modal-payment-proof" class="max-w-xs max-h-48 object-contain" alt="Payment Proof" />
-                </div>
-
-                <div id="reschedule" class="tab-content hidden h-full">
-                    <div id="right-div" class="flex-2 bg-white p-6 rounded-3xl shadow-lg h-full">
-                    <div class="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            
-                    <input class="hidden "type="text" id="rate-id-field" name="rate_id" />
-
-                            <div class="relative">
-                                <!-- Change input type to 'date' for testing, Flatpickr should open -->
-                                <input type="date" id="check-in-date" class="p-3 pt-5 w-full max-w-xs border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-transparent text-blue-950" required/>
-                                <label for="check-in-date" class="px-2 bg-white absolute left-3 top-[-10px] text-gray-600 text-sm font-medium"> Check-In Date </label>
-                            </div>
-
-                            <div id="info-alert" class="flex items-center p-4 mb-4 text-sm text-blue-800 rounded-lg bg-blue-200 dark:text-blue-900 hidden" role="alert">
-                                <svg class="shrink-0 inline w-4 h-4 me-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-                                    <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 1 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
-                                </svg>
-                                <span class="sr-only">Info</span>
-                                <div>
-                                    <span class="font-medium" id="alert-title">Info alert!</span> 
-                                    <span id="alert-message"></span>
-                                </div>
-                            </div>
-
-                                
-                                <!-- Check-Out Date (non-interactable) -->
-                            <div class="relative">
-                                <input type="date" id="check-out-date" class="p-3 pt-5 w-full max-w-xs border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-transparent text-blue-950" placeholder=" " disabled />
-                                <label for="check-out-date" class="px-2 bg-white absolute left-3 top-[-10px] text-gray-600 text-sm font-medium"> Check-Out Date </label>
-                            </div>
-                            </div>
-
-                            <!-- Check-In and Check-Out Times -->
-                            <div class="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                <!-- Check-In Time (auto-filled by system) -->
-                                <div class="relative">
-                                <input type="time" id="check-in-time" class="p-3 pt-5 w-full max-w-xs border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-transparent text-blue-950" placeholder=" " disabled />
-                                <label for="check-in-time" class="px-2 bg-white absolute left-3 top-[-10px] text-gray-600 text-sm font-medium"> Check-In Time </label>
-                                </div>
-                                <!-- Check-Out Time (auto-filled by system) -->
-                                <div class="relative">
-                                <input type="time" id="check-out-time" class="p-3 pt-5 w-full max-w-xs border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-transparent text-blue-950" placeholder=" " disabled />
-                                <label for="check-out-time" class="px-2 bg-white absolute left-3 top-[-10px] text-gray-600 text-sm font-medium"> Check-Out Time </label>
-                                </div>
-                            </div>
-
-                        <!-- Check-In and Check-Out Times -->
-                       
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
 
 
 </main>
