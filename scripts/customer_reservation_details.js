@@ -141,25 +141,6 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 // Wait for the DOM to fully load before running the script
-document.addEventListener("DOMContentLoaded", function() {
-    // Get the total price from the element
-    const totalPriceElement = document.getElementById('total-price-details');
-    const downpaymentElement = document.getElementById('downpayment');
-    const newTotalElement = document.getElementById('new-total');
-  
-    // Check if elements are found
-    if (totalPriceElement && downpaymentElement && newTotalElement) {
-        // Get the total price and remove the currency symbol
-        const totalPrice = parseFloat(totalPriceElement.innerText.replace('₱', '').trim());
-        const downpayment = totalPrice / 2;
-        const newTotal = totalPrice - downpayment;
-
-        // Update the total price, downpayment, and new total display
-        totalPriceElement.innerText = '₱' + totalPrice.toFixed(2);
-        downpaymentElement.innerText = '- ₱' + downpayment.toFixed(2);
-        newTotalElement.innerText = '₱' + newTotal.toFixed(2);
-    }
-});
 
 window.onload = function () {
     // Get the reservation ID from localStorage
@@ -184,118 +165,123 @@ function fetchReservationDetails(reservationId) {
     // Fetch the reservation details from the PHP script using the reservation ID
     fetch(`../api/get_invoice_details.php?reservation_id=${reservationId}`)
     .then(response => {
-        console.log(data); // Check what data is being received
-
         if (!response.ok) {
             throw new Error('Network response was not ok.');
         }
-        return response.json();  // Parsing response as JSON
+        return response.text();  // Read the response as text first
     })
-    .then(data => {
-        if (data.status === 'Confirmed' || data.status === 'Pending' || data.status === 'Completed') {
-            // Regular reservation details
-            console.log("Reservation Status: " + data.status); // Log the reservation status
+    .then(text => {
+        try {
+            const data = JSON.parse(text);  // Try parsing the text as JSON
 
-            // Populate the invoice details
-            document.getElementById('invoice-date-details').innerText = data.invoice_date || 'N/A';
-            document.getElementById('invoice-no-details').innerText = data.invoice_number || 'N/A';
-            document.getElementById('total-price-details').innerText = `₱${parseFloat(data.total_price).toFixed(2)}`;
+            if (data.status === 'Cancelled' || data.status === 'Confirmed' || data.status === 'Pending' || data.status === 'Completed') {
+                console.log("Reservation Status: " + data.status); // Log the reservation status
 
-            // Populate the items table with rates and addons
-            let itemsHTML = '';
-            data.rates.forEach(rate => {
-                itemsHTML += `
-                    <tr>
-                        <td class="py-2 px-4">Rate</td>
-                        <td class="py-2 px-4">${rate.rate_name}</td>
-                        <td class="py-2 px-4">₱${parseFloat(rate.rate_price).toFixed(2)}</td>
-                    </tr>
-                `;
-            });
-            data.addons.forEach(addon => {
-                itemsHTML += `
-                    <tr>
-                        <td class="py-2 px-4">Addon</td>
-                        <td class="py-2 px-4">${addon.addon_name}</td>
-                        <td class="py-2 px-4">₱${parseFloat(addon.addon_price).toFixed(2)}</td>
-                    </tr>
-                `;
-            });
-            document.getElementById('invoice-items-details').innerHTML = itemsHTML;
-            console.log(data);
+                // Remove commas from valid_amount_paid and total_price before parsing as float
+                const totalPrice = parseFloat(data.total_price.replace(/,/g, ''));
+                const validAmountPaid = parseFloat(data.valid_amount_paid.replace(/,/g, ''));
 
-            // Populate the personal information with readonly fields
-            document.getElementById('fname-details').value = data.first_name || '';
-            document.getElementById('lname-details').value = data.last_name || '';
-            document.getElementById('email-details').value = data.email || '';
-            document.getElementById('contact-details').value = data.contact_number || '';
+                // Update the total price
+                document.getElementById('total-price-details').innerText = `₱${totalPrice.toFixed(2)}`;
 
-            // Check-In and Check-Out Dates/Times
-            document.getElementById('checkin-details').value = data.checkin_date || '';
-            document.getElementById('checkout-details').value = data.checkout_date || '';
-            document.getElementById('checkin-time-details').value = data.checkin_time || '';
-            document.getElementById('checkout-time-details').value = data.checkout_time || '';
+                // Update the downpayment
+                document.getElementById('downpayment').innerText = `₱${validAmountPaid.toFixed(2)}`;
 
-            // Set the inputs to readonly
-            document.getElementById('fname-details').readOnly = true;
-            document.getElementById('lname-details').readOnly = true;
-            document.getElementById('email-details').readOnly = true;
-            document.getElementById('contact-details').readOnly = true;
-            document.getElementById('checkin-details').readOnly = true;
-            document.getElementById('checkout-details').readOnly = true;
-            document.getElementById('checkin-time-details').readOnly = true;
-            document.getElementById('checkout-time-details').readOnly = true;
+                // Calculate and update the new total (remaining balance)
+                const newTotal = totalPrice - validAmountPaid;
+                document.getElementById('new-total-display').innerText = `₱${newTotal.toFixed(2)}`;
 
-        } else if (data.status === 'Cancelled') {
-            // Handle cancelled status and still show details
-            console.log("Reservation Status: Cancelled"); // Log the cancelled status
+                // Populate the items table with rates and addons
+                let itemsHTML = '';
+                if (data.rates && data.rates.length > 0) {
+                    data.rates.forEach(rate => {
+                        itemsHTML += `
+                            <tr>
+                                <td class="py-2 px-4">Rate</td>
+                                <td class="py-2 px-4">${rate.rate_name}</td>
+                                <td class="py-2 px-4">₱${parseFloat(rate.rate_price).toFixed(2)}</td>
+                            </tr>
+                        `;
+                    });
+                }
+                if (data.addons && data.addons.length > 0) {
+                    data.addons.forEach(addon => {
+                        itemsHTML += `
+                            <tr>
+                                <td class="py-2 px-4">Addon</td>
+                                <td class="py-2 px-4">${addon.addon_name}</td>
+                                <td class="py-2 px-4">₱${parseFloat(addon.addon_price).toFixed(2)}</td>
+                            </tr>
+                        `;
+                    });
+                }
+                document.getElementById('invoice-items-details').innerHTML = itemsHTML;
 
-            // Show the invoice details even when cancelled
-            document.getElementById('invoice-date-details').innerText = data.invoice_date || 'N/A';
-            document.getElementById('invoice-no-details').innerText = data.invoice_number || 'N/A';
-            document.getElementById('total-price-details').innerText = `₱${parseFloat(data.total_price).toFixed(2)}`;
-            
-            // Display a message in the items table indicating the cancellation
-            let itemsHTML = '';
-            data.rates.forEach(rate => {
-                itemsHTML += `
-                    <tr>
-                        <td class="py-2 px-4">Rate</td>
-                        <td class="py-2 px-4">${rate.rate_name}</td>
-                        <td class="py-2 px-4">₱${parseFloat(rate.rate_price).toFixed(2)}</td>
-                    </tr>
-                `;
-            });
-            data.addons.forEach(addon => {
-                itemsHTML += `
-                    <tr>
-                        <td class="py-2 px-4">Addon</td>
-                        <td class="py-2 px-4">${addon.addon_name}</td>
-                        <td class="py-2 px-4">₱${parseFloat(addon.addon_price).toFixed(2)}</td>
-                    </tr>
-                `;
-            });
+                // Populate the personal information
+                document.getElementById('fname-details').value = data.first_name || '';
+                document.getElementById('lname-details').value = data.last_name || '';
+                document.getElementById('email-details').value = data.email || '';
+                document.getElementById('contact-details').value = data.contact_number || '';
 
-            // Add a cancellation message in the table
-            itemsHTML += `
-                <tr>
-                    <td colspan="3" class="py-2 px-4 text-center text-red-500">This reservation has been cancelled.</td>
-                </tr>
-            `;
-            document.getElementById('invoice-items-details').innerHTML = itemsHTML;
+                // Ensure date and time values are in the correct format
+                const checkinDate = data.checkin_date || '';
+                const checkoutDate = data.checkout_date || '';
+                const checkinTime = data.checkin_time || '';
+                const checkoutTime = data.checkout_time || '';
 
-            // Hide the relevant buttons if cancelled
-            document.getElementById('cancel-btn').classList.add('hidden');
-            document.getElementById('reschedule-btn').classList.add('hidden');
-            document.getElementById('review-btn').classList.add('hidden');
-        } else {
-            console.error('Error fetching data:', data.message || 'Unknown error');
+                // Check-In and Check-Out Dates (Convert to text if necessary)
+                if (checkinDate) {
+                    document.getElementById('checkin-details').value = checkinDate;
+                } else {
+                    console.log("Check-in date is missing or empty.");
+                }
+
+                if (checkoutDate) {
+                    document.getElementById('checkout-details').value = checkoutDate;
+                } else {
+                    console.log("Check-out date is missing or empty.");
+                }
+
+                // Check-In and Check-Out Times
+                if (checkinTime) {
+                    document.getElementById('checkin-time-details').value = checkinTime;
+                } else {
+                    console.log("Check-in time is missing or empty.");
+                }
+
+                if (checkoutTime) {
+                    document.getElementById('checkout-time-details').value = checkoutTime;
+                } else {
+                    console.log("Check-out time is missing or empty.");
+                }
+            } else if (data.status === 'Cancelled') {
+                console.log("Reservation Status: Cancelled"); // Log the cancelled status
+                // Show a message that the reservation is cancelled
+                document.getElementById('reservation-status').innerText = 'This reservation has been cancelled.';
+
+                // Optionally, you could hide or disable other sections if needed:
+                document.getElementById('total-price-details').innerText = '₱0.00';
+                document.getElementById('downpayment').innerText = '₱0.00';
+                document.getElementById('new-total-display').innerText = '₱0.00';
+
+                // Clear any further details (optional)
+                document.getElementById('invoice-items-details').innerHTML = '';
+                document.getElementById('fname-details').value = '';
+                document.getElementById('lname-details').value = '';
+                document.getElementById('email-details').value = '';
+                document.getElementById('contact-details').value = '';
+            } else {
+                console.error('Error fetching data:', data.message || 'Unknown error');
+            }
+        } catch (error) {
+            console.error('Error parsing JSON:', error);  // Catch JSON parsing errors
         }
     })
     .catch(error => {
         console.error('Error:', error);
     });
 }
+
 
 
 document.addEventListener("DOMContentLoaded", function() {

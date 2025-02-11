@@ -320,8 +320,9 @@ $stmt->close();
 
 <div class="flex justify-between items-center pt-4">
   <span class="text-xl font-semibold text-white dark:text-gray-900">Total</span>
-  <span id="new-total" class="text-xl font-bold text-blue-900">₱0.00</span>
+  <span id="new-total-display" class="text-xl font-bold text-blue-900">₱0.00</span>
 </div>
+
 
 <!-- Add script at the end -->
 
