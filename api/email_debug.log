@@ -1,0 +1,136 @@
+[2025-02-11 09:59:11] Raw Input: {"request_id":1,"status":"Approved"}
+[2025-02-11 10:00:12] Raw Input: 
+[2025-02-11 10:00:19] Raw Input: 
+[2025-02-11 10:00:29] Raw Input: 
+[2025-02-11 10:12:15] Raw Input: 
+[2025-02-11 10:12:50] Raw Input: {"request_id":1,"status":"Approved"}
+[2025-02-11 10:16:45] Raw Input: {"request_id":1,"status":"Approved"}
+[2025-02-11 10:23:20] Raw Input: {"request_id":1,"status":"Approved"}
+[2025-02-11 10:26:31] Raw Input: {"request_id":1,"status":"Approved"}
+[2025-02-11 10:29:09] Raw Input: {"request_id":1,"status":"Approved"}
+[2025-02-11 10:29:11] PHPMailer Exception: SMTP Error: Could not authenticate.
+[2025-02-11 10:30:13] Raw Input: {"request_id":1,"status":"Approved"}
+[2025-02-11 10:57:40] Raw Input: {"request_id":1,"status":"Denied"}
+[2025-02-11 10:57:40] SMTP Debug: SERVER -> CLIENT: 220 smtp.gmail.com ESMTP d9443c01a7336-21f3650f259sm92814225ad.35 - gsmtp
+
+[2025-02-11 10:57:40] SMTP Debug: CLIENT -> SERVER: EHLO localhost
+
+[2025-02-11 10:57:41] SMTP Debug: SERVER -> CLIENT: 250-smtp.gmail.com at your service, [136.158.41.108]
+250-SIZE 35882577
+250-8BITMIME
+250-STARTTLS
+250-ENHANCEDSTATUSCODES
+250-PIPELINING
+250-CHUNKING
+250 SMTPUTF8
+
+[2025-02-11 10:57:41] SMTP Debug: CLIENT -> SERVER: STARTTLS
+
+[2025-02-11 10:57:41] SMTP Debug: SERVER -> CLIENT: 220 2.0.0 Ready to start TLS
+
+[2025-02-11 10:57:41] SMTP Debug: CLIENT -> SERVER: EHLO localhost
+
+[2025-02-11 10:57:41] SMTP Debug: SERVER -> CLIENT: 250-smtp.gmail.com at your service, [136.158.41.108]
+250-SIZE 35882577
+250-8BITMIME
+250-AUTH LOGIN PLAIN XOAUTH2 PLAIN-CLIENTTOKEN OAUTHBEARER XOAUTH
+250-ENHANCEDSTATUSCODES
+250-PIPELINING
+250-CHUNKING
+250 SMTPUTF8
+
+[2025-02-11 10:57:41] SMTP Debug: CLIENT -> SERVER: AUTH LOGIN
+
+[2025-02-11 10:57:41] SMTP Debug: SERVER -> CLIENT: 334 VXNlcm5hbWU6
+
+[2025-02-11 10:57:41] SMTP Debug: CLIENT -> SERVER: [credentials hidden]
+[2025-02-11 10:57:41] SMTP Debug: SERVER -> CLIENT: 334 UGFzc3dvcmQ6
+
+[2025-02-11 10:57:41] SMTP Debug: CLIENT -> SERVER: [credentials hidden]
+[2025-02-11 10:57:42] SMTP Debug: SERVER -> CLIENT: 535-5.7.8 Username and Password not accepted. For more information, go to
+535 5.7.8  https://support.google.com/mail/?p=BadCredentials d9443c01a7336-21f3650f259sm92814225ad.35 - gsmtp
+
+[2025-02-11 10:57:42] SMTP Debug: SMTP ERROR: Password command failed: 535-5.7.8 Username and Password not accepted. For more information, go to
+535 5.7.8  https://support.google.com/mail/?p=BadCredentials d9443c01a7336-21f3650f259sm92814225ad.35 - gsmtp
+
+[2025-02-11 10:57:42] SMTP Debug: SMTP Error: Could not authenticate.
+[2025-02-11 10:57:42] SMTP Debug: CLIENT -> SERVER: QUIT
+
+[2025-02-11 10:57:42] SMTP Debug: SERVER -> CLIENT: 221 2.0.0 closing connection d9443c01a7336-21f3650f259sm92814225ad.35 - gsmtp
+
+[2025-02-11 10:57:42] SMTP Debug: SMTP Error: Could not authenticate.
+[2025-02-11 10:57:42] PHPMailer Exception: SMTP Error: Could not authenticate.
+[2025-02-11 10:57:47] Raw Input: {"request_id":1,"status":"Approved"}
+[2025-02-11 10:57:47] SMTP Debug: SERVER -> CLIENT: 220 smtp.gmail.com ESMTP d9443c01a7336-21f36538c57sm92449905ad.60 - gsmtp
+
+[2025-02-11 10:57:47] SMTP Debug: CLIENT -> SERVER: EHLO localhost
+
+[2025-02-11 10:57:47] SMTP Debug: SERVER -> CLIENT: 250-smtp.gmail.com at your service, [136.158.41.108]
+250-SIZE 35882577
+250-8BITMIME
+250-STARTTLS
+250-ENHANCEDSTATUSCODES
+250-PIPELINING
+250-CHUNKING
+250 SMTPUTF8
+
+[2025-02-11 10:57:47] SMTP Debug: CLIENT -> SERVER: STARTTLS
+
+[2025-02-11 10:57:47] SMTP Debug: SERVER -> CLIENT: 220 2.0.0 Ready to start TLS
+
+[2025-02-11 10:57:47] SMTP Debug: CLIENT -> SERVER: EHLO localhost
+
+[2025-02-11 10:57:48] SMTP Debug: SERVER -> CLIENT: 250-smtp.gmail.com at your service, [136.158.41.108]
+250-SIZE 35882577
+250-8BITMIME
+250-AUTH LOGIN PLAIN XOAUTH2 PLAIN-CLIENTTOKEN OAUTHBEARER XOAUTH
+250-ENHANCEDSTATUSCODES
+250-PIPELINING
+250-CHUNKING
+250 SMTPUTF8
+
+[2025-02-11 10:57:48] SMTP Debug: CLIENT -> SERVER: AUTH LOGIN
+
+[2025-02-11 10:57:48] SMTP Debug: SERVER -> CLIENT: 334 VXNlcm5hbWU6
+
+[2025-02-11 10:57:48] SMTP Debug: CLIENT -> SERVER: [credentials hidden]
+[2025-02-11 10:57:48] SMTP Debug: SERVER -> CLIENT: 334 UGFzc3dvcmQ6
+
+[2025-02-11 10:57:48] SMTP Debug: CLIENT -> SERVER: [credentials hidden]
+[2025-02-11 10:57:48] SMTP Debug: SERVER -> CLIENT: 535-5.7.8 Username and Password not accepted. For more information, go to
+535 5.7.8  https://support.google.com/mail/?p=BadCredentials d9443c01a7336-21f36538c57sm92449905ad.60 - gsmtp
+
+[2025-02-11 10:57:48] SMTP Debug: SMTP ERROR: Password command failed: 535-5.7.8 Username and Password not accepted. For more information, go to
+535 5.7.8  https://support.google.com/mail/?p=BadCredentials d9443c01a7336-21f36538c57sm92449905ad.60 - gsmtp
+
+[2025-02-11 10:57:48] SMTP Debug: SMTP Error: Could not authenticate.
+[2025-02-11 10:57:48] SMTP Debug: CLIENT -> SERVER: QUIT
+
+[2025-02-11 10:57:48] SMTP Debug: SERVER -> CLIENT: 221 2.0.0 closing connection d9443c01a7336-21f36538c57sm92449905ad.60 - gsmtp
+
+[2025-02-11 10:57:48] SMTP Debug: SMTP Error: Could not authenticate.
+[2025-02-11 10:57:48] PHPMailer Exception: SMTP Error: Could not authenticate.
+[2025-02-11 10:58:09] Raw Input: {"request_id":1,"status":"Denied"}
+[2025-02-11 12:36:58] Raw Input: {"request_id":1,"status":"Approved"}
+[2025-02-11 12:36:58] PHPMailer Exception: Invalid address:  (to): email
+[2025-02-11 12:39:38] Raw Input: {"request_id":1,"status":"Approved"}
+[2025-02-11 12:39:38] PHPMailer Exception: Invalid address:  (to): email
+[2025-02-11 12:39:57] Raw Input: {"request_id":1,"status":"Approved"}
+[2025-02-11 12:39:57] PHPMailer Exception: Invalid address:  (to): email
+[2025-02-11 12:43:13] Raw Input: 
+[2025-02-11 12:44:53] Raw Input: {"request_id":1,"status":"Approved"}
+[2025-02-11 12:44:53] PHPMailer Exception: Invalid address:  (to): email
+[2025-02-11 12:47:03] Raw Input: 
+[2025-02-11 12:47:56] Raw Input: {"request_id":1,"status":"Approved"}
+[2025-02-11 12:47:56] PHPMailer Exception: Invalid address:  (to): email
+[2025-02-11 12:50:25] Raw Input: {"request_id":1,"status":"Approved"}
+[2025-02-11 12:50:25] PHPMailer Exception: Invalid address:  (to): email
+[2025-02-11 12:55:34] Raw Input: {"request_id":1,"status":"Approved"}
+[2025-02-11 12:55:43] Raw Input: 
+[2025-02-11 12:55:44] Raw Input: 
+[2025-02-11 13:00:23] Raw Input: {"request_id":1,"status":"Approved"}
+[2025-02-11 13:00:23] PHPMailer Exception: Invalid address:  (to): email
+[2025-02-11 13:03:15] Raw Input: {"request_id":1,"status":"Approved"}
+[2025-02-11 13:03:15] PHPMailer Exception: Invalid address:  (to): email
+[2025-02-11 13:04:07] Raw Input: {"request_id":1,"status":"Approved"}
+[2025-02-11 13:07:21] Raw Input: {"request_id":1,"status":"Approved"}
