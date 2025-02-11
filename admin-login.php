@@ -29,7 +29,7 @@ if (isset($_POST['email']) && isset($_POST['password'])) {
             $_SESSION['role'] = $admin['role'];
 
             // Redirect to the admin dashboard or team page after login
-            header("Location: index.php"); // Redirect to index.php
+            header("Location: admindash.php"); // Redirect to admindash.php.php
             exit(); // Ensure the script stops here after redirection
         } else {
             // Invalid password

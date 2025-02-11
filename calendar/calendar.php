@@ -31,7 +31,7 @@ if (!isset($_SESSION['admin_id'])) {
 	<a href="#" class="brand"><i class='bx bxs-smile icon'></i>Admin</a>
 
 		<ul class="side-menu">
-			<li><a href="../index.php"><i class='bx bxs-dashboard icon' ></i> Dashboard</a></li>
+			<li><a href="../admindash.php"><i class='bx bxs-dashboard icon' ></i> Dashboard</a></li>
 
 			<li class="divider" data-text="management">Management</li>
 			<li><a href="../reservation/reservation_admin.php"><i class='bx bx-list-ol icon' ></i> Reservations</a></li>

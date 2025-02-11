@@ -84,7 +84,7 @@ session_start(); // Move session_start() to top of file
                         echo "<script>
                             document.getElementById('success-message').classList.remove('hidden');
                             setTimeout(() => {
-                                window.location.href = 'homepage.php';
+                                window.location.href = 'index.php';
                             }, 3000);
                         </script>";
                         exit();

@@ -166,7 +166,7 @@ document.getElementById('rate-modal').addEventListener('click', function(event) 
   });
 
   document.addEventListener("DOMContentLoaded", function() {
-    initializeFlatpickr();  // Initialize Flatpickr when the DOM is ready
+    initializeFlatpickr();
   });
   
   async function fetchReservedDates() {
@@ -191,6 +191,18 @@ document.getElementById('rate-modal').addEventListener('click', function(event) 
   
     const checkInDateInput = document.getElementById("check-in");
   
+    // Find dates that should be fully disabled
+    const fullyReservedDates = new Set(reservedWholeDay);
+  
+    reservedDaytime.forEach(date => {
+      if (reservedNighttime.includes(date)) {
+        fullyReservedDates.add(date);  // Add date only if it's in both lists
+      }
+    });
+  
+    // Log fully reserved dates in the console
+    console.log("Disabled Dates:", Array.from(fullyReservedDates));
+  
     // Initialize Flatpickr
     flatpickr(checkInDateInput, {
       dateFormat: "Y-m-d",
@@ -201,11 +213,7 @@ document.getElementById('rate-modal').addEventListener('click', function(event) 
       },
       disable: [
         { from: "1970-01-01", to: new Date().toISOString().split("T")[0] },  // Disable past dates
-        ...reservedWholeDay.map(date => ({ from: date, to: date })),  // Disable whole day reserved dates
-        ...reservedDaytime.filter(date => reservedNighttime.includes(date)).map(date => ({
-          from: date,
-          to: date
-        }))
+        ...Array.from(fullyReservedDates).map(date => ({ from: date, to: date }))  // Disable fully reserved dates
       ]
     });
   
@@ -221,16 +229,14 @@ document.getElementById('rate-modal').addEventListener('click', function(event) 
         localStorage.setItem("selectedDate", JSON.stringify({ checkIn: selectedDate }));
   
         // Redirect to booking.php
-        window.location.href = "booking.php";  // You can change this path to wherever your booking page is located
+        window.location.href = "/landing_page_customer/booking.php";  // Change path if necessary
       } else {
-        // Optional: Show an alert or a message if no date is selected
         alert("Please select a check-in date.");
       }
     });
   }
   
   document.addEventListener("DOMContentLoaded", function() {
-    // Initialize flatpickr and other events after the page is loaded
     initializeFlatpickr();
   });
   
