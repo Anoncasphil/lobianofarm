@@ -263,14 +263,14 @@ $approved_percentage = $total_count > 0 ? ($approved_count / $total_count) * 100
 			<div class="data">
 
 				<!-- sales graph -->
-				<div class="content-data">
+				<!-- <div class="content-data">
 					<div class="head">
 						<h3>Sales Report</h3>
 					</div>
 					<div class="chart">
 						<div id="chart"></div>
 					</div>
-				</div>
+				</div> -->
 
 			<!-- Reservation Table -->
 			<div class="content-data">
