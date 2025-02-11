@@ -502,12 +502,52 @@ $conn->close();
 
 
 <!-- Reviews Section -->
-<section id="reviews" class="bg-white dark:bg-gray-900 min-h-screen flex items-center justify-center pt-16">
+<section id="reviews" class="bg-white dark:bg-gray-900 min-h-screen flex flex-col items-center justify-center pt-16">
   <div class="text-center">
     <h2 class="text-3xl font-extrabold text-gray-900 dark:text-white">Reviews</h2>
     <p class="mt-4 text-lg text-gray-600 dark:text-gray-400">Hear from our satisfied customers about their experiences.</p>
   </div>
+
+  <!-- Reviews will be loaded here -->
+  <div id="reviews-container" class="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full max-w-6xl px-4"></div>
 </section>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    fetch("../api/fetch_reviews.php") // Adjust path if necessary
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                const reviewsContainer = document.getElementById("reviews-container");
+                reviewsContainer.innerHTML = ""; // Clear existing content
+
+                data.reviews.forEach(review => {
+                    const reviewElement = document.createElement("div");
+                    reviewElement.classList.add("bg-gray-100", "dark:bg-gray-800", "p-6", "rounded-lg", "shadow");
+
+                    reviewElement.innerHTML = `
+                        <h3 class="text-xl font-bold text-gray-900 dark:text-white">${review.title}</h3>
+                        <p class="text-gray-600 dark:text-gray-400 mt-2">${review.review_text.substring(0, 100)}...</p>
+                        <p class="text-sm text-gray-500 dark:text-gray-400 mt-2">⭐ ${review.rating}/5</p>
+                        <p class="text-xs text-gray-400 mt-2">${new Date(review.created_at).toLocaleString()}</p>
+                    `;
+
+                    reviewsContainer.appendChild(reviewElement);
+                });
+            } else {
+                document.getElementById("reviews-container").innerHTML = "<p class='text-red-500'>No reviews available.</p>";
+            }
+        })
+        .catch(error => {
+            console.error("Error fetching reviews:", error);
+        });
+});
+</script>
+
+
+
+
+
 
 <section id="reserve" class="bg-gray-100 flex items-center justify-center pt-16 px-4">
   <div class="max-w-screen-xl mx-auto px-4 md:px-8 flex flex-col md:flex-row items-center gap-8">
