@@ -41,38 +41,48 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 
     // Validate password
-    if (empty(trim($_POST["password"]))) {
-        $password_err = "Please enter your password.";
-    } elseif (strlen(trim($_POST["password"])) < 6) {
-        $password_err = "Password must be at least 6 characters.";
-    } else {
-        $password = trim($_POST["password"]);
-    }
+    if (!empty(trim($_POST["password"]))) {
+        if (strlen(trim($_POST["password"])) < 6) {
+            $password_err = "Password must be at least 6 characters.";
+        } else {
+            $password = trim($_POST["password"]);
+        }
 
-    // Validate confirm password
-    if (empty(trim($_POST["confirm_password"]))) {
-        $confirm_password_err = "Please confirm your password.";
-    } else {
-        $confirm_password = trim($_POST["confirm_password"]);
-        if (empty($password_err) && ($password != $confirm_password)) {
-            $confirm_password_err = "Password did not match.";
+        // Validate confirm password
+        if (empty(trim($_POST["confirm_password"]))) {
+            $confirm_password_err = "Please confirm your password.";
+        } else {
+            $confirm_password = trim($_POST["confirm_password"]);
+            if (empty($password_err) && ($password != $confirm_password)) {
+                $confirm_password_err = "Password did not match.";
+            }
         }
     }
 
     // Check for errors before updating the database
     if (empty($first_name_err) && empty($last_name_err) && empty($contact_no_err) && empty($password_err) && empty($confirm_password_err)) {
-        // Prepare an update statement
-        $sql = "UPDATE user_tbl SET first_name = ?, last_name = ?, contact_no = ?, password = ? WHERE user_id = ?";
+        if (!empty($password)) {
+            // Prepare an update statement with password
+            $sql = "UPDATE user_tbl SET first_name = ?, last_name = ?, contact_no = ?, password = ? WHERE user_id = ?";
+        } else {
+            // Prepare an update statement without password
+            $sql = "UPDATE user_tbl SET first_name = ?, last_name = ?, contact_no = ? WHERE user_id = ?";
+        }
 
         if ($stmt = $conn->prepare($sql)) {
-            // Bind variables to the prepared statement as parameters
-            $stmt->bind_param("ssssi", $param_first_name, $param_last_name, $param_contact_no, $param_password, $param_user_id);
+            if (!empty($password)) {
+                // Bind variables to the prepared statement as parameters with password
+                $stmt->bind_param("ssssi", $param_first_name, $param_last_name, $param_contact_no, $param_password, $param_user_id);
+                $param_password = password_hash($password, PASSWORD_DEFAULT); // Create a password hash
+            } else {
+                // Bind variables to the prepared statement as parameters without password
+                $stmt->bind_param("sssi", $param_first_name, $param_last_name, $param_contact_no, $param_user_id);
+            }
 
             // Set parameters
             $param_first_name = $first_name;
             $param_last_name = $last_name;
             $param_contact_no = $contact_no;
-            $param_password = password_hash($password, PASSWORD_DEFAULT); // Create a password hash
             $param_user_id = $_SESSION['user_id'];
 
             // Attempt to execute the prepared statement

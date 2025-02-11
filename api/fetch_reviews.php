@@ -15,8 +15,12 @@ if (!$conn) {
     exit;
 }
 
-// Fetch reviews from the database
-$sql = "SELECT user_id, title, review_text, rating, created_at FROM reviews ORDER BY created_at DESC";
+// Fetch ALL reviews with reviewer names
+$sql = "SELECT r.user_id, u.first_name, u.last_name, r.title, r.review_text, r.rating, r.created_at 
+        FROM reviews r
+        JOIN user_tbl u ON r.user_id = u.user_id
+        ORDER BY r.created_at DESC";
+
 $result = $conn->query($sql);
 
 $reviews = [];
