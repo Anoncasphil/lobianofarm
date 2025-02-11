@@ -64,6 +64,7 @@ $stmt->close();
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
     <script src="../scripts/bookings.js" defer></script>
     <link rel="stylesheet" href="../styles/booking.css">
+    <link rel="stylesheet" href="../styles/homepage.css">
     <link href="../dist/output.css" rel="stylesheet">
 
 </head>
@@ -135,7 +136,7 @@ $stmt->close();
 
     <!-- 4-Column Wide Div -->
      <div class="flex-4">
-      <div id="basic-details" class="flex-4 bg-white p-6 rounded-3xl shadow-lg">
+      <div id="basic-details" class="flex-4 bg-white p-6 rounded-lg shadow-lg">
         <h2 class="text-3xl font-extrabold text-gray-700">BASIC DETAILS</h2>
         <p class="mt-2 text-gray-600">Please enter your basic details to proceed with your reservation.</p>
 
@@ -170,7 +171,7 @@ $stmt->close();
 
 
 <!-- Rates -->
-<div id="rates" class="flex-4 bg-white p-6 rounded-3xl mt-5 shadow-lg">
+<div id="rates" class="flex-4 bg-white p-6 rounded-lg mt-5 shadow-lg">
   <h2 class="text-3xl font-extrabold text-gray-700">RATES</h2>
   <p class="mt-2 text-gray-600">Please choose your preferred rate.</p>
 
@@ -190,11 +191,14 @@ $stmt->close();
         echo "<div class='pb-6 overflow-x-auto flex space-x-6 scrollbar-hide scrollable-container'>";
 
         while ($row = $result->fetch_assoc()) {
-            $id = $row['id'];
-            $name = $row['name'];
-            $price = number_format($row['price'], 2); // Format the price with commas
-            $hours_of_stay = $row['hoursofstay'];
-            $picture = $row['picture'];
+          $id = $row['id'];
+          $name = $row['name'];
+          $price = $row['price'];
+          $hours_of_stay = $row['hoursofstay'];
+          $description = $row['description'];
+          $picture = $row['picture'];
+          $check_in_time = isset($row['checkin_time']) ? date("g:i A", strtotime($row['checkin_time'])) : 'Not specified';
+          $check_out_time = isset($row['checkout_time']) ? date("g:i A", strtotime($row['checkout_time'])) : 'Not specified';
 
             // Generate the rate card with dynamic data
             echo "
@@ -214,9 +218,9 @@ $stmt->close();
                             <i class='fas fa-clock'></i> $hours_of_stay hours
                         </span>
                     </div>
-                    <button onclick='openModal(\"$id\")' class='absolute top-2 right-2 text-white hover:text-blue-500'>
-                        <i class='fas fa-info-circle text-2xl'></i>
-                    </button>
+<button onclick=\"openModal('$picture', '$name', '$description', '$hours_of_stay', '$check_in_time', '$check_out_time', '$price')\" class='absolute top-2 right-2 text-white hover:text-blue-500'>
+  <i class='fas fa-info-circle text-2xl'></i>
+</button>
                     <div class='mt-4 text-center'>
                         <button onclick='selectRate(\"$id\", \"$name\", \"$price\")' class='select-button bg-blue-600 text-white w-full font-bold py-2 px-4 rounded-md hover:bg-blue-700 transition duration-200' data-id='$id' data-price='$price' data-name='$name'>
                             Select
@@ -242,7 +246,7 @@ $stmt->close();
 
 
 <!-- addons -->
-<div id="addons" class="flex-4 bg-white p-6 mb-10 rounded-3xl mt-5 shadow-lg">
+<div id="addons" class="flex-4 bg-white p-6 mb-10 rounded-lg mt-5 shadow-lg">
   <h2 class="text-3xl font-extrabold text-gray-700">Add-ons</h2>
   <p class="mt-2 text-gray-600">Please choose your preferred add-ons.</p>
 
@@ -272,7 +276,7 @@ $stmt->close();
           
           // Generate the rate card with dynamic data and JavaScript functionality
           echo "
-          <div class='flex-none max-w-[284.18] bg-white border border-gray-200 rounded-lg shadow-sm relative addon-card' data-id='$id'>
+          <div class='flex-none max-w-[284.18] bg-white border border-gray-200 rounded-lg shadow-sm relative addon-card hover:scale-105 hover:shadow-2xl transition duration-300' data-id='$id'>
               <a href='#'>
                   <img class='rounded-t-lg w-[284.18px] h-[160px] object-fill' src='../src/uploads/addons/$picture' alt='$name' />
 
@@ -284,7 +288,7 @@ $stmt->close();
                   <div class='mb-2'>
                       <span class='text-lg font-medium text-gray-700'>₱$price</span>
                   </div>
-                  <button onclick='openModal(\"$id\")' class='absolute top-2 right-2 text-white hover:text-blue-500'>
+                  <button onclick='openAddonModal(\"$picture\", \"$name\", \"$description\", \"$price\")' class='absolute top-2 right-2 text-white hover:text-blue-500'>
                       <i class='fas fa-info-circle text-2xl'></i>
                   </button>
                   <div class='mt-4 text-center'>
@@ -315,7 +319,7 @@ $stmt->close();
 
 
 <!-- 2-Column Wide Div -->
-<div id="right-div" class="flex-2 bg-white p-6 rounded-3xl shadow-lg h-full">
+<div id="right-div" class="flex-2 bg-white p-6 rounded-lg shadow-lg h-full">
 
 <div id="info-alert" class="flex items-center p-4 mb-4 text-sm text-blue-800 rounded-lg bg-blue-200 dark:text-blue-900 hidden" role="alert">
   <svg class="shrink-0 inline w-4 h-4 me-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
@@ -427,16 +431,67 @@ $stmt->close();
 <script>
 </script>
 
-<!-- Modal for displaying more details -->
-<div id="modal" class="fixed inset-0 flex items-center justify-center hidden">
-  <div class="bg-white p-6 rounded-xl shadow-lg max-w-md w-full">
-    <h2 id="modalTitle" class="text-3xl font-extrabold text-gray-700">Rate Details</h2>
-    <p id="modalDescription" class="mt-2 text-gray-600">Detailed description of the selected rate.</p>
-    <div class="mt-4">
-      <span id="modalPrice" class="text-lg font-bold text-gray-800">$0</span>
-      <p class="text-sm text-gray-400">per night</p>
+<div id="rate-modal" class="fixed inset-0 bg-black/30 flex justify-center items-center hidden z-50 opacity-0 transition-opacity duration-500 ease-in-out">
+  <div class="bg-white p-10 rounded-lg max-w-3xl w-full">
+    <div class="flex">
+      <!-- Image on the left -->
+      <div class="flex-none w-2/5">
+        <img id="modal-picture" class="rounded-lg w-full h-full object-cover" src="" alt="Rate Picture">
+      </div>
+
+      <!-- Details on the right -->
+      <div class="ml-8 flex-1">
+        <h2 id="modal-name" class="text-3xl font-bold text-gray-800"></h2>
+
+        <div class="text-gray-600 mt-4 flex items-center">
+          <span class="material-icons mr-2 text-xl">schedule</span>
+          <p id="modal-hours" class="text-gray-700 font-medium text-lg"></p>
+        </div>
+
+        <div class="flex items-center mt-4">
+          <div class="bg-gray-50 border border-gray-300 text-gray-700 text-lg rounded-lg py-3 font-medium px-5" id="modal-checkin-time"></div>
+          <div class="mx-4">
+            <svg class="w-7 h-7 text-gray-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5-5 5M6 7l5 5-5 5"></path>
+            </svg>
+          </div>
+          <div class="bg-gray-50 border border-gray-300 text-gray-700 text-lg rounded-lg py-3 font-medium px-5" id="modal-checkout-time"></div>
+        </div>
+
+        <p class="text-gray-800 font-semibold text-2xl mt-4">₱<span id="modal-price"></span></p>
+        <p id="modal-description" class="text-gray-600 mt-4 max-w-2xl text-lg"></p>
+
+        <!-- Close button -->
+        <button id="close-modal" class="mt-8 px-6 py-3 bg-blue-600 text-white rounded-lg w-full text-lg hover:bg-blue-700">
+          Close
+        </button>
+      </div>
     </div>
-    <button onclick="closeModal()" class="mt-4 bg-blue-500 text-white px-4 py-2 rounded-lg">Close</button>
+  </div>
+</div>
+
+<!-- Modal for displaying Add-on Details -->
+<div id="addon-modal" class="fixed inset-0 bg-black/30 flex justify-center items-center hidden z-50">
+  <div class="bg-white p-10 rounded-lg max-w-3xl w-full">
+    <div class="flex">
+      <!-- Image on the left -->
+      <div class="flex-none w-2/5">
+        <img id="addon-modal-picture" class="rounded-lg w-full h-full object-cover" src="" alt="Addon Picture">
+      </div>
+
+      <!-- Details on the right -->
+      <div class="ml-8 flex-1">
+        <h2 id="addon-modal-name" class="text-3xl font-bold text-gray-800"></h2>
+
+        <p class="text-gray-800 font-semibold text-2xl mt-4">₱<span id="addon-modal-price"></span></p>
+        <p id="addon-modal-description" class="text-gray-600 mt-4 max-w-2xl text-lg"></p>
+
+        <!-- Close button -->
+        <button id="close-addon-modal" class="mt-8 px-6 py-3 bg-blue-600 text-white rounded-lg w-full text-lg hover:bg-blue-700">
+          Close
+        </button>
+      </div>
+    </div>
   </div>
 </div>
 

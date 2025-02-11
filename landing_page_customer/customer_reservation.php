@@ -205,227 +205,211 @@ $stmt->close();
     <!-- Tabs for reservation statuses -->
     <div class="flex justify-center mb-6">
         <button class="tab-button px-4 py-2 mx-2 bg-blue-500 text-white rounded-md" data-tab="pending">Pending</button>
-        <button class="tab-button px-4 py-2 mx-2 bg-gray-200 text-gray-800 rounded-md" data-tab="upcoming">Upcoming</button>
+        <button class="tab-button px-4 py-2 mx-2 bg-gray-200 text-gray-800 rounded-md" data-tab="upcoming">Confirmed</button>
         <button class="tab-button px-4 py-2 mx-2 bg-gray-200 text-gray-800 rounded-md" data-tab="completed">Completed</button>
         <button class="tab-button px-4 py-2 mx-2 bg-gray-200 text-gray-800 rounded-md" data-tab="cancelled">Cancelled</button>
     </div>
 
     <!-- Tab contents -->
     <div id="pending" class="tab-content">
-        <?php
-        // Query to retrieve pending reservations
-        $sql = "SELECT r.id as reservation_id, r.first_name, r.last_name, r.check_in_date, r.check_in_time, r.status,
-        rt.id as rate_id, rt.name as rate_name, rt.picture as rate_picture, rt.price as rate_price,
-        rt.price as total_price
-        FROM reservations r
-        JOIN rates rt ON r.rate_id = rt.id
-        WHERE r.user_id = ? AND r.status = 'Pending'";  // Filter by user_id and status
+    <?php
+    // Query to retrieve pending reservations, ordered by ascending check-in date and time
+    $sql = "SELECT r.id as reservation_id, r.first_name, r.last_name, r.check_in_date, r.check_in_time, r.status,
+    rt.id as rate_id, rt.name as rate_name, rt.picture as rate_picture, rt.price as rate_price,
+    rt.price as total_price
+    FROM reservations r
+    JOIN rates rt ON r.rate_id = rt.id
+    WHERE r.user_id = ? AND r.status = 'Pending' 
+    ORDER BY r.check_in_date ASC, r.check_in_time ASC";  // Order by check-in date and time, ascending
 
-        $stmt = $conn->prepare($sql);
-        $stmt->bind_param("i", $_SESSION['user_id']);
-        $stmt->execute();
-        $result = $stmt->get_result();
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("i", $_SESSION['user_id']);
+    $stmt->execute();
+    $result = $stmt->get_result();
 
-        // Check if data is available
-        if ($result->num_rows > 0) {
-            // Loop through reservations
-            while ($row = $result->fetch_assoc()) {
-                $full_name = $row["first_name"] . " " . $row["last_name"];
-                $check_in = date('F j, Y - g:i A', strtotime($row["check_in_date"] . ' ' . $row["check_in_time"])); // Format date
-                $status_class = 'bg-orange-200 text-orange-800'; // Pending: Orange
-                $status_text = 'Pending';
-                $rate_picture = $row["rate_picture"];
-                $rate_name = $row["rate_name"];
-                $rate_id = $row["rate_id"];
-                $total_price = $row["total_price"];
+    // Check if data is available
+    if ($result->num_rows > 0) {
+        // Loop through reservations
+        while ($row = $result->fetch_assoc()) {
+            $full_name = $row["first_name"] . " " . $row["last_name"];
+            $check_in = date('F j, Y - g:i A', strtotime($row["check_in_date"] . ' ' . $row["check_in_time"])); // Format date
+            $status_class = 'bg-orange-200 text-orange-800'; // Pending: Orange
+            $status_text = 'Pending';
+            $rate_picture = $row["rate_picture"];
+            $rate_name = $row["rate_name"];
+            $rate_id = $row["rate_id"];
+            $total_price = $row["total_price"];
 
-                // Calculate downpayment and new total
-                $downpayment = $total_price / 2;
-                $new_total =  $total_price - $downpayment;
+            // Calculate downpayment and new total
+            $downpayment = $total_price / 2;
+            $new_total =  $total_price - $downpayment;
 
-                // Reservation display code
-                echo "<div class='mb-8 bg-white shadow-lg rounded-lg cursor-pointer hover:scale-105 transform transition-all w-[500px] mx-auto' onclick='storeReservationId(" . $row["reservation_id"] . ")'>"; 
+            // Reservation display code
+            echo "<div class='mb-8 bg-white shadow-lg rounded-lg cursor-pointer hover:scale-105 transform transition-all w-[500px] mx-auto' onclick='storeReservationId(" . $row["reservation_id"] . ")'>"; 
 
-                // Reservation Card
-                echo "<div class='p-6'>
-                    <div class='flex items-center justify-between'>
-                        <!-- Picture -->
-                        <img src='../src/uploads/rates/" . $rate_picture . "' alt='Rate Image' class='w-24 h-24 object-cover rounded-md shadow-lg'>
+            // Reservation Card
+            echo "<div class='p-6'>
+                <div class='flex items-center justify-between'>
+                    <!-- Picture -->
+                    <img src='../src/uploads/rates/" . $rate_picture . "' alt='Rate Image' class='w-24 h-24 object-cover rounded-md shadow-lg'>
 
-                        <!-- Rate Name & Status -->
-                        <div class='ml-4 flex-1'>
-                            <div class='flex items-center justify-between mt-[-100]'>
-                                <h3 class='text-xl font-semibold text-gray-800'>" . $rate_name . "</h3>
-                                <span class='px-3 py-1 rounded-full " . $status_class . "'>" . $status_text . "</span>
-                            </div>
-
-                            <!-- Date and Time -->
-                            <span class='text-sm text-gray-500 mt-2 block'>" . $check_in . "</span>
+                    <!-- Rate Name & Status -->
+                    <div class='ml-4 flex-1'>
+                        <div class='flex items-center justify-between mt-[-100]'>
+                            <h3 class='text-xl font-semibold text-gray-800'>" . $rate_name . "</h3>
+                            <span class='px-3 py-1 rounded-full " . $status_class . "'>" . $status_text . "</span>
                         </div>
-                    </div>
 
-                    <div class='mt-4'>
-                        <!-- Price Information -->
-                        <div class='text-right'>
-                            <h4 class='text-gray-600 font-medium'>Downpayment: ₱" . number_format($downpayment, 2) . "</h4>
-                            <h4 class='text-gray-600 font-medium'>Total Price: ₱" . number_format($total_price, 2) . "</h4>
-                            <h4 class='text-gray-600 font-medium'>New Total: ₱" . number_format($new_total, 2) . "</h4>
-                        </div>
+                        <!-- Date and Time -->
+                        <span class='text-sm text-gray-500 mt-2 block'>" . $check_in . "</span>
                     </div>
                 </div>
-                </div>";
-            }
-        } else {
-            echo "<p class='text-center text-gray-500 py-4'>No pending reservations found.</p>";
+            </div>
+            </div>";
         }
+    } else {
+        echo "<p class='text-center text-gray-500 py-4'>No pending reservations found.</p>";
+    }
 
-        $stmt->close();
-        ?>
-    </div>
+    $stmt->close();
+    ?>
+</div>
 
-    <div id="upcoming" class="tab-content hidden">
-        <?php
-        // Query to retrieve upcoming reservations
-        $sql = "SELECT r.id as reservation_id, r.first_name, r.last_name, r.check_in_date, r.check_in_time, r.status,
-        rt.id as rate_id, rt.name as rate_name, rt.picture as rate_picture, rt.price as rate_price,
-        rt.price as total_price
-        FROM reservations r
-        JOIN rates rt ON r.rate_id = rt.id
-        WHERE r.user_id = ? AND r.status = 'Confirmed'";  // Filter by user_id and status
 
-        $stmt = $conn->prepare($sql);
-        $stmt->bind_param("i", $_SESSION['user_id']);
-        $stmt->execute();
-        $result = $stmt->get_result();
 
-        // Check if data is available
-        if ($result->num_rows > 0) {
-            // Loop through reservations
-            while ($row = $result->fetch_assoc()) {
-                $full_name = $row["first_name"] . " " . $row["last_name"];
-                $check_in = date('F j, Y - g:i A', strtotime($row["check_in_date"] . ' ' . $row["check_in_time"])); // Format date
-                $status_class = 'bg-blue-200 text-blue-800'; // Upcoming: Blue
-                $status_text = 'Confirmed';
-                $rate_picture = $row["rate_picture"];
-                $rate_name = $row["rate_name"];
-                $rate_id = $row["rate_id"];
-                $total_price = $row["total_price"];
+<div id="upcoming" class="tab-content hidden">
+    <?php
+    // Query to retrieve upcoming reservations, ordered by check-in date and time, ascending
+    $sql = "SELECT r.id as reservation_id, r.first_name, r.last_name, r.check_in_date, r.check_in_time, r.status,
+    rt.id as rate_id, rt.name as rate_name, rt.picture as rate_picture, rt.price as rate_price,
+    rt.price as total_price
+    FROM reservations r
+    JOIN rates rt ON r.rate_id = rt.id
+    WHERE r.user_id = ? AND r.status = 'Confirmed'
+    ORDER BY r.check_in_date ASC, r.check_in_time ASC";  // Order by check-in date and time, ascending
 
-                // Calculate downpayment and new total
-                $downpayment = $total_price / 2;
-                $new_total =  $total_price - $downpayment;
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("i", $_SESSION['user_id']);
+    $stmt->execute();
+    $result = $stmt->get_result();
 
-                // Reservation display code
-                echo "<div class='mb-8 bg-white shadow-lg rounded-lg cursor-pointer hover:scale-105 transform transition-all w-[500px] mx-auto' onclick='storeReservationId(" . $row["reservation_id"] . ")'>"; 
+    // Check if data is available
+    if ($result->num_rows > 0) {
+        // Loop through reservations
+        while ($row = $result->fetch_assoc()) {
+            $full_name = $row["first_name"] . " " . $row["last_name"];
+            $check_in = date('F j, Y - g:i A', strtotime($row["check_in_date"] . ' ' . $row["check_in_time"])); // Format date
+            $status_class = 'bg-blue-200 text-blue-800'; // Upcoming: Blue
+            $status_text = 'Confirmed';
+            $rate_picture = $row["rate_picture"];
+            $rate_name = $row["rate_name"];
+            $rate_id = $row["rate_id"];
+            $total_price = $row["total_price"];
 
-                // Reservation Card
-                echo "<div class='p-6'>
-                    <div class='flex items-center justify-between'>
-                        <!-- Picture -->
-                        <img src='../src/uploads/rates/" . $rate_picture . "' alt='Rate Image' class='w-24 h-24 object-cover rounded-md shadow-lg'>
+            // Calculate downpayment and new total
+            $downpayment = $total_price / 2;
+            $new_total =  $total_price - $downpayment;
 
-                        <!-- Rate Name & Status -->
-                        <div class='ml-4 flex-1'>
-                            <div class='flex items-center justify-between mt-[-100]'>
-                                <h3 class='text-xl font-semibold text-gray-800'>" . $rate_name . "</h3>
-                                <span class='px-3 py-1 rounded-full " . $status_class . "'>" . $status_text . "</span>
-                            </div>
+            // Reservation display code
+            echo "<div class='mb-8 bg-white shadow-lg rounded-lg cursor-pointer hover:scale-105 transform transition-all w-[500px] mx-auto' onclick='storeReservationId(" . $row["reservation_id"] . ")'>"; 
 
-                            <!-- Date and Time -->
-                            <span class='text-sm text-gray-500 mt-2 block'>" . $check_in . "</span>
+            // Reservation Card
+            echo "<div class='p-6'>
+                <div class='flex items-center justify-between'>
+                    <!-- Picture -->
+                    <img src='../src/uploads/rates/" . $rate_picture . "' alt='Rate Image' class='w-24 h-24 object-cover rounded-md shadow-lg'>
+
+                    <!-- Rate Name & Status -->
+                    <div class='ml-4 flex-1'>
+                        <div class='flex items-center justify-between mt-[-100]'>
+                            <h3 class='text-xl font-semibold text-gray-800'>" . $rate_name . "</h3>
+                            <span class='px-3 py-1 rounded-full " . $status_class . "'>" . $status_text . "</span>
                         </div>
-                    </div>
 
-                    <div class='mt-4'>
-                        <!-- Price Information -->
-                        <div class='text-right'>
-                            <h4 class='text-gray-600 font-medium'>Downpayment: ₱" . number_format($downpayment, 2) . "</h4>
-                            <h4 class='text-gray-600 font-medium'>Total Price: ₱" . number_format($total_price, 2) . "</h4>
-                            <h4 class='text-gray-600 font-medium'>New Total: ₱" . number_format($new_total, 2) . "</h4>
-                        </div>
+                        <!-- Date and Time -->
+                        <span class='text-sm text-gray-500 mt-2 block'>" . $check_in . "</span>
                     </div>
                 </div>
-                </div>";
-            }
-        } else {
-            echo "<p class='text-center text-gray-500 py-4'>No upcoming reservations found.</p>";
+
+
+            </div>
+            </div>";
         }
+    } else {
+        echo "<p class='text-center text-gray-500 py-4'>No upcoming reservations found.</p>";
+    }
 
-        $stmt->close();
-        ?>
-    </div>
+    $stmt->close();
+    ?>
+</div>
 
-    <div id="completed" class="tab-content hidden">
-        <?php
-        // Query to retrieve completed reservations
-        $sql = "SELECT r.id as reservation_id, r.first_name, r.last_name, r.check_in_date, r.check_in_time, r.status,
-        rt.id as rate_id, rt.name as rate_name, rt.picture as rate_picture, rt.price as rate_price,
-        rt.price as total_price
-        FROM reservations r
-        JOIN rates rt ON r.rate_id = rt.id
-        WHERE r.user_id = ? AND r.status = 'Completed'";  // Filter by user_id and status
 
-        $stmt = $conn->prepare($sql);
-        $stmt->bind_param("i", $_SESSION['user_id']);
-        $stmt->execute();
-        $result = $stmt->get_result();
+<div id="completed" class="tab-content hidden">
+    <?php
+    // Query to retrieve completed reservations, ordered by check-in date and time, ascending
+    $sql = "SELECT r.id as reservation_id, r.first_name, r.last_name, r.check_in_date, r.check_in_time, r.status,
+    rt.id as rate_id, rt.name as rate_name, rt.picture as rate_picture, rt.price as rate_price,
+    rt.price as total_price
+    FROM reservations r
+    JOIN rates rt ON r.rate_id = rt.id
+    WHERE r.user_id = ? AND r.status = 'Completed'
+    ORDER BY r.check_in_date ASC, r.check_in_time ASC";  // Order by check-in date and time, ascending
 
-        // Check if data is available
-        if ($result->num_rows > 0) {
-            // Loop through reservations
-            while ($row = $result->fetch_assoc()) {
-                $full_name = $row["first_name"] . " " . $row["last_name"];
-                $check_in = date('F j, Y - g:i A', strtotime($row["check_in_date"] . ' ' . $row["check_in_time"])); // Format date
-                $status_class = 'bg-blue-200 text-blue-800'; // Completed: Blue
-                $status_text = 'Completed';
-                $rate_picture = $row["rate_picture"];
-                $rate_name = $row["rate_name"];
-                $rate_id = $row["rate_id"];
-                $total_price = $row["total_price"];
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("i", $_SESSION['user_id']);
+    $stmt->execute();
+    $result = $stmt->get_result();
 
-                // Calculate downpayment and new total
-                $downpayment = $total_price / 2;
-                $new_total =  $total_price - $downpayment;
+    // Check if data is available
+    if ($result->num_rows > 0) {
+        // Loop through reservations
+        while ($row = $result->fetch_assoc()) {
+            $full_name = $row["first_name"] . " " . $row["last_name"];
+            $check_in = date('F j, Y - g:i A', strtotime($row["check_in_date"] . ' ' . $row["check_in_time"])); // Format date
+            $status_class = 'bg-blue-200 text-blue-800'; // Completed: Blue
+            $status_text = 'Completed';
+            $rate_picture = $row["rate_picture"];
+            $rate_name = $row["rate_name"];
+            $rate_id = $row["rate_id"];
+            $total_price = $row["total_price"];
 
-                // Reservation display code
-                echo "<div class='mb-8 bg-white shadow-lg rounded-lg cursor-pointer hover:scale-105 transform transition-all w-[500px] mx-auto' onclick='storeReservationId(" . $row["reservation_id"] . ")'>"; 
+            // Calculate downpayment and new total
+            $downpayment = $total_price / 2;
+            $new_total =  $total_price - $downpayment;
 
-                // Reservation Card
-                echo "<div class='p-6'>
-                    <div class='flex items-center justify-between'>
-                        <!-- Picture -->
-                        <img src='../src/uploads/rates/" . $rate_picture . "' alt='Rate Image' class='w-24 h-24 object-cover rounded-md shadow-lg'>
+            // Reservation display code
+            echo "<div class='mb-8 bg-white shadow-lg rounded-lg cursor-pointer hover:scale-105 transform transition-all w-[500px] mx-auto' onclick='storeReservationId(" . $row["reservation_id"] . ")'>"; 
 
-                        <!-- Rate Name & Status -->
-                        <div class='ml-4 flex-1'>
-                            <div class='flex items-center justify-between mt-[-100]'>
-                                <h3 class='text-xl font-semibold text-gray-800'>" . $rate_name . "</h3>
-                                <span class='px-3 py-1 rounded-full " . $status_class . "'>" . $status_text . "</span>
-                            </div>
+            // Reservation Card
+            echo "<div class='p-6'>
+                <div class='flex items-center justify-between'>
+                    <!-- Picture -->
+                    <img src='../src/uploads/rates/" . $rate_picture . "' alt='Rate Image' class='w-24 h-24 object-cover rounded-md shadow-lg'>
 
-                            <!-- Date and Time -->
-                            <span class='text-sm text-gray-500 mt-2 block'>" . $check_in . "</span>
+                    <!-- Rate Name & Status -->
+                    <div class='ml-4 flex-1'>
+                        <div class='flex items-center justify-between mt-[-100]'>
+                            <h3 class='text-xl font-semibold text-gray-800'>" . $rate_name . "</h3>
+                            <span class='px-3 py-1 rounded-full " . $status_class . "'>" . $status_text . "</span>
                         </div>
-                    </div>
 
-                    <div class='mt-4'>
-                        <!-- Price Information -->
-                        <div class='text-right'>
-                            <h4 class='text-gray-600 font-medium'>Downpayment: ₱" . number_format($downpayment, 2) . "</h4>
-                            <h4 class='text-gray-600 font-medium'>Total Price: ₱" . number_format($total_price, 2) . "</h4>
-                            <h4 class='text-gray-600 font-medium'>New Total: ₱" . number_format($new_total, 2) . "</h4>
-                        </div>
+                        <!-- Date and Time -->
+                        <span class='text-sm text-gray-500 mt-2 block'>" . $check_in . "</span>
                     </div>
                 </div>
-                </div>";
-            }
-        } else {
-            echo "<p class='text-center text-gray-500 py-4'>No completed reservations found.</p>";
-        }
 
-        $stmt->close();
-        ?>
-    </div>
+
+            </div>
+            </div>";
+        }
+    } else {
+        echo "<p class='text-center text-gray-500 py-4'>No completed reservations found.</p>";
+    }
+
+    $stmt->close();
+    ?>
+</div>
+
 
     <div id="cancelled" class="tab-content hidden">
         <?php
@@ -480,14 +464,6 @@ $stmt->close();
                         </div>
                     </div>
 
-                    <div class='mt-4'>
-                        <!-- Price Information -->
-                        <div class='text-right'>
-                            <h4 class='text-gray-600 font-medium'>Downpayment: ₱" . number_format($downpayment, 2) . "</h4>
-                            <h4 class='text-gray-600 font-medium'>Total Price: ₱" . number_format($total_price, 2) . "</h4>
-                            <h4 class='text-gray-600 font-medium'>New Total: ₱" . number_format($new_total, 2) . "</h4>
-                        </div>
-                    </div>
                 </div>
                 </div>";
             }

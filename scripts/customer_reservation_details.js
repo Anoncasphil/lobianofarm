@@ -52,13 +52,18 @@ document.addEventListener("DOMContentLoaded", function () {
                 const reviewBtn = document.getElementById('review-btn');
 
                 if (data.status === 'Pending') {
-                    if (cancelBtn) cancelBtn.classList.add('hidden');
-                    if (rescheduleBtn) rescheduleBtn.classList.add('hidden');
-                    if (reviewBtn) reviewBtn.classList.remove('hidden');
+                    if (cancelBtn) cancelBtn.classList.remove('hidden');
+                    if (rescheduleBtn) rescheduleBtn.classList.remove('hidden');
+                    if (reviewBtn) reviewBtn.classList.add('hidden');
                 } else if (data.status === 'Completed') {
                     if (cancelBtn) cancelBtn.classList.add('hidden');
                     if (rescheduleBtn) rescheduleBtn.classList.add('hidden');
                     if (reviewBtn) reviewBtn.classList.remove('hidden');
+                } else if (data.status === 'Cancelled') {
+                    // Hide all buttons if reservation is cancelled
+                    if (cancelBtn) cancelBtn.classList.add('hidden');
+                    if (rescheduleBtn) rescheduleBtn.classList.add('hidden');
+                    if (reviewBtn) reviewBtn.classList.add('hidden');
                 } else {
                     if (cancelBtn) cancelBtn.classList.remove('hidden');
                     if (rescheduleBtn) rescheduleBtn.classList.remove('hidden');
@@ -179,97 +184,119 @@ function fetchReservationDetails(reservationId) {
     // Fetch the reservation details from the PHP script using the reservation ID
     fetch(`../api/get_invoice_details.php?reservation_id=${reservationId}`)
     .then(response => {
+        console.log(data); // Check what data is being received
+
         if (!response.ok) {
             throw new Error('Network response was not ok.');
         }
-        return response.text();  // Read the response as text first
+        return response.json();  // Parsing response as JSON
     })
-    .then(text => {
-        try {
-            const data = JSON.parse(text);  // Try parsing the text as JSON
+    .then(data => {
+        if (data.status === 'Confirmed' || data.status === 'Pending' || data.status === 'Completed') {
+            // Regular reservation details
+            console.log("Reservation Status: " + data.status); // Log the reservation status
 
-            if (data.status === 'Confirmed' || data.status === 'Pending' || data.status === 'Completed') {
-                console.log("Reservation Status: " + data.status); // Log the reservation status
+            // Populate the invoice details
+            document.getElementById('invoice-date-details').innerText = data.invoice_date || 'N/A';
+            document.getElementById('invoice-no-details').innerText = data.invoice_number || 'N/A';
+            document.getElementById('total-price-details').innerText = `₱${parseFloat(data.total_price).toFixed(2)}`;
 
-                // Populate the invoice details
-                document.getElementById('invoice-date-details').innerText = data.invoice_date || 'N/A';
-                document.getElementById('invoice-no-details').innerText = data.invoice_number || 'N/A';
-                document.getElementById('total-price-details').innerText = `₱${parseFloat(data.total_price).toFixed(2)}`;
+            // Populate the items table with rates and addons
+            let itemsHTML = '';
+            data.rates.forEach(rate => {
+                itemsHTML += `
+                    <tr>
+                        <td class="py-2 px-4">Rate</td>
+                        <td class="py-2 px-4">${rate.rate_name}</td>
+                        <td class="py-2 px-4">₱${parseFloat(rate.rate_price).toFixed(2)}</td>
+                    </tr>
+                `;
+            });
+            data.addons.forEach(addon => {
+                itemsHTML += `
+                    <tr>
+                        <td class="py-2 px-4">Addon</td>
+                        <td class="py-2 px-4">${addon.addon_name}</td>
+                        <td class="py-2 px-4">₱${parseFloat(addon.addon_price).toFixed(2)}</td>
+                    </tr>
+                `;
+            });
+            document.getElementById('invoice-items-details').innerHTML = itemsHTML;
+            console.log(data);
 
-                // Populate the items table with rates and addons
-                let itemsHTML = '';
-                if (data.rates && data.rates.length > 0) {
-                    data.rates.forEach(rate => {
-                        itemsHTML += `
-                            <tr>
-                                <td class="py-2 px-4">Rate</td>
-                                <td class="py-2 px-4">${rate.rate_name}</td>
-                                <td class="py-2 px-4">₱${parseFloat(rate.rate_price).toFixed(2)}</td>
-                            </tr>
-                        `;
-                    });
-                }
-                if (data.addons && data.addons.length > 0) {
-                    data.addons.forEach(addon => {
-                        itemsHTML += `
-                            <tr>
-                                <td class="py-2 px-4">Addon</td>
-                                <td class="py-2 px-4">${addon.addon_name}</td>
-                                <td class="py-2 px-4">₱${parseFloat(addon.addon_price).toFixed(2)}</td>
-                            </tr>
-                        `;
-                    });
-                }
-                document.getElementById('invoice-items-details').innerHTML = itemsHTML;
+            // Populate the personal information with readonly fields
+            document.getElementById('fname-details').value = data.first_name || '';
+            document.getElementById('lname-details').value = data.last_name || '';
+            document.getElementById('email-details').value = data.email || '';
+            document.getElementById('contact-details').value = data.contact_number || '';
 
-                // Populate the personal information
-                document.getElementById('fname-details').value = data.first_name || '';
-                document.getElementById('lname-details').value = data.last_name || '';
-                document.getElementById('email-details').value = data.email || '';
-                document.getElementById('contact-details').value = data.contact_number || '';
+            // Check-In and Check-Out Dates/Times
+            document.getElementById('checkin-details').value = data.checkin_date || '';
+            document.getElementById('checkout-details').value = data.checkout_date || '';
+            document.getElementById('checkin-time-details').value = data.checkin_time || '';
+            document.getElementById('checkout-time-details').value = data.checkout_time || '';
 
-                // Ensure date and time values are in the correct format
-                const checkinDate = data.checkin_date || '';
-                const checkoutDate = data.checkout_date || '';
-                const checkinTime = data.checkin_time || '';
-                const checkoutTime = data.checkout_time || '';
+            // Set the inputs to readonly
+            document.getElementById('fname-details').readOnly = true;
+            document.getElementById('lname-details').readOnly = true;
+            document.getElementById('email-details').readOnly = true;
+            document.getElementById('contact-details').readOnly = true;
+            document.getElementById('checkin-details').readOnly = true;
+            document.getElementById('checkout-details').readOnly = true;
+            document.getElementById('checkin-time-details').readOnly = true;
+            document.getElementById('checkout-time-details').readOnly = true;
 
-                // Check-In and Check-Out Dates (Convert to text if necessary)
-                if (checkinDate) {
-                    document.getElementById('checkin-details').value = checkinDate;
-                } else {
-                    console.log("Check-in date is missing or empty.");
-                }
+        } else if (data.status === 'Cancelled') {
+            // Handle cancelled status and still show details
+            console.log("Reservation Status: Cancelled"); // Log the cancelled status
 
-                if (checkoutDate) {
-                    document.getElementById('checkout-details').value = checkoutDate;
-                } else {
-                    console.log("Check-out date is missing or empty.");
-                }
+            // Show the invoice details even when cancelled
+            document.getElementById('invoice-date-details').innerText = data.invoice_date || 'N/A';
+            document.getElementById('invoice-no-details').innerText = data.invoice_number || 'N/A';
+            document.getElementById('total-price-details').innerText = `₱${parseFloat(data.total_price).toFixed(2)}`;
+            
+            // Display a message in the items table indicating the cancellation
+            let itemsHTML = '';
+            data.rates.forEach(rate => {
+                itemsHTML += `
+                    <tr>
+                        <td class="py-2 px-4">Rate</td>
+                        <td class="py-2 px-4">${rate.rate_name}</td>
+                        <td class="py-2 px-4">₱${parseFloat(rate.rate_price).toFixed(2)}</td>
+                    </tr>
+                `;
+            });
+            data.addons.forEach(addon => {
+                itemsHTML += `
+                    <tr>
+                        <td class="py-2 px-4">Addon</td>
+                        <td class="py-2 px-4">${addon.addon_name}</td>
+                        <td class="py-2 px-4">₱${parseFloat(addon.addon_price).toFixed(2)}</td>
+                    </tr>
+                `;
+            });
 
-                // Check-In and Check-Out Times
-                if (checkinTime) {
-                    document.getElementById('checkin-time-details').value = checkinTime;
-                } else {
-                    console.log("Check-in time is missing or empty.");
-                }
+            // Add a cancellation message in the table
+            itemsHTML += `
+                <tr>
+                    <td colspan="3" class="py-2 px-4 text-center text-red-500">This reservation has been cancelled.</td>
+                </tr>
+            `;
+            document.getElementById('invoice-items-details').innerHTML = itemsHTML;
 
-                if (checkoutTime) {
-                    document.getElementById('checkout-time-details').value = checkoutTime;
-                } else {
-                    console.log("Check-out time is missing or empty.");
-                }
-            } else {
-                console.error('Error fetching data:', data.message || 'Unknown error');
-            }
-        } catch (error) {
-            console.error('Error parsing JSON:', error);  // Catch JSON parsing errors
+            // Hide the relevant buttons if cancelled
+            document.getElementById('cancel-btn').classList.add('hidden');
+            document.getElementById('reschedule-btn').classList.add('hidden');
+            document.getElementById('review-btn').classList.add('hidden');
+        } else {
+            console.error('Error fetching data:', data.message || 'Unknown error');
         }
     })
     .catch(error => {
         console.error('Error:', error);
     });
 }
+
 
 document.addEventListener("DOMContentLoaded", function() {
     // Get the button, modal, and close button elements
@@ -310,7 +337,7 @@ function showAlert(status, message) {
     let alertMessage;
 
     if (status === 'success') {
-        alertTitle = "Upload Successful";
+        alertTitle = "Successful";
         alertMessage = message || "Your reschedule request was successfully submitted.";
     } else if (status === 'failure') {
         alertTitle = "Upload Failed";
@@ -558,3 +585,47 @@ window.addEventListener("click", function (event) {
     closeReviewModal();
   }
 });
+
+ // Function to toggle modal visibility
+ function toggleModal(modalId) {
+    const modal = document.getElementById(modalId);
+    modal.classList.toggle('hidden');
+  }
+
+  // Function to handle reservation cancellation
+  function cancelReservation() {
+    // Get the reservation ID from localStorage
+    const reservationId = JSON.parse(localStorage.getItem('reservation_id'));
+
+    if (!reservationId) {
+        alert('No reservation ID found!');
+        return;
+    }
+
+    // Send the reservation ID to the backend to update status
+    fetch('../api/cancel_reservation.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ reservation_id: reservationId })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Show success alert after successful cancellation
+            showAlert('success', 'Your reservation has been cancelled successfully.');
+
+            // Close the modal
+            toggleModal('cancel-reservation');
+            
+            // Optionally refresh or update the UI here
+        } else {
+            showAlert('failure', data.message || 'Failed to cancel reservation. Please try again.');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showAlert('failure', 'An error occurred while cancelling the reservation.');
+    });
+}

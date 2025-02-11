@@ -1306,64 +1306,92 @@ document.addEventListener("DOMContentLoaded", function () {
     fetch(`../api/get_reschedule_request.php?reservation_id=${reservationId}`)
         .then(response => response.json())
         .then(data => {
-            if (data.status === "success" && data.reschedule_request) {
-                let rescheduleRequestDiv = document.getElementById("reschedule-request");
+            console.log("API Response:", data); // Debugging output
 
-                // If the status is "Approved", hide the reschedule request section
+            let rescheduleRequestDiv = document.getElementById("reschedule-request");
+
+            if (data.status === "success" && data.reschedule_request) {
+                console.log("Reschedule request found:", data.reschedule_request); // Debugging output
+
                 if (data.reschedule_request.status === "Approved") {
                     rescheduleRequestDiv.classList.add("hidden");
+                    console.log("Hiding section because request is Approved");
                     return;
                 }
 
-                // Remove the hidden class to show the reschedule request section
                 rescheduleRequestDiv.classList.remove("hidden");
 
-                // Update the text with fetched data
                 let message = `Customer requested a reschedule from <strong>${data.reschedule_request.check_in_date}</strong> 
                                to <strong>${data.reschedule_request.check_out_date}</strong>.`;
-
                 document.getElementById("reschedule-message").innerHTML = message;
 
-                // Set button actions
-                document.getElementById("acceptRequest").setAttribute(
-                    "onclick", `updateRescheduleStatus(${data.reschedule_request.request_id}, 'Approved')`
-                );
-                document.getElementById("declineRequest").setAttribute(
-                    "onclick", `updateRescheduleStatus(${data.reschedule_request.request_id}, 'Denied')`
-                );
+                document.getElementById("acceptRequest").onclick = function () {
+                    updateRescheduleStatus(data.reschedule_request.request_id, 'Approved');
+                };
+                document.getElementById("declineRequest").onclick = function () {
+                    updateRescheduleStatus(data.reschedule_request.request_id, 'Denied');
+                };
+            } else {
+                console.log("No reschedule request found. Hiding section.");
+                rescheduleRequestDiv.classList.add("hidden");
             }
         })
         .catch(error => console.error("Error fetching reschedule request:", error));
 });
 
-
 function updateRescheduleStatus(requestId, status) {
     fetch('../api/update_reschedule_status.php', {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            request_id: requestId,
-            status: status
-        })
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ request_id: requestId, status: status })
     })
-    .then(response => response.json())
-    .then(data => {
-        if (data.status === "success") {
-            const successMessage = `Reschedule request ${status.toLowerCase()} successfully!`;
-            // Save success message to localStorage
-            localStorage.setItem("rescheduleSuccessMessage", successMessage);
-            location.reload(); // Refresh the page to reflect changes
-        } else {
-            const errorMessage = "Failed to update reschedule status.";
-            // Save error message to localStorage
-            localStorage.setItem("rescheduleErrorMessage", errorMessage);
-            location.reload(); // Refresh the page to reflect changes
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
         }
+        return response.json();
     })
-    .catch(error => console.error("Error updating reschedule status:", error));
+    .then(data => {
+        if (data.status !== "success") {
+            throw new Error(data.message || "Failed to update reschedule status.");
+        }
+        console.log("Update success, proceeding to send email...");
+
+        return fetch('../api/send_email_reschedule.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ request_id: requestId, status: status })
+        });
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`Email API HTTP error! Status: ${response.status}`);
+        }
+        return response.json();
+    })
+    .then(emailData => {
+        console.log("Email API Response:", emailData);
+
+        if (emailData.status === "success") {
+            alert("Email notification sent!");
+            localStorage.setItem("rescheduleSuccessMessage", `Reschedule request ${status.toLowerCase()} successfully!`);
+        } else {
+            alert("Reschedule updated, but email sending failed.");
+            localStorage.setItem("rescheduleErrorMessage", emailData.message || "Reschedule updated but failed to send email.");
+        }
+
+        console.log("Reloading page...");
+        location.reload(); // Removed the 10-second delay
+    })
+    .catch(error => {
+        console.error("Error:", error);
+        alert("An error occurred while processing the request.");
+        localStorage.setItem("rescheduleErrorMessage", error.message || "An error occurred.");
+        location.reload();
+    });
 }
+
+
 
 
 document.addEventListener("DOMContentLoaded", function () {

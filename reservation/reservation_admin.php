@@ -213,6 +213,9 @@ if (!isset($_SESSION['admin_id'])) {
                     case 'Completed':
                         echo "<span class='bg-blue-100 text-blue-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-blue-900 dark:text-blue-300'>Completed</span>";
                         break;
+					case 'Cancelled':
+						echo "<span class='bg-red-100 text-red-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-blue-900 dark:text-blue-300'>Cancelled</span>";
+						break;
                     default:
                         echo "<span class='bg-gray-100 text-gray-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-gray-900 dark:text-gray-300'>Unknown</span>";
                         break;

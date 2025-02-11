@@ -33,52 +33,7 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 
-  document.addEventListener('DOMContentLoaded', function () {
-    // Function to open the modal with animation
-    function openModal(rate) {
-      const modal = document.getElementById('modal');
-      const modalTitle = document.getElementById('modalTitle');
-      const modalDescription = document.getElementById('modalDescription');
-      const modalPrice = document.getElementById('modalPrice');
-  
-      console.log("openModal triggered with rate: ", rate); // Log when openModal is triggered
-  
-      // Set the modal content based on the clicked card
-      if (rate === 'rate1') {
-        modalTitle.textContent = 'Rate 1 Details';
-        modalDescription.textContent = 'Detailed description for Rate 1.';
-        modalPrice.textContent = '$50';
-      } else if (rate === 'rate2') {
-        modalTitle.textContent = 'Rate 2 Details';
-        modalDescription.textContent = 'Detailed description for Rate 2.';
-        modalPrice.textContent = '$75';
-      } else if (rate === 'rate3') {
-        modalTitle.textContent = 'Rate 3 Details';
-        modalDescription.textContent = 'Detailed description for Rate 3.';
-        modalPrice.textContent = '$100';
-      }
-  
-      // Show the modal with animation by adding 'show' class
-      modal.classList.add('show');
-      console.log("Modal class added: ", modal.classList); // Log the modal's classes after adding 'show'
-    }
-  
-    // Function to close the modal with animation
-    function closeModal() {
-      const modal = document.getElementById('modal');
-  
-      console.log("closeModal triggered"); // Log when closeModal is triggered
-  
-      // Remove the 'show' class to trigger the closing animation
-      modal.classList.remove('show');
-      console.log("Modal class removed: ", modal.classList); // Log the modal's classes after removing 'show'
-    }
-  
-    // Expose the functions globally
-    window.openModal = openModal;
-    window.closeModal = closeModal;
-  });
-  
+
   currentSlide = 1;
 
 function moveCarousel(direction) {
@@ -813,5 +768,76 @@ initializeFlatpickr();
   });
 });
 
+// Function to open the modal and display data
+function openModal(picture, name, description, hours, checkinTime, checkoutTime, price) {
+  // Set modal content
+  document.getElementById('modal-picture').src = '../src/uploads/rates/' + picture;
+  document.getElementById('modal-name').textContent = name;
+  document.getElementById('modal-description').textContent = description;
+  document.getElementById('modal-hours').textContent = hours + ' hours';
+  document.getElementById('modal-checkin-time').textContent = checkinTime;
+  document.getElementById('modal-checkout-time').textContent = checkoutTime;
+  document.getElementById('modal-price').textContent = price;
 
+  // Show modal with fade-in effect
+  const modal = document.getElementById('rate-modal');
+  modal.classList.remove('hidden');
+  setTimeout(() => modal.classList.remove('opacity-0'), 10);  // Trigger the fade-in effect
+}
 
+// Close the modal when clicking the close button
+document.getElementById('close-modal').addEventListener('click', function() {
+  const modal = document.getElementById('rate-modal');
+  modal.classList.add('opacity-0'); // Fade out
+  setTimeout(() => modal.classList.add('hidden'), 500);  // Hide after fade-out transition
+});
+
+// Close the modal when clicking outside of the modal
+document.getElementById('rate-modal').addEventListener('click', function(event) {
+  if (event.target === document.getElementById('rate-modal')) {
+    const modal = document.getElementById('rate-modal');
+    modal.classList.add('opacity-0'); // Fade out
+    setTimeout(() => modal.classList.add('hidden'), 500);  // Hide after fade-out transition
+  }
+});
+
+// Function to open the add-on modal and display data with animation
+function openAddonModal(picture, name, description, price) {
+  // Set modal content
+  document.getElementById('addon-modal-picture').src = '../src/uploads/addons/' + picture;
+  document.getElementById('addon-modal-name').textContent = name;
+  document.getElementById('addon-modal-description').textContent = description;
+  document.getElementById('addon-modal-price').textContent = price;
+
+  // Show modal with fade-in and scale-up effect
+  const modal = document.getElementById('addon-modal');
+  const modalContent = modal.querySelector('div');
+  
+  // Remove hidden and apply transition styles
+  modal.classList.remove('hidden');
+  modal.style.opacity = 0;
+  modal.style.transition = "opacity 0.5s ease-in-out";
+  modalContent.style.transform = "scale(0.95)";
+  modalContent.style.transition = "transform 0.5s ease-in-out";
+
+  setTimeout(function() {
+    modal.style.opacity = 1;
+    modalContent.style.transform = "scale(1)";
+  }, 10);  // Allow styles to take effect before transitioning
+}
+
+// Function to close the Add-on modal when clicking the close button
+document.getElementById('close-addon-modal').addEventListener('click', function() {
+  const modal = document.getElementById('addon-modal');
+  modal.classList.add('opacity-0'); // Fade out
+  setTimeout(() => modal.classList.add('hidden'),);  // Hide after fade-out transition
+});
+
+// Close the modal when clicking outside of the modal
+document.getElementById('addon-modal').addEventListener('click', function(event) {
+  if (event.target === document.getElementById('addon-modal')) {
+    const modal = document.getElementById('addon-modal');
+    modal.classList.add('opacity-0'); // Fade out
+    setTimeout(() => modal.classList.add('hidden'),);  // Hide after fade-out transition
+  }
+});

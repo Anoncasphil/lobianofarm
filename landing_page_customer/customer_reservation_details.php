@@ -185,7 +185,7 @@ $stmt->close();
         </li>
       </ol>
       <div class="gap-4 sm:flex sm:items-center">
-        <button type="button" id="cancel-btn" class="w-full rounded-lg border border-gray-700 bg-gray-900 px-5 py-2.5 text-sm font-medium text-white hover:bg-gray-800 hover:text-gray-300 focus:z-10 focus:outline-none focus:ring-4 focus:ring-gray-700 dark:border-gray-200 dark:bg-white dark:text-gray-700 dark:hover:bg-gray-100 dark:hover:text-gray-900 dark:focus:ring-gray-300">
+        <button type="button" id="cancel-btn" onclick="toggleModal('cancel-reservation')" class=" w-full rounded-lg border border-gray-700 bg-gray-900 px-5 py-2.5 text-sm font-medium text-white hover:bg-gray-800 hover:text-gray-300 focus:z-10 focus:outline-none focus:ring-4 focus:ring-gray-700 dark:border-gray-200 dark:bg-white dark:text-gray-700 dark:hover:bg-gray-100 dark:hover:text-gray-900 dark:focus:ring-gray-300 ">
           Cancel Reservation
         </button>
 
@@ -226,12 +226,12 @@ $stmt->close();
     <input type="hidden" name="user_id" id="user_id" />
   <!-- First Name -->
   <div class="relative">
-    <input type="text" id="fname-details" class=" font-semibold p-3 pt-5 w-full border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-transparent text-blue-950" placeholder=" " value="firstname" disabled/>
+    <input type="text" id="fname-details" class="font-semibold p-3 pt-5 w-full border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-transparent text-blue-950" placeholder=" " value="firstname" readonly/>
     <label for="first-name" class="absolute left-3 top-0 mt-3 transform -translate-y-1/2 text-gray-600 text-sm font-medium transition-all duration-200">First Name</label>
   </div>
   <!-- Last Name -->
   <div class="relative">
-    <input type="text" id="lname-details" class="font-semibold p-3 pt-5 w-full border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-transparent text-blue-950" placeholder=" " value="lastname" disabled/>
+    <input type="text" id="lname-details" class="font-semibold p-3 pt-5 w-full border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-transparent text-blue-950" placeholder=" " value="lastname" readonly/>
     <label for="last-name" class="absolute left-3 top-0 mt-3 transform -translate-y-1/2 text-gray-600 text-sm font-medium transition-all duration-200">Last Name</label>
   </div>
 </div>
@@ -240,12 +240,12 @@ $stmt->close();
 <div class="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
   <!-- Email -->
   <div class="relative">
-    <input type="email" id="email-details" class="font-semibold p-3 pt-5 w-full border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-transparent text-blue-950" placeholder=" "  value="email" readonly/>
+    <input type="email" id="email-details" class="font-semibold p-3 pt-5 w-full border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-transparent text-blue-950" placeholder=" " value="email" readonly/>
     <label for="email-p" class="absolute left-3 top-0 mt-3 transform -translate-y-1/2 text-gray-600 text-sm font-medium transition-all duration-200">Email</label>
   </div>
   <!-- Mobile Number -->
   <div class="relative">
-    <input type="text" id="contact-details" class=" font-semibold p-3 pt-5 w-full border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-transparent text-blue-950" placeholder=" "  value="mobilenumber" disabled/>
+    <input type="text" id="contact-details" class="font-semibold p-3 pt-5 w-full border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-transparent text-blue-950" placeholder=" " value="mobilenumber" readonly/>
     <label for="mobile-number" class="absolute left-3 top-0 mt-3 transform -translate-y-1/2 text-gray-600 text-sm font-medium transition-all duration-200">Mobile Number</label>
   </div>
 </div>
@@ -254,25 +254,25 @@ $stmt->close();
  <div class="mt-6 grid grid-cols-1 md:grid-cols-4 gap-4">
   <!-- Check-In Date -->
   <div class="relative">
-    <input type="date" id="checkin-details" class="p-3 pt-5 w-full border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-transparent text-blue-950" placeholder=" " disabled/>
+    <input type="date" id="checkin-details" class="p-3 pt-5 w-full border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-transparent text-blue-950" placeholder=" " readonly/>
     <label for="check-in-date" class="px-2 bg-white absolute left-3 top-[-10px] text-gray-600 text-sm font-medium">Check-In Date</label>
   </div>
 
     <!-- Check-Out Date (non-interactable) -->
     <div class="relative">
-    <input type="date" id="checkout-details" class="p-3 pt-5 w-full border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-transparent text-blue-950" placeholder=" " disabled />
+    <input type="date" id="checkout-details" class="p-3 pt-5 w-full border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-transparent text-blue-950" placeholder=" " readonly />
     <label for="check-out-date" class="px-2 bg-white absolute left-3 top-[-10px] text-gray-600 text-sm font-medium">Check-Out Date</label>
   </div>
 
   <!-- Check-In Time (auto-filled by system) -->
   <div class="relative">
-    <input type="time" id="checkin-time-details" class="p-3 pt-5 w-full border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-transparent text-blue-950" placeholder=" " disabled />
+    <input type="time" id="checkin-time-details" class="p-3 pt-5 w-full border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-transparent text-blue-950" placeholder=" " readonly />
     <label for="check-in-time" class="px-2 bg-white absolute left-3 top-[-10px] text-gray-600 text-sm font-medium">Check-In Time</label>
   </div>
 
   <!-- Check-Out Time (auto-filled by system) -->
   <div class="relative">
-    <input type="time" id="checkout-time-details" class="p-3 pt-5 w-full border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-transparent text-blue-950" placeholder=" " disabled />
+    <input type="time" id="checkout-time-details" class="p-3 pt-5 w-full border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-transparent text-blue-950" placeholder=" " readonly />
     <label for="check-out-time" class="px-2 bg-white absolute left-3 top-[-10px] text-gray-600 text-sm font-medium">Check-Out Time</label>
   </div>
 </div>
@@ -497,7 +497,31 @@ $stmt->close();
 </div>
 
 
-
+<!-- Modal -->
+<!-- Modal -->
+<div id="cancel-reservation" tabindex="-1" class=" hidden overflow-y-auto overflow-x-hidden fixed top-0 left-0 w-full h-full flex bg-black/20 justify-center items-center z-50000000">
+    <div class="relative p-4 w-full max-w-md max-h-full">
+        <div class="relative bg-white rounded-lg shadow-sm ">
+            <button type="button" class="absolute top-3 end-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center" data-modal-hide="popup-modal">
+                <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                </svg>
+                <span class="sr-only">Close modal</span>
+            </button>
+            <div class="p-4 md:p-5 text-center">
+                <svg class="mx-auto mb-4 text-gray-900 w-12 h-12 " aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 11V6m0 8h.01M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
+                </svg>
+                <h3 class="mb-5 text-lg font-normal text-gray-500 ">Are you sure about the changes you made?</h3>
+                <h3 class="mb-5 text-lg font-normal text-gray-500 ">You would have to wait for your payment to be refunded manually</h3>
+                <button id="submitBTN" type="button" class="text-white bg-blue-900 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center" onclick="cancelReservation()">
+                    Yes, I'm sure
+                </button>
+                <button data-modal-hide="no-validation" onclick="toggleModal('cancel-reservation')" type="button" class="py-2.5 px-5 ms-3 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 ">No, cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
 
     <script src="../scripts/booking.js" defer></script>
     <script src="../scripts/customer_reservation_details.js" defer></script>

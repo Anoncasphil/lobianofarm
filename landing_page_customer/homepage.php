@@ -1,13 +1,7 @@
 <?php
-// Start the session
+// Start the session to access session variables
 session_start();
 
-// Check if the user is logged in
-if (!isset($_SESSION['user_id'])) {
-    // Redirect to login page if not logged in
-    header("Location: login.php");
-    exit(); // Make sure no further code is executed
-}
 // Include the database connection
 include('../db_connection.php'); // Adjust the path if necessary
 
@@ -16,38 +10,51 @@ if (!$conn) {
     die("Connection failed: " . mysqli_connect_error());
 }
 
-// Query to retrieve user info based on user_id
-$sql = "SELECT first_name, last_name, picture FROM user_tbl WHERE user_id = ?";
-$stmt = $conn->prepare($sql);
+// Check if the user is logged in (session exists)
+if (isset($_SESSION['user_id'])) {
+    // Get the logged-in user's ID from the session
+    $user_id = $_SESSION['user_id'];
 
-// Check if prepare() failed
-if ($stmt === false) {
-    die("Error preparing the SQL statement: " . $conn->error);
-}
+    // Query to retrieve user info based on user_id
+    $sql = "SELECT first_name, last_name, picture FROM user_tbl WHERE user_id = ?";
+    $stmt = $conn->prepare($sql);
 
-// Bind the user_id to the query
-$stmt->bind_param("i", $_SESSION['user_id']);
+    // Check if prepare() failed
+    if ($stmt === false) {
+        die("Error preparing the SQL statement: " . $conn->error);
+    }
 
-// Execute the query
-$stmt->execute();
-$stmt->store_result();
+    // Bind the user_id to the query
+    $stmt->bind_param("i", $user_id);
 
-// Bind the results to variables
-$stmt->bind_result($first_name, $last_name, $picture);
+    // Execute the query
+    $stmt->execute();
+    $stmt->store_result();
 
-// Check if user data is found
-if ($stmt->fetch()) {
-    // Combine first and last name
-    $full_name = $first_name . ' ' . $last_name;
-    // Remove the profile picture logic
+    // Bind the results to variables
+    $stmt->bind_result($first_name, $last_name, $picture);
+
+    // Check if user data is found
+    if ($stmt->fetch()) {
+        // Combine first and last name
+        $full_name = $first_name . ' ' . $last_name;
+        // You can also use $picture here if you want to display the user's profile picture
+    } else {
+        // If user not found, handle accordingly (e.g., show a default message)
+        echo "User not found.";
+    }
+
+    $stmt->close();
 } else {
-    // If user not found, handle accordingly (e.g., redirect to login)
-    header("Location: ../adlogin.php");
-    exit;
+    // If user is not logged in, show a default message or redirect to the login page
+    echo "Please log in to view your profile.";
 }
 
-$stmt->close();
+// Close the database connection
+$conn->close();
 ?>
+
+
 
 
 
@@ -71,93 +78,109 @@ $stmt->close();
 </head>
 <body>
 
- <!-- Navbar -->
+<!-- Navbar -->
 <nav class="bg-white border-blue-200 dark:bg-blue-900 fixed top-0 left-0 w-full z-50">
   <div class="max-w-screen-xl flex items-center justify-between mx-auto p-4">
     <!-- Logo -->
-    <a href="#" class="flex items-center space-x-3 rtl:space-x-reverse">
+    <a href="homepage.php" class="flex items-center space-x-3 rtl:space-x-reverse">
       <img src="../src/uploads/logo.svg" class="logo" alt="Logo" />
       <span class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white"></span>
     </a>
 
-    <!-- Cart, Profile, and Hamburger -->
-    <div class="flex items-center md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">
+    <ul class="flex flex-col font-medium p-4 md:p-0 mr-100 border border-gray-100 rounded-lg bg-gray-50 md:flex-row md:space-x-8 rtl:space-x-reverse md:mt-0 md:border-0 md:bg-white dark:bg-blue-800 md:dark:bg-blue-900">
+      <li>
+        <a href="#home" class="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">Home</a>
+      </li>
+      <li>
+        <a href="#about" class="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">About</a>
+      </li>
+      <li>
+        <a href="#album" class="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">Gallery</a>
+      </li>
+      <li>
+        <a href="#services" class="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">Services</a>
+      </li>
+      <li>
+        <a href="#reviews" class="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">Contact</a>
+      </li>
+    </ul>
+    <!-- Cart, Profile, and Login Buttons -->
+    <div class="flex items-center space-x-6 rtl:space-x-reverse">
+      <!-- Cart Button -->
+      <?php if (isset($_SESSION['user_id'])): ?>
+        <button type="button" class="flex items-center text-lg ml-20 dark:bg-blue-900 rounded-lg px-4 py-2 hover:bg-white/10"
+          onclick="window.location.href='customer_reservation.php'">
+          <span class="sr-only">Open cart</span>
+          <span class="material-icons text-white text-2xl">shopping_cart</span>
+        </button>
+      <?php endif; ?>
 
-    <button type="button" class="flex text-lg dark:bg-blue-900 rounded-lg md:me-0 px-4 py-4 p-2 hover:bg-white/10" 
-      onclick="window.location.href='customer_reservation.php'">
-      <span class="sr-only">Open cart</span>
-      <!-- Cart Icon using Google Material Icons with fixed size -->
-      <span class="material-icons text-white text-2xl bg-opacity-100 hover:bg-opacity-10">
-          shopping_cart
-      </span>
-    </button>
+      <!-- Profile or Login Button -->
+      <div class="relative inline-block text-left">
+        <?php if (isset($full_name) && !empty($full_name)): ?>
+          <!-- Profile Button (Logged-in) -->
+          <button id="profileButton" type="button" class="flex items-center space-x-3 text-sm dark:bg-blue-900 hover:bg-white/10 rounded-lg px-4 py-2" onclick="toggleDropdown()">
+            <span class="sr-only">Open user menu</span>
+            <span class="text-white font-medium"><?php echo htmlspecialchars($full_name); ?></span>
+            <svg class="w-4 h-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+            </svg>
+          </button>
+          <!-- Dropdown Menu -->
+          <div id="dropdownMenu" class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-2 hidden">
+            <a href="edit_profile.php" class="block px-4 py-2 text-gray-700 hover:bg-gray-200">Profile</a>
+            <a href="logout.php" class="block px-4 py-2 text-gray-700 hover:bg-gray-200">Logout</a>
+          </div>
+        <?php else: ?>
+          <!-- Login Button (Not logged-in) -->
+          <a href="login.php" id="loginButton" class="flex items-center space-x-3 text-sm bg-white hover:bg-gray-300 text-blue-900 font-semibold rounded-lg px-6 py-3 transition-all duration-300 ease-in-out shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-500 hover:text-blue-700">
+  <span class="sr-only">Login</span>
+  <span class="font-semibold">Login</span>
+</a>
 
 
-    <!-- Profile button with dropdown -->
-<div class="relative inline-block text-left">
-    <button id="profileButton" type="button" class="flex items-center ml-2 space-x-3 text-sm dark:bg-blue-900 hover:bg-white/10 rounded-lg px-4 py-2">
-        <span class="sr-only">Open user menu</span>
-        <!-- Remove user profile picture -->
-        <span class="text-white font-medium"><?php echo htmlspecialchars($full_name); ?></span>
-        <!-- Down arrow icon -->
-        <svg class="w-4 h-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-        </svg>
-    </button>
-    
-    <!-- Dropdown menu -->
-    <div id="dropdownMenu" class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-2 hidden">
-    <a href="edit_profile.php" class="block px-4 py-2 text-gray-700 hover:bg-gray-200">Profile</a>        <a href="logout.php" class="block px-4 py-2 text-gray-700 hover:bg-gray-200">Logout</a>
+
+        <?php endif; ?>
+      </div>
     </div>
-</div>
+
+    <!-- Hamburger menu -->
+    <button id="hamburgerButton" data-collapse-toggle="navbar-user" type="button" class="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-white rounded-lg md:hidden hover:bg-gray-100 dark:text-gray-400 hover:bg-white/10" aria-controls="navbar-user" aria-expanded="false">
+      <span class="sr-only">Open main menu</span>
+      <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 17 14">
+        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 1h15M1 7h15M1 13h15"/>
+      </svg>
+    </button>
+  </div>
+
+  <!-- Navigation Links -->
+</nav>
 
 <script>
-    document.getElementById('profileButton').addEventListener('click', function() {
-        var dropdown = document.getElementById('dropdownMenu');
-        dropdown.classList.toggle('hidden');
-    });
-    
-    // Close dropdown if clicked outside
-    document.addEventListener('click', function(event) {
-        var profileButton = document.getElementById('profileButton');
-        var dropdownMenu = document.getElementById('dropdownMenu');
-        
-        if (!profileButton.contains(event.target) && !dropdownMenu.contains(event.target)) {
-            dropdownMenu.classList.add('hidden');
-        }
-    });
-</script>
-      <!-- Hamburger menu -->
-      <button data-collapse-toggle="navbar-user" type="button" class="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-white rounded-lg md:hidden hover:bg-gray-100 dark:text-gray-400 hover:bg-white/10" aria-controls="navbar-user" aria-expanded="false">
-        <span class="sr-only">Open main menu</span>
-        <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 17 14">
-          <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 1h15M1 7h15M1 13h15"/>
-        </svg>
-      </button>
-    </div>
+  // Dropdown toggle for profile button
+  document.getElementById('profileButton').addEventListener('click', function() {
+    var dropdown = document.getElementById('dropdownMenu');
+    dropdown.classList.toggle('hidden');
+  });
 
-    <!-- Navigation Links -->
-    <div class="items-center mr-110 justify-center hidden w-full md:flex md:w-auto md:order-1" id="navbar-user">
-      <ul class="flex flex-col font-medium p-4 md:p-0 mt-4 border border-gray-100 rounded-lg bg-gray-50 md:flex-row md:space-x-8 rtl:space-x-reverse md:mt-0 md:border-0 md:bg-white dark:bg-blue-800 md:dark:bg-blue-900">
-        <li>
-          <a href="#home" class="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">Home</a>
-        </li>
-        <li>
-          <a href="#about" class="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">About</a>
-        </li>
-        <li>
-          <a href="#album" class="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">Gallery</a>
-        </li>
-        <li>
-          <a href="#services" class="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">Services</a>
-        </li>
-        <li>
-          <a href="#reviews" class="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">Contact</a>
-        </li>
-      </ul>
-    </div>
-  </div>
-</nav>
+  // Close dropdown if clicked outside
+  document.addEventListener('click', function(event) {
+    var profileButton = document.getElementById('profileButton');
+    var dropdownMenu = document.getElementById('dropdownMenu');
+    
+    if (!profileButton.contains(event.target) && !dropdownMenu.contains(event.target)) {
+      dropdownMenu.classList.add('hidden');
+    }
+  });
+
+  // Hamburger menu toggle
+  document.getElementById('hamburgerButton').addEventListener('click', function() {
+    var navbarUser = document.getElementById('navbar-user');
+    navbarUser.classList.toggle('hidden');
+  });
+</script>
+
+
 
 
 <!-- Hero Section -->
@@ -193,13 +216,24 @@ $stmt->close();
           required
         />
         <!-- Book Button -->
-        <button
-          type="submit"
-          id="book-btn"
-          class="px-6 py-3 bg-blue-600 text-white font-semibold hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:outline-none"
-        >
-          Book
-        </button>
+        <?php if (isset($_SESSION['user_id'])): ?>
+          <button
+            type="submit"
+            id="book-btn"
+            class="px-6 py-3 bg-blue-600 text-white font-semibold hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+          >
+            Book
+          </button>
+        <?php else: ?>
+          <button
+            type="button"
+            id="book-btn"
+            class="px-6 py-3 bg-blue-600 text-white font-semibold hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+            onclick="window.location.href='login.php'"
+          >
+            Book
+          </button>
+        <?php endif; ?>
       </div>
     </div>
   </div>
@@ -593,40 +627,44 @@ $stmt->close();
 
 <!-- Modal for displaying detailed information -->
 <div id="rate-modal" class="fixed inset-0 bg-black/30 flex justify-center items-center hidden z-50 opacity-0 transition-opacity duration-500 ease-in-out">
-  <div class="bg-white p-8 rounded-lg max-w-lg w-full">
+  <div class="bg-white p-10 rounded-lg max-w-3xl w-full">
     <div class="flex">
       <!-- Image on the left -->
-      <div class="flex-none w-1/3">
+      <div class="flex-none w-2/5">
         <img id="modal-picture" class="rounded-lg w-full h-full object-cover" src="" alt="Rate Picture">
       </div>
 
       <!-- Details on the right -->
-      <div class="ml-6 flex-1">
-        <h2 id="modal-name" class="text-2xl font-bold text-gray-800"></h2>
+      <div class="ml-8 flex-1">
+        <h2 id="modal-name" class="text-3xl font-bold text-gray-800"></h2>
 
         <div class="text-gray-600 mt-4 flex items-center">
-          <span class="material-icons mr-2">schedule</span>
-          <p id="modal-hours" class="text-gray-600 font-medium"></p>
+          <span class="material-icons mr-2 text-xl">schedule</span>
+          <p id="modal-hours" class="text-gray-700 font-medium text-lg"></p>
         </div>
 
         <div class="flex items-center mt-4">
-          <div class="bg-gray-50 border border-gray-300 text-gray-500 text-sm rounded-lg py-2 font-medium px-4" id="modal-checkin-time"></div>
-          <div class="mx-3">
-            <svg class="w-6 h-6 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <div class="bg-gray-50 border border-gray-300 text-gray-700 text-lg rounded-lg py-3 font-medium px-5" id="modal-checkin-time"></div>
+          <div class="mx-4">
+            <svg class="w-7 h-7 text-gray-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5-5 5M6 7l5 5-5 5"></path>
             </svg>
           </div>
-          <div class="bg-gray-50 border border-gray-300 text-gray-600 text-sm rounded-lg py-2 font-medium px-4" id="modal-checkout-time"></div>
+          <div class="bg-gray-50 border border-gray-300 text-gray-700 text-lg rounded-lg py-3 font-medium px-5" id="modal-checkout-time"></div>
         </div>
 
-        <p class="text-gray-800 font-semibold text-xl mt-4">₱<span id="modal-price"></span></p>
-        <p id="modal-description" class="text-gray-600 mt-4 max-w-2xl"></p>
+        <p class="text-gray-800 font-semibold text-2xl mt-4">₱<span id="modal-price"></span></p>
+        <p id="modal-description" class="text-gray-600 mt-4 max-w-2xl text-lg"></p>
+
         <!-- Close button -->
-        <button id="close-modal" class="mt-6 px-4 py-2 bg-blue-600 text-white rounded-lg w-full hover:bg-blue-700">Close</button>
+        <button id="close-modal" class="mt-8 px-6 py-3 bg-blue-600 text-white rounded-lg w-full text-lg hover:bg-blue-700">
+          Close
+        </button>
       </div>
     </div>
   </div>
 </div>
+
 
 
 <!-- Check-in Date Modal -->
@@ -641,26 +679,29 @@ $stmt->close();
 
 <!-- Modal for displaying Add-on Details -->
 <div id="addon-modal" class="fixed inset-0 bg-black/30 flex justify-center items-center hidden z-50">
-  <div class="bg-white p-8 rounded-lg max-w-lg w-full">
+  <div class="bg-white p-10 rounded-lg max-w-3xl w-full">
     <div class="flex">
       <!-- Image on the left -->
-      <div class="flex-none w-1/3">
+      <div class="flex-none w-2/5">
         <img id="addon-modal-picture" class="rounded-lg w-full h-full object-cover" src="" alt="Addon Picture">
       </div>
 
       <!-- Details on the right -->
-      <div class="ml-6 flex-1">
-        <h2 id="addon-modal-name" class="text-2xl font-bold text-gray-800"></h2>
+      <div class="ml-8 flex-1">
+        <h2 id="addon-modal-name" class="text-3xl font-bold text-gray-800"></h2>
 
-        <p class="text-gray-800 font-semibold text-xl mt-4">₱<span id="addon-modal-price"></span></p>
-        <p id="addon-modal-description" class="text-gray-600 mt-4 max-w-2xl"></p>
+        <p class="text-gray-800 font-semibold text-2xl mt-4">₱<span id="addon-modal-price"></span></p>
+        <p id="addon-modal-description" class="text-gray-600 mt-4 max-w-2xl text-lg"></p>
 
         <!-- Close button -->
-        <button id="close-addon-modal" class="mt-6 px-4 py-2 bg-blue-600 text-white rounded-lg w-full hover:bg-blue-700">Close</button>
+        <button id="close-addon-modal" class="mt-8 px-6 py-3 bg-blue-600 text-white rounded-lg w-full text-lg hover:bg-blue-700">
+          Close
+        </button>
       </div>
     </div>
   </div>
-</div> 
+</div>
+
 
 <script src="../scripts/homepage_animations.js"></script>
 <script src="../scripts/newhomes.js"></script>

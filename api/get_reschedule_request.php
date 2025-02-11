@@ -1,6 +1,9 @@
 <?php
 header("Content-Type: application/json");
-require_once("../db_connection.php"); // Adjust path as needed
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
+require_once("../db_connection.php");
 
 if (!isset($_GET["reservation_id"])) {
     echo json_encode(["status" => "error", "message" => "Reservation ID required"]);
