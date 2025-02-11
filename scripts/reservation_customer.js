@@ -1151,12 +1151,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Show modal when clicking the submit button
     submitButton.addEventListener("click", function () {
-        console.log("Submit button clicked"); // Debugging
+        console.log("Submit button clicked");
         if (modal) {
             modal.classList.remove("hidden");
-            modal.style.display = "flex"; // Ensure visibility
+            modal.style.display = "flex";
         } else {
-            console.error("Modal element not found");
+            console.error("❌ Modal element not found");
         }
     });
 
@@ -1173,17 +1173,17 @@ document.addEventListener("DOMContentLoaded", function () {
             modal.classList.add("hidden");
             modal.style.display = "none";
         }
-    
+
         // Retrieve reservationId from localStorage
         let reservationId = localStorage.getItem("reservationID_admin");
-    
+
         if (!reservationId) {
-            alert("Reservation ID not found. Please try again.");
+            alert("❌ Reservation ID not found. Please try again.");
             return;
         }
-    
+
         const reservationData = {
-            reservation_id: reservationId, // Retrieved from localStorage
+            reservation_id: reservationId, 
             check_in_date: document.getElementById("check-in-date").value,
             check_out_date: document.getElementById("check-out-date").value,
             status: document.getElementById("status-dropdown").value,
@@ -1192,40 +1192,108 @@ document.addEventListener("DOMContentLoaded", function () {
             email: document.getElementById("email-p").value,
             mobile_number: document.getElementById("mobile-number-p").value
         };
-    
+
+        // Check for missing fields
         if (!reservationData.check_in_date || !reservationData.check_out_date || !reservationData.status || 
             !reservationData.first_name || !reservationData.last_name || !reservationData.email || !reservationData.mobile_number) {
-            alert("Please fill in all fields.");
+            alert("❌ Please fill in all fields.");
             return;
         }
-    
+
         try {
+            console.log("🔄 Sending reservation update...");
+
             const response = await fetch("../api/submit_reservation.php", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(reservationData)
             });
-    
+
             const result = await response.json();
-    
+
             if (result.status === "success") {
-                // Save success message to localStorage with a specific name
-                localStorage.setItem("successMessage", "Reservation updated successfully!");
-                location.reload(); // Reload page after successful update
+                console.log("✅ Reservation updated successfully!");
+
+                // Send email immediately after updating the reservation
+                await sendEmail(reservationId);
+
+                console.log("🔄 Waiting 5 seconds before reloading...");
+                setTimeout(() => {
+                    location.reload();
+                }, 5000); // 5 seconds
+
             } else {
-                // Save error message to localStorage with a specific name and reload page
-                localStorage.setItem("updateReservationError", "Error: " + result.message);
-                location.reload(); // Reload page after error
+                console.error("❌ Reservation update failed:", result.message);
+                alert("❌ Error: " + result.message);
             }
         } catch (error) {
-            console.error("Error updating reservation:", error);
-            // Save error message to localStorage with a specific name and reload page
-            localStorage.setItem("updateReservationError", "An error occurred. Please try again.");
-            location.reload(); // Reload page after error
+            console.error("❌ Error updating reservation:", error);
+            alert("❌ An error occurred. Please try again.");
         }
     });
+
+    async function sendEmail(reservationId) {
+        try {
+            // Retrieve form data again
+            let checkInDate = document.getElementById("check-in-date").value;
+            let checkOutDate = document.getElementById("check-out-date").value;
+            let status = document.getElementById("status-dropdown").value;
+            let email = document.getElementById("email-p").value;
+            let mobileNumber = document.getElementById("mobile-number-p").value;
+            let firstName = document.getElementById("first-name-p").value;
+            let lastName = document.getElementById("last-name-p").value;
+    
+            // Log the data being sent
+            console.log("📨 Sending Data:", JSON.stringify({ 
+                reservation_id: reservationId,
+                check_in_date: checkInDate,
+                check_out_date: checkOutDate,
+                status: status,
+                email: email,
+                mobile_number: mobileNumber,
+                first_name: firstName,
+                last_name: lastName
+            }));
+    
+            let response = await fetch("../landing_page_customer/email_status_send.php", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ 
+                    reservation_id: reservationId,
+                    check_in_date: checkInDate,
+                    check_out_date: checkOutDate,
+                    status: status,
+                    email: email,
+                    mobile_number: mobileNumber,
+                    first_name: firstName,
+                    last_name: lastName
+                })
+            });
+    
+            let text = await response.text();
+            try {
+                var data = JSON.parse(text); 
+            } catch (e) {
+                console.error("❌ JSON Parsing Error:", text);
+                return;
+            }
+    
+            if (data.status === "success") {
+                console.log("✅ Email sent successfully.");
+            } else {
+                console.error("❌ Email sending failed:", data.message);
+            }
+        } catch (error) {
+            console.error("❌ Error sending email:", error);
+        }
+    }
+    
+
     
 });
+
+
+
 
 document.addEventListener("DOMContentLoaded", function () {
     let reservationId = localStorage.getItem("reservationID_admin");
