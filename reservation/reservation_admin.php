@@ -129,18 +129,6 @@ if (!isset($_SESSION['admin_id'])) {
 				<!-- Profile Dropdown Menu -->
 				<ul class="profile-link absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-lg z-50 hidden">
 					<li>
-						<a href="#" class="flex items-center px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
-							<i class='bx bxs-user-circle text-xl mr-2'></i> 
-							Profile
-						</a>
-					</li>
-					<li>
-						<a href="#" class="flex items-center px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
-							<i class='bx bxs-cog text-xl mr-2'></i> 
-							Settings
-						</a>
-					</li>
-					<li>
 						<a href="../logout.php" class="flex items-center px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-red-100 dark:hover:bg-red-700">
 							<i class='bx bxs-log-out-circle text-xl mr-2'></i> 
 							Logout
@@ -161,14 +149,42 @@ if (!isset($_SESSION['admin_id'])) {
         <header class="mb-6">
             <h1 class="text-2xl font-bold text-gray-700">Recent Reservations</h1>
             <ul class="breadcrumbs">
-				<li><a href="#">Home</a></li>
-				<li class="divider">/</li>
-				<li><a href="#">Management</a></li>
-				<li class="divider">/</li>
-				<li><a href="#" class="active">Reservations</a></li>
-			</ul>
+                <li><a href="#">Home</a></li>
+                <li class="divider">/</li>
+                <li><a href="#">Management</a></li>
+                <li class="divider">/</li>
+                <li><a href="#" class="active">Reservations</a></li>
+            </ul>
         </header>
 
+        <div class="flex justify-between items-center mb-4">
+            <!-- Filter Dropdown -->
+			<form method="GET" action="" class="flex flex-wrap items-center gap-3">
+    <!-- Status Filter Dropdown -->
+    <div class="flex items-center gap-2">
+        <label for="status_filter" class="text-gray-700 font-medium">Filter:</label>
+        <select name="status_filter" id="status_filter" class="px-4 py-2 border rounded-md focus:ring focus:ring-blue-300">
+            <option value="">All Statuses</option>
+            <option value="Pending" <?php echo isset($_GET['status_filter']) && $_GET['status_filter'] == 'Pending' ? 'selected' : ''; ?>>Pending</option>
+            <option value="Confirmed" <?php echo isset($_GET['status_filter']) && $_GET['status_filter'] == 'Confirmed' ? 'selected' : ''; ?>>Confirmed</option>
+            <option value="Completed" <?php echo isset($_GET['status_filter']) && $_GET['status_filter'] == 'Completed' ? 'selected' : ''; ?>>Completed</option>
+            <option value="Cancelled" <?php echo isset($_GET['status_filter']) && $_GET['status_filter'] == 'Cancelled' ? 'selected' : ''; ?>>Cancelled</option>
+        </select>
+        <button type="submit" class="bg-blue-900 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition">Apply</button>
+    </div>
+
+    <!-- Search Box -->
+    <div class="flex items-center gap-2">
+        <label for="search_code" class="text-gray-700 font-medium">Search:</label>
+        <input type="text" name="search_code" id="search_code" class="px-4 py-2 border rounded-md focus:ring focus:ring-blue-300" placeholder="Reservation Code" value="<?php echo isset($_GET['search_code']) ? htmlspecialchars($_GET['search_code']) : ''; ?>">
+        <button type="submit" class="bg-green-900 text-white px-4 py-2 rounded-md hover:bg-green-700 transition">Search</button>
+    </div>
+</form>
+
+
+            <!-- Search Box -->
+
+        </div>
 
         <div class="table-container bg-white shadow-md rounded-lg p-4">
             <div class="flex justify-between items-center mb-4">
@@ -176,76 +192,117 @@ if (!isset($_SESSION['admin_id'])) {
             </div>
 
             <table class="table-auto w-full text-left border-collapse">
-    <thead class="bg-gray-100">
-        <tr>
-            <th class="py-3 px-4 border-b text-gray-600 hidden">ID</th>
-            <th class="py-3 px-4 border-b text-gray-600">Reservation Code</th>
-            <th class="py-3 px-4 border-b text-gray-600">Name</th>
-            <th class="py-3 px-4 border-b text-gray-600">Date</th>
-            <th class="py-3 px-4 border-b text-gray-600">Status</th>
-            <th class="py-3 px-4 border-b text-gray-600">Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        <?php 
-        $reservations = getReservations();
-        if (!empty($reservations)) {
-            usort($reservations, function($a, $b) {
-                return $a['id'] - $b['id'];
-            });
+                <thead class="bg-gray-100">
+                    <tr>
+                        <th class="py-3 px-4 border-b text-gray-600 hidden">ID</th>
+                        <th class="py-3 px-4 border-b text-gray-600">Reservation Code</th>
+                        <th class="py-3 px-4 border-b text-gray-600">Name</th>
+                        <th class="py-3 px-4 border-b text-gray-600">Date</th>
+                        <th class="py-3 px-4 border-b text-gray-600">Status</th>
+                        <th class="py-3 px-4 border-b text-gray-600">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php 
+                    // Get search code if present
+                    $searchCode = isset($_GET['search_code']) ? $_GET['search_code'] : '';
+                    $statusFilter = isset($_GET['status_filter']) ? $_GET['status_filter'] : '';
+                    $reservations = getReservations($statusFilter); // Pass the filter to the function
 
-            foreach ($reservations as $reservation) {
-                $userDetails = getUserDetails($reservation['user_id'], $conn);
-                $userName = htmlspecialchars($userDetails['first_name']) . ' ' . htmlspecialchars($userDetails['last_name']);
-                echo "<tr class='bg-gray-50 border-b dark:bg-gray-900 dark:border-gray-800'>";
-                echo "<td class='py-2 px-4 border-b text-gray-700 hidden'>" . htmlspecialchars($reservation['id']) . "</td>";
-                echo "<td class='py-2 px-4 border-b text-gray-700'>" . htmlspecialchars($reservation['reservation_code']) . "</td>";
-                echo "<td class='py-2 px-4 border-b text-gray-700'>" . $userName . "</td>";
-                echo "<td class='py-2 px-4 border-b text-gray-700'>" . htmlspecialchars($reservation['check_in_date']) . "</td>";
-                echo "<td class='py-2 px-4 border-b'>";
-                switch ($reservation['status']) {
-                    case 'Pending':
-                        echo "<span class='bg-yellow-100 text-yellow-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-yellow-900 dark:text-yellow-300'>Pending</span>";
-                        break;
-                    case 'Confirmed':
-                        echo "<span class='bg-green-100 text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-green-900 dark:text-green-300'>Confirmed</span>";
-                        break;
-                    case 'Completed':
-                        echo "<span class='bg-blue-100 text-blue-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-blue-900 dark:text-blue-300'>Completed</span>";
-                        break;
-					case 'Cancelled':
-						echo "<span class='bg-red-100 text-red-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-blue-900 dark:text-blue-300'>Cancelled</span>";
-						break;
-                    default:
-                        echo "<span class='bg-gray-100 text-gray-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-gray-900 dark:text-gray-300'>Unknown</span>";
-                        break;
-                }
-                echo "</td>";
-                echo "<td class='py-2 px-4 border-b'>
-                    <button 
-                            type='button' 
-                            class='reserve-button text-white bg-green-500 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-xs px-3 py-1.5 mb-1' 
-                            data-id='" . $reservation['id'] . "' 
-                            onclick='storeReservationAndRedirect(this)'>
-                            <i class='fa-solid fa-eye'></i>
-                        </button>
-                </td>";
-                echo "</tr>";
-            }
-        } else {
-            echo "<tr><td colspan='6' class='py-2 px-4 border-b text-gray-700'>No reservations found</td></tr>";
-        }
-        ?>
-    </tbody>
-</table>
+                    // Filter by reservation code if search term is provided
+                    if ($searchCode) {
+                        $reservations = array_filter($reservations, function($reservation) use ($searchCode) {
+                            return strpos(strtolower($reservation['reservation_code']), strtolower($searchCode)) !== false;
+                        });
+                    }
 
+                    // Set up pagination variables
+                    $limit = 10; // Number of reservations per page
+                    $page = isset($_GET['page']) ? $_GET['page'] : 1;
+                    $offset = ($page - 1) * $limit;
 
+                    // Slice the reservations array for the current page
+                    $pagedReservations = array_slice($reservations, $offset, $limit);
+
+                    // Sort reservations by check-in date (ascending)
+                    usort($pagedReservations, function($a, $b) {
+                        $dateA = strtotime($a['check_in_date']);
+                        $dateB = strtotime($b['check_in_date']);
+                        return $dateA - $dateB; // Ascending order
+                    });
+
+                    // Loop through reservations and display them
+                    if (!empty($pagedReservations)) {
+                        foreach ($pagedReservations as $reservation) {
+                            $userDetails = getUserDetails($reservation['user_id'], $conn);
+                            $userName = htmlspecialchars($userDetails['first_name']) . ' ' . htmlspecialchars($userDetails['last_name']);
+                            echo "<tr class='bg-gray-50 border-b dark:bg-gray-900 dark:border-gray-800'>";
+                            echo "<td class='py-2 px-4 border-b text-gray-700 hidden'>" . htmlspecialchars($reservation['id']) . "</td>";
+                            echo "<td class='py-2 px-4 border-b text-gray-700'>" . htmlspecialchars($reservation['reservation_code']) . "</td>";
+                            echo "<td class='py-2 px-4 border-b text-gray-700'>" . $userName . "</td>";
+                            echo "<td class='py-2 px-4 border-b text-gray-700'>" . htmlspecialchars($reservation['check_in_date']) . "</td>";
+                            echo "<td class='py-2 px-4 border-b'>";
+                            switch ($reservation['status']) {
+                                case 'Pending':
+                                    echo "<span class='bg-yellow-100 text-yellow-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-yellow-900 dark:text-yellow-300'>Pending</span>";
+                                    break;
+                                case 'Confirmed':
+                                    echo "<span class='bg-green-100 text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-green-900 dark:text-green-300'>Confirmed</span>";
+                                    break;
+                                case 'Completed':
+                                    echo "<span class='bg-blue-100 text-blue-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-blue-900 dark:text-blue-300'>Completed</span>";
+                                    break;
+                                case 'Cancelled':
+                                    echo "<span class='bg-red-100 text-red-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-red-900 dark:text-red-300'>Cancelled</span>";
+                                    break;
+                                default:
+                                    echo "<span class='bg-gray-100 text-gray-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-gray-900 dark:text-gray-300'>Unknown</span>";
+                                    break;
+                            }
+                            echo "</td>";
+                            echo "<td class='py-2 px-4 border-b'>
+                                <button 
+                                        type='button' 
+                                        class='reserve-button text-white bg-green-900 hover:bg-green-700 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-xs px-3 py-1.5 mb-1' 
+                                        data-id='" . $reservation['id'] . "' 
+                                        onclick='storeReservationAndRedirect(this)'>
+                                        <i class='fa-solid fa-eye'></i>
+                                    </button>
+                            </td>";
+                            echo "</tr>";
+                        }
+                    } else {
+                        echo "<tr><td colspan='6' class='py-2 px-4 border-b text-gray-700'>No reservations found</td></tr>";
+                    }
+                    ?>
+                </tbody>
+            </table>
+
+            <!-- Pagination -->
+            <div class="flex justify-between items-center mt-4">
+                <div>
+                    <?php 
+                    // Calculate the total number of pages
+                    $totalPages = ceil(count($reservations) / $limit);
+                    if ($totalPages > 1) {
+                        echo "<nav class='pagination'>";
+                        echo "<ul class='flex space-x-2'>";
+                        for ($i = 1; $i <= $totalPages; $i++) {
+                            $activeClass = $i == $page ? 'bg-blue-500 text-white' : 'bg-gray-100 text-gray-700';
+                            echo "<li><a href='?page=$i' class='px-4 py-2 rounded-md $activeClass'>$i</a></li>";
+                        }
+                        echo "</ul>";
+                        echo "</nav>";
+                    }
+                    ?>
+                </div>
+            </div>
         </div>
     </div>
-
-
-
 </main>
+
+
+
 
 		<!-- MAIN -->
 	</section>

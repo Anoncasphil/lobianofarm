@@ -126,18 +126,6 @@ if (!isset($_SESSION['admin_id'])) {
 				<!-- Profile Dropdown Menu -->
 				<ul class="profile-link absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-lg z-50 hidden">
 					<li>
-						<a href="#" class="flex items-center px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
-							<i class='bx bxs-user-circle text-xl mr-2'></i> 
-							Profile
-						</a>
-					</li>
-					<li>
-						<a href="#" class="flex items-center px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
-							<i class='bx bxs-cog text-xl mr-2'></i> 
-							Settings
-						</a>
-					</li>
-					<li>
 						<a href="logout.php" class="flex items-center px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-red-100 dark:hover:bg-red-700">
 							<i class='bx bxs-log-out-circle text-xl mr-2'></i> 
 							Logout
@@ -151,182 +139,180 @@ if (!isset($_SESSION['admin_id'])) {
 
 		<!-- MAIN -->
 		<main>
-			<h1 class="title">Dashboard</h1>
-			<ul class="breadcrumbs">
-				<li><a href="#">Home</a></li>
-				<li class="divider">/</li>
-				<li><a href="#" class="active">Dashboard</a></li>
-			</ul>
-			<div class="info-data">
-			<div class="card">
-    <div class="head">
-			<div>
-				<h2>
-					<?php
-					// PHP connection and function to get reservation count
-					include('get_reservations.php');
-					$reservations = getReservations();
-					echo count($reservations); // Display the count of reservations
-					?>
-				</h2>
-				<p>Reservations</p>
-			</div>
-			<i class='bx bx-trending-up icon'></i>
-		</div>
-	</div>
-
-				<?php
-require_once 'db_connection.php';
-
-// Fetch confirmed reservations
-$query = "SELECT SUM(total_price) as total_sales FROM reservations WHERE status = 'Confirmed'";
-$result = $conn->query($query);
-$total_sales = $result->fetch_assoc()['total_sales'] ?? 0;
-?>
-
-<div class="card">
-    <div class="head">
-        <div>
-            <h2>₱<?php echo number_format($total_sales, 2); ?></h2>
-            <p>Sales</p>
+    <h1 class="title">Dashboard</h1>
+    <ul class="breadcrumbs">
+        <li><a href="#">Home</a></li>
+        <li class="divider">/</li>
+        <li><a href="#" class="active">Dashboard</a></li>
+    </ul>
+    <div class="info-data">
+        <div class="card">
+            <div class="head">
+                <div>
+                    <h2>
+                        <?php
+                        include('get_reservations.php');
+                        $reservations = getReservations();
+                        echo count($reservations);
+                        ?>
+                    </h2>
+                    <p>Reservations</p>
+                </div>
+                <i class='bx bx-trending-up icon'></i>
+            </div>
         </div>
-        <i class='bx bx-trending-down icon down'></i>
-    </div>
-</div>
 
-				<!-- <div class="card">
-					<div class="head">
-						<div>
-							<h2>465</h2>
-							<p>Pageviews</p>
-						</div>
-						<i class='bx bx-trending-up icon' ></i>
-					</div>
-					<span class="progress" data-value="30%"></span>
-					<span class="label">30%</span>
-				</div> -->
+        <?php
+        require_once 'db_connection.php';
 
+        // Fetch confirmed reservations
+        $query = "SELECT SUM(total_price) as total_sales FROM reservations WHERE status = 'Confirmed'";
+        $result = $conn->query($query);
+        $total_sales = $result->fetch_assoc()['total_sales'] ?? 0;
+        ?>
 
-
-				<?php
-require_once 'db_connection.php';
-
-// Fetch pending reservations count
-$pending_query = "SELECT COUNT(*) as pending_count FROM reservations WHERE status = 'Pending'";
-$pending_result = $conn->query($pending_query);
-$pending_count = $pending_result->fetch_assoc()['pending_count'] ?? 0;
-
-// Fetch approved reservations count
-$approved_query = "SELECT COUNT(*) as approved_count FROM reservations WHERE status = 'Confirmed'";
-$approved_result = $conn->query($approved_query);
-$approved_count = $approved_result->fetch_assoc()['approved_count'] ?? 0;
-
-// Fetch total reservations count
-$total_query = "SELECT COUNT(*) as total_count FROM reservations";
-$total_result = $conn->query($total_query);
-$total_count = $total_result->fetch_assoc()['total_count'] ?? 0;
-
-// Calculate percentage of pending reservations
-$pending_percentage = $total_count > 0 ? ($pending_count / $total_count) * 100 : 0;
-
-// Calculate percentage of approved reservations
-$approved_percentage = $total_count > 0 ? ($approved_count / $total_count) * 100 : 0;
-?>
-
-<div class="card">
-    <div class="head">
-        <div>
-            <h2><?php echo $pending_count; ?></h2>
-            <p>Pending Reservations</p>
+        <div class="card">
+            <div class="head">
+                <div>
+                    <h2>₱<?php echo number_format($total_sales, 2); ?></h2>
+                    <p>Sales</p>
+                </div>
+                <i class='bx bx-trending-down icon down'></i>
+            </div>
         </div>
-        <i class='bx bx-time-five icon'></i>
-    </div>
-    <span class="progress" data-value="<?php echo $pending_percentage; ?>%"></span>
-    <span class="label"><?php echo number_format($pending_percentage, 2); ?>%</span>
-</div>
 
-<div class="card">
-    <div class="head">
-        <div>
-            <h2><?php echo $approved_count; ?></h2>
-            <p>Approved Reservations</p>
+        <?php
+        // Fetch pending and approved reservations count
+        $pending_query = "SELECT COUNT(*) as pending_count FROM reservations WHERE status = 'Pending'";
+        $pending_result = $conn->query($pending_query);
+        $pending_count = $pending_result->fetch_assoc()['pending_count'] ?? 0;
+
+        $approved_query = "SELECT COUNT(*) as approved_count FROM reservations WHERE status = 'Confirmed'";
+        $approved_result = $conn->query($approved_query);
+        $approved_count = $approved_result->fetch_assoc()['approved_count'] ?? 0;
+
+        $total_query = "SELECT COUNT(*) as total_count FROM reservations";
+        $total_result = $conn->query($total_query);
+        $total_count = $total_result->fetch_assoc()['total_count'] ?? 0;
+
+        $pending_percentage = $total_count > 0 ? ($pending_count / $total_count) * 100 : 0;
+        $approved_percentage = $total_count > 0 ? ($approved_count / $total_count) * 100 : 0;
+        ?>
+
+        <div class="card">
+            <div class="head">
+                <div>
+                    <h2><?php echo $pending_count; ?></h2>
+                    <p>Pending Reservations</p>
+                </div>
+                <i class='bx bx-time-five icon'></i>
+            </div>
+            <span class="progress" data-value="<?php echo $pending_percentage; ?>%"></span>
+            <span class="label"><?php echo number_format($pending_percentage, 2); ?>%</span>
         </div>
-        <i class='bx bx-check-circle icon'></i>
+
+        <div class="card">
+            <div class="head">
+                <div>
+                    <h2><?php echo $approved_count; ?></h2>
+                    <p>Approved Reservations</p>
+                </div>
+                <i class='bx bx-check-circle icon'></i>
+            </div>
+            <span class="progress" data-value="<?php echo $approved_percentage; ?>%"></span>
+            <span class="label"><?php echo number_format($approved_percentage, 2); ?>%</span>
+        </div>
     </div>
-    <span class="progress" data-value="<?php echo $approved_percentage; ?>%"></span>
-    <span class="label"><?php echo number_format($approved_percentage, 2); ?>%</span>
-</div>
-			</div>
 
-			
+    <div class="data flex">
+        <!-- Reservation Table -->
+        <div class="content-data w-3/4">
+            <div class="head">
+                <h3>Recent Reservations</h3>
+            </div>
 
-			<div class="data">
+            <div class="relative overflow-x-auto sm:rounded-lg">
+                <table class="w-full text-sm text-left rtl:text-right text-gray-700 dark:text-gray-300">
+                    <thead class="text-xs text-gray-800 uppercase bg-gray-100 dark:bg-gray-800 dark:text-gray-300">
+                        <tr>
+                            <th scope="col" class="px-6 py-3">Reservation ID</th>
+                            <th scope="col" class="px-6 py-3">Name</th>
+                            <th scope="col" class="px-6 py-3">Date</th>
+                            <th scope="col" class="px-6 py-3">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php 
+                        $reservations = getReservations();
+                        if (!empty($reservations)) {
+                            foreach ($reservations as $reservation) {
+                                $statusColor = match($reservation['title']) {
+                                    'Confirmed' => 'text-green-500 dark:text-green-400',
+                                    'Pending' => 'text-orange-500 dark:text-orange-400',
+                                    'Rescheduled' => 'text-blue-500 dark:text-blue-400',
+                                    default => 'text-gray-500'
+                                };
 
-				<!-- sales graph -->
-				<!-- <div class="content-data">
-					<div class="head">
-						<h3>Sales Report</h3>
-					</div>
-					<div class="chart">
-						<div id="chart"></div>
-					</div>
-				</div> -->
-
-			<!-- Reservation Table -->
-			<div class="content-data">
-				<div class="head">
-					<h3>Recent Reservations</h3>
-				</div>
-				
-
-				<div class="relative overflow-x-auto sm:rounded-lg">
-				<table class="w-full text-sm text-left rtl:text-right text-gray-700 dark:text-gray-300">
-                <thead class="text-xs text-gray-800 uppercase bg-gray-100 dark:bg-gray-800 dark:text-gray-300">
-                    <tr>
-                        <th scope="col" class="px-6 py-3">
-                            Reservation ID
-                        </th>
-                        <th scope="col" class="px-6 py-3">
-                            Name
-                        </th>
-                        <th scope="col" class="px-6 py-3">
-                            Date
-                        </th>
-                        <th scope="col" class="px-6 py-3">
-                            Status
-                        </th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php 
-                    $reservations = getReservations();
-                    if (!empty($reservations)) {
-                        foreach ($reservations as $reservation) {
-                            $statusColor = match($reservation['title']) {
-                                'Confirmed' => 'text-green-500 dark:text-green-400',
-                                'Pending' => 'text-orange-500 dark:text-orange-400',
-                                'Rescheduled' => 'text-blue-500 dark:text-blue-400',
-                                default => 'text-gray-500'
-                            };
-
-                            echo "<tr class='bg-gray-50 border-b dark:bg-gray-900 dark:border-gray-800'>";
-                            echo "<td class='px-6 py-4'>#" . str_pad($reservation['reservation_id'], 3, '0', STR_PAD_LEFT) . "</td>";
-                            echo "<td class='px-6 py-4'>" . htmlspecialchars($reservation['first_name']) . " " . htmlspecialchars($reservation['last_name']) . "</td>";
-                            echo "<td class='px-6 py-4'>" . htmlspecialchars($reservation['formatted_date']) . "</td>";
-                            echo "<td class='px-6 py-4 font-medium " . $statusColor . "'>" . htmlspecialchars($reservation['title']) . "</td>";
-                            echo "</tr>";
+                                echo "<tr class='bg-gray-50 border-b dark:bg-gray-900 dark:border-gray-800'>";
+                                echo "<td class='px-6 py-4'>#" . str_pad($reservation['reservation_id'], 3, '0', STR_PAD_LEFT) . "</td>";
+                                echo "<td class='px-6 py-4'>" . htmlspecialchars($reservation['first_name']) . " " . htmlspecialchars($reservation['last_name']) . "</td>";
+                                echo "<td class='px-6 py-4'>" . htmlspecialchars($reservation['formatted_date']) . "</td>";
+                                echo "<td class='px-6 py-4 font-medium " . $statusColor . "'>" . htmlspecialchars($reservation['title']) . "</td>";
+                                echo "</tr>";
+                            }
+                        } else {
+                            echo "<tr><td colspan='4' class='px-6 py-4'>No reservations found</td></tr>";
                         }
-                    } else {
-                        echo "<tr><td colspan='4' class='px-6 py-4'>No reservations found</td></tr>";
-                    }
-                    ?>
-                </tbody>
-            </table>
-				</div>
-				
-			</div>
-		</div>
-		</main>
+                        ?>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+   <!-- Reschedule Requests Notification -->
+<div class="content-data w-1/4 bg-white dark:bg-gray-900 p-4 rounded-lg shadow">
+    <div class="head mb-4">
+        <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200">Reschedule Requests</h3>
+    </div>
+    <div class="notifications-list space-y-3">
+        <?php
+        $notif_query = "
+            SELECT r.reservation_code, rr.reason, rr.request_date, r.check_in_date, r.check_out_date
+            FROM reschedule_request rr
+            JOIN reservations r ON rr.reservation_id = r.id
+            WHERE rr.status = 'Pending'
+            ORDER BY rr.request_date DESC
+            LIMIT 5
+        ";
+        
+        $notif_result = $conn->query($notif_query);
+        
+        if ($notif_result->num_rows > 0) {
+            while ($notif = $notif_result->fetch_assoc()) {
+                // Format the dates as "February 14, 2025"
+                $check_in = date("F j, Y", strtotime($notif['check_in_date']));
+                $check_out = date("F j, Y", strtotime($notif['check_out_date']));
+
+                echo "<div class='p-4 bg-blue-50 dark:bg-blue-900 border-l-4 border-blue-500 dark:border-blue-400 rounded-lg shadow-md'>";
+                echo "<p class='text-sm font-medium text-blue-800 dark:text-blue-300'><strong>Reservation Code:</strong> " . htmlspecialchars($notif['reservation_code']) . "</p>";
+                echo "<p class='text-sm text-gray-700 dark:text-gray-300'><strong>Reason:</strong> " . htmlspecialchars($notif['reason']) . "</p>";
+                echo "<p class='text-sm text-gray-700 dark:text-gray-300'><strong>Check-in:</strong> $check_in</p>";
+                echo "<p class='text-sm text-gray-700 dark:text-gray-300'><strong>Check-out:</strong> $check_out</p>";
+                echo "<span class='text-xs text-gray-600 dark:text-gray-400 block mt-2'>" . htmlspecialchars($notif['request_date']) . "</span>";
+                echo "</div>";
+            }
+        } else {
+            echo "<div class='p-3 text-center bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 border-l-4 border-gray-500 rounded-lg'>";
+            echo "<p class='text-sm'>No pending reschedule requests</p>";
+            echo "</div>";
+        }
+        ?>
+    </div>
+</div>
+
+    </div>
+</main>
+
 		<!-- MAIN -->
 	</section>
 	<!-- NAVBAR -->

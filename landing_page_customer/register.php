@@ -96,6 +96,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <link rel="stylesheet" href="../styles/normal.css">
     <link rel="stylesheet" href="../styles/register.css">
     <link rel="icon" href="../src/images/logo.png" type="image/x-icon">
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
         /* Hide number input arrows in WebKit (Chrome, Safari, Edge) */
         #contact_input::-webkit-outer-spin-button,
@@ -191,7 +192,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <div id="email_container" class="flex flex-col justify-start items-start w-[80%]">
             <div class="relative flex flex-row justify-between w-full">
                 <label for="email_input" class="text-left w-[50%] mb-2">
-                    Email Address:
+                    Email Address:<span class="text-red-500"> *</span>
                 </label>
             </div>
             <div class="relative w-full">
@@ -210,7 +211,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <div id="firstname_container" class="flex flex-col justify-start items-start w-[80%] px-3 mt-5 relative-container">
                 <div class="relative flex flex-row justify-between w-full">
                     <label for="firstname_input" class="text-left w-[50%] mb-2">
-                        First Name:
+                        First Name: <span class="text-red-500"> *</span>
                     </label>
                 </div>
                 <div class="relative w-full">
@@ -238,7 +239,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <div id="lastname_container" class="flex flex-col justify-start items-start w-[80%] mt-5 relative-container">
             <div class="relative flex flex-row justify-between w-full">
                 <label for="lastname_input" class="text-left w-[50%] mb-2">
-                    Last Name:
+                    Last Name:<span class="text-red-500"> *</span>
                 </label>
             </div>
             <div class="relative w-full">
@@ -253,7 +254,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <div id="contact_container" class="flex flex-col justify-start items-start w-[80%] mt-5 relative-container">
             <div class="relative flex flex-row justify-between w-full">
                 <label for="contact_input" class="text-left w-[50%] mb-2">
-                    Contact No:
+                    Contact No:<span class="text-red-500"> *</span>
                 </label>
             </div>
             <div class="relative w-full">
@@ -268,7 +269,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <div id="password_container" class="flex flex-col justify-start items-start w-[80%] mt-5 relative-container">
             <div class="relative flex flex-row justify-between w-full">
                 <label for="password_input" class="text-left w-[50%] mb-2">
-                    Password:
+                    Password:<span class="text-red-500"> *</span>
                 </label>
             </div>
             <div class="relative w-full">
@@ -283,7 +284,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <div id="verify_password_container" class="flex flex-col justify-start items-start w-[80%] mt-5 relative-container">
             <div class="relative flex flex-row justify-between w-full">
                 <label for="verify_password_input" class="text-left w-[50%] mb-2">
-                    Re-enter Password:
+                    Re-enter Password:<span class="text-red-500"> *</span>
                 </label>
             </div>
             <div class="relative w-full">
@@ -298,7 +299,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <div id="otp_container" class="flex flex-col justify-start items-start w-[80%] mt-5 relative-container">
             <div class="relative flex flex-row justify-between w-full items-center">
                 <label for="otp_input" class="text-left w-[30%] mb-2">
-                    OTP Code:       <button type="button" id="send_otp_button" class="text-blue-500">Send OTP</button>
+                    OTP Code: <span class="text-red-500"> *</span>      <button type="button" id="send_otp_button" class="text-blue-500">Send OTP</button>
                 </label>
                 
                 <span id="timer" class="text-gray-500 ml-2"></span>

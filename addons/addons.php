@@ -120,18 +120,6 @@ if (!isset($_SESSION['admin_id'])) {
 				<!-- Profile Dropdown Menu -->
 				<ul class="profile-link absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-lg z-50 hidden">
 					<li>
-						<a href="#" class="flex items-center px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
-							<i class='bx bxs-user-circle text-xl mr-2'></i> 
-							Profile
-						</a>
-					</li>
-					<li>
-						<a href="#" class="flex items-center px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
-							<i class='bx bxs-cog text-xl mr-2'></i> 
-							Settings
-						</a>
-					</li>
-					<li>
 						<a href="../logout.php" class="flex items-center px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-red-100 dark:hover:bg-red-700">
 							<i class='bx bxs-log-out-circle text-xl mr-2'></i> 
 							Logout

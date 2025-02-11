@@ -578,59 +578,7 @@ document.addEventListener("DOMContentLoaded", function () {
   </div>
 </section>
 
-<!-- FAQ Section -->
-<section id="faq" class="bg-white flex items-center justify-center py-16 px-4 mb-16">
-  <div class="max-w-screen-xl mx-auto">
-    <h2 class="text-3xl font-extrabold text-center text-gray-900 mb-8">Frequently Asked Questions</h2>
-    <div class="space-y-4">
-      <!-- FAQ Item 1 -->
-      <div class="border border-gray-200 rounded-lg shadow-sm">
-        <button class="w-full text-left px-4 py-3 text-gray-900 font-medium focus:outline-none" onclick="toggleFaq('faq1')">
-          Question 1
-      </button>
-        <div id="faq1" class="hidden px-4 py-3 text-gray-700">
-          Answer 1
-        </div>
-      </div>
-      <!-- FAQ Item 2 -->
-      <div class="border border-gray-200 rounded-lg shadow-sm">
-        <button class="w-full text-left px-4 py-3 text-gray-900 font-medium focus:outline-none" onclick="toggleFaq('faq2')">
-          Question 2
-        </button>
-        <div id="faq2" class="hidden px-4 py-3 text-gray-700">
-          ANSWER 2
-        </div>
-      </div>
-      <!-- FAQ Item 3 -->
-      <div class="border border-gray-200 rounded-lg shadow-sm">
-        <button class="w-full text-left px-4 py-3 text-gray-900 font-medium focus:outline-none" onclick="toggleFaq('faq3')">
-          Question 3
-        </button>
-        <div id="faq3" class="hidden px-4 py-3 text-gray-700">
-          ANSWER 3
-        </div>
-      </div>
-      <!-- FAQ Item 4 -->
-      <div class="border border-gray-200 rounded-lg shadow-sm">
-        <button class="w-full text-left px-4 py-3 text-gray-900 font-medium focus:outline-none" onclick="toggleFaq('faq4')">
-          Question 4
-        </button>
-        <div id="faq4" class="hidden px-4 py-3 text-gray-700">
-          ANSWER 4
-        </div>
-      </div>
-      <!-- FAQ Item 5 -->
-      <div class="border border-gray-200 rounded-lg shadow-sm">
-        <button class="w-full text-left px-4 py-3 text-gray-900 font-medium focus:outline-none" onclick="toggleFaq('faq5')">
-          Question 5
-        </button>
-        <div id="faq5" class="hidden px-4 py-3 text-gray-700">
-          ANSWER 5
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
+
 
 <script>
   function toggleFaq(faqId) {
