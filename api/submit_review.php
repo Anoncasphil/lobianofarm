@@ -41,7 +41,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $created_at = date('Y-m-d H:i:s', strtotime($data['created_at']));
     $updated_at = date('Y-m-d H:i:s', strtotime($data['updated_at']));
 
-
     // Prepare the SQL query to insert the review
     $sql = "INSERT INTO reviews (user_id, title, review_text, rating, created_at, updated_at) 
         VALUES (?, ?, ?, ?, ?, ?)";
