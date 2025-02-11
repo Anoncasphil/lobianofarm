@@ -241,7 +241,7 @@ $conn->close();
 
 
 <!-- Rates & Add-ons Section -->
-<section id="rates-section" class="bg-white flex flex-col items-center justify-center py-16 px-4 mb-16">
+<section id="rates-section" class="bg-white flex flex-col items-center justify-center py-16 mt-[-100px] px-4 mb-16">
   <div class="max-w-screen-xl mx-auto">
     
     <!-- Rates Section -->
@@ -273,7 +273,7 @@ $conn->close();
 
                     // Add data attributes for modal
                     echo "
-                    <div class='flex-none mb-5 mt-5 max-w-sm rounded-2xl shadow-lg relative rate-card animate-card' onclick=\"openModal('$picture', '$name', '$description', '$hours_of_stay', '$check_in_time', '$check_out_time', '$price')\">
+                    <div class='flex-none mb-5 mt-5 max-w-sm rounded-2xl shadow-lg relative rate-card animate-card hover:scale-103 hover:shadow-lg transition-all duration-500 ease-in-out' onclick=\"openModal('$picture', '$name', '$description', '$hours_of_stay', '$check_in_time', '$check_out_time', '$price')\">
                         <img class='rounded-t-2xl w-[300px] h-[250px] object-cover' src='../src/uploads/rates/$picture' alt='$name'>
 
                         <div class='p-5'>
@@ -345,7 +345,7 @@ $conn->close();
 
                         // Add data attributes for modal
                         echo "
-                        <div class='flex-none mb-5 mt-5 max-w-sm rounded-2xl shadow-lg relative addons-card animate-card' onclick='openAddonModal(\"$picture\", \"$name\", \"$description\", \"$price\")'>
+                        <div class='flex-none mb-5 mt-5 max-w-sm rounded-2xl shadow-lg relative addons-card animate-card hover:scale-103 hover:shadow-lg transition-all duration-500 ease-in-out' onclick='openAddonModal(\"$picture\", \"$name\", \"$description\", \"$price\")'>
                             <img class='rounded-t-2xl w-[300px] h-[250px] object-cover' src='../src/uploads/addons/$picture' alt='$name'>
 
                             <div class='p-5'>

@@ -262,6 +262,7 @@ $stmt->close();
 <div class="flex flex-col justify-center items-center mt-5">
   <span id="downpayment" class="text-xl font-bold text-blue-600">₱0.00</span>
   <span class="text-xl font-bold text-gray-700 mt-2">Downpayment (50%)</span>
+  <p class="text-sm font-bold text-gray-500 mt-2">Minimum payment is 50% of the reservation total. (50%)</p>
 </div>
 
 <!-- Reference Number Input -->
