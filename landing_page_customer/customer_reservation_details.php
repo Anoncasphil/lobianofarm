@@ -527,6 +527,8 @@ $stmt->close();
     <script src="../scripts/booking.js" defer></script>
     <script src="../scripts/customer_reservation_details.js" defer></script>
     <script src="../scripts/flatpickr.js" defer></script>   
+    <script src="https://static.elfsight.com/platform/platform.js" async></script>
+<div class="elfsight-app-b2701a5e-2312-4201-92bf-10db53498839" data-elfsight-app-lazy></div>
     <script>
     var userId = <?php echo json_encode($_SESSION['user_id']); ?>;
     var reservation_id = <?php echo json_encode($_GET['reservation_id']); ?>; // Or set this dynamically

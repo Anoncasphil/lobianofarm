@@ -477,6 +477,7 @@ $stmt->close();
 </div>
 
 <script src="../scripts/customer_reservation.js"></script>
-
+<script src="https://static.elfsight.com/platform/platform.js" async></script>
+<div class="elfsight-app-b2701a5e-2312-4201-92bf-10db53498839" data-elfsight-app-lazy></div>
 </body>
 </html>
