@@ -37,19 +37,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $rating = $data['rating'];
     $title = $data['title'];
     $review_text = $data['review_text'];
-    $created_at = $data['created_at'];
-    $updated_at = $data['updated_at'];
+    // Convert ISO 8601 datetime to MySQL format
+    $created_at = date('Y-m-d H:i:s', strtotime($data['created_at']));
+    $updated_at = date('Y-m-d H:i:s', strtotime($data['updated_at']));
+
 
     // Prepare the SQL query to insert the review
     $sql = "INSERT INTO reviews (user_id, title, review_text, rating, created_at, updated_at) 
-            VALUES (?, ?, ?, ?, ?, ?)";
+        VALUES (?, ?, ?, ?, ?, ?)";
+
     $stmt = $conn->prepare($sql);
 
     if ($stmt === false) {
         echo json_encode(['success' => false, 'message' => 'Error preparing the SQL statement: ' . $conn->error]);
         exit;
     }
-
     // Bind parameters to the SQL statement (updated types)
     $stmt->bind_param("isssss", $user_id, $title, $review_text, $rating, $created_at, $updated_at);
 

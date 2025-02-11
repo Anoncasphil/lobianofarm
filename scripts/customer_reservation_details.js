@@ -136,7 +136,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 console.error('Error submitting review:', data.message);
             }
         })
-        .catch(error => console.error('Error:', error));
     });
 });
 
