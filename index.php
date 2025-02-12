@@ -196,7 +196,7 @@ $conn->close();
     <!-- Left Section: Text -->
     <div id="hero-text" class="mt-30 text-left lg:mr-0 lg:w-1/2 ml-4 pl-0">
       <h1 class="text-5xl font-extrabold text-gray-900 dark:text-white">
-        NIGGA SI ALTUNA
+        BOBO SI ALTUNA MUKHANG TAE
       </h1>
       <p class="mt-4 text-xl text-gray-600 dark:text-gray-400 max-w-96">
         Explore our services, discover amazing features, and connect with us to know more.
