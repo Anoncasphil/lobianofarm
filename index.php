@@ -129,7 +129,7 @@ $conn->close();
           <!-- Dropdown Menu -->
           <div id="dropdownMenu" class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-2 hidden">
             <a href="/landing_page_customer/edit_profile.php" class="block px-4 py-2 text-gray-700 hover:bg-gray-200">Profile</a>
-            <a href="logout.php" class="block px-4 py-2 text-gray-700 hover:bg-gray-200">Logout</a>
+            <a href="landing_page_customer/logout.php" class="block px-4 py-2 text-gray-700 hover:bg-gray-200">Logout</a>
           </div>
         <?php else: ?>
           <!-- Login Button (Not logged-in) -->
