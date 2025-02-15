@@ -65,7 +65,7 @@ function moveCarousel(direction) {
           document.getElementById("first-name").value = data.data.first_name || "";
           document.getElementById("last-name").value = data.data.last_name || "";
           document.getElementById("email").value = data.data.email || "";
-          document.getElementById("mobile-number").value = data.data.contact_no || "";
+          document.getElementById("mobile-number").value = data.data.phone_number || "";
         } else {
           console.error("Error fetching user data:", data.message);
         }

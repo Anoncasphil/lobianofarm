@@ -19,7 +19,7 @@ if (!isset($_SESSION['user_id'])) {
 $user_id = $_SESSION['user_id'];
 
 // Query to fetch user data
-$query = "SELECT first_name, last_name, email, contact_no FROM user_tbl WHERE user_id = $user_id";
+$query = "SELECT first_name, last_name, email, phone_number FROM user_tbl WHERE user_id = $user_id";
 $result = mysqli_query($conn, $query);
 
 // Check if query was successful

@@ -16,7 +16,7 @@ if (isset($_SESSION['user_id'])) {
     $user_id = $_SESSION['user_id'];
 
     // Query to retrieve user info based on user_id
-    $sql = "SELECT first_name, last_name, picture FROM user_tbl WHERE user_id = ?";
+    $sql = "SELECT first_name, last_name  FROM user_tbl WHERE user_id = ?";
     $stmt = $conn->prepare($sql);
 
     // Check if prepare() failed
@@ -32,7 +32,7 @@ if (isset($_SESSION['user_id'])) {
     $stmt->store_result();
 
     // Bind the results to variables
-    $stmt->bind_result($first_name, $last_name, $picture);
+    $stmt->bind_result($first_name, $last_name);
 
     // Check if user data is found
     if ($stmt->fetch()) {

@@ -16,7 +16,7 @@ if (!$conn) {
 }
 
 // Query to retrieve user info based on user_id
-$sql = "SELECT first_name, last_name, picture FROM user_tbl WHERE user_id = ?";
+$sql = "SELECT first_name, last_name FROM user_tbl WHERE user_id = ?";
 $stmt = $conn->prepare($sql);
 
 // Check if prepare() failed
@@ -32,14 +32,14 @@ $stmt->execute();
 $stmt->store_result();
 
 // Bind the results to variables
-$stmt->bind_result($first_name, $last_name, $picture);
+$stmt->bind_result($first_name, $last_name);
 
 // Check if user data is found
 if ($stmt->fetch()) {
     // Combine first and last name
     $full_name = $first_name . ' ' . $last_name;
-    // Use the picture if it exists, otherwise set a default
-    $user_picture = !empty($picture) ? 'userpicture/' . $picture : 'default-avatar.jpg'; // Adjust the path for the profile picture
+
+   
 } else {
     // If user not found, handle accordingly (e.g., redirect to login)
     header("Location: ../adlogin.php");
