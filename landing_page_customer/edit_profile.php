@@ -88,7 +88,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             // Attempt to execute the prepared statement
             if ($stmt->execute()) {
                 // Update successful, redirect to homepage
-                header("Location: homepage.php");
+                header("Location: ../index.php");
                 exit();
             } else {
                 echo "Something went wrong. Please try again later.";

@@ -1,161 +1,103 @@
-<?php
-include '../db_connection.php';
-session_start(); // Move session_start() to top of file
-?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
-    <link rel="stylesheet" href="../styles/styles.css">
-    <link rel="stylesheet" href="../styles/normal.css">
-    <link rel="stylesheet" href="../styles/error.css">
-    <link rel="icon" href="../src/images/logo.png" type="image/x-icon">
+    <title>Lobiano's Farm Resort</title>
+
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio,line-clamp,container-queries"></script>
+
+
 </head>
-<body class="flex overflow-hidden flex-row items-center justify-between m-0">
+<body>
 
-    <!-- Alerts Section -->
-    <section class="absolute top-0 left-1/2 transform -translate-x-1/2 mt-5">
-        <div class="container mt-5">
-            <div class="row">
-                <div class="col-sm-12">
-                    <div id="success-message" class="alert fade alert-simple alert-success alert-dismissible text-left font__family-montserrat font__size-16 font__weight-light brk-library-rendered rendered hidden" style="padding: 15px; border-radius: 10px; background-color:rgb(207, 248, 216); color: #238845;">
-                        <i class="start-icon far fa-check-circle faa-tada animated"></i>
-                        Account Logged in.
-                    </div>
+
+<div id="login-form" class="font-[sans-serif] max-sm:px-4">
+      <div class="min-h-screen flex flex-col items-center justify-center">
+        <div class="grid md:grid-cols-2 items-center gap-4 max-md:gap-8 max-w-6xl max-md:max-w-lg w-full p-4 m-4 shadow-[0_2px_10px_-3px_rgba(6,81,237,0.3)] rounded-md">
+          <div class="md:max-w-md w-full px-4 py-4">
+            <form>
+              <div class="mb-12">
+                <h3 class="text-gray-800 text-3xl font-extrabold">Sign in</h3>
+                <p class="text-sm mt-4 text-gray-800">Don't have an account <a id="sign-in" href="register.php" class="text-blue-900 font-semibold hover:underline ml-1 whitespace-nowrap">Register here</a></p>
+              </div>
+
+              <div id="error-message" class="flex items-center p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 hidden" role="alert">
+                <svg class="shrink-0 inline w-4 h-4 me-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 1 1 1 1v4h1a1 1 0 1 1 0 2Z"/>
+                </svg>
+                <span class="sr-only">Error</span>
+                <div>
+                    <span class="font-medium">Error: </span> Something went wrong. Please check the form.
                 </div>
             </div>
 
-            <div class="row">
-                <div class="col-sm-12">
-                    <div id="error-message" class="alert fade alert-simple alert-danger alert-dismissible text-left font__family-montserrat font__size-16 font__weight-light brk-library-rendered rendered hidden" role="alert" data-brk-library="component__alert" style="padding: 15px; border-radius: 10px;background-color:rgb(247, 216, 216); color: #DC143C;">
-                        <i class="start-icon far fa-times-circle faa-pulse animated"></i>
-                        <strong class></strong> Invalid credentials.
-                    </div>
+              <div>
+                <label class="text-gray-800 text-xs block mb-2">Email</label>
+                <div class="relative flex items-center">
+                  <input name="email" type="text" required class="w-full text-gray-800 text-sm border-b border-gray-300 focus:border-blue-600 pl-2 pr-8 py-3 outline-none" placeholder="Enter email" />
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="#bbb" stroke="#bbb" class="w-[18px] h-[18px] absolute right-2" viewBox="0 0 682.667 682.667">
+                    <defs>
+                      <clipPath id="a" clipPathUnits="userSpaceOnUse">
+                        <path d="M0 512h512V0H0Z" data-original="#000000"></path>
+                      </clipPath>
+                    </defs>
+                    <g clip-path="url(#a)" transform="matrix(1.33 0 0 -1.33 0 682.667)">
+                      <path fill="none" stroke-miterlimit="10" stroke-width="40" d="M452 444H60c-22.091 0-40-17.909-40-40v-39.446l212.127-157.782c14.17-10.54 33.576-10.54 47.746 0L492 364.554V404c0 22.091-17.909 40-40 40Z" data-original="#000000"></path>
+                      <path d="M472 274.9V107.999c0-11.027-8.972-20-20-20H60c-11.028 0-20 8.973-20 20V274.9L0 304.652V107.999c0-33.084 26.916-60 60-60h392c33.084 0 60 26.916 60 60v196.653Z" data-original="#000000"></path>
+                    </g>
+                  </svg>
                 </div>
-            </div>
-        </div>
-    </section>
+              </div>
 
-    <div id="slogan_container" class="flex h-2/5 w-3/5 items-center justify-center flex-col text-center m-0 text-white">
-        <div id="main_slogan" class="flex w-[full] flex-row ">
-            <img src="../src/images/logo.png" class="w-10 h-10" alt="Logo"><h2 class="text-[30px]">888 Lobiano's Farm</h2>
+              <div class="mt-8">
+                <label class="text-gray-800 text-xs block mb-2">Password</label>
+                <div class="relative flex items-center">
+                  <input name="password" type="password" required class="w-full text-gray-800 text-sm border-b border-gray-300 focus:border-blue-600 pl-2 pr-8 py-3 outline-none" placeholder="Enter password" />
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="#bbb" stroke="#bbb" class="w-[18px] h-[18px] absolute right-2 cursor-pointer" viewBox="0 0 128 128">
+                    <path d="M64 104C22.127 104 1.367 67.496.504 65.943a4 4 0 0 1 0-3.887C1.367 60.504 22.127 24 64 24s62.633 36.504 63.496 38.057a4 4 0 0 1 0 3.887C126.633 67.496 105.873 104 64 104zM8.707 63.994C13.465 71.205 32.146 96 64 96c31.955 0 50.553-24.775 55.293-31.994C114.535 56.795 95.854 32 64 32 32.045 32 13.447 56.775 8.707 63.994zM64 88c-13.234 0-24-10.766-24-24s10.766-24 24-24 24 10.766 24 24-10.766 24-24 24zm0-40c-8.822 0-16 7.178-16 16s7.178 16 16 16 16-7.178 16-16-7.178-16-16-16z" data-original="#000000"></path>
+                  </svg>
+                </div>
+              </div>
+
+              <div class="flex flex-wrap items-center justify-between gap-4 mt-6">
+                <div class="flex items-center">
+                  <input id="remember-me" name="remember-me" type="checkbox" class="h-4 w-4 shrink-0 text-blue-600 focus:ring-blue-500 border-gray-300 rounded" />
+                  <label for="remember-me" class="ml-3 block text-sm text-gray-800">
+                    Remember me
+                  </label>
+                </div>
+                <div>
+                  <a href="forgot_password.php" class="text-blue-900 font-semibold text-sm hover:underline">
+                    Forgot Password?
+                  </a>
+                </div>
+              </div>
+
+              <div class="mt-12">
+                <button type="button" class="w-full shadow-xl py-2.5 px-4 text-sm tracking-wide rounded-md text-white bg-blue-900 hover:bg-blue-700 focus:outline-none">
+                  Sign in
+                </button>
+              </div>
+
+            </form>
+          </div>
+          
+          
+
+          <div class="w-full h-full flex items-center bg-[#000842] rounded-xl p-8">
+            <img src="https://readymadeui.com/signin-image.webp" class="w-full aspect-[12/12] object-contain" alt="login-image" />
+          </div>
         </div>
-        <div id="slogan">
-            <h1 class="text-[50px] ">Swim In Style,<br>Customized For<br>Your Comfort</h1>
-        </div>
-        <p>Discover unbeatable deals on our swimming pool resort. Start planning your dream retreat today!</p>
+      </div>
     </div>
 
-    <!-- login -->
-    <div id="login_form" class="flex flex-col justify-center rounded-tl-3xl rounded-bl-3xl w-[40%] h-full bg-white">
 
-    <?php
-        if (isset($_POST["logme"])) {
-            $input = $_POST["email"];
-            $password = $_POST["password"];
+<script src="../scripts/login.js"></script>
 
-            // Debug incoming data
-            error_log("Login attempt - Email: " . $input);
 
-            $stmt = $conn->prepare("SELECT user_id, email, password, first_name, last_name, contact_no FROM user_tbl WHERE email = ?");
-            $stmt->bind_param("s", $input);
-            if ($stmt->execute()) {
-                $result = $stmt->get_result();
-                if ($result->num_rows === 1) {
-                    $user = $result->fetch_assoc();
-                    // Debug user data
-                    error_log("User data found: " . print_r($user, true));
 
-                    if (password_verify($password, $user["password"])) {
-                        $_SESSION['user_id'] = $user['user_id'];
-                        $_SESSION['first_name'] = $user['first_name'];
-                        $_SESSION['last_name'] = $user['last_name'];
-                        $_SESSION['user_email'] = $user['email'];
-                        $_SESSION['contact_no'] = $user['contact_no']; // Add this line
-                        
-                        // Debug session data
-                        error_log("Session data set: " . print_r($_SESSION, true));
-                        
-                        echo "<script>
-                            document.getElementById('success-message').classList.remove('hidden');
-                            setTimeout(() => {
-                                window.location.href = 'homepage.php';
-                            }, 3000);
-                        </script>";
-                        exit();
-                    } else {
-                        echo "<script>
-                            document.getElementById('error-message').classList.remove('hidden');
-                            setTimeout(() => {
-                                document.getElementById('error-message').classList.add('hidden');
-                            }, 3000);
-                        </script>";
-                    }
-                } else {
-                    echo "<script>
-                        document.getElementById('error-message').classList.remove('hidden');
-                        setTimeout(() => {
-                            document.getElementById('error-message').classList.add('hidden');
-                        }, 3000);
-                    </script>";
-                }
-            } else {
-                echo "<script>
-                    document.getElementById('error-message').classList.remove('hidden');
-                    setTimeout(() => {
-                        document.getElementById('error-message').classList.add('hidden');
-                    }, 3000);
-                </script>";
-            }
-        }
-    ?>
-
-    <!-- php logging in -->
-        <form action="login.php" method="post" class="flex flex-col justify-center items-center w-full h-[80%]">
-            <h2 id="login_tag" class="text-3xl mb-5 font-bold">Login to Account</h2>
-            <p id="input_tag" class="tracking-wide text-base">Please enter your email and password to continue</p>
-           
-            <!-- email -->
-            <div id="email_container" class="flex flex-col justify-start items-start w-[80%] px-6 mt-10">
-                <div class="relative flex flex-row justify-between w-full">
-                    <label for="email_input" class="text-left w-[50%] mb-2">
-                        Email Address:
-                    </label>
-                </div>
-                <div class="relative w-full">
-                <i class="fa-solid fa-envelope absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500"></i>
-                    <input type="email" id="email_input" name="email" placeholder="Email Address:" 
-                           class="w-full border border-gray-500 rounded-lg p-2 pl-10" 
-                           required autocomplete="off">
-                    <small class="text-red-500 mt-1 hidden error-message">Please enter a valid email address ending with @gmail.com.</small>
-                </div>
-            </div>
     
-            <!-- password -->
-            <div id="password_container" class="flex flex-col justify-start items-start w-[80%] px-6 mt-10">
-                <div class="relative flex flex-row justify-between w-full">
-                    <label for="password_input" class="text-left w-[50%] mb-2">
-                        Password:
-                    </label>
-                    <a href="forgetpassword.php" class="text-gray-500">Forget Password?</a>
-                </div>
-                <div class="relative w-full">
-                    <i class="fa-solid fa-lock absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500"></i>
-                    <input type="password" id="password_input" name="password" placeholder="Enter your Password" 
-                           class="w-full border border-gray-500 rounded-lg p-2 pl-10" required autocomplete="off">
-                    <small class="text-red-500 mt-1 hidden error-message">Password must be at least 8 characters.</small>
-                </div>
-            </div>
-            
-            <!-- submit button -->
-            <button type="submit" name="logme" class="text-white w-[50%] h-[10%] mt-[10%] bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-lg px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">Login</button>
-            <p>Don't have an account? <span><a href="register.php" class="underline text-blue-600 hover:underline">Create Account</a></span></p>
-        </form>
-    </div>
-
-    <script src="https://kit.fontawesome.com/26528a6def.js" crossorigin="anonymous"></script>
-    <script src="../scripts/login.js"></script>
+    
 </body>
 </html>

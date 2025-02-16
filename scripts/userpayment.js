@@ -418,7 +418,7 @@ function submitReservation() {
                     countdownElement.textContent = countdown;
                     if (countdown === 0) {
                         clearInterval(interval);
-                        window.location.href = "homepage.php"; // Redirect to homepage
+                        window.location.href = "../index.php"; // Redirect to homepage
                     }
                     countdown--;
                 }, 1000);
@@ -444,7 +444,7 @@ function submitReservation() {
 
 // Function to redirect to homepage.php when the button is clicked
 function redirectHome() {
-    window.location.href = "homepage.php"; // Redirect to the homepage
+    window.location.href = "../index.php"; // Redirect to the homepage
 }
  // Function to collect the data and send it via AJAX
  function sendEmail() {
