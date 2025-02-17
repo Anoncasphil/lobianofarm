@@ -133,25 +133,25 @@
     transition: opacity 1s ease, transform 1s ease; /* Smooth transition for opacity and transform */
 }
 
-#location {
+#locations {
 
   transform: translateY(50px); /* Slide from the bottom */
   transition: opacity 1s ease, transform 1s ease; /* Smooth transition for opacity and transform */
 }
 
-#video-tour {
+#video-tours {
 
 transform: translateY(50px); /* Slide from the bottom */
 transition: opacity 1s ease, transform 1s ease; /* Smooth transition for opacity and transform */
 }
 
-#review {
+#reviews {
 
 transform: translateY(50px); /* Slide from the bottom */
 transition: opacity 1s ease, transform 1s ease; /* Smooth transition for opacity and transform */
 }
 
-#contact {
+#contacts {
 
 transform: translateY(50px); /* Slide from the bottom */
 transition: opacity 1s ease, transform 1s ease; /* Smooth transition for opacity and transform */
