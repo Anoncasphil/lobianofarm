@@ -128,31 +128,31 @@
 
                 
   #album {
-    opacity: 0;
+
     transform: translateY(50px); /* Slide from the bottom */
     transition: opacity 1s ease, transform 1s ease; /* Smooth transition for opacity and transform */
 }
 
 #location {
-  opacity: 0;
+
   transform: translateY(50px); /* Slide from the bottom */
   transition: opacity 1s ease, transform 1s ease; /* Smooth transition for opacity and transform */
 }
 
 #video-tour {
-opacity: 0;
+
 transform: translateY(50px); /* Slide from the bottom */
 transition: opacity 1s ease, transform 1s ease; /* Smooth transition for opacity and transform */
 }
 
 #review {
-opacity: 0;
+
 transform: translateY(50px); /* Slide from the bottom */
 transition: opacity 1s ease, transform 1s ease; /* Smooth transition for opacity and transform */
 }
 
 #contact {
-opacity: 0;
+
 transform: translateY(50px); /* Slide from the bottom */
 transition: opacity 1s ease, transform 1s ease; /* Smooth transition for opacity and transform */
 }
