@@ -416,7 +416,7 @@ $conn->close();
 </section>
 
 <!-- Location Section -->
-<section id="location" class="bg-white flex items-center justify-center px-4 mt-[100px] mb-16">
+<section id="locations" class="bg-white flex items-center justify-center px-4 mt-[100px] mb-16">
   <div class="max-w-screen-xl mx-auto flex flex-col md:flex-row items-center gap-8 mb-8">
     <!-- Text Section -->
     <div class="w-full md:w-1/2 text-center md:text-left md:mx-8">
