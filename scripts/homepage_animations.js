@@ -1,236 +1,95 @@
 window.onload = function() {
-
     const heroText = document.getElementById('hero-text');
     const checkInForm = document.getElementById('check-in-form');
     const rateCards = document.querySelectorAll('.rate-card');
     const addonCards = document.querySelectorAll('.addons-card');
     const rateHeadings = document.querySelectorAll('#rates-section .heading-addon, #rates-section .text-addon');
     const addonHeadings = document.querySelectorAll('#addons-section .header-rate, #addons-section .text-rate');
-    const aboutSection = document.getElementById('about'); // About Us Section
-    const locationSection = document.getElementById('location'); // location Section
-    const albumSection = document.getElementById('album'); // Album Section
 
     // -------------------------
-    // Hero Section Animation
+    // Reusable Function for Initial Style Setup
     // -------------------------
-    heroText.style.opacity = 0;
-    heroText.style.transform = 'scale(0.95)';
-    checkInForm.style.opacity = 0;
-    checkInForm.style.transform = 'scale(0.95)';
-
-    // Transition style
-    const transitionStyle = 'opacity 0.7s ease, transform 0.7s ease';
-
-    // Apply the transition style to Hero and Reserve elements
-    heroText.style.transition = transitionStyle;
-    checkInForm.style.transition = transitionStyle;
-
-    // Animate Hero Section with delays
-    setTimeout(() => {
-        heroText.style.opacity = 1;
-        heroText.style.transform = 'scale(1)';
-    }, 100);
-
-    setTimeout(() => {
-        checkInForm.style.opacity = 1;
-        checkInForm.style.transform = 'scale(1)';
-    }, 300);
+    function setInitialStyle(elements, opacity = 0, transform = 'translateY(50px)', transition = 'opacity 1s ease, transform 1s ease') {
+        elements.forEach(el => {
+            el.style.opacity = opacity;
+            el.style.transform = transform;
+            el.style.transition = transition;
+        });
+    }
 
     // -------------------------
-    // Intersection Observer for Rates & Add-ons Cards
+    // Reusable Function for Intersection Observer
     // -------------------------
-    const animateOnScroll = (entries, observer) => {
+    function createObserver(elements, delay = 150) {
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const target = entry.target;
+                    setTimeout(() => {
+                        target.style.opacity = 1;
+                        target.style.transform = 'translateY(0)';
+                    }, delay);
+                    observer.unobserve(target);
+                }
+            });
+        }, { threshold: 0.2 });
+
+        elements.forEach(el => observer.observe(el));
+    }
+
+    // -------------------------
+    // Hero & Check-in Form Animation
+    // -------------------------
+    [heroText, checkInForm].forEach((el, index) => {
+        el.style.opacity = 0;
+        el.style.transform = 'scale(0.95)';
+        el.style.transition = 'opacity 0.7s ease, transform 0.7s ease';
+        setTimeout(() => {
+            el.style.opacity = 1;
+            el.style.transform = 'scale(1)';
+        }, 100 + index * 200);
+    });
+
+    // -------------------------
+    // Rates & Add-ons Cards Animation
+    // -------------------------
+    setInitialStyle([...rateCards, ...addonCards], 0, 'scale(0.9)', 'opacity 0.5s ease, transform 0.5s ease');
+    
+    const cardObserver = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
-                const target = entry.target;
-                // Determine index for staggered effect (for either rateCards or addonCards)
-                const index = Array.from(rateCards).indexOf(target) !== -1 
-                    ? Array.from(rateCards).indexOf(target) 
-                    : Array.from(addonCards).indexOf(target);
-                
+                const card = entry.target;
+                const index = [...rateCards, ...addonCards].indexOf(card);
                 setTimeout(() => {
-                    target.style.opacity = 1;
-                    target.style.transform = 'scale(1)';
-                    target.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                    card.style.opacity = 1;
+                    card.style.transform = 'scale(1)';
                 }, 150 + index * 150);
-                
-                observer.unobserve(target);
+                cardObserver.unobserve(card);
             }
         });
-    };
+    }, { threshold: 0.2 });
 
-    const observerOptions = {
-        threshold: 0.2
-    };
-    const observer = new IntersectionObserver(animateOnScroll, observerOptions);
+    [...rateCards, ...addonCards].forEach(card => cardObserver.observe(card));
 
-    // Animate Rates & Add-ons Cards
-    rateCards.forEach(card => {
-        card.style.opacity = 0;
-        card.style.transform = 'scale(0.9)';
-        card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
-        observer.observe(card);
-    });
-
-    addonCards.forEach(card => {
-        card.style.opacity = 0;
-        card.style.transform = 'scale(0.9)';
-        card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
-        observer.observe(card);
+    // -------------------------
+    // Rates & Add-ons Headings Animation
+    // -------------------------
+    [rateHeadings, addonHeadings].forEach(headings => {
+        headings.forEach((text, index) => {
+            text.style.opacity = 0;
+            text.style.transform = 'translateY(50px)';
+            text.style.transition = 'opacity 1.2s ease, transform 1.2s ease';
+            setTimeout(() => {
+                text.style.opacity = 1;
+                text.style.transform = 'translateY(0)';
+            }, 300 + index * 150);
+        });
     });
 
     // -------------------------
-    // Rates & Add-ons Text Animation
+    // Sections to Observe (About, Location, Album, Video, Review, Contact)
     // -------------------------
-    rateHeadings.forEach((text, index) => {
-        text.style.opacity = 0;
-        text.style.transform = 'translateY(50px)';
-        text.style.transition = 'opacity 1.2s ease, transform 1.2s ease';
-        setTimeout(() => {
-            text.style.opacity = 1;
-            text.style.transform = 'translateY(0)';
-        }, 300 + index * 150);
-    });
-
-    addonHeadings.forEach((text, index) => {
-        text.style.opacity = 0;
-        text.style.transform = 'translateY(50px)';
-        text.style.transition = 'opacity 1.2s ease, transform 1.2s ease';
-        setTimeout(() => {
-            text.style.opacity = 1;
-            text.style.transform = 'translateY(0)';
-        }, 300 + index * 150);
-    });
-
-    // -------------------------
-    // About Us Section Animation on Scroll
-    // -------------------------
-    aboutSection.style.opacity = 0;
-    aboutSection.style.transform = 'translateY(50px)';
-    aboutSection.style.transition = 'opacity 1s ease, transform 1s ease';
-
-    const aboutObserver = new IntersectionObserver((entries, observer) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.style.opacity = 1;
-                entry.target.style.transform = 'translateY(0)';
-                observer.unobserve(entry.target);
-            }
-        });
-    }, { threshold: 0.2 });
-
-    aboutObserver.observe(aboutSection);
-
-
-        // -------------------------
-    // Location Section Animation on Scroll
-    // -------------------------
-
-    locationSection.style.opacity = 0;
-    locationSection.style.transform = 'translateY(50px)';
-    locationSection.style.transition = 'opacity 1s ease, transform 1s ease';
-
-    const locationObserver = new IntersectionObserver((entries, observer) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.style.opacity = 1;
-                entry.target.style.transform = 'translateY(0)';
-                observer.unobserve(entry.target);
-            }
-        });
-    }, { threshold: 0.2 });
-
-    locationObserver.observe(locationSection);
-
-
-    // -------------------------
-    // Album Section Animation on Scroll
-    // -------------------------
-    // Set initial styles for Album section
-    albumSection.style.opacity = 0;
-    albumSection.style.transform = 'translateY(50px)';
-    albumSection.style.transition = 'opacity 1s ease, transform 1s ease';
-
-    const albumObserver = new IntersectionObserver((entries, observer) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.style.opacity = 1;
-                entry.target.style.transform = 'translateY(0)';
-                observer.unobserve(entry.target);
-            }
-        });
-    }, { threshold: 0.2 });
-
-    albumObserver.observe(albumSection);
-
-        // -------------------------
-    // Video Tour Section Animation on Scroll
-    // -------------------------
-    // Set initial styles for Video Tour section
-
-    const videoSection = document.getElementById('video-tour'); // Album Section
-
-    videoSection.style.opacity = 0;
-    videoSection.style.transform = 'translateY(50px)';
-    videoSection.style.transition = 'opacity 1s ease, transform 1s ease';
-
-    const videoObserver = new IntersectionObserver((entries, observer) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.style.opacity = 1;
-                entry.target.style.transform = 'translateY(0)';
-                observer.unobserve(entry.target);
-            }
-        });
-    }, { threshold: 0.2 });
-
-    videoObserver.observe(videoSection);
-
-            // -------------------------
-    // review Section Animation on Scroll
-    // -------------------------
-    // Set initial styles for review Tour section
-
-    const reviewSection = document.getElementById('review'); // Album Section
-
-    reviewSection.style.opacity = 0;
-    reviewSection.style.transform = 'translateY(50px)';
-    reviewSection.style.transition = 'opacity 1s ease, transform 1s ease';
-
-    const reviewObserver = new IntersectionObserver((entries, observer) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.style.opacity = 1;
-                entry.target.style.transform = 'translateY(0)';
-                observer.unobserve(entry.target);
-            }
-        });
-    }, { threshold: 0.2 });
-
-    reviewObserver.observe(reviewSection);
-
-                // -------------------------
-    // contact Section Animation on Scroll
-    // -------------------------
-    // Set initial styles for contact section
-
-    const contactSection = document.getElementById('contact'); // Album Section
-
-    contactSection.style.opacity = 0;
-    contactSection.style.transform = 'translateY(50px)';
-    contactSection.style.transition = 'opacity 1s ease, transform 1s ease';
-
-    const contactObserver = new IntersectionObserver((entries, observer) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.style.opacity = 1;
-                entry.target.style.transform = 'translateY(0)';
-                observer.unobserve(entry.target);
-            }
-        });
-    }, { threshold: 0.2 });
-
-    contactObserver.observe(contactSection);
-
-
+    const sections = ['about', 'location', 'album', 'video-tour', 'review', 'contact'].map(id => document.getElementById(id));
+    setInitialStyle(sections);
+    createObserver(sections);
 };
