@@ -318,20 +318,22 @@ $stmt->close();
 
 <!-- Modal -->
 <div id="success-modal" class="fixed inset-0 flex items-center justify-center bg-gray-800/30 bg-opacity-50 hidden">
-    <div class="bg-white p-6 rounded-lg shadow-lg w-96">
-        <div class="flex justify-center mb-4">
-            <img id="check-gif" src="../src/animations/checkanimation.gif" alt="Check Animation" class="w-32 h-32 scale-150 gif-animation">
-        </div>
-        <h2 class="text-xl font-semibold text-center">Reservation Successful</h2>
-        <p class="text-center text-gray-700 mt-4">An email was sent to you for your reference. Please wait while we confirm your reservation.</p>
-        <p class="text-center text-gray-700 mt-2">Redirecting to Home Page in <span id="countdown-timer">5</span> seconds...</p>
-        <div class="mt-6 flex justify-center">
-            <button onclick="redirectHome()" class="bg-green-600 text-white font-bold py-3 w-40 px-6 rounded-md shadow-lg hover:bg-green-700 transition duration-200">
-                Go Home
-            </button>
-        </div>
+    <div class="bg-white p-6 rounded-lg shadow-lg w-96 text-center">
+        <!-- Success GIF -->
+        <img src="../src/green_check.png" alt="Success" class="mx-auto w-20 h-20 mb-4 animate-bounce">
+
+        <!-- Success Message -->
+        <h2 class="text-2xl font-bold text-green-600 mb-2">Reservation Successful</h2>
+        <p class="text-gray-700 mb-4">An email was sent to you for your reference. Please wait while we confirm your reservation.</p>
+        <p class="text-gray-700 mb-4">Redirecting to Home Page in <span id="countdown-timer">5</span> seconds...</p>
+
+        <!-- Go Home Button -->
+        <button onclick="redirectHome()" class="w-full mt-4 shadow-xl py-2 px-4 text-sm tracking-wide rounded-md text-white bg-blue-900 hover:bg-blue-700 focus:outline-none">
+            Go Home
+        </button>
     </div>
 </div>
+
 
 
 

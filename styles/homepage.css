@@ -2,6 +2,11 @@ html {
     scrollbar-width: thin;
     scrollbar-color: rgba(0, 0, 0, 0.5) transparent; /* Default opacity 20% */
   }
+  #modal-description {
+    max-height: 300px; /* Adjust the max height according to your design */
+    overflow-y: auto;  /* Enables vertical scrolling */
+  }
+  
   
   ::-webkit-scrollbar {
     width: 8px; /* Width for vertical scrollbar */
@@ -32,10 +37,9 @@ html {
     }
             /* Minimalist scrollbar styles */
             .scrollable-container {
-    overflow-x: auto;
-    scrollbar-width: thin;
-    scrollbar-color: rgba(0, 0, 0, 0.1) transparent; /* Default opacity 20% */
-    scroll-behavior: smooth; /* Enable smooth scrolling */
+              overflow-x: auto;
+              scrollbar-width: none; /* Firefox */
+              -ms-overflow-style: none;  /* Internet Explorer 10+ */
   }
   
   .scrollable-container:hover {
@@ -44,6 +48,7 @@ html {
   
   .scrollable-container::-webkit-scrollbar {
     height: 8px; /* Height for horizontal scrollbar */
+    display: none;
   }
   
   .scrollable-container::-webkit-scrollbar-track {
@@ -78,11 +83,11 @@ html {
   }
   
   .swiper-pagination-bullet {
-    background:rgb(19, 0, 160);
+    background:#1e3a8a;
   }
   
   .swiper-pagination-bullet-active {
-    background:rgb(19, 0, 160) !important;
+    background:#1e3a8a !important;
   }
   
       /* Ensure swiper container takes full width and height */
@@ -123,3 +128,27 @@ html {
       transform: translateY(50px); /* Slide from the bottom */
       transition: opacity 1s ease, transform 1s ease; /* Smooth transition for opacity and transform */
   }
+
+  #location {
+    opacity: 0;
+    transform: translateY(50px); /* Slide from the bottom */
+    transition: opacity 1s ease, transform 1s ease; /* Smooth transition for opacity and transform */
+}
+
+#video-tour {
+  opacity: 0;
+  transform: translateY(50px); /* Slide from the bottom */
+  transition: opacity 1s ease, transform 1s ease; /* Smooth transition for opacity and transform */
+}
+
+#review {
+  opacity: 0;
+  transform: translateY(50px); /* Slide from the bottom */
+  transition: opacity 1s ease, transform 1s ease; /* Smooth transition for opacity and transform */
+}
+
+#contact {
+  opacity: 0;
+  transform: translateY(50px); /* Slide from the bottom */
+  transition: opacity 1s ease, transform 1s ease; /* Smooth transition for opacity and transform */
+}

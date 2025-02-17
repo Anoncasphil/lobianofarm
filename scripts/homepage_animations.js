@@ -1,7 +1,5 @@
 window.onload = function() {
-    // Select elements for animation
-    const reserveText = document.getElementById('reserve-text');
-    const reserveImage = document.getElementById('reserve-image');
+
     const heroText = document.getElementById('hero-text');
     const checkInForm = document.getElementById('check-in-form');
     const rateCards = document.querySelectorAll('.rate-card');
@@ -9,6 +7,7 @@ window.onload = function() {
     const rateHeadings = document.querySelectorAll('#rates-section .heading-addon, #rates-section .text-addon');
     const addonHeadings = document.querySelectorAll('#addons-section .header-rate, #addons-section .text-rate');
     const aboutSection = document.getElementById('about'); // About Us Section
+    const locationSection = document.getElementById('location'); // location Section
     const albumSection = document.getElementById('album'); // Album Section
 
     // -------------------------
@@ -19,22 +18,12 @@ window.onload = function() {
     checkInForm.style.opacity = 0;
     checkInForm.style.transform = 'scale(0.95)';
 
-    // -------------------------
-    // Reserve Section Animation
-    // -------------------------
-    reserveText.style.opacity = 0;
-    reserveText.style.transform = 'translateX(-50px)';
-    reserveImage.style.opacity = 0;
-    reserveImage.style.transform = 'translateX(50px)';
-
     // Transition style
     const transitionStyle = 'opacity 0.7s ease, transform 0.7s ease';
 
     // Apply the transition style to Hero and Reserve elements
     heroText.style.transition = transitionStyle;
     checkInForm.style.transition = transitionStyle;
-    reserveText.style.transition = transitionStyle;
-    reserveImage.style.transition = transitionStyle;
 
     // Animate Hero Section with delays
     setTimeout(() => {
@@ -46,17 +35,6 @@ window.onload = function() {
         checkInForm.style.opacity = 1;
         checkInForm.style.transform = 'scale(1)';
     }, 300);
-
-    // Animate Reserve Section
-    setTimeout(() => {
-        reserveText.style.opacity = 1;
-        reserveText.style.transform = 'translateX(0)';
-    }, 700);
-
-    setTimeout(() => {
-        reserveImage.style.opacity = 1;
-        reserveImage.style.transform = 'translateX(0)';
-    }, 1000);
 
     // -------------------------
     // Intersection Observer for Rates & Add-ons Cards
@@ -143,6 +121,28 @@ window.onload = function() {
 
     aboutObserver.observe(aboutSection);
 
+
+        // -------------------------
+    // Location Section Animation on Scroll
+    // -------------------------
+
+    locationSection.style.opacity = 0;
+    locationSection.style.transform = 'translateY(50px)';
+    locationSection.style.transition = 'opacity 1s ease, transform 1s ease';
+
+    const locationObserver = new IntersectionObserver((entries, observer) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.style.opacity = 1;
+                entry.target.style.transform = 'translateY(0)';
+                observer.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.2 });
+
+    locationObserver.observe(locationSection);
+
+
     // -------------------------
     // Album Section Animation on Scroll
     // -------------------------
@@ -162,4 +162,75 @@ window.onload = function() {
     }, { threshold: 0.2 });
 
     albumObserver.observe(albumSection);
+
+        // -------------------------
+    // Video Tour Section Animation on Scroll
+    // -------------------------
+    // Set initial styles for Video Tour section
+
+    const videoSection = document.getElementById('video-tour'); // Album Section
+
+    videoSection.style.opacity = 0;
+    videoSection.style.transform = 'translateY(50px)';
+    videoSection.style.transition = 'opacity 1s ease, transform 1s ease';
+
+    const videoObserver = new IntersectionObserver((entries, observer) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.style.opacity = 1;
+                entry.target.style.transform = 'translateY(0)';
+                observer.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.2 });
+
+    videoObserver.observe(videoSection);
+
+            // -------------------------
+    // review Section Animation on Scroll
+    // -------------------------
+    // Set initial styles for review Tour section
+
+    const reviewSection = document.getElementById('review'); // Album Section
+
+    reviewSection.style.opacity = 0;
+    reviewSection.style.transform = 'translateY(50px)';
+    reviewSection.style.transition = 'opacity 1s ease, transform 1s ease';
+
+    const reviewObserver = new IntersectionObserver((entries, observer) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.style.opacity = 1;
+                entry.target.style.transform = 'translateY(0)';
+                observer.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.2 });
+
+    reviewObserver.observe(reviewSection);
+
+                // -------------------------
+    // contact Section Animation on Scroll
+    // -------------------------
+    // Set initial styles for contact section
+
+    const contactSection = document.getElementById('contact'); // Album Section
+
+    contactSection.style.opacity = 0;
+    contactSection.style.transform = 'translateY(50px)';
+    contactSection.style.transition = 'opacity 1s ease, transform 1s ease';
+
+    const contactObserver = new IntersectionObserver((entries, observer) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.style.opacity = 1;
+                entry.target.style.transform = 'translateY(0)';
+                observer.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.2 });
+
+    contactObserver.observe(contactSection);
+
+
 };

@@ -168,7 +168,6 @@ document.getElementById('rate-modal').addEventListener('click', function(event) 
   document.addEventListener("DOMContentLoaded", function() {
     initializeFlatpickr();
   });
-  
   async function fetchReservedDates() {
     try {
       const response = await fetch('/api/get_reserved_dates_booking.php');
@@ -191,16 +190,30 @@ document.getElementById('rate-modal').addEventListener('click', function(event) 
   
     const checkInDateInput = document.getElementById("check-in");
   
-    // Find dates that should be fully disabled
-    const fullyReservedDates = new Set(reservedWholeDay);
+    // Create a Set for fast lookup
+    const daytimeSet = new Set(reservedDaytime);
+    const nighttimeSet = new Set(reservedNighttime);
+    const wholeDaySet = new Set(reservedWholeDay);
   
+    // Dates to be fully disabled
+    const fullyReservedDates = new Set();
+  
+    // Disable dates that have both Daytime and Nighttime reserved
     reservedDaytime.forEach(date => {
-      if (reservedNighttime.includes(date)) {
-        fullyReservedDates.add(date);  // Add date only if it's in both lists
+      if (nighttimeSet.has(date)) {
+        fullyReservedDates.add(date);
       }
     });
   
-    // Log fully reserved dates in the console
+    // Add all WholeDay dates to disabled dates
+    reservedWholeDay.forEach(date => {
+      fullyReservedDates.add(date);
+    });
+  
+    // Log reserved dates
+    console.log("Reserved Daytime Dates:", reservedDaytime);
+    console.log("Reserved Nighttime Dates:", reservedNighttime);
+    console.log("Reserved Whole Day Dates:", reservedWholeDay);
     console.log("Disabled Dates:", Array.from(fullyReservedDates));
   
     // Initialize Flatpickr
@@ -212,8 +225,8 @@ document.getElementById('rate-modal').addEventListener('click', function(event) 
         }
       },
       disable: [
-        { from: "1970-01-01", to: new Date().toISOString().split("T")[0] },  // Disable past dates
-        ...Array.from(fullyReservedDates).map(date => ({ from: date, to: date }))  // Disable fully reserved dates
+        { from: "1970-01-01", to: new Date().toISOString().split("T")[0] }, // Disable past dates
+        ...Array.from(fullyReservedDates).map(date => ({ from: date, to: date })) // Disable dates in fullyReservedDates
       ]
     });
   

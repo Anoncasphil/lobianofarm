@@ -82,8 +82,8 @@ $conn->close();
 <nav class="bg-white border-blue-200 dark:bg-blue-900 fixed top-0 left-0 w-full z-50">
   <div class="max-w-screen-xl flex items-center justify-between mx-auto p-4">
     <!-- Logo -->
-    <a href="homepage.php" class="flex items-center space-x-3 rtl:space-x-reverse">
-      <img src="../src/uploads/logo.svg" class="logo" alt="Logo" />
+    <a href="index.php" class="flex items-center space-x-3 rtl:space-x-reverse">
+      <img src="/src/uploads/logo.svg" class="logo" alt="Logo" />
       <span class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white"></span>
     </a>
 
@@ -92,26 +92,29 @@ $conn->close();
         <a href="#home" class="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">Home</a>
       </li>
       <li>
-        <a href="#about" class="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">About</a>
-      </li>
-      <li>
-        <a href="#album" class="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">Gallery</a>
-      </li>
-      <li>
         <a href="#services" class="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">Services</a>
       </li>
       <li>
+        <a href="#about" class="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">About</a>
+      </li>
+      <li>
+        <a href="#album" class="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">Album</a>
+      </li>
+      <li>
         <a href="#reviews" class="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">Reviews</a>
+      </li>
+      <li>
+        <a href="#contact" class="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">Contact</a>
       </li>
     </ul>
     <!-- Cart, Profile, and Login Buttons -->
     <div class="flex items-center space-x-6 rtl:space-x-reverse">
       <!-- Cart Button -->
       <?php if (isset($_SESSION['user_id'])): ?>
-        <button type="button" class="flex items-center text-lg ml-20 dark:bg-blue-900 rounded-lg px-4 py-2 hover:bg-white/10"
+        <button type="button" class="flex items-center text-lg ml-[10px]  dark:bg-blue-900 rounded-lg px-4 py-3 hover:bg-white/10"
           onclick="window.location.href='/landing_page_customer/customer_reservation.php'">
           <span class="sr-only">Open cart</span>
-          <span class="material-icons text-white text-2xl">shopping_cart</span>
+          <span class="material-icons text-white text-2xl">menu_book</span>
         </button>
       <?php endif; ?>
 
@@ -119,7 +122,7 @@ $conn->close();
       <div class="relative inline-block text-left">
         <?php if (isset($full_name) && !empty($full_name)): ?>
           <!-- Profile Button (Logged-in) -->
-          <button id="profileButton" type="button" class="flex items-center space-x-3 text-sm dark:bg-blue-900 hover:bg-white/10 rounded-lg px-4 py-2" onclick="toggleDropdown()">
+          <button id="profileButton" type="button" class="flex items-center space-x-3 text-sm dark:bg-blue-900 hover:bg-white/10 rounded-lg px-4 py-4" onclick="toggleDropdown()">
             <span class="sr-only">Open user menu</span>
             <span class="text-white font-medium"><?php echo htmlspecialchars($full_name); ?></span>
             <svg class="w-4 h-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -183,29 +186,31 @@ $conn->close();
 
 
 
-<!-- Hero Section -->
 <section
   id="home"
-  class="bg-cover bg-center relative py-16 mb-16"
+  class="bg-cover bg-center relative mb-16 py-16 min-h-screen flex flex-col justify-center items-center"
   style="background-image: url('../src/uploads/resort.png');"
 >
   <!-- Overlay -->
-  <div class="absolute inset-0 bg-blue-950 opacity-90"></div>
+  <div class="absolute inset-0 bg-blue-950 opacity-60"></div>
 
-  <div class="max-w-screen-xl mx-auto p-0 h-auto flex flex-col justify-start relative z-10">
-    <!-- Left Section: Text -->
-    <div id="hero-text" class="mt-30 text-left lg:mr-0 lg:w-1/2 ml-4 pl-0">
-      <h1 class="text-5xl font-extrabold text-gray-900 dark:text-white">
-        BOBO SI ALTUNA MUKHANG TAE
+  <div class="max-w-screen-xl mx-auto text-center relative z-10 px-4">
+    <!-- Logo -->
+    <img src="../src/uploads/logo.svg" alt="Lobiano's Farm Resort Logo" class="h-100 mx-auto mb-6" />
+
+    <!-- Text Section -->
+    <div id="hero-text" class="text-center mb-8">
+      <h1 class="text-5xl font-extrabold text-gray-900 dark:text-white mb-4">
+        Lobiano's Farm Resort
       </h1>
-      <p class="mt-4 text-xl text-gray-600 dark:text-gray-400 max-w-96">
-        Explore our services, discover amazing features, and connect with us to know more.
+      <p class="text-xl text-white mx-auto max-w-2xl">
+        Explore our services, discover amazing features, and connect with us to know more. Experience a perfect getaway amidst nature's beauty.
       </p>
     </div>
 
-    <!-- Check-In Form centered below the text -->
-    <div id="check-in-form" class="flex justify-center mt-8 mb-8 w-full">
-      <div class="inline-flex flex-col sm:flex-row border border-yellow-300 rounded-lg overflow-hidden shadow-sm dark:border-yellow-500">
+    <!-- Check-In Form -->
+    <div id="check-in-form" class="flex justify-center w-full">
+      <div class="inline-flex flex-col sm:flex-row border border-yellow-300 rounded-lg overflow-hidden shadow-lg dark:border-yellow-500">
         <!-- Check-In Date Input -->
         <input
           type="text"
@@ -240,8 +245,11 @@ $conn->close();
 </section>
 
 
+
+
+
 <!-- Rates & Add-ons Section -->
-<section id="rates-section" class="bg-white flex flex-col items-center justify-center py-16 mt-[-100px] px-4 mb-16">
+<section id="rates-section" class="bg-white flex flex-col items-center justify-center mt-12 px-4">
   <div class="max-w-screen-xl mx-auto">
     
     <!-- Rates Section -->
@@ -299,7 +307,8 @@ $conn->close();
                                 </div>
                             </div>
 
-                            <p class='text-gray-800 font-semibold text-xl mt-4'>₱$price</p>
+                            <p class='text-gray-800 font-semibold text-xl mt-4'>₱" . number_format($price, 2) . "</p>
+
                         </div>
                     </div>";
                 }
@@ -351,7 +360,8 @@ $conn->close();
                             <div class='p-5'>
                                 <h2 class='text-2xl font-bold text-gray-800'>$name</h2>
 
-                                <p class='text-gray-800 font-semibold text-xl mt-4'>₱$price</p>
+                                <p class='text-gray-800 font-semibold text-xl mt-4'>₱" . number_format($price, 2) . "</p>
+
                             </div>
                         </div>";
                     }
@@ -379,13 +389,14 @@ $conn->close();
 
 <!-- About Us Section -->
 <section id="about" class="bg-white flex items-center justify-center px-4 mb-16">
-  <div class="max-w-screen-xl mx-auto flex flex-col md:flex-row items-center gap-8">
+  <div class="max-w-screen-xl mx-auto flex flex-col md:flex-row items-center gap-8 mb-8">
     <!-- Image Section -->
-    <div class="w-full md:w-1/2 flex justify-lef">
+    <div class="w-full md:w-1/2 flex justify-left">
       <img 
         src="../src/uploads/about/resort.png" 
         alt="About Us Image" 
         class="rounded-2xl shadow-lg w-full h-auto object-cover"
+        style="height: 450px; object-fit: cover;" 
       />
     </div>
     <!-- Text Section -->
@@ -404,6 +415,40 @@ $conn->close();
   </div>
 </section>
 
+<!-- Location Section -->
+<section id="location" class="bg-white flex items-center justify-center px-4 mt-[100px] mb-16">
+  <div class="max-w-screen-xl mx-auto flex flex-col md:flex-row items-center gap-8 mb-8">
+    <!-- Text Section -->
+    <div class="w-full md:w-1/2 text-center md:text-left md:mx-8">
+      <h2 class="text-3xl font-extrabold text-gray-900 mb-4">Our Location</h2>
+      <p class="text-lg text-gray-700 mb-4 text-justify">
+        We are located at Lobiano's Farm 888, nestled in the serene countryside. It's the perfect getaway for relaxation, adventure, and making lasting memories. Come visit us for a tranquil escape amidst nature's beauty.
+      </p>
+      <a 
+        href="https://www.google.com/maps?q=Lobiano's+Farm+888" 
+        target="_blank"
+        class="inline-block px-6 py-3 bg-blue-600 text-white text-lg font-medium rounded-lg shadow-md hover:bg-blue-700 transition-all"
+      >
+        View on Google Maps
+      </a>
+    </div>
+    <!-- Map Section -->
+    <div class="w-full md:w-1/2">
+      <iframe 
+        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1586.8824792813755!2d120.89532436717096!3d14.14926979329477!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x33bd79eaf08918e9%3A0xf195c7d93933a8a1!2sLobiano%60s%20Farm%20888!5e1!3m2!1sen!2sph!4v1739810756694!5m2!1sen!2sph" 
+        width="600" 
+        height="450" 
+        style="border:0;" 
+        allowfullscreen="" 
+        loading="lazy" 
+        referrerpolicy="no-referrer-when-downgrade">
+      </iframe>
+    </div>
+  </div>
+</section>
+
+
+
 <section id="album" class="bg-white flex items-center justify-center py-16 px-4 mb-16">
   <div class="max-w-screen-xl mx-auto text-center">
     <h2 class="text-3xl font-extrabold text-gray-900 mb-4">Our Album</h2>
@@ -414,7 +459,7 @@ $conn->close();
       <div class="swiper centered-slide-carousel swiper-container">
         <div class="swiper-wrapper">
           <?php
-            $directory = "../src/uploads/album/";  // Specify the path to the image folder
+            $directory = "src/uploads/album/";  // Specify the path to the image folder
             $images = glob($directory . "*.jpg");  // Adjust the file type if needed (e.g., .png, .jpeg)
 
             // Loop through the images and create swiper-slide for each image
@@ -502,16 +547,8 @@ $conn->close();
 
 
 <!-- Reviews Section -->
-<section id="reviews" class="bg-white min-h-screen flex flex-col items-center justify-center pt-16">
-  <div class="text-center">
-    <h2 class="text-3xl font-extrabold text-gray-900">Reviews</h2>
-    <p class="mt-4 text-lg text-gray-600">Hear from our satisfied customers about their experiences.</p>
-  </div>
-
-  <!-- Scrollable Reviews Container -->
-  <div class="relative w-full max-w-6xl mt-8 overflow-hidden">
-    <div id="reviews-container" class="flex space-x-4 overflow-x-auto no-scrollbar px-4 py-4 scroll-smooth"></div>
-  </div>
+<section id="review" class="bg-white min-h-screen flex flex-col items-center justify-center pt-16">
+<div class="elfsight-app-d8f6591a-6262-46fe-a54f-6d6eefaf6b74" data-elfsight-app-lazy></div>
 </section>
 
 <script>
@@ -575,12 +612,32 @@ document.addEventListener("DOMContentLoaded", function () {
 </style>
 
 
+<section id="contact" class="bg-white">
+  <div class="py-8 lg:py-16 px-4 mx-auto max-w-screen-md">
+      <h2 class="mb-4 text-4xl tracking-tight font-extrabold text-center text-gray-900">Contact Us</h2>
+      <p class="mb-8 lg:mb-16 font-light text-center text-gray-500 sm:text-xl">Got a technical issue? Want to send feedback about a beta feature? Need details about our Business plan? Let us know.</p>
+      <form action="#" class="space-y-8">
+          <div>
+              <label for="email" class="block mb-2 text-sm font-medium text-gray-900">Your email</label>
+              <input type="email" id="email" class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5" placeholder="name@flowbite.com" required>
+          </div>
+          <div>
+              <label for="subject" class="block mb-2 text-sm font-medium text-gray-900">Subject</label>
+              <input type="text" id="subject" class="block p-3 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 shadow-sm focus:ring-primary-500 focus:border-primary-500" placeholder="Let us know how we can help you" required>
+          </div>
+          <div class="sm:col-span-2">
+              <label for="message" class="block mb-2 text-sm font-medium text-gray-900">Your message</label>
+              <textarea id="message" rows="6" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg shadow-sm border border-gray-300 focus:ring-primary-500 focus:border-primary-500" placeholder="Leave a comment..."></textarea>
+          </div>
+          <button type="submit" class="py-3 px-5 text-sm font-medium text-center text-white rounded-lg bg-primary-700 sm:w-fit hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300">Send message</button>
+      </form>
+  </div>
+</section>
 
 
 
 
-
-<section id="reserve" class="bg-gray-100 flex items-center justify-center pt-16 px-4 mb-100">
+<section id="reserve" class="bg-gray-100 flex items-center justify-center pt-16 px-4 mb-100 hidden">
   <div class="max-w-screen-xl mx-auto px-4 md:px-8 flex flex-col md:flex-row items-center gap-8">
     <!-- Text Section -->
     <div id="reserve-text" class="w-full md:w-1/2 text-center md:text-left opacity-0 transform translate-x-[-50px] ml-8 ">
@@ -623,7 +680,7 @@ document.addEventListener("DOMContentLoaded", function () {
 </script>
 
 <!-- Footer Section -->
-<footer class="bg-gray-100 dark:bg-gray-800 py-8">
+<footer class="bg-blue-100 dark:bg-blue-900 py-8">
   <div class="text-center">
     <p class="text-sm text-gray-400">© 2025 Your Company. All Rights Reserved.</p>
     <div class="mt-4 space-x-4">
@@ -632,6 +689,8 @@ document.addEventListener("DOMContentLoaded", function () {
     </div>
   </div>
 </footer>
+
+
 
 
 <!-- Check-in Date Modal -->
@@ -672,7 +731,9 @@ document.addEventListener("DOMContentLoaded", function () {
         </div>
 
         <p class="text-gray-800 font-semibold text-2xl mt-4">₱<span id="modal-price"></span></p>
-        <p id="modal-description" class="text-gray-600 mt-4 max-w-2xl text-lg"></p>
+        
+        <!-- Scrollable description -->
+        <p id="modal-description" class="text-gray-600 mt-4 max-w-2xl text-lg" style="max-height: 300px; overflow-y: auto;"></p>
 
         <!-- Close button -->
         <button id="close-modal" class="mt-8 px-6 py-3 bg-blue-600 text-white rounded-lg w-full text-lg hover:bg-blue-700">
@@ -682,6 +743,7 @@ document.addEventListener("DOMContentLoaded", function () {
     </div>
   </div>
 </div>
+
 
 
 
@@ -723,8 +785,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
 <script src="/scripts/homepage_animations.js"></script>
 <script src="/scripts/newhomes.js"></script>
+<!-- Elfsight WhatsApp Chat | Untitled WhatsApp Chat -->
 <script src="https://static.elfsight.com/platform/platform.js" async></script>
 <div class="elfsight-app-b2701a5e-2312-4201-92bf-10db53498839" data-elfsight-app-lazy></div>
+<!-- Elfsight Google Reviews | Untitled Google Reviews -->
+<script src="https://static.elfsight.com/platform/platform.js" async></script>
 <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
