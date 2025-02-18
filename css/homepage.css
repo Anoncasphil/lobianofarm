@@ -1,5 +1,4 @@
 
-  
   /* Slide-in animation from the right */
   @keyframes slideInRight {
   0% {
@@ -126,3 +125,5 @@
               .scrollable-container::-webkit-scrollbar-thumb:hover {
                 background-color: rgba(0, 0, 0, 0.5); /* Slightly darker when hovered */
               }
+
+              

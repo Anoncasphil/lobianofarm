@@ -416,7 +416,7 @@ $conn->close();
 </section>
 
 <!-- Location Section -->
-<section id="location" class="bg-white flex items-center justify-center px-4 mt-[100px] mb-16">
+<section id="locations" class="bg-white flex items-center justify-center px-4 mt-[100px] delay-[300ms] duration-[600ms] taos:translate-y-[100%] taos:opacity-0 mb-16" data-taos-offset="300">
   <div class="max-w-screen-xl mx-auto flex flex-col md:flex-row items-center gap-8 mb-8">
     <!-- Text Section -->
     <div class="w-full md:w-1/2 text-center md:text-left md:mx-8">
@@ -523,7 +523,7 @@ $conn->close();
 
 
 <!-- Video Tour Section -->
-<section id="video-tour" class="bg-white px-4">
+<section id="video-tours" class="bg-white px-4 delay-[300ms] duration-[600ms] taos:translate-y-[100%] taos:opacity-0" data-taos-offset="300">
   <div class="max-w-screen-xl mx-auto text-center">
     <h2 class="text-3xl font-extrabold text-gray-900">Video Tour</h2>
     <p class="mt-4 text-lg text-gray-700">
@@ -547,7 +547,7 @@ $conn->close();
 
 
 <!-- Reviews Section -->
-<section id="review" class="bg-white min-h-screen flex flex-col items-center justify-center pt-16">
+<section id="reviews" class="bg-white min-h-screen flex flex-col items-center justify-center delay-[300ms] duration-[600ms] taos:translate-y-[100%] taos:opacity-0 pt-16" data-taos-offset="300">
 <div class="elfsight-app-d8f6591a-6262-46fe-a54f-6d6eefaf6b74" data-elfsight-app-lazy></div>
 </section>
 
@@ -612,7 +612,7 @@ document.addEventListener("DOMContentLoaded", function () {
 </style>
 
 
-<section id="contact" class="bg-white">
+<section id="contacts" class="bg-white delay-[300ms] duration-[600ms] taos:translate-y-[100%] taos:opacity-0" data-taos-offset="300">
   <div class="py-8 lg:py-16 px-4 mx-auto max-w-screen-md">
       <h2 class="mb-4 text-4xl tracking-tight font-extrabold text-center text-gray-900">Contact Us</h2>
       <p class="mb-8 lg:mb-16 font-light text-center text-gray-500 sm:text-xl">Got a technical issue? Want to send feedback about a beta feature? Need details about our Business plan? Let us know.</p>
