@@ -61,69 +61,106 @@ $conn->close();
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lobiano's Farm Resort</title>
-    <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <link href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" rel="stylesheet"/>
-    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <link rel=stylesheet href="/styles/homepage.css">
-    <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css">
-    
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lobiano's Farm Resort</title>
+  
+  <link rel="icon" type="image/png" href="src/uploads/logo.svg">
+
+
+  <!-- Tailwind CSS for styling -->
+  <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+  
+  <!-- jQuery for DOM manipulation -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  
+  <!-- Swiper CSS and JS for carousel functionality -->
+  <link href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" rel="stylesheet"/>
+  <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+  
+  <!-- Flatpickr CSS for date picker -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+  
+  <!-- Fancybox CSS for image lightbox -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" rel="stylesheet">
+  
+  <!-- Google Material Icons for icons -->
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  
+  <!-- Custom CSS for homepage styling -->
+  <link rel=stylesheet href="styles/index.css">
+
+  
+  <!-- AOS CSS for animations on scroll -->
+  <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css">
+
+  <style>
+    .logo {
+    height: 3rem; /* Adjust this as needed */
+    width: auto;
+    object-fit: contain;
+  }
+/* Hide the scrollbar */
+.scrollable-container::-webkit-scrollbar {
+    display: none;
+}
+.scrollable-container {
+    -ms-overflow-style: none;  /* Hide scrollbar for IE/Edge */
+    scrollbar-width: none;  /* Hide scrollbar for Firefox */
+}
+
+/* Animation Enhancement */
+.rate-card {
+    opacity: 0; /* Ensure cards are hidden initially */
+    transform: translateY(30px); /* Start from below */
+    transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+}
+
+/* Make them visible when in viewport */
+.rate-card.aos-animate {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+
+
+  </style>
 
 </head>
 <body>
 
 <!-- Navbar -->
-<nav class="bg-white border-blue-200 dark:bg-blue-900 fixed top-0 left-0 w-full z-50">
+<nav class="border-blue-200 bg-blue-900 fixed top-0 left-0 w-full z-50" data-aos="fade-down" data-aos-duration="1200">
   <div class="max-w-screen-xl flex items-center justify-between mx-auto p-4">
     <!-- Logo -->
     <a href="index.php" class="flex items-center space-x-3 rtl:space-x-reverse">
-      <img src="/src/uploads/logo.svg" class="logo" alt="Logo" />
-      <span class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white"></span>
+      <img src="src/uploads/logo.svg" class="logo" alt="Logo" />
+      <span class="self-center text-2xl font-semibold whitespace-nowrap text-white"></span>
     </a>
 
-    <ul class="flex flex-col font-medium p-4 md:p-0 mr-100 border border-gray-100 rounded-lg bg-gray-50 md:flex-row md:space-x-8 rtl:space-x-reverse md:mt-0 md:border-0 md:bg-white dark:bg-blue-800 md:dark:bg-blue-900">
-      <li>
-        <a href="#home" class="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">Home</a>
-      </li>
-      <li>
-        <a href="#services" class="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">Services</a>
-      </li>
-      <li>
-        <a href="#about" class="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">About</a>
-      </li>
-      <li>
-        <a href="#album" class="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">Album</a>
-      </li>
-      <li>
-        <a href="#reviews" class="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">Reviews</a>
-      </li>
-      <li>
-        <a href="#contact" class="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">Contact</a>
-      </li>
-    </ul>
-    <!-- Cart, Profile, and Login Buttons -->
-    <div class="flex items-center space-x-6 rtl:space-x-reverse">
-      <!-- Cart Button -->
-      <?php if (isset($_SESSION['user_id'])): ?>
-        <button type="button" class="flex items-center text-lg ml-[10px]  dark:bg-blue-900 rounded-lg px-4 py-3 hover:bg-white/10"
-          onclick="window.location.href='/landing_page_customer/customer_reservation.php'">
-          <span class="sr-only">Open cart</span>
-          <span class="material-icons text-white text-2xl">menu_book</span>
-        </button>
-      <?php endif; ?>
+    <!-- Hamburger menu (Mobile) -->
+    <button id="hamburgerButton" type="button" class="md:hidden p-2 w-10 h-10 text-white rounded-lg hover:bg-white/10">
+      <span class="sr-only">Open main menu</span>
+      <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 17 14">
+        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 1h15M1 7h15M1 13h15"/>
+      </svg>
+    </button>
 
-      <!-- Profile or Login Button -->
-      <div class="relative inline-block text-left">
-        <?php if (isset($full_name) && !empty($full_name)): ?>
-          <!-- Profile Button (Logged-in) -->
-          <button id="profileButton" type="button" class="flex items-center space-x-3 text-sm dark:bg-blue-900 hover:bg-white/10 rounded-lg px-4 py-4" onclick="toggleDropdown()">
-            <span class="sr-only">Open user menu</span>
+    <!-- Desktop Navigation Links -->
+    <ul id="navbarUser" class="hidden md:flex flex-row font-medium p-4 md:p-0 space-x-8 md:bg-blue-900">
+      <li><a href="#home" class="block py-2 px-3 text-white hover:text-blue-500">Home</a></li>
+      <li><a href="#services" class="block py-2 px-3 text-white hover:text-blue-500">Services</a></li>
+      <li><a href="#about" class="block py-2 px-3 text-white hover:text-blue-500">About</a></li>
+      <li><a href="#album" class="block py-2 px-3 text-white hover:text-blue-500">Album</a></li>
+      <li><a href="#reviews" class="block py-2 px-3 text-white hover:text-blue-500">Reviews</a></li>
+      <li><a href="#contact" class="block py-2 px-3 text-white hover:text-blue-500">Contact</a></li>
+    </ul>
+
+    <!-- Profile/Login (Desktop) -->
+    <div class="hidden md:flex items-center space-x-6">
+      <?php if (isset($full_name) && !empty($full_name)): ?>
+        <div class="relative inline-block text-left">
+          <button id="profileButton" type="button" class="flex items-center space-x-3 text-sm bg-blue-900 hover:bg-white/10 rounded-lg px-4 py-4">
             <span class="text-white font-medium"><?php echo htmlspecialchars($full_name); ?></span>
             <svg class="w-4 h-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
@@ -131,117 +168,140 @@ $conn->close();
           </button>
           <!-- Dropdown Menu -->
           <div id="dropdownMenu" class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-2 hidden">
-            <a href="/landing_page_customer/edit_profile.php" class="block px-4 py-2 text-gray-700 hover:bg-gray-200">Profile</a>
+            <a href="landing_page_customer/customer_reservation.php" class="block px-4 py-2 text-gray-700 hover:bg-gray-200">Reservations</a>
+            <a href="landing_page_customer/edit_profile.php" class="block px-4 py-2 text-gray-700 hover:bg-gray-200">Profile</a>
+            <hr class="border-gray-300">
             <a href="landing_page_customer/logout.php" class="block px-4 py-2 text-gray-700 hover:bg-gray-200">Logout</a>
           </div>
-        <?php else: ?>
-          <!-- Login Button (Not logged-in) -->
-          <a href="/landing_page_customer/login.php" id="loginButton" class="flex items-center space-x-3 text-sm bg-white hover:bg-gray-300 text-blue-900 font-semibold rounded-lg px-6 py-3 transition-all duration-300 ease-in-out shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-500 hover:text-blue-700">
-  <span class="sr-only">Login</span>
-  <span class="font-semibold">Login</span>
-</a>
-
-
-
-        <?php endif; ?>
-      </div>
+        </div>
+      <?php else: ?>
+        <a href="/landing_page_customer/login.php" class="flex items-center space-x-3 text-sm bg-white hover:bg-gray-300 text-blue-900 font-semibold rounded-lg px-6 py-3 transition-all duration-300 ease-in-out shadow-md hover:shadow-lg">
+          <span class="font-semibold">Login</span>
+        </a>
+      <?php endif; ?>
     </div>
-
-    <!-- Hamburger menu -->
-    <button id="hamburgerButton" data-collapse-toggle="navbar-user" type="button" class="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-white rounded-lg md:hidden hover:bg-gray-100 dark:text-gray-400 hover:bg-white/10" aria-controls="navbar-user" aria-expanded="false">
-      <span class="sr-only">Open main menu</span>
-      <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 17 14">
-        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 1h15M1 7h15M1 13h15"/>
-      </svg>
-    </button>
   </div>
 
-  <!-- Navigation Links -->
+  <!-- Mobile Dropdown -->
+  <div id="mobileMenu" class="hidden md:hidden absolute top-16 left-0 w-full bg-white shadow-lg rounded-lg">
+    <div class="p-4">
+      <?php if (isset($full_name) && !empty($full_name)): ?>
+        <p class="text-lg font-semibold text-blue-900"><?php echo htmlspecialchars($full_name); ?></p>
+        <a href="landing_page_customer/customer_reservation.php" class="block py-2 text-gray-700 hover:bg-gray-200">Reservations</a>
+        <hr class="border-gray-300 my-2">
+      <?php endif; ?>
+      <a href="#home" class="block py-2 text-gray-700 hover:bg-gray-200">Home</a>
+      <a href="#services" class="block py-2 text-gray-700 hover:bg-gray-200">Services</a>
+      <a href="#about" class="block py-2 text-gray-700 hover:bg-gray-200">About</a>
+      <a href="#album" class="block py-2 text-gray-700 hover:bg-gray-200">Album</a>
+      <a href="#reviews" class="block py-2 text-gray-700 hover:bg-gray-200">Reviews</a>
+      <a href="#contact" class="block py-2 text-gray-700 hover:bg-gray-200">Contact</a>
+      <hr class="border-gray-300 my-2">
+      <?php if (isset($full_name) && !empty($full_name)): ?>
+        <a href="landing_page_customer/logout.php" class="block py-2 text-gray-700 hover:bg-gray-200">Logout</a>
+      <?php else: ?>
+        <a href="/landing_page_customer/login.php" class="block py-2 text-gray-700 hover:bg-gray-200">Login</a>
+      <?php endif; ?>
+    </div>
+  </div>
 </nav>
 
+<!-- JavaScript -->
 <script>
-  // Dropdown toggle for profile button
-  document.getElementById('profileButton').addEventListener('click', function() {
-    var dropdown = document.getElementById('dropdownMenu');
-    dropdown.classList.toggle('hidden');
+  // Toggle Mobile Menu
+  document.getElementById('hamburgerButton').addEventListener('click', function () {
+    var mobileMenu = document.getElementById('mobileMenu');
+    mobileMenu.classList.toggle('hidden');
   });
 
-  // Close dropdown if clicked outside
-  document.addEventListener('click', function(event) {
-    var profileButton = document.getElementById('profileButton');
+  // Toggle Profile Dropdown (Desktop)
+  document.getElementById('profileButton')?.addEventListener('click', function (event) {
+    event.stopPropagation();
+    document.getElementById('dropdownMenu').classList.toggle('hidden');
+  });
+
+  // Close dropdown if clicked outside (Desktop)
+  document.addEventListener('click', function (event) {
     var dropdownMenu = document.getElementById('dropdownMenu');
-    
-    if (!profileButton.contains(event.target) && !dropdownMenu.contains(event.target)) {
+    if (dropdownMenu && !event.target.closest('#profileButton')) {
       dropdownMenu.classList.add('hidden');
     }
-  });
-
-  // Hamburger menu toggle
-  document.getElementById('hamburgerButton').addEventListener('click', function() {
-    var navbarUser = document.getElementById('navbar-user');
-    navbarUser.classList.toggle('hidden');
   });
 </script>
 
 
 
 
+
 <section
-  id="home"
-  class="bg-cover bg-center relative mb-16 py-16 min-h-screen flex flex-col justify-center items-center"
-  style="background-image: url('../src/uploads/resort.png');"
+    id="home"
+    class="bg-cover bg-center relative mb-16 py-16 min-h-[50vh] flex flex-col justify-center items-center"
+    style="background-image: url('src/uploads/resort.png');"
 >
-  <!-- Overlay -->
-  <div class="absolute inset-0 bg-blue-950 opacity-60"></div>
+    <!-- Overlay -->
+    <div class="absolute inset-0 bg-blue-950 opacity-60"></div>
 
-  <div class="max-w-screen-xl mx-auto text-center relative z-10 px-4">
-    <!-- Logo -->
-    <img src="../src/uploads/logo.svg" alt="Lobiano's Farm Resort Logo" class="h-100 mx-auto mb-6" />
-
-    <!-- Text Section -->
-    <div id="hero-text" class="text-center mb-8">
-      <h1 class="text-5xl font-extrabold text-gray-900 dark:text-white mb-4">
-        Lobiano's Farm Resort
-      </h1>
-      <p class="text-xl text-white mx-auto max-w-2xl">
-        Explore our services, discover amazing features, and connect with us to know more. Experience a perfect getaway amidst nature's beauty.
-      </p>
-    </div>
-
-    <!-- Check-In Form -->
-    <div id="check-in-form" class="flex justify-center w-full">
-      <div class="inline-flex flex-col sm:flex-row border border-yellow-300 rounded-lg overflow-hidden shadow-lg dark:border-yellow-500">
-        <!-- Check-In Date Input -->
-        <input
-          type="text"
-          id="check-in"
-          name="check-in"
-          class="px-6 py-3 w-56 sm:w-48 border-r-2 border-yellow-500 opacity-90 focus:ring-2 focus:ring-blue-500 focus:outline-none dark:bg-white dark:text-black"
-          placeholder="Check-In"
-          required
+    <div class="max-w-screen-xl mx-auto text-center relative z-10 px-4">
+        <!-- Logo -->
+        <img src="src/uploads/logo.svg" 
+             alt="Lobiano's Farm Resort Logo" 
+             class="h-32 mx-auto mb-6"
+             data-aos="zoom-in" 
+             data-aos-duration="1200" 
         />
-        <!-- Book Button -->
-        <?php if (isset($_SESSION['user_id'])): ?>
-          <button
-            type="submit"
-            id="book-btn"
-            class="px-6 py-3 bg-blue-600 text-white font-semibold hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:outline-none"
-          >
-            Book
-          </button>
-        <?php else: ?>
-          <button
-            type="button"
-            id="book-btn"
-            class="px-6 py-3 bg-blue-600 text-white font-semibold hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:outline-none"
-            onclick="window.location.href='login.php'"
-          >
-            Book
-          </button>
-        <?php endif; ?>
-      </div>
+
+        <!-- Text Section -->
+        <div id="hero-text" class="text-center mb-8">
+            <h1 class="text-5xl font-extrabold text-white mb-4"
+                data-aos="fade-up"
+                data-aos-duration="1200">
+                Lobiano's Farm Resort
+            </h1>
+            <p class="text-xl text-white mx-auto max-w-2xl"
+               data-aos="fade-up"
+               data-aos-delay="200"
+               data-aos-duration="1200">
+                Explore our services, discover amazing features, and connect with us to know more.
+            </p>
+        </div>
+
+        <!-- Check-In Form -->
+        <div id="check-in-form" class="flex justify-center w-full"
+             data-aos="fade-up"
+             data-aos-delay="300"
+             data-aos-duration="1200">
+            <div class="inline-flex flex-col sm:flex-row border rounded-lg overflow-hidden shadow-lg border-yellow-500">
+                <!-- Check-In Date Input -->
+                <input
+                    type="text"
+                    id="check-in"
+                    name="check-in"
+                    class="px-6 py-3 w-56 sm:w-48 border-r-2 border-yellow-500 opacity-90 focus:ring-2 focus:ring-blue-500 focus:outline-none bg-white text-black"
+                    placeholder="Check-In"
+                    required
+                />
+                <!-- Book Button -->
+                <?php if (isset($_SESSION['user_id'])): ?>
+                    <button
+                        type="submit"
+                        id="book-btn"
+                        class="px-6 py-3 bg-blue-600 text-white font-semibold hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                    >
+                        Book
+                    </button>
+                <?php else: ?>
+                    <button
+                        type="button"
+                        id="book-btn"
+                        class="px-6 py-3 bg-blue-600 text-white font-semibold hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                        onclick="window.location.href='login.php'"
+                    >
+                        Book
+                    </button>
+                <?php endif; ?>
+            </div>
+        </div>
     </div>
-  </div>
 </section>
 
 
@@ -250,16 +310,23 @@ $conn->close();
 
 <!-- Rates & Add-ons Section -->
 <section id="rates-section" class="bg-white flex flex-col items-center justify-center mt-12 px-4">
-  <div class="max-w-screen-xl mx-auto">
+  <div class="w-full max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8">
     
     <!-- Rates Section -->
-    <div class="mr-5">
-      <h2 class="text-3xl font-extrabold text-center text-gray-900 header-rate">Our Rates</h2>
-      <p class="mt-4 text-lg text-center text-gray-600 text-rate">Check out our affordable pricing plans designed for everyone.</p>
+    <div class="">
+      <h2 class="text-3xl font-extrabold text-center text-gray-900 header-rate" data-aos="fade-up">
+        Our Rates
+      </h2>
+      <p class="mt-4 text-lg text-center text-gray-600 text-rate" data-aos="fade-up">
+        Check out our affordable pricing plans designed for everyone.
+      </p>
 
       <!-- Scrollable Horizontal Rates Cards -->
       <div class="mt-8 overflow-x-auto w-full px-5 py-2 scrollable-container" id="rates-container">
-        <div class="flex space-x-6 min-w-max">
+    <div class="flex space-x-6 min-w-max sm:min-w-full sm:justify-center justify-start snap-x snap-mandatory">
+
+
+
           <?php
             // Include database connection
             include 'db_connection.php';
@@ -279,20 +346,24 @@ $conn->close();
                     $check_in_time = isset($row['checkin_time']) ? date("g:i A", strtotime($row['checkin_time'])) : 'Not specified';
                     $check_out_time = isset($row['checkout_time']) ? date("g:i A", strtotime($row['checkout_time'])) : 'Not specified';
 
-                    // Add data attributes for modal
                     echo "
-                    <div class='flex-none mb-5 mt-5 max-w-sm rounded-2xl shadow-lg relative rate-card animate-card hover:scale-103 hover:shadow-lg transition-all duration-500 ease-in-out' onclick=\"openModal('$picture', '$name', '$description', '$hours_of_stay', '$check_in_time', '$check_out_time', '$price')\">
-                        <img class='rounded-t-2xl w-[300px] h-[250px] object-cover' src='../src/uploads/rates/$picture' alt='$name'>
-
-                        <div class='p-5'>
+                    <div class='flex-none mb-5 mt-5 w-[320px] sm:w-[300px] h-[450px] rounded-2xl shadow-lg relative rate-card hover:scale-103 hover:shadow-lg transition-all duration-500 ease-in-out opacity-0 flex flex-col justify-between snap-center' 
+                        data-aos='fade-up' 
+                        data-aos-anchor-placement='bottom-bottom' 
+                        data-aos-duration='800' 
+                        style='will-change: transform, opacity;' 
+                        onclick=\"openModal('$picture', '$name', '$description', '$hours_of_stay', '$check_in_time', '$check_out_time', '$price')\">
+                        
+                        <img class='rounded-t-2xl w-full h-[200px] object-cover' src='src/uploads/rates/$picture' alt='$name'>
+                    
+                        <div class='p-5 flex flex-col justify-between flex-grow'>
                             <h2 class='text-2xl font-bold text-gray-800'>$name</h2>
-
+                    
                             <div class='text-gray-600 mt-2 flex items-center'>
                                 <span class='material-icons mr-2'>schedule</span>
                                 <p class='text-gray-600 font-medium'>{$hours_of_stay} hours</p>
                             </div>
-
-                            <!-- Time Box with Arrow -->
+                    
                             <div class='flex items-center mt-4'>
                                 <div class='bg-gray-50 border border-gray-300 text-gray-500 text-sm rounded-lg py-2 font-medium px-4'>
                                     $check_in_time
@@ -306,9 +377,8 @@ $conn->close();
                                     $check_out_time
                                 </div>
                             </div>
-
+                    
                             <p class='text-gray-800 font-semibold text-xl mt-4'>₱" . number_format($price, 2) . "</p>
-
                         </div>
                     </div>";
                 }
@@ -325,17 +395,52 @@ $conn->close();
   </div>
 </section>
 
-<!-- Add-ons Section -->
-<section id="addons-section" class="bg-white flex flex-col items-center justify-center py-16 px-4 mb-16">
-  <div class="max-w-screen-xl mx-auto">
+<!-- Add this CSS for smooth scrolling -->
+<style>
+.scrollable-container {
+    overflow-x: auto;
+    white-space: nowrap;
+    display: flex;
+    justify-content: flex-start; /* Ensures cards start from the left */
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+}
 
-    <div class="mb-10 mr-5">
-        <h2 class="text-3xl font-extrabold text-center text-gray-900 heading-addon">Our Add-ons</h2>
-        <p class="mt-4 text-lg text-center text-gray-600 text-addon">Check out our affordable pricing plans designed for everyone.</p>
+.scrollable-container > div {
+    scroll-snap-align: start;
+}
+
+  .scrollable-container::-webkit-scrollbar {
+    display: none; /* Hide scrollbar for Chrome, Safari */
+  }
+  .scrollable-container {
+    display: flex;
+    flex-wrap: nowrap;
+  }
+  .rate-card {
+    scroll-snap-align: center;
+  }
+</style>
+
+
+
+<!-- Add-ons Section -->
+<section id="addons-section" class="bg-white flex flex-col items-center justify-center mt-12 px-4">
+<div class="w-full max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8">
+
+    <div class="mb-16 ml-5">
+    <h2 class="text-3xl font-extrabold text-center text-gray-900 header-rate" data-aos="fade-up">
+    Our Add-ons
+</h2>
+<p class="mt-4 text-lg text-center text-gray-600 text-rate" data-aos="fade-up">
+    Check out our affordable pricing plans designed for everyone.
+</p>
+
 
         <!-- Scrollable Horizontal Add-ons Cards -->
-        <div class="mt-8 overflow-x-auto w-full px-5 py-2 scrollable-container" id="addons-container">
-          <div class="flex space-x-6 min-w-max">
+        <div class="mt-8 overflow-x-auto w-full px-5 py-2 scrollable-container flex justify-center" id="addons-container">
+        <div class="flex space-x-6 min-w-max">
+
             <?php
                 // Include database connection
                 include 'db_connection.php';
@@ -352,18 +457,23 @@ $conn->close();
                         $description = $row['description'];
                         $picture = $row['picture'];
 
-                        // Add data attributes for modal
-                        echo "
-                        <div class='flex-none mb-5 mt-5 max-w-sm rounded-2xl shadow-lg relative addons-card animate-card hover:scale-103 hover:shadow-lg transition-all duration-500 ease-in-out' onclick='openAddonModal(\"$picture\", \"$name\", \"$description\", \"$price\")'>
-                            <img class='rounded-t-2xl w-[300px] h-[250px] object-cover' src='../src/uploads/addons/$picture' alt='$name'>
+// Add data attributes for modal
+echo "
+<div class='flex-none mb-5 mt-5 max-w-sm rounded-2xl shadow-lg relative addons-card animate-card hover:scale-103 hover:shadow-lg transition-all duration-500 ease-in-out opacity-0' 
+                        data-aos='fade-up' 
+                        data-aos-anchor-placement='bottom-bottom' 
+                        data-aos-duration='800' 
+                        style='will-change: transform, opacity;' 
+    onclick='openAddonModal(\"$picture\", \"$name\", \"$description\", \"$price\")'>
 
-                            <div class='p-5'>
-                                <h2 class='text-2xl font-bold text-gray-800'>$name</h2>
+    <img class='rounded-t-2xl w-[300px] h-[250px] object-cover' src='src/uploads/addons/$picture' alt='$name'>
 
-                                <p class='text-gray-800 font-semibold text-xl mt-4'>₱" . number_format($price, 2) . "</p>
+    <div class='p-5'>
+        <h2 class='text-2xl font-bold text-gray-800'>$name</h2>
+        <p class='text-gray-800 font-semibold text-xl mt-4'>₱" . number_format($price, 2) . "</p>
+    </div>
+</div>";
 
-                            </div>
-                        </div>";
                     }
                 } else {
                     echo "<p class='text-gray-600'>No active add-ons available.</p>";
@@ -379,9 +489,6 @@ $conn->close();
   </div>
 </section>
 
-  </div>
-</section>
-
 
 
 
@@ -390,17 +497,27 @@ $conn->close();
 <!-- About Us Section -->
 <section id="about" class="bg-white flex items-center justify-center px-4 mb-16">
   <div class="max-w-screen-xl mx-auto flex flex-col md:flex-row items-center gap-8 mb-8">
+    
     <!-- Image Section -->
-    <div class="w-full md:w-1/2 flex justify-left">
+    <div class="w-full md:w-1/2 flex justify-left" 
+         data-aos="fade-up" 
+         data-aos-anchor-placement="top-bottom"
+         data-aos-duration="1000"
+         data-aos-delay="200">
       <img 
-        src="../src/uploads/about/resort.png" 
+        src="src/uploads/about/resort.png" 
         alt="About Us Image" 
         class="rounded-2xl shadow-lg w-full h-auto object-cover"
         style="height: 450px; object-fit: cover;" 
       />
     </div>
+
     <!-- Text Section -->
-    <div class="w-full md:w-1/2 text-center md:text-left md:mx-8">
+    <div class="w-full md:w-1/2 text-center md:text-left md:mx-8"
+         data-aos="fade-up" 
+         data-aos-anchor-placement="top-bottom"
+         data-aos-duration="1000"
+         data-aos-delay="300">
       <h2 class="text-3xl font-extrabold text-gray-900 mb-4">About Us</h2>
       <p class="text-lg text-gray-700 mb-4 text-justify">
         Welcome to 888 Lobiano's Farm Resort, where nature meets comfort. Our goal is to provide a serene escape where guests can unwind, reconnect with nature, and create unforgettable memories. Whether you're here for a weekend retreat or a special celebration, our resort offers a perfect blend of tranquility and adventure.
@@ -412,14 +529,25 @@ $conn->close();
         Learn More
       </a>
     </div>
+
   </div>
 </section>
 
+
 <!-- Location Section -->
-<section id="locations" class="bg-white flex items-center justify-center px-4 mt-[100px] delay-[300ms] duration-[600ms] taos:translate-y-[100%] taos:opacity-0 mb-16" data-taos-offset="300">
+<section id="locations" class="bg-white flex items-center justify-center px-4 mt-[100px] mb-16" 
+         data-aos="fade-up" 
+         data-aos-anchor-placement="top-bottom"
+         data-aos-duration="800">
+  
   <div class="max-w-screen-xl mx-auto flex flex-col md:flex-row items-center gap-8 mb-8">
+    
     <!-- Text Section -->
-    <div class="w-full md:w-1/2 text-center md:text-left md:mx-8">
+    <div class="w-full md:w-1/2 text-center md:text-left md:mx-8" 
+         data-aos="fade-up" 
+         data-aos-anchor-placement="top-bottom"
+         data-aos-duration="800"
+         data-aos-delay="200">
       <h2 class="text-3xl font-extrabold text-gray-900 mb-4">Our Location</h2>
       <p class="text-lg text-gray-700 mb-4 text-justify">
         We are located at Lobiano's Farm 888, nestled in the serene countryside. It's the perfect getaway for relaxation, adventure, and making lasting memories. Come visit us for a tranquil escape amidst nature's beauty.
@@ -432,8 +560,13 @@ $conn->close();
         View on Google Maps
       </a>
     </div>
+
     <!-- Map Section -->
-    <div class="w-full md:w-1/2">
+    <div class="w-full md:w-1/2" 
+         data-aos="fade-up" 
+         data-aos-anchor-placement="top-bottom"
+         data-aos-duration="800"
+         data-aos-delay="300">
       <iframe 
         src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1586.8824792813755!2d120.89532436717096!3d14.14926979329477!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x33bd79eaf08918e9%3A0xf195c7d93933a8a1!2sLobiano%60s%20Farm%20888!5e1!3m2!1sen!2sph!4v1739810756694!5m2!1sen!2sph" 
         width="600" 
@@ -444,18 +577,36 @@ $conn->close();
         referrerpolicy="no-referrer-when-downgrade">
       </iframe>
     </div>
+
   </div>
 </section>
 
 
 
-<section id="album" class="bg-white flex items-center justify-center py-16 px-4 mb-16">
+
+<!-- Album Section -->
+<section id="album" class="bg-white flex items-center justify-center py-16 px-4 mb-16" 
+         data-aos="fade-up" 
+         data-aos-anchor-placement="top-bottom"
+         data-aos-duration="800">
+  
   <div class="max-w-screen-xl mx-auto text-center">
-    <h2 class="text-3xl font-extrabold text-gray-900 mb-4">Our Album</h2>
-    <p class="mt-4 text-lg text-gray-600 text-gray-700">Explore some of the beautiful moments captured at our resort.</p>
+    <h2 class="text-3xl font-extrabold text-gray-900 mb-4" 
+        data-aos="fade-up" 
+        data-aos-delay="200">
+      Our Album
+    </h2>
+    
+    <p class="mt-4 text-lg text-gray-700"
+       data-aos="fade-up" 
+       data-aos-delay="300">
+      Explore some of the beautiful moments captured at our resort.
+    </p>
 
     <!-- Swiper Container -->
-    <div class="w-full relative">
+    <div class="w-full relative" 
+         data-aos="fade-up" 
+         data-aos-delay="400">
       <div class="swiper centered-slide-carousel swiper-container">
         <div class="swiper-wrapper">
           <?php
@@ -465,20 +616,21 @@ $conn->close();
             // Loop through the images and create swiper-slide for each image
             foreach ($images as $image) {
               $imageName = basename($image);  // Get the image file name
-              echo '<div class="swiper-slide overflow-visible mt-10">';
-              echo '<div class="relative w-full h-100">';  // Set a fixed height and width container
-              echo '<img class="object-cover w-full h-full rounded-lg shadow-lg filter" src="' . $directory . $imageName . '" alt="' . $imageName . '">'; // Apply blur and set object-cover
+              echo '<div class="swiper-slide overflow-visible mt-10" data-aos="fade-up" data-aos-delay="500">';
+              echo '<div class="relative w-full h-100">';  
+              echo '<img class="object-cover w-full h-full rounded-lg shadow-lg filter" src="' . $directory . $imageName . '" alt="' . $imageName . '">'; 
               echo '</div>';
               echo '</div>';
             }
           ?>
         </div>
         <!-- Swiper Pagination -->
-        <div class="swiper-pagination"></div>
+        <div class="swiper-pagination" data-aos="fade-up" data-aos-delay="600"></div>
       </div>
     </div>
   </div>
 </section>
+
 
 
   <script>
@@ -523,7 +675,12 @@ $conn->close();
 
 
 <!-- Video Tour Section -->
-<section id="video-tours" class="bg-white px-4 delay-[300ms] duration-[600ms] taos:translate-y-[100%] taos:opacity-0" data-taos-offset="300">
+<section id="video-tours" 
+         class="bg-white px-4 delay-[300ms] duration-[800ms] taos:translate-y-[100%] taos:opacity-0" 
+         data-taos-offset="300"
+         data-aos="fade-up" 
+         data-aos-duration="800" 
+         data-aos-anchor-placement="top-bottom">
   <div class="max-w-screen-xl mx-auto text-center">
     <h2 class="text-3xl font-extrabold text-gray-900">Video Tour</h2>
     <p class="mt-4 text-lg text-gray-700">
@@ -546,10 +703,17 @@ $conn->close();
 
 
 
+
 <!-- Reviews Section -->
-<section id="reviews" class="bg-white min-h-screen flex flex-col items-center justify-center delay-[300ms] duration-[600ms] taos:translate-y-[100%] taos:opacity-0 pt-16" data-taos-offset="300">
-<div class="elfsight-app-d8f6591a-6262-46fe-a54f-6d6eefaf6b74" data-elfsight-app-lazy></div>
+<section id="reviews" 
+         class="bg-white min-h-screen flex flex-col items-center justify-center pt-16" 
+         data-taos-offset="300"
+         data-aos="fade-up" 
+         data-aos-duration="800" 
+         data-aos-anchor-placement="top-bottom">
+  <div class="elfsight-app-d8f6591a-6262-46fe-a54f-6d6eefaf6b74" data-elfsight-app-lazy></div>
 </section>
+
 
 <script>
 document.addEventListener("DOMContentLoaded", function () {
@@ -612,27 +776,38 @@ document.addEventListener("DOMContentLoaded", function () {
 </style>
 
 
-<section id="contacts" class="bg-white delay-[300ms] duration-[600ms] taos:translate-y-[100%] taos:opacity-0" data-taos-offset="300">
+<!-- Contact Us Section -->
+<section id="contacts" 
+         class="bg-white delay-[300ms] duration-[800ms] taos:translate-y-[100%] taos:opacity-0" 
+         data-taos-offset="300"
+         data-aos="fade-up" 
+         data-aos-duration="800" 
+         data-aos-anchor-placement="top-bottom">
   <div class="py-8 lg:py-16 px-4 mx-auto max-w-screen-md">
       <h2 class="mb-4 text-4xl tracking-tight font-extrabold text-center text-gray-900">Contact Us</h2>
-      <p class="mb-8 lg:mb-16 font-light text-center text-gray-500 sm:text-xl">Got a technical issue? Want to send feedback about a beta feature? Need details about our Business plan? Let us know.</p>
+      <p class="mb-8 lg:mb-16 font-light text-center text-gray-500 sm:text-xl">
+        Got a technical issue? Want to send feedback about a beta feature? Need details about our Business plan? Let us know.
+      </p>
       <form action="#" class="space-y-8">
-          <div>
+          <div data-aos="fade-up" data-aos-duration="800">
               <label for="email" class="block mb-2 text-sm font-medium text-gray-900">Your email</label>
               <input type="email" id="email" class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5" placeholder="name@flowbite.com" required>
           </div>
-          <div>
+          <div data-aos="fade-up" data-aos-duration="800">
               <label for="subject" class="block mb-2 text-sm font-medium text-gray-900">Subject</label>
               <input type="text" id="subject" class="block p-3 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 shadow-sm focus:ring-primary-500 focus:border-primary-500" placeholder="Let us know how we can help you" required>
           </div>
-          <div class="sm:col-span-2">
+          <div class="sm:col-span-2" data-aos="fade-up" data-aos-duration="800">
               <label for="message" class="block mb-2 text-sm font-medium text-gray-900">Your message</label>
               <textarea id="message" rows="6" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg shadow-sm border border-gray-300 focus:ring-primary-500 focus:border-primary-500" placeholder="Leave a comment..."></textarea>
           </div>
-          <button type="submit" class="py-3 px-5 text-sm font-medium text-center text-white rounded-lg bg-primary-700 sm:w-fit hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300">Send message</button>
+          <button type="submit" class="py-3 px-5 text-sm font-medium text-center text-white rounded-lg bg-primary-700 sm:w-fit hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300" data-aos="fade-up" data-aos-duration="800">
+            Send message
+          </button>
       </form>
   </div>
 </section>
+
 
 
 
@@ -658,7 +833,7 @@ document.addEventListener("DOMContentLoaded", function () {
     <!-- Image Section -->
     <div id="reserve-image" class="w-full md:w-1/2 flex justify-center opacity-0 transform translate-x-[50px] mr-8">
       <img 
-        src="../src/uploads/about/resort.png" 
+        src="src/uploads/about/resort.png" 
         alt="Reservation Steps Image" 
         class="rounded-2xl shadow-lg w-full h-auto object-cover"
       />
@@ -680,15 +855,29 @@ document.addEventListener("DOMContentLoaded", function () {
 </script>
 
 <!-- Footer Section -->
-<footer class="bg-blue-100 dark:bg-blue-900 py-8">
+<footer 
+    class="bg-blue-900 py-8" 
+    data-aos="fade-up" 
+    data-aos-duration="1200"
+>
   <div class="text-center">
-    <p class="text-sm text-gray-400">© 2025 Your Company. All Rights Reserved.</p>
-    <div class="mt-4 space-x-4">
+    <p 
+      class="text-sm text-gray-400" 
+
+    >
+      © 2025 Your Company. All Rights Reserved.
+    </p>
+    
+    <div 
+      class="mt-4 space-x-4" 
+
+    >
       <a href="#" class="text-gray-400 hover:text-white">Privacy Policy</a>
       <a href="#" class="text-gray-400 hover:text-white">Terms of Service</a>
     </div>
   </div>
 </footer>
+
 
 
 
@@ -779,12 +968,15 @@ document.addEventListener("DOMContentLoaded", function () {
         </button>
       </div>
     </div>
+
+
+    
   </div>
 </div>
 
 
-<script src="/scripts/homepage_animations.js"></script>
-<script src="/scripts/newhomes.js"></script>
+<script src="scripts/homepage_animations.js"></script>
+<script src="scripts/newhomes.js"></script>
 <!-- Elfsight WhatsApp Chat | Untitled WhatsApp Chat -->
 <script src="https://static.elfsight.com/platform/platform.js" async></script>
 <div class="elfsight-app-b2701a5e-2312-4201-92bf-10db53498839" data-elfsight-app-lazy></div>
@@ -794,6 +986,23 @@ document.addEventListener("DOMContentLoaded", function () {
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js"></script>
+<!-- AOS JS -->
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    AOS.init({
+        once: false, // Ensures animations trigger every time on scroll
+        duration: 1200, 
+        easing: 'ease-in-out', 
+        offset: 100, // Adjust when animation starts (higher = later)
+        anchorPlacement: 'bottom-bottom' // Triggers when the element's bottom reaches the viewport bottom
+    });
+});
+
+</script>
+
+
+
     
 </body>
 </html>

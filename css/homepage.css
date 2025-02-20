@@ -1,3 +1,8 @@
+.logo {
+  height: 1rem; /* Adjust this as needed */
+  width: auto;
+  object-fit: contain;
+}
 
   /* Slide-in animation from the right */
   @keyframes slideInRight {
@@ -126,4 +131,3 @@
                 background-color: rgba(0, 0, 0, 0.5); /* Slightly darker when hovered */
               }
 
-              

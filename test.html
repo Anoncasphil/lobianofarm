@@ -3,108 +3,64 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@3.3.3/dist/tailwind.min.css" rel="stylesheet">
-    <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
-    <link href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" rel="stylesheet"/>
-    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <title>AOS Scroll Animation with Cards</title>
 
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- AOS CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css">
+
+    <!-- Smooth Scroll CSS -->
     <style>
-        .swiper-wrapper {
-            width: 100%;
-            height: max-content !important;
-            padding-bottom: 64px !important;
-            -webkit-transition-timing-function: linear !important;
-            transition-timing-function: linear !important;
-            position: relative;
-        }
-        .swiper-pagination-bullet {
-            background: #4f46e5;
-        }
-        .swiper-button-prev, .swiper-button-next {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            z-index: 10;
-            background-color: rgba(0, 0, 0, 0.5);
-            color: white;
-        }
-        .swiper-button-prev {
-            left: -30px; /* Moves the left button more outside */
-        }
-        .swiper-button-next {
-            right: -30px; /* Moves the right button more outside */
+        html {
+            scroll-behavior: smooth;
         }
     </style>
 </head>
 <body class="bg-gray-100">
 
-<!-- Section wrapper with margin and padding -->
-<section class="my-16 mx-auto w-full max-w-screen-lg">
-    <div class="swiper multiple-slide-carousel swiper-container relative">
-        <div class="swiper-wrapper mb-16">
-            <div class="swiper-slide">
-                <div class="bg-indigo-50 rounded-2xl h-96 flex justify-center items-center">
-                    <span class="text-2xl font-semibold text-indigo-600">Slide 1</span>
-                </div>
+    <div class="container mx-auto p-10">
+        <h1 class="text-4xl font-bold text-center mb-20">Scroll Down to See Card Animations</h1>
+
+        <div class="h-[150vh]"></div> <!-- Extra space for scrolling -->
+
+        <!-- Card Section -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div class="bg-white p-6 rounded-lg shadow-lg" data-aos="fade-up">
+                <h2 class="text-xl font-bold">Card 1</h2>
+                <p class="text-gray-600">All cards fade up.</p>
             </div>
-            <div class="swiper-slide">
-                <div class="bg-indigo-50 rounded-2xl h-96 flex justify-center items-center">
-                    <span class="text-2xl font-semibold text-indigo-600">Slide 2</span>
-                </div>
+
+            <div class="bg-white p-6 rounded-lg shadow-lg" data-aos="fade-up">
+                <h2 class="text-xl font-bold">Card 2</h2>
+                <p class="text-gray-600">All cards fade up.</p>
             </div>
-            <div class="swiper-slide">
-                <div class="bg-indigo-50 rounded-2xl h-96 flex justify-center items-center">
-                    <span class="text-2xl font-semibold text-indigo-600">Slide 3</span>
-                </div>
+
+            <div class="bg-white p-6 rounded-lg shadow-lg" data-aos="fade-up">
+                <h2 class="text-xl font-bold">Card 3</h2>
+                <p class="text-gray-600">All cards fade up.</p>
             </div>
-            <div class="swiper-slide">
-                <div class="bg-indigo-50 rounded-2xl h-96 flex justify-center items-center">
-                    <span class="text-2xl font-semibold text-indigo-600">Slide 4</span>
-                </div>
+
+            <div class="bg-white p-6 rounded-lg shadow-lg" data-aos="fade-up">
+                <h2 class="text-xl font-bold">Card 4</h2>
+                <p class="text-gray-600">All cards fade up.</p>
             </div>
         </div>
-        
-        <!-- Navigation buttons in the middle of the slide -->
-        <button id="slider-button-left" class="swiper-button-prev group !p-2 flex justify-center items-center border border-solid border-indigo-600 !w-12 !h-12 transition-all duration-500 rounded-full hover:bg-indigo-600">
-            <svg class="h-5 w-5 text-indigo-600 group-hover:text-white" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
-                <path d="M10.0002 11.9999L6 7.99971L10.0025 3.99719" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
-            </svg>
-        </button>
-        <button id="slider-button-right" class="swiper-button-next group !p-2 flex justify-center items-center border border-solid border-indigo-600 !w-12 !h-12 transition-all duration-500 rounded-full hover:bg-indigo-600">
-            <svg class="h-5 w-5 text-indigo-600 group-hover:text-white" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
-                <path d="M5.99984 4.00012L10 8.00029L5.99748 12.0028" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
-            </svg>
-        </button>
-    </div>
-</section>
 
-<!-- JavaScript to configure swiper -->
-<script>
-    var swiper = new Swiper(".multiple-slide-carousel", {
-        loop: true,
-        slidesPerView: 2,  /* Set to 2 slides per view */
-        spaceBetween: 20,
-        navigation: {
-            nextEl: ".multiple-slide-carousel .swiper-button-next",
-            prevEl: ".multiple-slide-carousel .swiper-button-prev",
-        },
-        breakpoints: {
-            1920: {
-                slidesPerView: 3,
-                spaceBetween: 30
-            },
-            1028: {
-                slidesPerView: 2,
-                spaceBetween: 30
-            },
-            990: {
-                slidesPerView: 1,
-                spaceBetween: 0
-            }
-        }
-    });
-</script>
+        <div class="h-[100vh]"></div> <!-- Extra space for scrolling -->
+    </div>
+
+    <!-- AOS Script -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+
+    <script>
+        AOS.init({
+            duration: 1000, // Animation duration
+            easing: 'ease-in-out', // Smooth easing
+            once: false, // Animation repeats on scroll
+        });
+    </script>
 
 </body>
 </html>
