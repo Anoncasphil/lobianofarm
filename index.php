@@ -100,30 +100,35 @@ $conn->close();
     width: auto;
     object-fit: contain;
   }
-/* Hide the scrollbar */
-.scrollable-container::-webkit-scrollbar {
+  
+  /* Hide the scrollbar */
+  .scrollable-container::-webkit-scrollbar {
     display: none;
-}
-.scrollable-container {
+  }
+  .scrollable-container {
     -ms-overflow-style: none;  /* Hide scrollbar for IE/Edge */
     scrollbar-width: none;  /* Hide scrollbar for Firefox */
-}
+  }
 
-/* Animation Enhancement */
-.rate-card {
+  /* Animation Enhancement */
+  .rate-card {
     opacity: 0; /* Ensure cards are hidden initially */
     transform: translateY(30px); /* Start from below */
     transition: opacity 0.8s ease-out, transform 0.8s ease-out;
-}
+  }
 
-/* Make them visible when in viewport */
-.rate-card.aos-animate {
+  /* Make them visible when in viewport */
+  .rate-card.aos-animate {
     opacity: 1;
     transform: translateY(0);
-}
+  }
 
+  /* Hide overflow on y-axis for html and body */
+  body {
+    
+  }
 
-
+  
   </style>
 
 </head>
@@ -347,14 +352,14 @@ $conn->close();
                     $check_out_time = isset($row['checkout_time']) ? date("g:i A", strtotime($row['checkout_time'])) : 'Not specified';
 
                     echo "
-                    <div class='flex-none mb-5 mt-5 w-[320px] sm:w-[300px] h-[450px] rounded-2xl shadow-lg relative rate-card hover:scale-103 hover:shadow-lg transition-all duration-500 ease-in-out opacity-0 flex flex-col justify-between snap-center' 
+                    <div class='flex-none mb-5 mt-5 w-[320px] sm:w-[300px] h-[450px] rounded-lg shadow-lg relative rate-card hover:scale-103 hover:shadow-lg transition-all duration-500 ease-in-out opacity-0 flex flex-col justify-between snap-center' 
                         data-aos='fade-up' 
-                        data-aos-anchor-placement='bottom-bottom' 
+                        data-aos-anchor-placement='bottom-middle' 
                         data-aos-duration='800' 
                         style='will-change: transform, opacity;' 
                         onclick=\"openModal('$picture', '$name', '$description', '$hours_of_stay', '$check_in_time', '$check_out_time', '$price')\">
                         
-                        <img class='rounded-t-2xl w-full h-[200px] object-cover' src='src/uploads/rates/$picture' alt='$name'>
+                        <img class='rounded-lg w-full h-[200px] object-cover' src='src/uploads/rates/$picture' alt='$name'>
                     
                         <div class='p-5 flex flex-col justify-between flex-grow'>
                             <h2 class='text-2xl font-bold text-gray-800'>$name</h2>
@@ -459,14 +464,14 @@ $conn->close();
 
 // Add data attributes for modal
 echo "
-<div class='flex-none mb-5 mt-5 max-w-sm rounded-2xl shadow-lg relative addons-card animate-card hover:scale-103 hover:shadow-lg transition-all duration-500 ease-in-out opacity-0' 
+<div class='flex-none mb-5 mt-5 max-w-sm rounded-lg shadow-lg hover:shadow-lg relative addons-card animate-card hover:scale-103 hover:shadow-lg transition-all duration-500 ease-in-out opacity-0' 
                         data-aos='fade-up' 
                         data-aos-anchor-placement='bottom-bottom' 
                         data-aos-duration='800' 
                         style='will-change: transform, opacity;' 
     onclick='openAddonModal(\"$picture\", \"$name\", \"$description\", \"$price\")'>
 
-    <img class='rounded-t-2xl w-[300px] h-[250px] object-cover' src='src/uploads/addons/$picture' alt='$name'>
+    <img class='rounded-lg w-[300px] h-[250px] object-cover' src='src/uploads/addons/$picture' alt='$name'>
 
     <div class='p-5'>
         <h2 class='text-2xl font-bold text-gray-800'>$name</h2>
@@ -495,7 +500,7 @@ echo "
 
 
 <!-- About Us Section -->
-<section id="about" class="bg-white flex items-center justify-center px-4 mb-16">
+<section id="about" class="bg-whitel flex items-center justify-center px-g4 mb-16">
   <div class="max-w-screen-xl mx-auto flex flex-col md:flex-row items-center gap-8 mb-8">
     
     <!-- Image Section -->
@@ -507,7 +512,7 @@ echo "
       <img 
         src="src/uploads/about/resort.png" 
         alt="About Us Image" 
-        class="rounded-2xl shadow-lg w-full h-auto object-cover"
+        class="rounded-lg shadow-lg w-full h-auto object-cover"
         style="height: 450px; object-fit: cover;" 
       />
     </div>
@@ -532,6 +537,17 @@ echo "
 
   </div>
 </section>
+
+<style>
+  @media (max-width: 768px) {
+    #about .flex {
+      flex-direction: column;
+    }
+    #about img {
+      height: auto;
+    }
+  }
+</style>
 
 
 <!-- Location Section -->

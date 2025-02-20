@@ -1,27 +1,22 @@
-.logo {
-  height: 1rem; /* Adjust this as needed */
-  width: auto;
-  object-fit: contain;
-}
 
   /* Slide-in animation from the right */
   @keyframes slideInRight {
   0% {
-    right: -300px; /* Start off-screen on the right */
+    transform: translateX(300px); /* Start off-screen on the right */
   }
   100% {
-    right: 1rem; /* End at the visible position */
+    transform: translateX(0); /* End at the visible position */
   }
   }
   
   /* Slide-out animation for disappearing with ease-out */
   @keyframes slideOutRight {
   0% {
-    right: 1rem; /* Start at the visible position */
+    transform: translateX(0); /* Start at the visible position */
     opacity: 1; /* Fully visible */
   }
   100% {
-    right: -300px; /* Move off-screen */
+    transform: translateX(300px); /* Move off-screen */
     opacity: 0; /* Fade out */
   }
   }
@@ -109,8 +104,8 @@
             /* Minimalist scrollbar styles */
             .scrollable-container {
                 overflow-x: auto;
-                scrollbar-width: thin;
-                scrollbar-color: rgba(0, 0, 0, 0.3) transparent;
+                /* scrollbar-width: thin; */
+                /* scrollbar-color: rgba(0, 0, 0, 0.3) transparent; */
                 scroll-behavior: smooth; /* Enable smooth scrolling */
               }
           
