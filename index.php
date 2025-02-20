@@ -41,6 +41,7 @@ if (isset($_SESSION['user_id'])) {
         // You can also use $picture here if you want to display the user's profile picture
     } else {
         // If user not found, handle accordingly (e.g., show a default message)
+        echo "User not found.";
     }
 
     $stmt->close();
@@ -327,7 +328,9 @@ $conn->close();
 
       <!-- Scrollable Horizontal Rates Cards -->
       <div class="mt-8 overflow-x-auto w-full px-5 py-2 scrollable-container" id="rates-container">
-    <div class="flex space-x-6 min-w-max sm:min-w-full sm:justify-center justify-start snap-x snap-mandatory" data-aos="fade-up" data-aos-duration="800">
+    <div class="flex space-x-6 min-w-max sm:min-w-full sm:justify-center justify-start snap-x snap-mandatory">
+
+
 
           <?php
             // Include database connection
@@ -350,8 +353,11 @@ $conn->close();
 
                     echo "
                     <div class='flex-none mb-5 mt-5 w-[320px] sm:w-[300px] h-[450px] rounded-lg shadow-lg relative rate-card hover:scale-103 hover:shadow-lg transition-all duration-500 ease-in-out opacity-0 flex flex-col justify-between snap-center' 
-                      style='will-change: transform, opacity;' 
-                      onclick=\"openModal('$picture', '$name', '$description', '$hours_of_stay', '$check_in_time', '$check_out_time', '$price')\">
+                        data-aos='fade-up' 
+                        data-aos-anchor-placement='bottom-middle' 
+                        data-aos-duration='800' 
+                        style='will-change: transform, opacity;' 
+                        onclick=\"openModal('$picture', '$name', '$description', '$hours_of_stay', '$check_in_time', '$check_out_time', '$price')\">
                         
                         <img class='rounded-lg w-full h-[200px] object-cover' src='src/uploads/rates/$picture' alt='$name'>
                     
@@ -438,7 +444,7 @@ $conn->close();
 
         <!-- Scrollable Horizontal Add-ons Cards -->
         <div class="mt-8 overflow-x-auto w-full px-5 py-2 scrollable-container flex justify-center" id="addons-container">
-        <div class="flex space-x-6 min-w-max" data-aos="fade-up" data-aos-anchor-placement="bottom-bottom" data-aos-duration="800">
+        <div class="flex space-x-6 min-w-max">
 
             <?php
                 // Include database connection
@@ -458,17 +464,19 @@ $conn->close();
 
 // Add data attributes for modal
 echo "
-<div class='flex-none mb-5 mt-5 max-w-sm rounded-lg shadow-lg hover:shadow-lg relative addons-card hover:scale-103 hover:shadow-lg transition-all duration-500 ease-in-out opacity-0' 
-  style='will-change: transform, opacity;' 
-  onclick='openAddonModal(\"$picture\", \"$name\", \"$description\", \"$price\")'>
+<div class='flex-none mb-5 mt-5 max-w-sm rounded-lg shadow-lg hover:shadow-lg relative addons-card animate-card hover:scale-103 hover:shadow-lg transition-all duration-500 ease-in-out opacity-0' 
+                        data-aos='fade-up' 
+                        data-aos-anchor-placement='bottom-bottom' 
+                        data-aos-duration='800' 
+                        style='will-change: transform, opacity;' 
+    onclick='openAddonModal(\"$picture\", \"$name\", \"$description\", \"$price\")'>
 
-  <img class='rounded-lg w-[300px] h-[250px] object-cover' src='src/uploads/addons/$picture' alt='$name'>
+    <img class='rounded-lg w-[300px] h-[250px] object-cover' src='src/uploads/addons/$picture' alt='$name'>
 
-  <div class='p-5'>
-    <h2 class='text-2xl font-bold text-gray-800'>$name</h2>
-    <p class='text-gray-800 font-semibold text-xl mt-4'>₱" . number_format($price, 2) . "</p>
-  </div>
-</div>
+    <div class='p-5'>
+        <h2 class='text-2xl font-bold text-gray-800'>$name</h2>
+        <p class='text-gray-800 font-semibold text-xl mt-4'>₱" . number_format($price, 2) . "</p>
+    </div>
 </div>";
 
                     }
