@@ -595,6 +595,52 @@ echo "
 
 
 
+<!-- Album Section -->
+<section id="album" class="bg-white flex items-center justify-center py-16 px-4 mb-16" 
+         data-aos="fade-up" 
+         data-aos-anchor-placement="top-bottom"
+         data-aos-duration="800">
+  
+  <div class="max-w-screen-xl mx-auto text-center">
+    <h2 class="text-3xl font-extrabold text-gray-900 mb-4" 
+        data-aos="fade-up" 
+        data-aos-delay="200">
+      Our Album
+    </h2>
+    
+    <p class="mt-4 text-lg text-gray-700"
+       data-aos="fade-up" 
+       data-aos-delay="300">
+      Explore some of the beautiful moments captured at our resort.
+    </p>
+
+    <!-- Swiper Container -->
+    <div class="w-full relative" 
+         data-aos="fade-up" 
+         data-aos-delay="400">
+      <div class="swiper centered-slide-carousel swiper-container">
+        <div class="swiper-wrapper">
+          <?php
+            $directory = "src/uploads/album/";  // Specify the path to the image folder
+            $images = glob($directory . "*.jpg");  // Adjust the file type if needed (e.g., .png, .jpeg)
+
+            // Loop through the images and create swiper-slide for each image
+            foreach ($images as $image) {
+              $imageName = basename($image);  // Get the image file name
+              echo '<div class="swiper-slide overflow-visible mt-10" data-aos="fade-up" data-aos-delay="500">';
+              echo '<div class="relative w-full h-100">';  
+              echo '<img class="object-cover w-full h-full rounded-lg shadow-lg filter" src="' . $directory . $imageName . '" alt="' . $imageName . '">'; 
+              echo '</div>';
+              echo '</div>';
+            }
+          ?>
+        </div>
+        <!-- Swiper Pagination -->
+        <div class="swiper-pagination" data-aos="fade-up" data-aos-delay="600"></div>
+      </div>
+    </div>
+  </div>
+</section>
 
 
 
