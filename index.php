@@ -139,10 +139,6 @@ body {
   overflow: hidden;
 }
 
-/* Fix for AOS animation causing overflow */
-[data-aos] {
-  transform: none !important;
-}
 
   
   </style>
@@ -540,7 +536,7 @@ echo "
          data-aos-duration="1000"
          data-aos-delay="300">
       <h2 class="text-3xl font-extrabold text-gray-900 mb-4">About Us</h2>
-      <p class="text-lg text-gray-700 mb-4 text-justify">
+      <p class="mt-4 text-lg text-center text-gray-600 text-about">
         Welcome to 888 Lobiano's Farm Resort, where nature meets comfort. Our goal is to provide a serene escape where guests can unwind, reconnect with nature, and create unforgettable memories. Whether you're here for a weekend retreat or a special celebration, our resort offers a perfect blend of tranquility and adventure.
       </p>
       <a 
@@ -567,7 +563,7 @@ echo "
 
 
 <!-- Location Section -->
-<section id="locations" class="bg-white flex items-center justify-center px-4 mt-[100px] mb-16" 
+<section id="locations" class="bg-white flex items-center justify-center px-6 md:px-12 mt-16 md:mt-20 lg:mt-24 mb-16" 
          data-aos="fade-up" 
          data-aos-anchor-placement="top-bottom"
          data-aos-duration="800">
@@ -580,14 +576,14 @@ echo "
          data-aos-anchor-placement="top-bottom"
          data-aos-duration="800"
          data-aos-delay="200">
-      <h2 class="text-3xl font-extrabold text-gray-900 mb-4">Our Location</h2>
-      <p class="text-lg text-gray-700 mb-4 text-justify">
+      <h2 class="text-2xl md:text-3xl lg:text-4xl font-extrabold text-gray-900 mb-4">Our Location</h2>
+      <p class="mt-4 text-base md:text-lg lg:text-xl text-center md:text-left text-gray-600">
         We are located at Lobiano's Farm 888, nestled in the serene countryside. It's the perfect getaway for relaxation, adventure, and making lasting memories. Come visit us for a tranquil escape amidst nature's beauty.
       </p>
       <a 
         href="https://www.google.com/maps?q=Lobiano's+Farm+888" 
         target="_blank"
-        class="inline-block px-6 py-3 bg-blue-600 text-white text-lg font-medium rounded-lg shadow-md hover:bg-blue-700 transition-all"
+        class="inline-block mt-4 px-6 py-3 bg-blue-600 text-white text-lg font-medium rounded-lg shadow-md hover:bg-blue-700 transition-all"
       >
         View on Google Maps
       </a>
@@ -601,8 +597,7 @@ echo "
          data-aos-delay="300">
       <iframe 
         src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1586.8824792813755!2d120.89532436717096!3d14.14926979329477!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x33bd79eaf08918e9%3A0xf195c7d93933a8a1!2sLobiano%60s%20Farm%20888!5e1!3m2!1sen!2sph!4v1739810756694!5m2!1sen!2sph" 
-        width="600" 
-        height="450" 
+        class="w-full h-[250px] md:h-[350px] lg:h-[450px] rounded-lg shadow-lg"
         style="border:0;" 
         allowfullscreen="" 
         loading="lazy" 
@@ -616,29 +611,28 @@ echo "
 
 
 
+
 <!-- Album Section -->
-<section id="album" class="bg-white flex items-center justify-center py-16 px-4 mb-16" 
+<section id="album" class="bg-white flex items-center justify-center py-16 md:py-20 lg:py-24 px-6 md:px-12 mb-16" 
      data-aos="fade-up" 
      data-aos-anchor-placement="top-bottom"
      data-aos-duration="800">
   
   <div class="max-w-screen-xl mx-auto text-center">
-  <h2 class="text-3xl font-extrabold text-gray-900 mb-4" 
-    data-aos="fade-up" 
-    data-aos-delay="200">
-    Our Album
-  </h2>
+    <h2 class="text-2xl md:text-3xl lg:text-4xl font-extrabold text-gray-900 mb-6 md:mb-8" 
+        data-aos="fade-up" 
+        data-aos-delay="200">
+      Our Album
+    </h2>
   
-  <p class="mt-4 text-lg text-gray-700"
-     data-aos="fade-up" 
-     data-aos-delay="300">
-    Explore some of the beautiful moments captured at our resort.
-  </p>
+    <p class="mt-4 text-base md:text-lg lg:text-xl text-center text-gray-600 max-w-3xl mx-auto px-5"
+       data-aos="fade-up" 
+       data-aos-delay="300">
+      Explore some of the beautiful moments captured at our resort.
+    </p>
 
-  <!-- Swiper Container -->
-  <div class="w-full relative" 
-     data-aos="fade-up" 
-     data-aos-delay="400"></div>
+    <!-- Swiper Container -->
+    <div class="w-full relative mt-10 md:mt-12" data-aos="fade-up" data-aos-delay="400">
       <div class="swiper centered-slide-carousel swiper-container">
         <div class="swiper-wrapper">
           <?php
@@ -648,7 +642,7 @@ echo "
             // Loop through the images and create swiper-slide for each image
             foreach ($images as $image) {
               $imageName = basename($image);  // Get the image file name
-              echo '<div class="swiper-slide overflow-visible mt-10" data-aos="fade-up" data-aos-delay="500">';
+              echo '<div class="swiper-slide overflow-visible mt-10 md:mt-12" data-aos="fade-up" data-aos-delay="500">';
               echo '<div class="relative w-full h-100">';  
               echo '<img class="object-cover w-full h-full rounded-lg shadow-lg filter" src="' . $directory . $imageName . '" alt="' . $imageName . '">'; 
               echo '</div>';
@@ -657,11 +651,12 @@ echo "
           ?>
         </div>
         <!-- Swiper Pagination -->
-        <div class="swiper-pagination" data-aos="fade-up" data-aos-delay="600"></div>
+        <div class="swiper-pagination mt-6 md:mt-8" data-aos="fade-up" data-aos-delay="600"></div>
       </div>
     </div>
   </div>
 </section>
+
 
 
 
@@ -709,7 +704,6 @@ echo "
 <!-- Video Tour Section -->
 <section id="video-tours" 
          class="bg-white px-4 delay-[300ms] duration-[800ms] taos:translate-y-[100%] taos:opacity-0" 
-         data-taos-offset="300"
          data-aos="fade-up" 
          data-aos-duration="800" 
          data-aos-anchor-placement="top-bottom">
@@ -738,11 +732,9 @@ echo "
 
 <!-- Reviews Section -->
 <section id="reviews" 
-         class="bg-white min-h-screen flex flex-col items-center justify-center pt-16" 
-         data-taos-offset="300"
-         data-aos="fade-up" 
-         data-aos-duration="800" 
-         data-aos-anchor-placement="top-bottom">
+  class="bg-white min-h-screen flex flex-col items-center justify-center pt-16" 
+  data-aos="fade-up" 
+  data-aos-duration="800">
   <div class="elfsight-app-d8f6591a-6262-46fe-a54f-6d6eefaf6b74" data-elfsight-app-lazy></div>
 </section>
 
@@ -809,36 +801,38 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 <!-- Contact Us Section -->
-<section id="contacts" 
-         class="bg-white delay-[300ms] duration-[800ms] taos:translate-y-[100%] taos:opacity-0" 
-         data-taos-offset="300"
-         data-aos="fade-up" 
-         data-aos-duration="800" 
-         data-aos-anchor-placement="top-bottom">
-  <div class="py-8 lg:py-16 px-4 mx-auto max-w-screen-md">
+<div class="overflow-x-hidden">
+  <!-- Contact Us Section -->
+  <section id="contacts" 
+       class="bg-white" 
+       data-aos="fade-up" 
+       data-aos-duration="800" 
+       data-aos-anchor-placement="top-bottom">
+    <div class="py-8 lg:py-16 px-4 mx-auto max-w-screen-md w-full">
       <h2 class="mb-4 text-4xl tracking-tight font-extrabold text-center text-gray-900">Contact Us</h2>
       <p class="mb-8 lg:mb-16 font-light text-center text-gray-500 sm:text-xl">
         Got a technical issue? Want to send feedback about a beta feature? Need details about our Business plan? Let us know.
       </p>
       <form action="#" class="space-y-8">
-          <div data-aos="fade-up" data-aos-duration="800">
-              <label for="email" class="block mb-2 text-sm font-medium text-gray-900">Your email</label>
-              <input type="email" id="email" class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5" placeholder="name@flowbite.com" required>
-          </div>
-          <div data-aos="fade-up" data-aos-duration="800">
-              <label for="subject" class="block mb-2 text-sm font-medium text-gray-900">Subject</label>
-              <input type="text" id="subject" class="block p-3 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 shadow-sm focus:ring-primary-500 focus:border-primary-500" placeholder="Let us know how we can help you" required>
-          </div>
-          <div class="sm:col-span-2" data-aos="fade-up" data-aos-duration="800">
-              <label for="message" class="block mb-2 text-sm font-medium text-gray-900">Your message</label>
-              <textarea id="message" rows="6" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg shadow-sm border border-gray-300 focus:ring-primary-500 focus:border-primary-500" placeholder="Leave a comment..."></textarea>
-          </div>
-          <button type="submit" class="py-3 px-5 text-sm font-medium text-center text-white rounded-lg bg-primary-700 sm:w-fit hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300" data-aos="fade-up" data-aos-duration="800">
-            Send message
-          </button>
+        <div data-aos="fade-up" data-aos-duration="800">
+          <label for="email" class="block mb-2 text-sm font-medium text-gray-900">Your email</label>
+          <input type="email" id="email" class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5" placeholder="name@flowbite.com" required>
+        </div>
+        <div data-aos="fade-up" data-aos-duration="800">
+          <label for="subject" class="block mb-2 text-sm font-medium text-gray-900">Subject</label>
+          <input type="text" id="subject" class="block p-3 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 shadow-sm focus:ring-primary-500 focus:border-primary-500" placeholder="Let us know how we can help you" required>
+        </div>
+        <div class="sm:col-span-2" data-aos="fade-up" data-aos-duration="800">
+          <label for="message" class="block mb-2 text-sm font-medium text-gray-900">Your message</label>
+          <textarea id="message" rows="6" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg shadow-sm border border-gray-300 focus:ring-primary-500 focus:border-primary-500" placeholder="Leave a comment..."></textarea>
+        </div>
+        <button type="submit" class="py-3 px-5 text-sm font-medium text-center text-white rounded-lg bg-primary-700 sm:w-fit hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300" data-aos="fade-up" data-aos-duration="800">
+          Send message
+        </button>
       </form>
-  </div>
-</section>
+    </div>
+  </section>
+</div>
 
 
 
@@ -887,23 +881,13 @@ document.addEventListener("DOMContentLoaded", function () {
 </script>
 
 <!-- Footer Section -->
-<footer 
-    class="bg-blue-900 py-8" 
-    data-aos="fade-up" 
-    data-aos-duration="1200"
->
+<footer class="bg-blue-900 py-8">
   <div class="text-center">
-    <p 
-      class="text-sm text-gray-400" 
-
-    >
+    <p class="text-sm text-gray-400">
       © 2025 Your Company. All Rights Reserved.
     </p>
     
-    <div 
-      class="mt-4 space-x-4" 
-
-    >
+    <div class="mt-4 space-x-4">
       <a href="#" class="text-gray-400 hover:text-white">Privacy Policy</a>
       <a href="#" class="text-gray-400 hover:text-white">Terms of Service</a>
     </div>
@@ -1026,7 +1010,6 @@ document.addEventListener("DOMContentLoaded", function() {
         once: false, // Ensures animations trigger every time on scroll
         duration: 500, 
         easing: 'ease-in-out', 
-        offset: 100, // Adjust when animation starts (higher = later)
         anchorPlacement: 'bottom-bottom' // Triggers when the element's bottom reaches the viewport bottom
     });
 });
