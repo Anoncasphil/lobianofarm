@@ -494,6 +494,107 @@ echo "
 
 
 
+<!-- About Us Section -->
+<section id="about" class="bg-whitel flex items-center justify-center px-g4 mb-16">
+  <div class="max-w-screen-xl mx-auto flex flex-col md:flex-row items-center gap-8 mb-8">
+    
+    <!-- Image Section -->
+    <div class="w-full md:w-1/2 flex justify-left" 
+         data-aos="fade-up" 
+         data-aos-anchor-placement="top-bottom"
+         data-aos-duration="1000"
+         data-aos-delay="200">
+      <img 
+        src="src/uploads/about/resort.png" 
+        alt="About Us Image" 
+        class="rounded-lg shadow-lg w-full h-auto object-cover"
+        style="height: 450px; object-fit: cover;" 
+      />
+    </div>
+
+    <!-- Text Section -->
+    <div class="w-full md:w-1/2 text-center md:text-left md:mx-8"
+         data-aos="fade-up" 
+         data-aos-anchor-placement="top-bottom"
+         data-aos-duration="1000"
+         data-aos-delay="300">
+      <h2 class="text-3xl font-extrabold text-gray-900 mb-4">About Us</h2>
+      <p class="text-lg text-gray-700 mb-4 text-justify">
+        Welcome to 888 Lobiano's Farm Resort, where nature meets comfort. Our goal is to provide a serene escape where guests can unwind, reconnect with nature, and create unforgettable memories. Whether you're here for a weekend retreat or a special celebration, our resort offers a perfect blend of tranquility and adventure.
+      </p>
+      <a 
+        href="#learn-more"
+        class="inline-block px-6 py-3 bg-blue-600 text-white text-lg font-medium rounded-lg shadow-md hover:bg-blue-700 transition-all"
+      >
+        Learn More
+      </a>
+    </div>
+
+  </div>
+</section>
+
+<style>
+  @media (max-width: 768px) {
+    #about .flex {
+      flex-direction: column;
+    }
+    #about img {
+      height: auto;
+    }
+  }
+</style>
+
+
+<!-- Location Section -->
+<section id="locations" class="bg-white flex items-center justify-center px-4 mt-[100px] mb-16" 
+         data-aos="fade-up" 
+         data-aos-anchor-placement="top-bottom"
+         data-aos-duration="800">
+  
+  <div class="max-w-screen-xl mx-auto flex flex-col md:flex-row items-center gap-8 mb-8">
+    
+    <!-- Text Section -->
+    <div class="w-full md:w-1/2 text-center md:text-left md:mx-8" 
+         data-aos="fade-up" 
+         data-aos-anchor-placement="top-bottom"
+         data-aos-duration="800"
+         data-aos-delay="200">
+      <h2 class="text-3xl font-extrabold text-gray-900 mb-4">Our Location</h2>
+      <p class="text-lg text-gray-700 mb-4 text-justify">
+        We are located at Lobiano's Farm 888, nestled in the serene countryside. It's the perfect getaway for relaxation, adventure, and making lasting memories. Come visit us for a tranquil escape amidst nature's beauty.
+      </p>
+      <a 
+        href="https://www.google.com/maps?q=Lobiano's+Farm+888" 
+        target="_blank"
+        class="inline-block px-6 py-3 bg-blue-600 text-white text-lg font-medium rounded-lg shadow-md hover:bg-blue-700 transition-all"
+      >
+        View on Google Maps
+      </a>
+    </div>
+
+    <!-- Map Section -->
+    <div class="w-full md:w-1/2" 
+         data-aos="fade-up" 
+         data-aos-anchor-placement="top-bottom"
+         data-aos-duration="800"
+         data-aos-delay="300">
+      <iframe 
+        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1586.8824792813755!2d120.89532436717096!3d14.14926979329477!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x33bd79eaf08918e9%3A0xf195c7d93933a8a1!2sLobiano%60s%20Farm%20888!5e1!3m2!1sen!2sph!4v1739810756694!5m2!1sen!2sph" 
+        width="600" 
+        height="450" 
+        style="border:0;" 
+        allowfullscreen="" 
+        loading="lazy" 
+        referrerpolicy="no-referrer-when-downgrade">
+      </iframe>
+    </div>
+
+  </div>
+</section>
+
+
+
+
 
 
 
