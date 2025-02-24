@@ -597,52 +597,93 @@ echo "
 
 <!-- Album Section -->
 <section id="album" class="bg-white flex items-center justify-center py-16 px-4 mb-16" 
-         data-aos="fade-up" 
-         data-aos-anchor-placement="top-bottom"
-         data-aos-duration="800">
+     data-aos="fade-up" 
+     data-aos-anchor-placement="top-bottom"
+     data-aos-duration="800">
   
   <div class="max-w-screen-xl mx-auto text-center">
-    <h2 class="text-3xl font-extrabold text-gray-900 mb-4" 
-        data-aos="fade-up" 
-        data-aos-delay="200">
-      Our Album
-    </h2>
-    
-    <p class="mt-4 text-lg text-gray-700"
-       data-aos="fade-up" 
-       data-aos-delay="300">
-      Explore some of the beautiful moments captured at our resort.
-    </p>
+  <h2 class="text-3xl font-extrabold text-gray-900 mb-4" 
+    data-aos="fade-up" 
+    data-aos-delay="200">
+    Our Album
+  </h2>
+  
+  <p class="mt-4 text-lg text-gray-700"
+     data-aos="fade-up" 
+     data-aos-delay="300">
+    Explore some of the beautiful moments captured at our resort.
+  </p>
 
-    <!-- Swiper Container -->
-    <div class="w-full relative" 
-         data-aos="fade-up" 
-         data-aos-delay="400">
-      <div class="swiper centered-slide-carousel swiper-container">
-        <div class="swiper-wrapper">
-          <?php
-            $directory = "src/uploads/album/";  // Specify the path to the image folder
-            $images = glob($directory . "*.jpg");  // Adjust the file type if needed (e.g., .png, .jpeg)
+  <!-- Swiper Container -->
+  <div class="w-full relative" 
+     data-aos="fade-up" 
+     data-aos-delay="400"></div>
+    <div class="swiper centered-slide-carousel swiper-container">
+    <div class="swiper-wrapper">
+      <?php
+      $directory = "src/uploads/album/";  // Specify the path to the image folder
+      $images = glob($directory . "*.jpg");  // Adjust the file type if needed (e.g., .png, .jpeg)
 
-            // Loop through the images and create swiper-slide for each image
-            foreach ($images as $image) {
-              $imageName = basename($image);  // Get the image file name
-              echo '<div class="swiper-slide overflow-visible mt-10" data-aos="fade-up" data-aos-delay="500">';
-              echo '<div class="relative w-full h-100">';  
-              echo '<img class="object-cover w-full h-full rounded-lg shadow-lg filter" src="' . $directory . $imageName . '" alt="' . $imageName . '">'; 
-              echo '</div>';
-              echo '</div>';
-            }
-          ?>
-        </div>
-        <!-- Swiper Pagination -->
-        <div class="swiper-pagination" data-aos="fade-up" data-aos-delay="600"></div>
-      </div>
+      // Loop through the images and create swiper-slide for each image
+      foreach ($images as $image) {
+        $imageName = basename($image);  // Get the image file name
+        echo '<div class="swiper-slide overflow-visible mt-10" data-aos="fade-up" data-aos-delay="500">';
+        echo '<div class="relative w-full h-100">';  
+        echo '<img class="object-cover w-full h-full rounded-lg shadow-lg filter" src="' . $directory . $imageName . '" alt="' . $imageName . '">'; 
+        echo '</div>';
+        echo '</div>';
+      }
+      ?>
     </div>
+    <!-- Swiper Pagination -->
+    <div class="swiper-pagination" data-aos="fade-up" data-aos-delay="600"></div>
+    </div>
+  </div>
   </div>
 </section>
 
-
+<script>
+  // Initialize Swiper after DOM is loaded
+  document.addEventListener("DOMContentLoaded", function() {
+  var swiper = new Swiper(".centered-slide-carousel", {
+    centeredSlides: true,
+    loop: true,
+    spaceBetween: 30,  // Adds space between slides
+    slidesPerView: 1,  // Display 1 slide on mobile
+    slideToClickedSlide: true,
+    autoplay: {
+    delay: 3000,  // Change slide every 3 seconds
+    disableOnInteraction: false,  // Continue autoplay after user interaction
+    },
+    pagination: {
+    el: ".swiper-pagination",
+    clickable: true,
+    },
+    navigation: {
+    nextEl: ".swiper-button-next",
+    prevEl: ".swiper-button-prev",
+    },
+    breakpoints: {
+    640: {
+      slidesPerView: 1,
+      spaceBetween: 10
+    },
+    768: {
+      slidesPerView: 2,
+      spaceBetween: 20
+    },
+    1024: {
+      slidesPerView: 3,
+      spaceBetween: 30
+    },
+    1280: {
+      slidesPerView: 4,
+      spaceBetween: 40
+    }
+    }
+  });
+  });
+</script>
 
   <script>
     // Initialize Swiper after DOM is loaded
