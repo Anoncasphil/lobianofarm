@@ -1003,7 +1003,7 @@ document.addEventListener("DOMContentLoaded", function () {
 document.addEventListener("DOMContentLoaded", function() {
     AOS.init({
         once: false, // Ensures animations trigger every time on scroll
-        duration: 1200, 
+        duration: 500, 
         easing: 'ease-in-out', 
         offset: 100, // Adjust when animation starts (higher = later)
         anchorPlacement: 'bottom-bottom' // Triggers when the element's bottom reaches the viewport bottom
