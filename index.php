@@ -114,13 +114,13 @@ $conn->close();
   }
 
   /* Hide overflow on y-axis for html and body */
-  body {
-    
-  }
+  html, body {
+  overflow-x: hidden;
+}
+
 
   .section {
     overflow-y: hidden;
-    overflow-x: hidden;
 }
 
 
