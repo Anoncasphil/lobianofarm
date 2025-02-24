@@ -128,6 +128,11 @@ $conn->close();
     
   }
 
+  .section {
+    overflow-y: hidden;
+}
+
+
   
   </style>
 
