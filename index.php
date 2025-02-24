@@ -129,7 +129,20 @@ body {
 .section {
     overflow-y: hidden;
 }
+.swiper-container {
+  width: 100%;
+  overflow: hidden;
+}
 
+.swiper-slide {
+  width: 100%;
+  overflow: hidden;
+}
+
+/* Fix for AOS animation causing overflow */
+[data-aos] {
+  transform: none !important;
+}
 
   
   </style>
