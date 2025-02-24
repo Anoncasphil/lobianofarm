@@ -114,12 +114,19 @@ $conn->close();
   }
 
   /* Hide overflow on y-axis for html and body */
-  html{
+  html, body {
   overflow-x: hidden;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
+body {
+  position: relative; /* Ensures no unexpected overflow */
+}
 
-  .section {
+.section {
     overflow-y: hidden;
 }
 
