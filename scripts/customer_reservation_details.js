@@ -176,6 +176,12 @@ function fetchReservationDetails(reservationId) {
             if (data.status === 'Cancelled' || data.status === 'Confirmed' || data.status === 'Pending' || data.status === 'Completed') {
                 console.log("Reservation Status: " + data.status); // Log the reservation status
 
+                // Fetch and display the invoice number
+                document.getElementById('invoice-no-details').innerText = data.invoice_number || 'N/A';
+
+                // Fetch and display the invoice date
+                document.getElementById('invoice-date-details').innerText = data.invoice_date || 'N/A';
+
                 // Remove commas from valid_amount_paid and total_price before parsing as float
                 const totalPrice = parseFloat(data.total_price.replace(/,/g, ''));
                 const validAmountPaid = parseFloat(data.valid_amount_paid.replace(/,/g, ''));
