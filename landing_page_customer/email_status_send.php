@@ -35,6 +35,31 @@ if (!$existing) {
 $invoice_date = isset($existing['invoice_date']) ? formatDate($existing['invoice_date']) : "N/A";
 $invoice_number = isset($existing['invoice_number']) ? htmlspecialchars($existing['invoice_number']) : "N/A";
 
+// Fetch rate and addons details
+$rate_query = "SELECT * FROM rates WHERE id = ?";
+$rate_stmt = $conn->prepare($rate_query);
+$rate_stmt->bind_param("i", $existing['rate_id']);
+$rate_stmt->execute();
+$rate_result = $rate_stmt->get_result();
+$rate = $rate_result->fetch_assoc();
+
+$addons_query = "SELECT a.name, a.price FROM reservation_addons ra JOIN addons a ON ra.addon_id = a.id WHERE ra.reservation_id = ?";
+$addons_stmt = $conn->prepare($addons_query);
+$addons_stmt->bind_param("i", $reservation_id);
+$addons_stmt->execute();
+$addons_result = $addons_stmt->get_result();
+$addons = $addons_result->fetch_all(MYSQLI_ASSOC);
+
+// Calculate total price
+$total_price = floatval($rate['price']);
+foreach ($addons as $addon) {
+    $total_price += floatval($addon['price']);
+}
+
+// Fetch valid amount paid and calculate new total
+$valid_amount_paid = isset($existing['valid_amount_paid']) ? floatval($existing['valid_amount_paid']) : 0.00;
+$new_total = $total_price - $valid_amount_paid;
+
 // Format dates
 function formatDate($date) {
     return date("F j, Y", strtotime($date)); // Example: February 12, 2025
@@ -42,6 +67,9 @@ function formatDate($date) {
 
 $check_in_date = formatDate($existing['check_in_date']);
 $check_out_date = formatDate($existing['check_out_date']);
+
+// Fetch reservation code
+$reservation_code = isset($existing['reservation_code']) ? htmlspecialchars($existing['reservation_code']) : "N/A";
 
 // Validate user data (to prevent errors)
 $first_name = isset($data['first_name']) ? htmlspecialchars($data['first_name']) : "Guest";
@@ -65,9 +93,10 @@ $body = "
         <div style='text-align: center; padding: 10px; background-color: #1e3a8a; color: white; border-radius: 10px 10px 0 0;'>
             <h2>Reservation Details</h2>
         </div>
-        <div style='padding: 20px; text-align: center;'>
+        <div style='padding: 20px; text-align: left;'>
             <p style='font-size: 16px; color: #333;'>Dear {$first_name} {$last_name},</p>
             <p style='font-size: 16px; color: #333;'>Here are the details of your reservation at <strong>888 Lobiano's Farm Resort</strong>:</p>
+            <p style='font-size: 16px; color: #333;'><br>Reservation Code: <strong>{$reservation_code}</strong></p>
             <table style='width: 100%; margin-top: 10px; border-collapse: collapse; text-align: left; border: 1px solid #ddd;'>
                 <tr style='background-color: #1e3a8a; color: white;'>
                     <th style='padding: 10px; border: 1px solid #ddd;'>Field</th>
@@ -103,13 +132,26 @@ $body = "
                     </tr>
                 </thead>
                 <tbody id='invoice-items'>
-                    <!-- Items will be inserted dynamically -->
+                    <tr>
+                        <td style='padding: 10px; border: 1px solid #ddd;'>Rate</td>
+                        <td style='padding: 10px; border: 1px solid #ddd;'>{$rate['name']}</td>
+                        <td style='padding: 10px; border: 1px solid #ddd;'>{$rate['price']}</td>
+                    </tr>";
+foreach ($addons as $addon) {
+    $body .= "
+                    <tr>
+                        <td style='padding: 10px; border: 1px solid #ddd;'>Add-on</td>
+                        <td style='padding: 10px; border: 1px solid #ddd;'>{$addon['name']}</td>
+                        <td style='padding: 10px; border: 1px solid #ddd;'>{$addon['price']}</td>
+                    </tr>";
+}
+$body .= "
                 </tbody>
             </table>
             <div style='margin-top: 10px; text-align: right;'>
-                <p style='font-size: 16px; font-weight: bold; color: #333;'>Total Price: <span id='total-price'>₱0.00</span></p>
-                <p style='font-size: 14px; font-weight: bold; color: #555;'>Valid Amount Paid: <span id='valid_amount_paid'>₱0.00</span></p>
-                <p style='font-size: 18px; font-weight: bold; color: #1e3a8a;'>Total: <span id='new_total_amount'>₱0.00</span></p>
+                <p style='font-size: 16px; font-weight: bold; color: #333;'>Total Price: <span id='total-price'>₱" . number_format($total_price, 2) . "</span></p>
+                <p style='font-size: 14px; font-weight: bold; color: #555;'>Valid Amount Paid: <span id='valid_amount_paid'>₱" . number_format($valid_amount_paid, 2) . "</span></p>
+                <p style='font-size: 18px; font-weight: bold; color: #1e3a8a;'>Total: <span id='new_total_amount'>₱" . number_format($new_total, 2) . "</span></p>
             </div>
         </div>
         
