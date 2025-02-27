@@ -65,8 +65,17 @@ function formatDate($date) {
     return date("F j, Y", strtotime($date)); // Example: February 12, 2025
 }
 
+function formatTime($time) {
+    return date("g:i A", strtotime($time)); // Example: 2:30 PM
+}
+
 $check_in_date = formatDate($existing['check_in_date']);
 $check_out_date = formatDate($existing['check_out_date']);
+$check_in_time = isset($existing['check_in_time']) ? formatTime($existing['check_in_time']) : "N/A";
+$check_out_time = isset($existing['check_out_time']) ? formatTime($existing['check_out_time']) : "N/A";
+
+// Combine check-in and check-out times into a single time range
+$time_range = "{$check_in_time} - {$check_out_time}";
 
 // Fetch reservation code
 $reservation_code = isset($existing['reservation_code']) ? htmlspecialchars($existing['reservation_code']) : "N/A";
@@ -93,26 +102,29 @@ $body = "
         <div style='text-align: center; padding: 10px; background-color: #1e3a8a; color: white; border-radius: 10px 10px 0 0;'>
             <h2>Reservation Details</h2>
         </div>
-        <div style='padding: 20px; text-align: left;'>
-            <p style='font-size: 16px; color: #333;'>Dear {$first_name} {$last_name},</p>
-            <p style='font-size: 16px; color: #333;'>Here are the details of your reservation at <strong>888 Lobiano's Farm Resort</strong>:</p>
-            <p style='font-size: 16px; color: #333;'><br>Reservation Code: <strong>{$reservation_code}</strong></p>
+        <div style='padding: 20px;'>
+            <p style='font-size: 16px; color: #333;text-align: center;'>Dear {$first_name} {$last_name},</p>
+            <p style='font-size: 16px; color: #333;text-align: center;'>Here are the details of your reservation at <strong>888 Lobiano's Farm Resort:</strong><br></p>
+            <div style='text-align: center; padding: 5px; background-color: #1e3a8a; color: white;text-align: center;'>
+                <h3>Reservation Code: <strong>{$reservation_code}</strong></h3>
+            </div>
+            <p style='font-size: 16px; color: #333;text-align: left;'><strong>Stay Duration</strong>:</p>
             <table style='width: 100%; margin-top: 10px; border-collapse: collapse; text-align: left; border: 1px solid #ddd;'>
-                <tr style='background-color: #1e3a8a; color: white;'>
-                    <th style='padding: 10px; border: 1px solid #ddd;'>Field</th>
-                    <th style='padding: 10px; border: 1px solid #ddd;'>Value</th>
+                <tr>
+                    <td style='padding: 10px; border: 1px solid #ddd;'>Check-in Date:</td>
+                    <td style='padding: 10px; border: 1px solid #ddd;'><strong>{$check_in_date}</strong></td>
                 </tr>
                 <tr>
-                    <td style='padding: 10px; border: 1px solid #ddd;'>Check-in Date</td>
-                    <td style='padding: 10px; border: 1px solid #ddd; font-weight: bold;'>{$check_in_date}</td>
+                    <td style='padding: 10px; border: 1px solid #ddd;'>Check-out Date:</td>
+                    <td style='padding: 10px; border: 1px solid #ddd;'><strong>{$check_out_date}</strong></td>
                 </tr>
                 <tr>
-                    <td style='padding: 10px; border: 1px solid #ddd;'>Check-out Date</td>
-                    <td style='padding: 10px; border: 1px solid #ddd; font-weight: bold;'>{$check_out_date}</td>
+                    <td style='padding: 10px; border: 1px solid #ddd;'>Check-in Time:</td>
+                    <td style='padding: 10px; border: 1px solid #ddd;'><strong>{$check_in_time}</strong></td>
                 </tr>
                 <tr>
-                    <td style='padding: 10px; border: 1px solid #ddd;'>Status</td>
-                    <td style='padding: 10px; border: 1px solid #ddd; font-weight: bold;'>{$existing['status']}</td>
+                    <td style='padding: 10px; border: 1px solid #ddd;'>Check-out Time:</td>
+                    <td style='padding: 10px; border: 1px solid #ddd;'><strong>{$check_out_time}</strong></td>
                 </tr>
             </table>
         </div>
