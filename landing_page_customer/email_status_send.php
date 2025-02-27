@@ -18,7 +18,7 @@ if (!isset($data['reservation_id']) || empty($data['reservation_id'])) {
 $reservation_id = intval($data['reservation_id']); // Ensure it's an integer
 
 // Fetch reservation details
-$query = "SELECT check_in_date, check_out_date, status FROM reservations WHERE id = ?";
+$query = "SELECT * FROM reservations WHERE id = ?";
 $stmt = $conn->prepare($query);
 $stmt->bind_param("i", $reservation_id);
 $stmt->execute();
@@ -30,6 +30,10 @@ if (!$existing) {
     echo json_encode(["status" => "error", "message" => "Reservation not found."]);
     exit;
 }
+
+// Fetch invoice details from reservations table
+$invoice_date = isset($existing['invoice_date']) ? formatDate($existing['invoice_date']) : "N/A";
+$invoice_number = isset($existing['invoice_number']) ? htmlspecialchars($existing['invoice_number']) : "N/A";
 
 // Format dates
 function formatDate($date) {
@@ -88,8 +92,8 @@ $body = "
             <h3>Invoice Details</h3>
         </div>
         <div style='padding: 20px;'>
-            <p style='font-size: 14px; color: #333;'>Date: <strong id='invoice-date'></strong></p>
-            <p style='font-size: 14px; color: #333;'>Invoice No: <strong id='invoice-no'></strong></p>
+            <p style='font-size: 14px; color: #333;'>Date: <strong id='invoice-date'>{$invoice_date}</strong></p>
+            <p style='font-size: 14px; color: #333;'>Invoice No: <strong id='invoice-no'>{$invoice_number}</strong></p>
             <table style='width: 100%; margin-top: 10px; border-collapse: collapse; text-align: left; border: 1px solid #ddd;'>
                 <thead>
                     <tr style='background-color: #f0f0f0;'>
