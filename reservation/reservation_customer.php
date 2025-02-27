@@ -427,7 +427,10 @@ if (!isset($_SESSION['admin_id'])) {
 <div class="relative mt-10">
   <label for="status-dropdown" class="px-2 bg-white absolute left-3 top-[-10px] text-gray-600 text-sm font-medium">Status</label>
   <select id="status-dropdown" class="p-3 pt-5 w-full border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-blue-950 transition" onchange="updateStatusColor(this)">
-
+    <option value="pending">Pending</option>
+    <option value="confirmed">Confirmed</option>
+    <option value="completed">Completed</option>
+    <option value="cancelled">Cancelled</option>
   </select>
   <div id="selected-status" class="mt-5 ml-2 text-sm font-medium text-gray-600"></div>
 </div>
@@ -476,7 +479,7 @@ if (!isset($_SESSION['admin_id'])) {
       <div id="reschedule-request" class="p-4 mb-4 mt-5 text-blue-800 border border-blue-300 rounded-lg bg-blue-50 dark:bg-gray-800 dark:text-blue-400 dark:border-blue-800 " role="alert">
     <div class="flex items-center">
         <svg class="shrink-0 w-4 h-4 me-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-            <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 1 1 1 1v4h1a1 1 0 1 1 0 2Z"/>
+            <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 1 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
         </svg>
         <span class="sr-only">Info</span>
         <h3 class="text-lg font-medium pl-3">Reschedule Request</h3>
