@@ -170,7 +170,7 @@ document.getElementById('rate-modal').addEventListener('click', function(event) 
   });
   async function fetchReservedDates() {
     try {
-      const response = await fetch('/api/get_reserved_dates_booking.php');
+      const response = await fetch('api/get_reserved_dates_booking.php');
       const reservedDates = await response.json();
   
       if (!reservedDates || !reservedDates.reservedDaytime || !reservedDates.reservedNighttime || !reservedDates.reservedWholeDay) {
@@ -242,7 +242,7 @@ document.getElementById('rate-modal').addEventListener('click', function(event) 
         localStorage.setItem("selectedDate", JSON.stringify({ checkIn: selectedDate }));
   
         // Redirect to booking.php
-        window.location.href = "/landing_page_customer/booking.php";  // Change path if necessary
+        window.location.href = "landing_page_customer/booking.php";  // Change path if necessary
       } else {
         alert("Please select a check-in date.");
       }
