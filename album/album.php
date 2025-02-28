@@ -145,12 +145,12 @@ if (!isset($_SESSION['admin_id'])) {
 
 
 
-    <div class="event-container rounded-lg p-4">
+<div class="event-container rounded-lg p-4">
         <div class="flex justify-between items-center mb-4">
             <div class="flex justify-end w-full">
             <div class="button-container flex gap-4">
                 <button type="button" onclick="toggleAddAlbumModal()" class="text-white bg-blue-500 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2">
-                    <i class="fa-solid fa-plus"></i> Add Picture
+                    <i class="fa-solid fa-plus"></i> Add F
                 </button>
                 <button type="button" class="text-white bg-red-500 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2" id="deleteSelectedButton" onclick="deleteConfirmation()">
                     <i class="fa-solid fa-trash"></i> Delete Selected
@@ -159,33 +159,6 @@ if (!isset($_SESSION['admin_id'])) {
 
             </div>
         </div>
-
-        <div class="flex flex-col space-y-4" id="albumContainer">
-            <?php
-            include('../db_connection.php');
-            $query = "SELECT * FROM pictures";
-            $result = mysqli_query($conn, $query);
-
-            if ($result) {
-                while ($row = mysqli_fetch_assoc($result)) {
-                    $image_name = $row['image_name'];
-                    $image_path = $row['image_path'];
-                    $upload_time = $row['upload_time'];
-                    ?>
-                    <div class="flex items-center justify-start space-x-4 border-b py-4 shadow dark:bg-gray-800 dark:border-gray-700 rounded-lg" id="pic-<?php echo $row['id']; ?>">
-                        <input type="checkbox" class="select-picture-checkbox" data-id="<?php echo $row['id']; ?>">
-                        <img src="../src/uploads/album/<?php echo $image_path; ?>" alt="Image" class="w-16 h-16 object-cover">
-                        <div class="flex flex-col text-left w-full">
-                            <p class="text-sm font-semibold text-gray-700"><?php echo $image_name; ?></p>
-                            <p class="text-xs text-gray-500"><?php echo date('F j, Y', strtotime($upload_time)); ?></p>
-                        </div>
-                    </div>
-                    <?php
-                }
-            }
-            ?>
-        </div>
-    </div>
 
 	<!-- Confirmation Modal -->
 <div id="deleteModal" class="fixed inset-0 z-50 flex items-center justify-center hidden bg-opacity-50">
@@ -205,20 +178,6 @@ if (!isset($_SESSION['admin_id'])) {
 			</div>
 		</div>
 	</div>
-
-<!-- Success Modal -->
-<div id="successModal" class="modal hidden">
-    <div class="modal-content">
-        <p class="modal-message"></p>
-    </div>
-</div>
-
-<!-- Error Modal -->
-<div id="errorModal" class="modal hidden">
-    <div class="modal-content">
-        <p class="modal-message"></p>
-    </div>
-</div>
 
     <!-- Add Picture Modal -->
     <div id="add-picture-modal" tabindex="-1" aria-hidden="true" class="hidden fixed inset-0 z-50 flex justify-center items-center">
@@ -365,6 +324,8 @@ function closeModal() {
 }
 
 	</script>
+
+	
 
 </body>
 </html>
