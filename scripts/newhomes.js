@@ -188,7 +188,7 @@ document.getElementById('rate-modal').addEventListener('click', function(event) 
   
   async function fetchDisabledDates() {
     try {
-      const response = await fetch('api/get_disabled_dates.php'); // Update the URL if necessary
+      const response = await fetch('api/get_disabled_dates.php');
       const disabledDates = await response.json();
   
       console.log("Fetched Disabled Dates:", disabledDates);
@@ -198,8 +198,7 @@ document.getElementById('rate-modal').addEventListener('click', function(event) 
         return [];
       }
   
-      // Return the array of disabled dates
-      return disabledDates.disableDates.map(item => item.date); // Ensure we are returning just an array of dates
+      return disabledDates.disableDates.map(item => item.date);
     } catch (error) {
       console.error('Error fetching disabled dates:', error);
       return [];
@@ -208,54 +207,44 @@ document.getElementById('rate-modal').addEventListener('click', function(event) 
   
   async function initializeFlatpickr() {
     const { reservedDaytime, reservedNighttime, reservedWholeDay } = await fetchReservedDates();
-    const disabledDates = await fetchDisabledDates(); // Fetch disabled dates from the API
+    const disabledDates = await fetchDisabledDates();
   
     const checkInDateInput = document.getElementById("check-in");
   
-    // Create a Set for fast lookup
     const daytimeSet = new Set(reservedDaytime);
     const nighttimeSet = new Set(reservedNighttime);
     const wholeDaySet = new Set(reservedWholeDay);
   
-    // Dates to be fully disabled
     const fullyReservedDates = new Set();
   
-    // Disable dates that have both Daytime and Nighttime reserved
     reservedDaytime.forEach(date => {
       if (nighttimeSet.has(date)) {
         fullyReservedDates.add(date);
       }
     });
   
-    // Add all WholeDay dates to disabled dates
     reservedWholeDay.forEach(date => {
       fullyReservedDates.add(date);
     });
   
-    // Add disabled dates to the Set of fullyReservedDates
     disabledDates.forEach(date => {
-      fullyReservedDates.add(date); // Add the date directly
+      fullyReservedDates.add(date);
     });
   
-    // Log reserved and disabled dates
     console.log("Reserved Daytime Dates:", reservedDaytime);
     console.log("Reserved Nighttime Dates:", reservedNighttime);
     console.log("Reserved Whole Day Dates:", reservedWholeDay);
     console.log("Disabled Dates:", Array.from(fullyReservedDates));
   
-    // Prepare the disabled dates for Flatpickr
-    const disableDatesFormatted = Array.from(fullyReservedDates).map(date => {
-      return { from: date, to: date };
-    });
+    const disableDatesFormatted = Array.from(fullyReservedDates);
   
     console.log("Formatted Disable Dates for Flatpickr:", disableDatesFormatted);
   
-    // Initialize Flatpickr with both reserved and disabled dates
     flatpickr(checkInDateInput, {
       dateFormat: "Y-m-d",
       disable: [
-        { from: "1970-01-01", to: new Date().toISOString().split("T")[0] }, // Disable past dates
-        ...disableDatesFormatted // Disable dates in fullyReservedDates
+        { from: "1970-01-01", to: new Date().toISOString().split("T")[0] }, 
+        ...disableDatesFormatted
       ],
       onChange: function (selectedDates, dateStr, instance) {
         if (selectedDates[0]) {
@@ -264,19 +253,13 @@ document.getElementById('rate-modal').addEventListener('click', function(event) 
       }
     });
   
-    // Add event listener to the "Book" button
     const bookButton = document.getElementById("book-btn");
     bookButton.addEventListener("click", function(event) {
-      event.preventDefault(); // Prevent the default form submission
-  
-      const selectedDate = checkInDateInput.value; // Get the selected date
-  
+      event.preventDefault();
+      const selectedDate = checkInDateInput.value;
       if (selectedDate) {
-        // Store the selected date in localStorage
         localStorage.setItem("selectedDate", JSON.stringify({ checkIn: selectedDate }));
-  
-        // Redirect to booking.php
-        window.location.href = "landing_page_customer/booking.php";  // Change path if necessary
+        window.location.href = "landing_page_customer/booking.php";
       } else {
         alert("Please select a check-in date.");
       }
