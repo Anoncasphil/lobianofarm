@@ -186,6 +186,23 @@ document.getElementById('rate-modal').addEventListener('click', function(event) 
     }
   }
   
+  async function fetchReservedDates() {
+    try {
+      const response = await fetch('api/get_reserved_dates_booking.php');
+      const reservedDates = await response.json();
+  
+      if (!reservedDates || !reservedDates.reservedDaytime || !reservedDates.reservedNighttime || !reservedDates.reservedWholeDay) {
+        console.error('Expected structure but received:', reservedDates);
+        return { reservedDaytime: [], reservedNighttime: [], reservedWholeDay: [] };
+      }
+  
+      return reservedDates;
+    } catch (error) {
+      console.error('Error fetching reserved dates:', error);
+      return { reservedDaytime: [], reservedNighttime: [], reservedWholeDay: [] };
+    }
+  }
+  
   async function fetchDisabledDates() {
     try {
       const response = await fetch('api/get_disabled_dates.php');
@@ -200,7 +217,7 @@ document.getElementById('rate-modal').addEventListener('click', function(event) 
       }
   
       // If it's an object with a key "disableDates", map the dates
-      const dates = disabledDates.disableDates.map(item => item.date || item);  // Assuming 'item.date' holds the date
+      const dates = disabledDates.disableDates.map(item => item.date);  // Directly map the 'date' field from each object
   
       console.log("Mapped Disabled Dates:", dates);
   
@@ -223,6 +240,7 @@ document.getElementById('rate-modal').addEventListener('click', function(event) 
   
     const fullyReservedDates = new Set();
   
+    // Combine reserved dates (daytime, nighttime, and whole day)
     reservedDaytime.forEach(date => {
       if (nighttimeSet.has(date)) {
         fullyReservedDates.add(date);
