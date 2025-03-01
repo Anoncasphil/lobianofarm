@@ -161,20 +161,43 @@ if (!isset($_SESSION['admin_id'])) {
             </button>
         </div>
 <!-- Modal Structure -->
-<div id="date-info" tabindex="-1" aria-hidden="true" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center z-50 hidden">
-    <div class="modal-content bg-white p-6 rounded-lg shadow-lg w-11/12 sm:w-96">
-        <!-- Close Button (X) -->
-        <button type="button" id="close-btn" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 inline-flex justify-center items-center absolute top-2 right-2">
-            <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
-                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
-            </svg>
-            <span class="sr-only">Close modal</span>
-        </button>
-        
-        <!-- Modal Content -->
-        <h2 class="text-2xl font-semibold mb-4" id="disable-date"></h2>
-        <p id="disable-reason" class="text-lg mb-6"></p>
-        <button id="reenable-btn" class="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600 transition">Re-enable</button>
+<div id="date-info" tabindex="-1" aria-hidden="true" class="hidden fixed inset-0 bg-black/50 overflow-y-auto overflow-x-hidden flex justify-center items-center z-50">
+    <div class="relative p-4 w-full max-w-md max-h-full">
+        <!-- Modal content -->
+        <div class="relative bg-white rounded-lg shadow-lg">
+            <!-- Modal header -->
+            <div class="flex items-center justify-between p-4 border-b rounded-t border-gray-200">
+                <h3 class="text-lg font-semibold text-gray-900" id="modal-title">
+                    Date Information
+                </h3>
+                <button type="button" id="close-btn-info" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 inline-flex justify-center items-center">
+                    <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                    </svg>
+                    <span class="sr-only">Close modal</span>
+                </button>
+            </div>
+            
+            <!-- Modal Body -->
+            <div class="p-4">
+                <!-- Disable Date Info -->
+                <div class="mb-4">
+                    <label for="disable-date" class="block mb-2 text-sm font-medium text-gray-700">Disabled Date</label>
+                    <h2 id="disable-date" class="text-xl font-semibold text-gray-900"></h2>
+                </div>
+
+                <!-- Reason for Disabling -->
+                <div class="mb-5">
+                    <label for="disable-reason" class="block mb-2 text-sm font-medium text-gray-700">Reason</label>
+                    <p id="disable-reason" class="text-lg text-gray-800"></p>
+                </div>
+
+                <!-- Re-enable Button -->
+                <div class="flex justify-end">
+                    <button id="reenable-btn"  class="mt-4 flex w-full items-center justify-center rounded-lg bg-blue-900 px-5 py-2.5 text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-300">Re-enable</button>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -211,11 +234,12 @@ if (!isset($_SESSION['admin_id'])) {
                     <span id="alert-message-modal"></span>
                 </div>
 
-                <!-- Disable Date -->
-                <div class="relative mb-4">
-                    <input type="date" id="disable-date" name="disable_date" class="p-3 pt-5 w-full max-w-xs border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-transparent text-blue-950" required />
-                    <label for="disable_date" class="px-2 bg-white absolute left-3 top-[-10px] text-gray-600 text-sm font-medium"> Disable Date <span class="text-red-500">*</span> </label>
-                </div>
+<!-- Disable Date -->
+<div class="relative mb-4">
+    <input type="text" id="disable-date" name="disable_date" class="p-3 pt-5 w-full max-w-xs border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-transparent text-blue-950" required />
+    <label for="disable_date" class="px-2 bg-white absolute left-3 top-[-10px] text-gray-600 text-sm font-medium"> Disable Date <span class="text-red-500">*</span> </label>
+</div>
+
 
                 <!-- Reason for Disabling -->
                 <div class="col-span-2 mb-5">
@@ -228,7 +252,7 @@ if (!isset($_SESSION['admin_id'])) {
 
                 <!-- Submit Button -->
                 <div class="flex justify-end">
-                    <button type="button" id="submit-btn" class="mt-4 flex w-full items-center justify-center rounded-lg bg-white px-5 py-2.5 text-sm font-medium text-blue-900 hover:bg-blue-100 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-900 dark:text-white dark:hover:bg-blue-700 dark:focus:ring-blue-600 sm:mt-0">
+                    <button type="button" id="submit-btn" class="mt-4 flex w-full items-center justify-center rounded-lg bg-blue-900 px-5 py-2.5 text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-300">
                         <svg class="me-1 -ms-1 w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                             <path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd"></path>
                         </svg>
@@ -284,20 +308,33 @@ if (!isset($_SESSION['admin_id'])) {
 
 	</script>
 
-<script>
-// Fetch reserved dates from the server
+    <script>
+ // Fetch reserved dates from the server
 async function fetchReservedDates() {
     try {
         const response = await fetch("../api/get_reserved_dates_booking.php"); // Update if you have a new endpoint
         const data = await response.json();
 
-        if (!data || !data.reservedDates) {
+        console.log("Fetched Reserved Dates:", data);
+
+        if (!data || !data.reservedDaytime || !data.reservedNighttime || !data.reservedWholeDay) {
             console.error("Unexpected response structure for reserved dates:", data);
             return [];
         }
 
-        console.log("Fetched reserved dates:", data.reservedDates); // Log for debugging
-        return data.reservedDates || [];
+        // Combine all date arrays into one (Daytime, Nighttime, and Whole Day)
+        const allReservedDates = [
+            ...data.reservedDaytime,
+            ...data.reservedNighttime,
+            ...data.reservedWholeDay
+        ];
+
+        // Convert the dates to Date objects
+        const reservedDateObjects = allReservedDates.map(date => new Date(date));
+
+        console.log("All Reserved Dates as Date Objects:", reservedDateObjects); // Log for debugging
+
+        return reservedDateObjects;
     } catch (error) {
         console.error("Error fetching reserved dates:", error);
         return [];
@@ -310,12 +347,13 @@ async function fetchDisabledDates() {
         const response = await fetch("../api/get_disabled_dates.php"); // Update if you have a new endpoint
         const data = await response.json();
 
-        if (!data || !data.disableDates) {
+        console.log("Fetched disabled dates:", data);
+
+        if (!data || !Array.isArray(data.disableDates)) {
             console.error("Unexpected response structure for disabled dates:", data);
             return [];
         }
 
-        console.log("Fetched disabled dates:", data.disableDates); // Log for debugging
         return data.disableDates || [];
     } catch (error) {
         console.error("Error fetching disabled dates:", error);
@@ -323,65 +361,46 @@ async function fetchDisabledDates() {
     }
 }
 
-// Initialize Flatpickr with reserved dates disabled
-async function initializeFlatpickrReserved() {
+// Initialize Flatpickr with combined reserved and disabled dates
+async function initializeFlatpickr() {
     const reservedDates = await fetchReservedDates();
-
-    // Convert the reserved dates to Date objects
-    const reservedDateObjects = reservedDates.map(date => new Date(date));
-
-    console.log("Reserved Dates to disable:", reservedDateObjects); // Log for debugging
-
-    // Initialize Flatpickr and disable the reserved dates
-    flatpickr("#disable-date", {
-        dateFormat: "Y-m-d", // Set the format for the date picker
-        minDate: "today",    // Disable past dates
-        disable: reservedDateObjects, // Disable only reserved dates
-    });
-}
-
-// Initialize Flatpickr with disabled dates
-async function initializeFlatpickrDisabled() {
     const disabledDates = await fetchDisabledDates();
 
-    // Convert the disabled dates to Date objects
-    const disabledDateObjects = disabledDates.map(date => new Date(date));
+    // Combine both reserved and disabled dates into a single array
+    const allDisabledDates = [
+        ...reservedDates,
+        ...disabledDates.map(item => new Date(item.date)) // Assuming the disabled dates have a 'date' property
+    ];
 
-    console.log("Disabled Dates to disable:", disabledDateObjects); // Log for debugging
+    // Log the result for debugging
+    console.log("All Dates to disable:", allDisabledDates);
 
-    // Initialize Flatpickr and disable the disabled dates
+    // Initialize Flatpickr and disable the dates
     flatpickr("#disable-date", {
         dateFormat: "Y-m-d", // Set the format for the date picker
         minDate: "today",    // Disable past dates
-        disable: disabledDateObjects, // Disable only disabled dates
+        disable: allDisabledDates, // Disable both reserved and disabled dates
     });
 }
 
-// Call initialize functions after DOM is fully loaded
+// Ensure flatpickr is initialized once the DOM is ready
 document.addEventListener("DOMContentLoaded", function () {
-    initializeFlatpickrReserved();   // Initialize reserved dates
-    initializeFlatpickrDisabled();   // Initialize disabled dates
+    const disableDateElement = document.getElementById("disable-date");
+
+    if (disableDateElement) {
+        initializeFlatpickr();   // Initialize reserved and disabled dates combined
+    } else {
+        console.error("Disable date input element not found.");
+    }
 });
 
-// Open the modal
-function openModal() {
-    document.getElementById('disable-dates-modal').classList.remove('hidden');
-}
 
-// Open the modal
-function openInfoModal() {
-    document.getElementById('disable-date-modal').classList.remove('hidden');
-}
+    </script>
 
-// Close the modal
-document.getElementById('close-btn').addEventListener('click', function () {
-    document.getElementById('disable-dates-modal').classList.add('hidden');
-});
+<script>
 
-// Close the modal
-document.getElementById('close-btn').addEventListener('click', function () {
-    document.getElementById('disable-date-modal').classList.add('hidden');
-});
+
+
 
 // Handle form submission via AJAX
 document.getElementById('submit-btn').addEventListener('click', function (e) {

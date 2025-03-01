@@ -1,22 +1,23 @@
 <?php
-// remove_disabled_date.php
 header('Content-Type: application/json');
-include 'db.php'; // Assuming a DB connection file
+include('../db_connection.php');
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $date = $_POST['date']; // Date to re-enable
-
-    $stmt = $conn->prepare("DELETE FROM disable_dates WHERE disable_date = ?");
+if (isset($_POST['date'])) {
+    $date = $_POST['date'];
+    
+    // Prepare the query to remove the disabled date from the database
+    $sql = "DELETE FROM disable_dates WHERE disable_date = ?";
+    $stmt = $conn->prepare($sql);
     $stmt->bind_param("s", $date);
-
+    
     if ($stmt->execute()) {
-        echo json_encode(['success' => true, 'message' => 'Date re-enabled successfully']);
+        echo json_encode(['success' => true]);
     } else {
-        echo json_encode(['success' => false, 'message' => 'Failed to re-enable date']);
+        echo json_encode(['success' => false, 'message' => 'Failed to remove the disabled date.']);
     }
-
-    $stmt->close();
 } else {
-    echo json_encode(['success' => false, 'message' => 'Invalid request']);
+    echo json_encode(['success' => false, 'message' => 'Date parameter is missing.']);
 }
+
+$conn->close();
 ?>

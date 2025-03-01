@@ -114,32 +114,39 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     // Open the modal to show the disabled date and reason
-    function openDisableDateModal(date, reason) {
-        const modal = document.getElementById('date-info'); // Corrected ID reference
-        const dateElement = document.getElementById('disable-date');
-        const reasonElement = document.getElementById('disable-reason');
-        const reenableButton = document.getElementById('reenable-btn');
+function openDisableDateModal(date, reason) {
+    const modal = document.getElementById('date-info'); // Corrected ID reference
+    const dateElement = document.getElementById('disable-date');
+    const reasonElement = document.getElementById('disable-reason');
+    const reenableButton = document.getElementById('reenable-btn');
 
-        // Set the content of the modal
-        dateElement.innerText = `Date: ${date}`;
-        reasonElement.innerText = `Reason: ${reason}`;
-        
-        // Handle re-enable functionality
-        reenableButton.onclick = function () {
-            reenableDate(date);
-        };
+    // Format the date to "February 15, 2025"
+    const formattedDate = new Date(date).toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+    });
 
-        // Show the modal by removing the 'hidden' class
-        modal.classList.remove('hidden');
-    }
+    // Set the content of the modal
+    dateElement.innerText = formattedDate;
+    reasonElement.innerText = reason;
+
+    // Handle re-enable functionality
+    reenableButton.onclick = function () {
+        reenableDate(date);
+    };
+
+    // Show the modal by removing the 'hidden' class
+    modal.classList.remove('hidden');
+}
+
 
     // Close modal
-    document.getElementById('close-btn').addEventListener('click', function () {
+    document.getElementById('close-btn-info').addEventListener('click', function () {
         const modal = document.getElementById('date-info');
         modal.classList.add('hidden'); // Hide the modal by adding the 'hidden' class
     });
 
-    // Re-enable the date
     async function reenableDate(date) {
         try {
             const response = await fetch('../api/remove_disabled_date.php', {
@@ -151,9 +158,12 @@ document.addEventListener('DOMContentLoaded', function () {
                     date: date,
                 })
             });
-
+    
             const data = await response.json();
             if (data.success) {
+                console.log("Date re-enabled successfully.");
+                // Set a flag in sessionStorage to show the success message after reload
+                sessionStorage.setItem('reenableSuccess', 'true');
                 // Reload the calendar after re-enabling the date
                 location.reload();
             } else {
@@ -162,5 +172,28 @@ document.addEventListener('DOMContentLoaded', function () {
         } catch (error) {
             console.error("Error re-enabling date:", error);
         }
+    }
+
+    // Check if the success message flag exists in sessionStorage after page reload
+    const successMessageFlag = sessionStorage.getItem('reenableSuccess');
+    if (successMessageFlag === 'true') {
+        // Display the success message inside the 'info-alert' div
+        const alertMessage = document.getElementById('alert-message');
+        const infoAlert = document.getElementById('info-alert');
+        const alertTitle = document.getElementById('alert-title');
+
+        // Set the content for the alert
+        alertTitle.innerText = 'Success!';
+        alertMessage.innerText = 'Date successfully re-enabled!';
+
+        // Show the alert by removing the 'hidden' class
+        infoAlert.classList.remove('hidden');
+
+        // Hide the alert after 3 seconds
+        setTimeout(() => {
+            infoAlert.classList.add('hidden');
+            // Remove the success message flag from sessionStorage
+            sessionStorage.removeItem('reenableSuccess');
+        }, 3000);
     }
 });
