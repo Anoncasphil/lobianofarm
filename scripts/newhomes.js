@@ -193,13 +193,18 @@ document.getElementById('rate-modal').addEventListener('click', function(event) 
   
       console.log("Fetched Disabled Dates:", disabledDates);
   
+      // Ensure the structure is correct
       if (!disabledDates || !Array.isArray(disabledDates.disableDates)) {
         console.error('Expected an array for disabled dates but received:', disabledDates);
         return [];
       }
   
-      // Return the array of disabled dates
-      return disabledDates.disableDates.map(item => item.date); // Ensure we are returning just an array of dates
+      // If it's an object with a key "disableDates", map the dates
+      const dates = disabledDates.disableDates.map(item => item.date || item);  // Assuming 'item.date' holds the date
+  
+      console.log("Mapped Disabled Dates:", dates);
+  
+      return dates; // Return an array of date strings
     } catch (error) {
       console.error('Error fetching disabled dates:', error);
       return [];
@@ -212,29 +217,26 @@ document.getElementById('rate-modal').addEventListener('click', function(event) 
   
     const checkInDateInput = document.getElementById("check-in");
   
-    // Create sets for different reservation types
     const daytimeSet = new Set(reservedDaytime);
     const nighttimeSet = new Set(reservedNighttime);
     const wholeDaySet = new Set(reservedWholeDay);
   
-    // Create a set for fully reserved dates (both Daytime and Nighttime reservations)
     const fullyReservedDates = new Set();
   
-    // Add dates that are both Daytime and Nighttime reserved
     reservedDaytime.forEach(date => {
       if (nighttimeSet.has(date)) {
         fullyReservedDates.add(date);
       }
     });
   
-    // Add Whole Day reserved dates to the set
     reservedWholeDay.forEach(date => {
       fullyReservedDates.add(date);
     });
   
     // Add disabled dates (from the server) to the fullyReservedDates set
     disabledDates.forEach(date => {
-      fullyReservedDates.add(date);
+      console.log("Adding Disabled Date:", date); // Debugging line
+      fullyReservedDates.add(date); // Ensure date is in "YYYY-MM-DD" format
     });
   
     console.log("Reserved Daytime Dates:", reservedDaytime);
@@ -242,7 +244,7 @@ document.getElementById('rate-modal').addEventListener('click', function(event) 
     console.log("Reserved Whole Day Dates:", reservedWholeDay);
     console.log("Disabled Dates:", Array.from(fullyReservedDates));
   
-    // Format all dates for Flatpickr (Y-m-d format)
+    // Ensure all dates are formatted for Flatpickr (Y-m-d format)
     const disableDatesFormatted = Array.from(fullyReservedDates).map(date => date.split("T")[0]);
   
     console.log("Formatted Disable Dates for Flatpickr:", disableDatesFormatted);
