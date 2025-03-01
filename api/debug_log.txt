@@ -1,0 +1,144 @@
+Folder ID: 26
+Original Path: ../src/uploads/album/active/Swimming Pool/1740802124_4th pic.jpg
+Cleaned Path: src/uploads/album/active/Swimming Pool/1740802124_4th pic.jpg
+Original Path: ../src/uploads/album/active/Swimming Pool/1740802130_2nd pic.jpg
+Cleaned Path: src/uploads/album/active/Swimming Pool/1740802130_2nd pic.jpg
+Original Path: ../src/uploads/album/active/Swimming Pool/1740802135_3rd pic.jpg
+Cleaned Path: src/uploads/album/active/Swimming Pool/1740802135_3rd pic.jpg
+Final JSON: ["src\/uploads\/album\/active\/Swimming Pool\/1740802124_4th pic.jpg","src\/uploads\/album\/active\/Swimming Pool\/1740802130_2nd pic.jpg","src\/uploads\/album\/active\/Swimming Pool\/1740802135_3rd pic.jpg"]
+Folder ID: 27
+Original Path: ../src/uploads/album/active/Facilities/1740802637_67.jpg
+Cleaned Path: src/uploads/album/active/Facilities/1740802637_67.jpg
+Original Path: ../src/uploads/album/active/Facilities/1740802641_4.jpg
+Cleaned Path: src/uploads/album/active/Facilities/1740802641_4.jpg
+Original Path: ../src/uploads/album/active/Facilities/1740802645_3.jpg
+Cleaned Path: src/uploads/album/active/Facilities/1740802645_3.jpg
+Original Path: ../src/uploads/album/active/Facilities/1740802650_2.jpg
+Cleaned Path: src/uploads/album/active/Facilities/1740802650_2.jpg
+Original Path: ../src/uploads/album/active/Facilities/1740802654_1.jpg
+Cleaned Path: src/uploads/album/active/Facilities/1740802654_1.jpg
+Final JSON: ["src\/uploads\/album\/active\/Facilities\/1740802637_67.jpg","src\/uploads\/album\/active\/Facilities\/1740802641_4.jpg","src\/uploads\/album\/active\/Facilities\/1740802645_3.jpg","src\/uploads\/album\/active\/Facilities\/1740802650_2.jpg","src\/uploads\/album\/active\/Facilities\/1740802654_1.jpg"]
+Folder ID: 26
+Original Path: ../src/uploads/album/active/Swimming Pool/1740802124_4th pic.jpg
+Cleaned Path: src/uploads/album/active/Swimming Pool/1740802124_4th pic.jpg
+Original Path: ../src/uploads/album/active/Swimming Pool/1740802130_2nd pic.jpg
+Cleaned Path: src/uploads/album/active/Swimming Pool/1740802130_2nd pic.jpg
+Original Path: ../src/uploads/album/active/Swimming Pool/1740802135_3rd pic.jpg
+Cleaned Path: src/uploads/album/active/Swimming Pool/1740802135_3rd pic.jpg
+Final JSON: ["src\/uploads\/album\/active\/Swimming Pool\/1740802124_4th pic.jpg","src\/uploads\/album\/active\/Swimming Pool\/1740802130_2nd pic.jpg","src\/uploads\/album\/active\/Swimming Pool\/1740802135_3rd pic.jpg"]
+Folder ID: 27
+Original Path: ../src/uploads/album/active/Facilities/1740802637_67.jpg
+Cleaned Path: src/uploads/album/active/Facilities/1740802637_67.jpg
+Original Path: ../src/uploads/album/active/Facilities/1740802641_4.jpg
+Cleaned Path: src/uploads/album/active/Facilities/1740802641_4.jpg
+Original Path: ../src/uploads/album/active/Facilities/1740802645_3.jpg
+Cleaned Path: src/uploads/album/active/Facilities/1740802645_3.jpg
+Original Path: ../src/uploads/album/active/Facilities/1740802650_2.jpg
+Cleaned Path: src/uploads/album/active/Facilities/1740802650_2.jpg
+Original Path: ../src/uploads/album/active/Facilities/1740802654_1.jpg
+Cleaned Path: src/uploads/album/active/Facilities/1740802654_1.jpg
+Final JSON: ["src\/uploads\/album\/active\/Facilities\/1740802637_67.jpg","src\/uploads\/album\/active\/Facilities\/1740802641_4.jpg","src\/uploads\/album\/active\/Facilities\/1740802645_3.jpg","src\/uploads\/album\/active\/Facilities\/1740802650_2.jpg","src\/uploads\/album\/active\/Facilities\/1740802654_1.jpg"]
+Folder ID: 26
+Original Path: ../src/uploads/album/active/Swimming Pool/1740802124_4th pic.jpg
+Cleaned Path: src/uploads/album/active/Swimming Pool/1740802124_4th pic.jpg
+Original Path: ../src/uploads/album/active/Swimming Pool/1740802130_2nd pic.jpg
+Cleaned Path: src/uploads/album/active/Swimming Pool/1740802130_2nd pic.jpg
+Original Path: ../src/uploads/album/active/Swimming Pool/1740802135_3rd pic.jpg
+Cleaned Path: src/uploads/album/active/Swimming Pool/1740802135_3rd pic.jpg
+Final JSON: ["src\/uploads\/album\/active\/Swimming Pool\/1740802124_4th pic.jpg","src\/uploads\/album\/active\/Swimming Pool\/1740802130_2nd pic.jpg","src\/uploads\/album\/active\/Swimming Pool\/1740802135_3rd pic.jpg"]
+Folder ID: 27
+Original Path: ../src/uploads/album/active/Facilities/1740802637_67.jpg
+Cleaned Path: src/uploads/album/active/Facilities/1740802637_67.jpg
+Original Path: ../src/uploads/album/active/Facilities/1740802641_4.jpg
+Cleaned Path: src/uploads/album/active/Facilities/1740802641_4.jpg
+Original Path: ../src/uploads/album/active/Facilities/1740802645_3.jpg
+Cleaned Path: src/uploads/album/active/Facilities/1740802645_3.jpg
+Original Path: ../src/uploads/album/active/Facilities/1740802650_2.jpg
+Cleaned Path: src/uploads/album/active/Facilities/1740802650_2.jpg
+Original Path: ../src/uploads/album/active/Facilities/1740802654_1.jpg
+Cleaned Path: src/uploads/album/active/Facilities/1740802654_1.jpg
+Final JSON: ["src\/uploads\/album\/active\/Facilities\/1740802637_67.jpg","src\/uploads\/album\/active\/Facilities\/1740802641_4.jpg","src\/uploads\/album\/active\/Facilities\/1740802645_3.jpg","src\/uploads\/album\/active\/Facilities\/1740802650_2.jpg","src\/uploads\/album\/active\/Facilities\/1740802654_1.jpg"]
+Folder ID: 26
+Original Path: ../src/uploads/album/active/Swimming Pool/1740802124_4th pic.jpg
+Cleaned Path: src/uploads/album/active/Swimming Pool/1740802124_4th pic.jpg
+Original Path: ../src/uploads/album/active/Swimming Pool/1740802130_2nd pic.jpg
+Cleaned Path: src/uploads/album/active/Swimming Pool/1740802130_2nd pic.jpg
+Original Path: ../src/uploads/album/active/Swimming Pool/1740802135_3rd pic.jpg
+Cleaned Path: src/uploads/album/active/Swimming Pool/1740802135_3rd pic.jpg
+Final JSON: ["src\/uploads\/album\/active\/Swimming Pool\/1740802124_4th pic.jpg","src\/uploads\/album\/active\/Swimming Pool\/1740802130_2nd pic.jpg","src\/uploads\/album\/active\/Swimming Pool\/1740802135_3rd pic.jpg"]
+Folder ID: 26
+Original Path: ../src/uploads/album/active/Swimming Pool/1740802124_4th pic.jpg
+Cleaned Path: src/uploads/album/active/Swimming Pool/1740802124_4th pic.jpg
+Original Path: ../src/uploads/album/active/Swimming Pool/1740802130_2nd pic.jpg
+Cleaned Path: src/uploads/album/active/Swimming Pool/1740802130_2nd pic.jpg
+Original Path: ../src/uploads/album/active/Swimming Pool/1740802135_3rd pic.jpg
+Cleaned Path: src/uploads/album/active/Swimming Pool/1740802135_3rd pic.jpg
+Final JSON: ["src\/uploads\/album\/active\/Swimming Pool\/1740802124_4th pic.jpg","src\/uploads\/album\/active\/Swimming Pool\/1740802130_2nd pic.jpg","src\/uploads\/album\/active\/Swimming Pool\/1740802135_3rd pic.jpg"]
+Folder ID: 27
+Original Path: ../src/uploads/album/active/Facilities/1740802637_67.jpg
+Cleaned Path: src/uploads/album/active/Facilities/1740802637_67.jpg
+Original Path: ../src/uploads/album/active/Facilities/1740802641_4.jpg
+Cleaned Path: src/uploads/album/active/Facilities/1740802641_4.jpg
+Original Path: ../src/uploads/album/active/Facilities/1740802645_3.jpg
+Cleaned Path: src/uploads/album/active/Facilities/1740802645_3.jpg
+Original Path: ../src/uploads/album/active/Facilities/1740802650_2.jpg
+Cleaned Path: src/uploads/album/active/Facilities/1740802650_2.jpg
+Original Path: ../src/uploads/album/active/Facilities/1740802654_1.jpg
+Cleaned Path: src/uploads/album/active/Facilities/1740802654_1.jpg
+Final JSON: ["src\/uploads\/album\/active\/Facilities\/1740802637_67.jpg","src\/uploads\/album\/active\/Facilities\/1740802641_4.jpg","src\/uploads\/album\/active\/Facilities\/1740802645_3.jpg","src\/uploads\/album\/active\/Facilities\/1740802650_2.jpg","src\/uploads\/album\/active\/Facilities\/1740802654_1.jpg"]
+Folder ID: 26
+Original Path: ../src/uploads/album/active/Swimming Pool/1740802124_4th pic.jpg
+Cleaned Path: src/uploads/album/active/Swimming Pool/1740802124_4th pic.jpg
+Original Path: ../src/uploads/album/active/Swimming Pool/1740802130_2nd pic.jpg
+Cleaned Path: src/uploads/album/active/Swimming Pool/1740802130_2nd pic.jpg
+Original Path: ../src/uploads/album/active/Swimming Pool/1740802135_3rd pic.jpg
+Cleaned Path: src/uploads/album/active/Swimming Pool/1740802135_3rd pic.jpg
+Final JSON: ["src\/uploads\/album\/active\/Swimming Pool\/1740802124_4th pic.jpg","src\/uploads\/album\/active\/Swimming Pool\/1740802130_2nd pic.jpg","src\/uploads\/album\/active\/Swimming Pool\/1740802135_3rd pic.jpg"]
+Folder ID: 26
+Original Path: ../src/uploads/album/active/Swimming Pool/1740802124_4th pic.jpg
+Cleaned Path: src/uploads/album/active/Swimming Pool/1740802124_4th pic.jpg
+Original Path: ../src/uploads/album/active/Swimming Pool/1740802130_2nd pic.jpg
+Cleaned Path: src/uploads/album/active/Swimming Pool/1740802130_2nd pic.jpg
+Original Path: ../src/uploads/album/active/Swimming Pool/1740802135_3rd pic.jpg
+Cleaned Path: src/uploads/album/active/Swimming Pool/1740802135_3rd pic.jpg
+Final JSON: ["src\/uploads\/album\/active\/Swimming Pool\/1740802124_4th pic.jpg","src\/uploads\/album\/active\/Swimming Pool\/1740802130_2nd pic.jpg","src\/uploads\/album\/active\/Swimming Pool\/1740802135_3rd pic.jpg"]
+Folder ID: 27
+Original Path: ../src/uploads/album/active/Facilities/1740802637_67.jpg
+Cleaned Path: src/uploads/album/active/Facilities/1740802637_67.jpg
+Original Path: ../src/uploads/album/active/Facilities/1740802641_4.jpg
+Cleaned Path: src/uploads/album/active/Facilities/1740802641_4.jpg
+Original Path: ../src/uploads/album/active/Facilities/1740802645_3.jpg
+Cleaned Path: src/uploads/album/active/Facilities/1740802645_3.jpg
+Original Path: ../src/uploads/album/active/Facilities/1740802650_2.jpg
+Cleaned Path: src/uploads/album/active/Facilities/1740802650_2.jpg
+Original Path: ../src/uploads/album/active/Facilities/1740802654_1.jpg
+Cleaned Path: src/uploads/album/active/Facilities/1740802654_1.jpg
+Final JSON: ["src\/uploads\/album\/active\/Facilities\/1740802637_67.jpg","src\/uploads\/album\/active\/Facilities\/1740802641_4.jpg","src\/uploads\/album\/active\/Facilities\/1740802645_3.jpg","src\/uploads\/album\/active\/Facilities\/1740802650_2.jpg","src\/uploads\/album\/active\/Facilities\/1740802654_1.jpg"]
+Folder ID: 26
+Original Path: ../src/uploads/album/active/Swimming Pool/1740802124_4th pic.jpg
+Cleaned Path: src/uploads/album/active/Swimming Pool/1740802124_4th pic.jpg
+Original Path: ../src/uploads/album/active/Swimming Pool/1740802130_2nd pic.jpg
+Cleaned Path: src/uploads/album/active/Swimming Pool/1740802130_2nd pic.jpg
+Original Path: ../src/uploads/album/active/Swimming Pool/1740802135_3rd pic.jpg
+Cleaned Path: src/uploads/album/active/Swimming Pool/1740802135_3rd pic.jpg
+Final JSON: ["src\/uploads\/album\/active\/Swimming Pool\/1740802124_4th pic.jpg","src\/uploads\/album\/active\/Swimming Pool\/1740802130_2nd pic.jpg","src\/uploads\/album\/active\/Swimming Pool\/1740802135_3rd pic.jpg"]
+Folder ID: 26
+Original Path: ../src/uploads/album/active/Swimming Pool/1740802124_4th pic.jpg
+Cleaned Path: src/uploads/album/active/Swimming Pool/1740802124_4th pic.jpg
+Original Path: ../src/uploads/album/active/Swimming Pool/1740802130_2nd pic.jpg
+Cleaned Path: src/uploads/album/active/Swimming Pool/1740802130_2nd pic.jpg
+Original Path: ../src/uploads/album/active/Swimming Pool/1740802135_3rd pic.jpg
+Cleaned Path: src/uploads/album/active/Swimming Pool/1740802135_3rd pic.jpg
+Final JSON: ["src\/uploads\/album\/active\/Swimming Pool\/1740802124_4th pic.jpg","src\/uploads\/album\/active\/Swimming Pool\/1740802130_2nd pic.jpg","src\/uploads\/album\/active\/Swimming Pool\/1740802135_3rd pic.jpg"]
+Folder ID: 27
+Original Path: ../src/uploads/album/active/Facilities/1740802637_67.jpg
+Cleaned Path: src/uploads/album/active/Facilities/1740802637_67.jpg
+Original Path: ../src/uploads/album/active/Facilities/1740802641_4.jpg
+Cleaned Path: src/uploads/album/active/Facilities/1740802641_4.jpg
+Original Path: ../src/uploads/album/active/Facilities/1740802645_3.jpg
+Cleaned Path: src/uploads/album/active/Facilities/1740802645_3.jpg
+Original Path: ../src/uploads/album/active/Facilities/1740802650_2.jpg
+Cleaned Path: src/uploads/album/active/Facilities/1740802650_2.jpg
+Original Path: ../src/uploads/album/active/Facilities/1740802654_1.jpg
+Cleaned Path: src/uploads/album/active/Facilities/1740802654_1.jpg
+Final JSON: ["src\/uploads\/album\/active\/Facilities\/1740802637_67.jpg","src\/uploads\/album\/active\/Facilities\/1740802641_4.jpg","src\/uploads\/album\/active\/Facilities\/1740802645_3.jpg","src\/uploads\/album\/active\/Facilities\/1740802650_2.jpg","src\/uploads\/album\/active\/Facilities\/1740802654_1.jpg"]

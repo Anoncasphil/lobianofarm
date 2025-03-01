@@ -1,147 +1,125 @@
+<?php
+include 'db_connection.php';
+
+// Fetch categories from folders table
+$sql = "SELECT id, name, path FROM folders WHERE archived = 0";
+$result = $conn->query($sql);
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@3.3.3/dist/tailwind.min.css" rel="stylesheet">
-    <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
-    <link href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" rel="stylesheet"/>
-    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <title>Categories</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@flowbite/web"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flowbite@1.5.0/dist/flowbite.min.js"></script>
 
-    <style>
-        .swiper-wrapper {
-            width: 100%;
-            height: max-content !important;
-            padding-bottom: 64px !important;
-            -webkit-transition-timing-function: linear !important;
-            transition-timing-function: linear !important;
-            position: relative;
-        }
-        .swiper-pagination-bullet {
-            background: #4f46e5;
-        }
-        .swiper-button-prev, .swiper-button-next {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            z-index: 10;
-            background-color: rgba(0, 0, 0, 0.5);
-            color: white;
-        }
-        .swiper-button-prev {
-            left: -30px; /* Moves the left button more outside */
-        }
-        .swiper-button-next {
-            right: -30px; /* Moves the right button more outside */
-        }
-    </style>
-</head>
-<body class="bg-gray-100">
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get the first category and display it by default
+            const firstCategoryId = document.querySelector('.category-button').getAttribute('data-id');
+            toggleCategory(firstCategoryId);
+        });
 
-<!-- Rates & Add-ons Section -->
-<section id="rates-addons" class="bg-white min-h-screen flex flex-col items-center justify-center pt-16 px-4">
-  <div class="max-w-screen-xl mx-auto text-center">
-    
-    <!-- Rates Section -->
-    <div class="mb-16 relative z-10">
-      <h2 class="text-3xl font-extrabold text-gray-900">Our Rates</h2>
-      <p class="mt-4 text-lg text-gray-600">Check out our affordable pricing plans designed for everyone.</p>
-      
-      <!-- Scrollable Horizontal Rates Cards with Swiper -->
-      <div class="w-full relative">
-        <div class="swiper multiple-slide-carousel swiper-container relative">
-          <div class="swiper-wrapper mb-16">
-            <?php
-            // Include database connection
-            include 'db_connection.php';
+        function toggleCategory(id) {
+            // Hide all categories first
+            const allCategories = document.querySelectorAll('.category-content');
+            allCategories.forEach(function (category) {
+                category.style.display = 'none';
+            });
 
-            // Fetch rates from the database
-            $sql = "SELECT * FROM rates WHERE status = 'active'";
-            $result = $conn->query($sql);
-
-            if ($result->num_rows > 0) {
-                while ($row = $result->fetch_assoc()) {
-                    $id = $row['id'];
-                    $name = $row['name'];
-                    $price = $row['price'];
-                    $hours_of_stay = $row['hoursofstay'];
-                    $picture = $row['picture'];
-
-                    echo "
-                    <div class='swiper-slide'>
-                      <div class='bg-indigo-50 rounded-2xl h-96 flex justify-center items-center'>
-                        <div class='text-center'>
-                          <img class='rounded-lg w-full h-60 object-cover mx-auto' src='../src/uploads/rates/$picture' alt='$name'>
-                          <h3 class='text-xl font-bold text-gray-900 mt-4'>$name</h3>
-                          <p class='text-gray-600 mt-2'>Stay for $hours_of_stay hours.</p>
-                          <p class='text-gray-900 font-semibold text-xl mt-4'>₱$price</p>
-                          <button onclick='selectRate(\"$id\", \"$name\", \"$price\")' class='mt-4 bg-blue-600 text-white w-full font-bold py-3 px-4 rounded-md hover:bg-blue-700 transition duration-200'>
-                              Select
-                          </button>
-                        </div>
-                      </div>
-                    </div>";
-                }
-            } else {
-                echo "<p class='text-gray-600'>No active rates available.</p>";
+            // Show the selected category
+            const selectedCategory = document.getElementById('category-' + id);
+            if (selectedCategory) {
+                selectedCategory.style.display = 'block';
             }
+        }
+    </script>
+</head>
+<body class="bg-gray-900 p-6">
 
-            // Close the database connection
-            $conn->close();
-            ?>
-          </div>
+<!-- Category Buttons -->
+<div class="flex items-center justify-center py-4 md:py-8 flex-wrap mb-6">
+    <?php 
+    $firstCategoryId = null; // Store the first category ID to display it by default
+    while ($row = $result->fetch_assoc()):
+        if (!$firstCategoryId) {
+            $firstCategoryId = $row['id']; // Set the first category ID
+        }
+    ?>
+    <button type="button" class="category-button text-white border border-white bg-transparent hover:bg-white hover:text-gray-900 focus:ring-4 focus:outline-none focus:ring-gray-300 rounded-full text-base font-medium px-5 py-2.5 text-center me-3 mb-3" data-id="<?php echo $row['id']; ?>" onclick="toggleCategory(<?php echo $row['id']; ?>)"><?php echo htmlspecialchars($row['name']); ?></button>
+    <?php endwhile; ?>
+</div>
 
-          <!-- Navigation Buttons -->
-          <div class="absolute flex justify-center items-center m-auto left-0 right-0 w-fit bottom-12">
-            <button id="slider-button-left" class="swiper-button-prev group !p-2 flex justify-center items-center border border-solid border-indigo-600 !w-12 !h-12 transition-all duration-500 rounded-full hover:bg-indigo-600 !-translate-x-16">
-              <svg class="h-5 w-5 text-indigo-600 group-hover:text-white" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
-                <path d="M10.0002 11.9999L6 7.99971L10.0025 3.99719" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
-              </svg>
-            </button>
-            <button id="slider-button-right" class="swiper-button-next group !p-2 flex justify-center items-center border border-solid border-indigo-600 !w-12 !h-12 transition-all duration-500 rounded-full hover:bg-indigo-600 !translate-x-16">
-              <svg class="h-5 w-5 text-indigo-600 group-hover:text-white" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
-                <path d="M5.99984 4.00012L10 8.00029L5.99748 12.0028" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
-              </svg>
-            </button>
-          </div>
+<!-- Categories content (Hidden initially) -->
+<div id="categories-content">
+    <?php
+    // Reset pointer to the first result for displaying content.
+    mysqli_data_seek($result, 0);
+    while ($row = $result->fetch_assoc()):
+        // Remove the ../ from the path
+        $path = str_replace('../', '', $row['path']);
+    ?>
+    <div id="category-<?php echo $row['id']; ?>" class="category-content" style="display: none;">
+        <div class="relative">
+            <!-- Full-screen carousel -->
+            <div id="indicators-carousel-28-<?php echo $row['id']; ?>" class="relative w-full h-screen" data-carousel="static">
+                <div class="relative h-full overflow-hidden rounded-lg">
+                    <?php
+                    $files = glob($path . "/*.{jpg,jpeg,png,gif}", GLOB_BRACE);
+                    $firstItem = true;
+                    foreach ($files as $index => $file):
+                        if (file_exists($file)): ?>
+                            <div class="duration-700 ease-in-out <?php echo $firstItem ? 'block' : 'hidden'; ?>" data-carousel-item <?php echo $firstItem ? 'data-carousel-item="active"' : ''; ?>>
+                                <img src="<?php echo htmlspecialchars($file); ?>" class="absolute block w-full max-w-full h-auto object-cover top-0 left-0" alt="Image <?php echo $index + 1; ?>">
+                            </div>
+                            <?php $firstItem = false; ?>
+                        <?php else: ?>
+                            <p>File does not exist: <?php echo htmlspecialchars($file); ?></p>
+                        <?php endif;
+                    endforeach; ?>
+                </div>
+
+                <!-- Slider indicators -->
+                <div class="absolute z-30 flex -translate-x-1/2 space-x-3 rtl:space-x-reverse bottom-5 left-1/2">
+                    <?php foreach ($files as $index => $file): ?>
+                        <button type="button" class="w-3 h-3 rounded-full" aria-current="false" aria-label="Slide <?php echo $index + 1; ?>" data-carousel-slide-to="<?php echo $index; ?>"></button>
+                    <?php endforeach; ?>
+                </div>
+
+                <!-- Slider controls -->
+                <button type="button" class="absolute top-0 start-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none" data-carousel-prev>
+                    <span class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/30 dark:bg-gray-800/30 group-hover:bg-white/50 dark:group-hover:bg-gray-800/60 group-focus:ring-4 group-focus:ring-white dark:group-focus:ring-gray-800/70 group-focus:outline-none">
+                        <svg class="w-4 h-4 text-white dark:text-gray-800 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 1 1 5l4 4"></path>
+                        </svg>
+                        <span class="sr-only">Previous</span>
+                    </span>
+                </button>
+                <button type="button" class="absolute top-0 end-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none" data-carousel-next>
+                    <span class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/30 dark:bg-gray-800/30 group-hover:bg-white/50 dark:group-hover:bg-gray-800/60 group-focus:ring-4 group-focus:ring-white dark:group-focus:ring-gray-800/70 group-focus:outline-none">
+                        <svg class="w-4 h-4 text-white dark:text-gray-800 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4"></path>
+                        </svg>
+                        <span class="sr-only">Next</span>
+                    </span>
+                </button>
+            </div>
+
+            <!-- Overlay category name (at the bottom of the image with white background) -->
+            <div class="absolute bottom-0 left-0 w-full bg-white bg-opacity-80 text-gray-900 font-bold text-4xl p-4 z-10">
+                <h2 class="text-4xl"><?php echo htmlspecialchars($row['name']); ?></h2>
+            </div>
         </div>
-      </div>
     </div>
-
-    <!-- Add-ons Section -->
-    <div class="relative z-10">
-      <h2 class="text-3xl font-extrabold text-gray-900">Add-ons</h2>
-      <p class="mt-4 text-lg text-gray-600">Explore our additional services to enhance your experience.</p>
-
-      <!-- Add-ons Cards -->
-      <div class="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <div class="bg-gray-100 p-6 rounded-2xl shadow-lg">
-          <h3 class="text-xl font-bold text-gray-900">Breakfast</h3>
-          <p class="text-gray-600 mt-2">Start your day with a delicious meal.</p>
-          <p class="text-gray-900 font-semibold mt-4">$10</p>
-        </div>
-        <div class="bg-gray-100 p-6 rounded-2xl shadow-lg">
-          <h3 class="text-xl font-bold text-gray-900">Massage</h3>
-          <p class="text-gray-600 mt-2">Relax with a soothing massage session.</p>
-          <p class="text-gray-900 font-semibold mt-4">$30</p>
-        </div>
-        <div class="bg-gray-100 p-6 rounded-2xl shadow-lg">
-          <h3 class="text-xl font-bold text-gray-900">Kayaking</h3>
-          <p class="text-gray-600 mt-2">Enjoy an adventure on the water.</p>
-          <p class="text-gray-900 font-semibold mt-4">$20</p>
-        </div>
-        <div class="bg-gray-100 p-6 rounded-2xl shadow-lg">
-          <h3 class="text-xl font-bold text-gray-900">Bonfire Night</h3>
-          <p class="text-gray-600 mt-2">Experience a cozy bonfire under the stars.</p>
-          <p class="text-gray-900 font-semibold mt-4">$15</p>
-        </div>
-      </div>
-    </div>
-
-  </div>
-</section>
-
+    <?php endwhile; ?>
+</div>
 
 </body>
 </html>
+
+<?php
+$conn->close();
+?>

@@ -43,13 +43,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Get folder path from the folder record
     $folderPath = $folder['path'];
 
+    // Sanitize folder path by removing spaces
+    $folderPath = str_replace(' ', '_', $folderPath);
+
     // Check if folder path is not empty
     if (empty($folderPath)) {
         echo json_encode(["success" => false, "message" => "Folder path is empty in the database for ID: $folder_id"]);
         exit;
     }
 
-    // Define upload directory using the fetched folder path
+    // Define upload directory using the sanitized folder path
     $uploadDir =  $folderPath;  // Prepend with ../ to ensure it maps correctly to the server
 
     // Check if folder exists on the server, and if not, create it
@@ -60,8 +63,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
     }
 
-    // Generate unique file name
+    // Generate unique file name and sanitize it by removing spaces
     $fileName = time() . '_' . basename($file['name']);
+    $fileName = str_replace(' ', '_', $fileName);  // Replace spaces with underscores
     $filePath = $uploadDir . "/" . $fileName;  // Using the folder path as is
 
     // Move uploaded file to the folder

@@ -22,8 +22,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         mkdir($baseDir, 0777, true);
     }
 
-    // Sanitize folder name for filesystem use
+    // Sanitize folder name for filesystem use, remove spaces
     $folderName = preg_replace('/[^a-zA-Z0-9_-]/', '_', $name); // Replace invalid characters
+    $folderName = str_replace(' ', '_', $folderName); // Replace spaces with underscores
     $folderPath = $baseDir . $folderName; // Full folder path
 
     // Insert into database with folder path
