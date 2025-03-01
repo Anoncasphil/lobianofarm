@@ -159,7 +159,7 @@
   <input id="agree" name="agree" type="checkbox" required class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500" />
   <label for="agree" class="ml-2 text-sm text-gray-800">
     I have read, understood and agreed to the resort's 
-    <a href="#" class="text-blue-900 hover:underline">terms and conditions.</a>
+    <a href="../tac.html" class="text-blue-900 hover:underline">terms and conditions.</a>
   </label>
 </div>
           <div class="mt-8">

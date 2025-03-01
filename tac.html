@@ -4,104 +4,160 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Terms of Service - 888 Lobiano's Farm Resort</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f9f9f9;
-            display: flex;
-            justify-content: center;
-            align-items: flex-start;
-            min-height: 100vh;
-            overflow-y: auto;
-        }
-        .container {
-            max-width: 800px;
-            background: white;
-            padding: 20px;
-            box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
-            border-radius: 5px;
-            margin: 20px;
-        }
-        h1, h2 {
-            color: #333;
-        }
-        ul {
-            padding-left: 20px;
-        }
-        .contact {
-            margin-top: 20px;
-            padding-top: 10px;
-            border-top: 1px solid #ddd;
-        }
-    </style>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 </head>
-<body>
-    <div class="container">
-        <h1>Terms of Service for 888 Lobiano's Farm Resort Reservation System</h1>
-        
-        <h2>1. Introduction</h2>
-        <p>Welcome to 888 Lobiano's Farm Resort. By making a reservation through our system, you agree to comply with these Terms of Service.</p>
-        
-        <h2>2. Reservation Policy</h2>
-        <ul>
-            <li>All reservations are subject to availability.</li>
-            <li>A reservation is confirmed only after payment verification.</li>
-            <li>Pending reservations without verified payment may be canceled within 24 hours.</li>
-        </ul>
+<body class="bg-blue-50">
+    <div class="min-h-screen flex items-center justify-center px-4 py-12">
+        <div class="max-w-4xl w-full bg-white rounded-xl shadow-lg overflow-hidden">
+            <!-- Header -->
+            <div class="bg-blue-800 py-8 px-6">
+                <h1 class="text-3xl font-bold text-white text-center">Terms of Service</h1>
+                <p class="text-blue-200 text-center mt-2">888 Lobiano's Farm Resort Reservation System</p>
+            </div>
+            
+            <!-- Content -->
+            <div class="p-6 md:p-10">
+                <!-- Table of Contents -->
+                <div class="mb-8 bg-blue-50 rounded-lg p-4">
+                    <h3 class="text-lg font-semibold text-blue-800 mb-2">Contents:</h3>
+                    <ol class="list-decimal ml-5 text-blue-700">
+                        <li class="mb-1 hover:text-blue-500"><a href="#introduction" class="hover:underline">Introduction</a></li>
+                        <li class="mb-1 hover:text-blue-500"><a href="#reservation" class="hover:underline">Reservation Policy</a></li>
+                        <li class="mb-1 hover:text-blue-500"><a href="#payment" class="hover:underline">Payment Terms</a></li>
+                        <li class="mb-1 hover:text-blue-500"><a href="#cancellation" class="hover:underline">Cancellation Policy</a></li>
+                        <li class="mb-1 hover:text-blue-500"><a href="#reschedule" class="hover:underline">Rescheduling Policy</a></li>
+                        <li class="mb-1 hover:text-blue-500"><a href="#guest" class="hover:underline">Guest Responsibilities</a></li>
+                        <li class="mb-1 hover:text-blue-500"><a href="#privacy" class="hover:underline">Privacy Policy</a></li>
+                        <li class="mb-1 hover:text-blue-500"><a href="#liability" class="hover:underline">Liability Disclaimer</a></li>
+                        <li class="mb-1 hover:text-blue-500"><a href="#amendments" class="hover:underline">Amendments</a></li>
+                        <li class="mb-1 hover:text-blue-500"><a href="#contact" class="hover:underline">Contact Information</a></li>
+                    </ol>
+                </div>
+                
+                <!-- Last Updated -->
+                <div class="text-right text-gray-500 text-sm mb-8">
+                    Last updated: March 1, 2025
+                </div>
 
-        <h2>3. Payment Terms</h2>
-        <ul>
-            <li>Payments must be made through the provided QR code and verified by our admin.</li>
-            <li>Proof of payment must be uploaded during the reservation process.</li>
-            <li>All payments are non-refundable once booked, regardless of the cancellation date.</li>
-        </ul>
+                <!-- Sections -->
+                <div class="space-y-8">
+                    <section id="introduction" class="transition-all duration-200 hover:bg-blue-50 p-4 rounded-lg">
+                        <h2 class="text-xl font-bold text-blue-800 mb-3 flex items-center">
+                            <span class="bg-blue-800 text-white rounded-full w-7 h-7 inline-flex items-center justify-center mr-2">1</span>
+                            Introduction
+                        </h2>
+                        <p class="text-gray-700 ml-9">Welcome to 888 Lobiano's Farm Resort. By making a reservation through our system, you agree to comply with these Terms of Service.</p>
+                    </section>
 
-        <h2>4. Cancellation Policy</h2>
-        <ul>
-            <li>Cancellations made 7 days before the reservation date are eligible for rescheduling only.</li>
-            <li>Cancellations made less than 7 days before the reservation date are not eligible for rescheduling or refund.</li>
-        </ul>
+                    <section id="reservation" class="transition-all duration-200 hover:bg-blue-50 p-4 rounded-lg">
+                        <h2 class="text-xl font-bold text-blue-800 mb-3 flex items-center">
+                            <span class="bg-blue-800 text-white rounded-full w-7 h-7 inline-flex items-center justify-center mr-2">2</span>
+                            Reservation Policy
+                        </h2>
+                        <ul class="list-disc text-gray-700 ml-9 space-y-2">
+                            <li>All reservations are subject to availability.</li>
+                            <li>A reservation is confirmed only after payment verification.</li>
+                            <li>Pending reservations without verified payment may be canceled within 24 hours.</li>
+                        </ul>
+                    </section>
 
-        <h2>5. Rescheduling Policy</h2>
-        <ul>
-            <li>Rescheduling is allowed once and must be requested at least 3 days before the reserved date.</li>
-            <li>Rescheduling is subject to availability.</li>
-        </ul>
+                    <section id="payment" class="transition-all duration-200 hover:bg-blue-50 p-4 rounded-lg">
+                        <h2 class="text-xl font-bold text-blue-800 mb-3 flex items-center">
+                            <span class="bg-blue-800 text-white rounded-full w-7 h-7 inline-flex items-center justify-center mr-2">3</span>
+                            Payment Terms
+                        </h2>
+                        <ul class="list-disc text-gray-700 ml-9 space-y-2">
+                            <li>Payments must be made through the provided QR code and verified by our admin.</li>
+                            <li>Proof of payment must be uploaded during the reservation process.</li>
+                            <li>All payments are non-refundable once booked, regardless of the cancellation date.</li>
+                        </ul>
+                    </section>
 
-        <h2>6. Guest Responsibilities</h2>
-        <ul>
-            <li>Guests must follow resort rules and regulations during their stay.</li>
-            <li>Any damage caused to resort property will be charged to the guest.</li>
-        </ul>
+                    <section id="cancellation" class="transition-all duration-200 hover:bg-blue-50 p-4 rounded-lg">
+                        <h2 class="text-xl font-bold text-blue-800 mb-3 flex items-center">
+                            <span class="bg-blue-800 text-white rounded-full w-7 h-7 inline-flex items-center justify-center mr-2">4</span>
+                            Cancellation Policy
+                        </h2>
+                        <ul class="list-disc text-gray-700 ml-9 space-y-2">
+                            <li>Cancellations made 7 days before the reservation date are eligible for rescheduling only.</li>
+                            <li>Cancellations made less than 7 days before the reservation date are not eligible for rescheduling or refund.</li>
+                        </ul>
+                    </section>
 
-        <h2>7. Privacy Policy</h2>
-        <ul>
-            <li>We collect and store personal information only for reservation and contact purposes.</li>
-            <li>We do not share personal information with third parties without consent.</li>
-        </ul>
+                    <section id="reschedule" class="transition-all duration-200 hover:bg-blue-50 p-4 rounded-lg">
+                        <h2 class="text-xl font-bold text-blue-800 mb-3 flex items-center">
+                            <span class="bg-blue-800 text-white rounded-full w-7 h-7 inline-flex items-center justify-center mr-2">5</span>
+                            Rescheduling Policy
+                        </h2>
+                        <ul class="list-disc text-gray-700 ml-9 space-y-2">
+                            <li>Rescheduling is allowed once and must be requested at least 3 days before the reserved date.</li>
+                            <li>Rescheduling is subject to availability.</li>
+                        </ul>
+                    </section>
 
-        <h2>8. Liability Disclaimer</h2>
-        <ul>
-            <li>The resort is not responsible for any loss, theft, or injury during the stay.</li>
-            <li>Guests are advised to secure their belongings.</li>
-        </ul>
+                    <section id="guest" class="transition-all duration-200 hover:bg-blue-50 p-4 rounded-lg">
+                        <h2 class="text-xl font-bold text-blue-800 mb-3 flex items-center">
+                            <span class="bg-blue-800 text-white rounded-full w-7 h-7 inline-flex items-center justify-center mr-2">6</span>
+                            Guest Responsibilities
+                        </h2>
+                        <ul class="list-disc text-gray-700 ml-9 space-y-2">
+                            <li>Guests must follow resort rules and regulations during their stay.</li>
+                            <li>Any damage caused to resort property will be charged to the guest.</li>
+                        </ul>
+                    </section>
 
-        <h2>9. Amendments</h2>
-        <ul>
-            <li>We reserve the right to update these Terms of Service at any time. Changes will be posted on our website.</li>
-        </ul>
+                    <section id="privacy" class="transition-all duration-200 hover:bg-blue-50 p-4 rounded-lg">
+                        <h2 class="text-xl font-bold text-blue-800 mb-3 flex items-center">
+                            <span class="bg-blue-800 text-white rounded-full w-7 h-7 inline-flex items-center justify-center mr-2">7</span>
+                            Privacy Policy
+                        </h2>
+                        <ul class="list-disc text-gray-700 ml-9 space-y-2">
+                            <li>We collect and store personal information only for reservation and contact purposes.</li>
+                            <li>We do not share personal information with third parties without consent.</li>
+                        </ul>
+                    </section>
 
-        <h2>10. Contact Information</h2>
-        <div class="contact">
-            <p>For inquiries, please contact us at:</p>
-            <p><strong>888 Lobiano's Farm Resort</strong></p>
-            <p>Email: <a href="mailto:contact@lobianosfarm.com">contact@lobianosfarm.com</a></p>
-            <p>Phone: +63 912 345 6789</p>
+                    <section id="liability" class="transition-all duration-200 hover:bg-blue-50 p-4 rounded-lg">
+                        <h2 class="text-xl font-bold text-blue-800 mb-3 flex items-center">
+                            <span class="bg-blue-800 text-white rounded-full w-7 h-7 inline-flex items-center justify-center mr-2">8</span>
+                            Liability Disclaimer
+                        </h2>
+                        <ul class="list-disc text-gray-700 ml-9 space-y-2">
+                            <li>The resort is not responsible for any loss, theft, or injury during the stay.</li>
+                            <li>Guests are advised to secure their belongings.</li>
+                        </ul>
+                    </section>
+
+                    <section id="amendments" class="transition-all duration-200 hover:bg-blue-50 p-4 rounded-lg">
+                        <h2 class="text-xl font-bold text-blue-800 mb-3 flex items-center">
+                            <span class="bg-blue-800 text-white rounded-full w-7 h-7 inline-flex items-center justify-center mr-2">9</span>
+                            Amendments
+                        </h2>
+                        <ul class="list-disc text-gray-700 ml-9 space-y-2">
+                            <li>We reserve the right to update these Terms of Service at any time. Changes will be posted on our website.</li>
+                        </ul>
+                    </section>
+
+                    <section id="contact" class="transition-all duration-200 hover:bg-blue-50 p-4 rounded-lg">
+                        <h2 class="text-xl font-bold text-blue-800 mb-3 flex items-center">
+                            <span class="bg-blue-800 text-white rounded-full w-7 h-7 inline-flex items-center justify-center mr-2">10</span>
+                            Contact Information
+                        </h2>
+                        <div class="ml-9 bg-blue-100 p-5 rounded-lg">
+                            <p class="text-gray-700 mb-2">For inquiries, please contact us at:</p>
+                            <p class="font-bold text-blue-800 mb-1">888 Lobiano's Farm Resort</p>
+                            <p class="text-gray-700">Email: <a href="mailto:contact@lobianosfarm.com" class="text-blue-600 hover:underline">contact@lobianosfarm.com</a></p>
+                            <p class="text-gray-700">Phone: <a href="tel:+639123456789" class="text-blue-600 hover:underline">+63 912 345 6789</a></p>
+                        </div>
+                    </section>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <div class="bg-gray-100 px-6 py-4 text-center text-gray-500 text-sm">
+                © 2025 888 Lobiano's Farm Resort. All rights reserved.
+            </div>
         </div>
-
-        <p>By proceeding with the reservation, you confirm that you have read, understood, and agree to these Terms of Service.</p>
     </div>
 </body>
 </html>
