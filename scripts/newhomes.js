@@ -188,22 +188,23 @@ document.getElementById('rate-modal').addEventListener('click', function(event) 
   
   async function fetchDisabledDates() {
     try {
-      const response = await fetch('api/get_disabled_dates.php');
-      const disabledDates = await response.json();
-  
-      console.log("Fetched Disabled Dates:", disabledDates);
-  
-      if (!disabledDates || !Array.isArray(disabledDates.disableDates)) {
-        console.error('Expected an array for disabled dates but received:', disabledDates);
-        return [];
-      }
-  
-      return disabledDates.disableDates.map(item => item.date);
+        const response = await fetch('api/get_disabled_dates.php'); // Update the URL if necessary
+        const disabledDates = await response.json();
+
+        console.log("Fetched Disabled Dates:", disabledDates);
+
+        if (!disabledDates || !Array.isArray(disabledDates.disableDates)) {
+            console.error('Expected an array for disabled dates but received:', disabledDates);
+            return [];
+        }
+
+        // Return the array of disabled dates
+        return disabledDates.disableDates.map(item => item.date); // Ensure we are returning just an array of dates
     } catch (error) {
-      console.error('Error fetching disabled dates:', error);
-      return [];
+        console.error('Error fetching disabled dates:', error);
+        return [];
     }
-  }
+}
   
   async function initializeFlatpickr() {
     const { reservedDaytime, reservedNighttime, reservedWholeDay } = await fetchReservedDates();
