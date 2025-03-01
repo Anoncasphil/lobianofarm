@@ -69,12 +69,12 @@ async function fetchReservationDetails(reservationId) {
         try {
             const response = await fetch("../api/get_reserved_dates_booking.php");
             const reservedDates = await response.json();
-
+    
             if (!reservedDates || !reservedDates.reservedDaytime || !reservedDates.reservedNighttime || !reservedDates.reservedWholeDay) {
                 console.error("Unexpected reserved dates structure:", reservedDates);
                 return { reservedDaytime: [], reservedNighttime: [], reservedWholeDay: [] };
             }
-
+    
             console.log("Fetched reserved dates:", reservedDates); // Log fetched reserved dates
             return reservedDates;
         } catch (error) {
@@ -82,15 +82,36 @@ async function fetchReservationDetails(reservationId) {
             return { reservedDaytime: [], reservedNighttime: [], reservedWholeDay: [] };
         }
     }
-
+    
+    async function fetchDisabledDates() {
+        try {
+            const response = await fetch('../api/get_disabled_dates.php'); // Update the URL if necessary
+            const disabledDates = await response.json();
+    
+            console.log("Fetched Disabled Dates:", disabledDates);
+    
+            if (!disabledDates || !Array.isArray(disabledDates.disableDates)) {
+                console.error('Expected an array for disabled dates but received:', disabledDates);
+                return [];
+            }
+    
+            // Return the array of disabled dates
+            return disabledDates.disableDates.map(item => item.date); // Ensure we are returning just an array of dates
+        } catch (error) {
+            console.error('Error fetching disabled dates:', error);
+            return [];
+        }
+    }
+    
     async function initializeFlatpickr(rateType) {
         const { reservedDaytime, reservedNighttime, reservedWholeDay } = await fetchReservedDates();
-        
+        const disabledDates = await fetchDisabledDates();
+    
         function checkAndShowAlert(selectedDate) {
             if (!selectedDate) return;
-
+    
             console.log(`Checking reservations for: ${selectedDate}`);
-
+    
             if (reservedDaytime.includes(selectedDate) && reservedNighttime.includes(selectedDate)) {
                 showAlert("Both Daytime and Nighttime");
             } else if (reservedNighttime.includes(selectedDate)) {
@@ -101,16 +122,16 @@ async function fetchReservationDetails(reservationId) {
                 hideAlert();
             }
         }
-
+    
         checkInDateInput.addEventListener("change", function () {
             checkAndShowAlert(checkInDateInput.value);
             updateCheckoutDate();
         });
-
+    
         const currentDate = new Date().toISOString().split("T")[0];
-
+    
         let disableDates = [{ from: "1970-01-01", to: currentDate }];
-
+    
         // Disable dates based on selected rate type
         if (rateType === "WholeDay") {
             disableDates = disableDates.concat(
@@ -125,27 +146,37 @@ async function fetchReservationDetails(reservationId) {
                 reservedNighttime.map((date) => ({ from: date, to: date }))
             );
         }
-
+    
+        // Add disabled dates to the disable list
+        disableDates = disableDates.concat(
+            disabledDates.map((date) => ({ from: date, to: date }))
+        );
+    
+        // Disable whole day reservations as well (for any rate type)
+        disableDates = disableDates.concat(
+            reservedWholeDay.map((date) => ({ from: date, to: date }))
+        );
+    
         flatpickr("#check-out-date", {
             dateFormat: "Y-m-d"
         });
-
+    
         flatpickr(checkInDateInput, {
             dateFormat: "Y-m-d",
             disable: disableDates,
             onChange: updateCheckoutDate,
         });
     }
-
+    
     function showAlert(rateType) {
         const alertElement = document.getElementById("info-alert");
         const alertMessageElement = document.getElementById("alert-message");
-
+    
         if (!alertElement || !alertMessageElement) {
             console.warn("Alert elements not found!");
             return;
         }
-
+    
         let alertMessage;
         if (rateType === "Nighttime") {
             alertMessage = "The Overnight Stay has been booked for this date. Please choose another date.";
@@ -154,51 +185,51 @@ async function fetchReservationDetails(reservationId) {
         } else if (rateType === "Both Daytime and Nighttime") {
             alertMessage = "Both Daytime and Nighttime rates have been booked.";
         }
-
+    
         alertMessageElement.innerText = alertMessage;
         alertElement.classList.remove("hidden");
     }
-
+    
     function hideAlert() {
         document.getElementById("info-alert")?.classList.add("hidden");
     }
-
+    
     function calculateCheckoutDate(checkInDate, checkInTime, hoursOfStay) {
         // Create a Date object for check-in
         const checkInDateTime = new Date(`${checkInDate}T${checkInTime}`);
-
+    
         // Add hoursOfStay to the check-in time
         checkInDateTime.setHours(checkInDateTime.getHours() + hoursOfStay);
-
+    
         // Extract correct checkout date and time (avoid UTC conversion issues)
         const checkoutDate = checkInDateTime.getFullYear() + "-" +
                              String(checkInDateTime.getMonth() + 1).padStart(2, '0') + "-" +
                              String(checkInDateTime.getDate()).padStart(2, '0');
-
+    
         const checkoutTime = String(checkInDateTime.getHours()).padStart(2, '0') + ":" +
                              String(checkInDateTime.getMinutes()).padStart(2, '0') + ":" +
                              String(checkInDateTime.getSeconds()).padStart(2, '0');
-
+    
         return { checkoutDate, checkoutTime };
     }
-
+    
     function updateCheckoutDate() {
         const checkInDate = checkInDateInput.value;
         const checkInTime = checkInTimeInput.value;
-
+    
         if (!checkInDate || !checkInTime) return;
-
+    
         const { checkoutDate, checkoutTime } = calculateCheckoutDate(checkInDate, checkInTime, hoursOfStay);
-
+    
         checkOutDateInput.value = checkoutDate;
         checkOutTimeInput.value = checkoutTime;
-
+    
         console.log(`Check-in: ${checkInDate} ${checkInTime}, Check-out: ${checkoutDate} ${checkoutTime}`);
     }
-
+    
     // Initialize Flatpickr after setting everything up
     initializeFlatpickr();
-
+    
     // Code for selectedItems buttons (if needed)
     selectedItems.forEach((button) => {
         button.addEventListener("click", (e) => {
@@ -208,6 +239,7 @@ async function fetchReservationDetails(reservationId) {
             selectRate(rateId, rateName, ratePrice);
         });
     });
+    
 });
 
 

@@ -140,64 +140,104 @@ $stmt->close();
 <body class="bg-gray-100">
 
 <!-- Navbar -->
-<nav class="bg-white border-blue-200 dark:bg-blue-900 fixed top-0 left-0 w-full z-50">
-    <div class="max-w-screen-xl flex items-center justify-between mx-auto p-4">
-        <!-- Logo -->
-        <a href="#../index.php" class="flex items-center space-x-3 rtl:space-x-reverse">
-            <img src="../src/uploads/logo.svg" class="logo" alt="Logo" />
-            <span class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white"></span>
+<nav class="border-blue-200 bg-blue-900 fixed top-0 left-0 w-full z-50" data-aos="fade-down" data-aos-duration="1200">
+  <div class="max-w-screen-xl flex items-center justify-between mx-auto p-4">
+    <!-- Logo -->
+    <a href="index.php" class="flex items-center space-x-3 rtl:space-x-reverse">
+      <img src="../src/uploads/logo.svg" class="logo" alt="Logo" />
+      <span class="self-center text-2xl font-semibold whitespace-nowrap text-white"></span>
+    </a>
+
+    <!-- Hamburger menu (Mobile) -->
+    <button id="hamburgerButton" type="button" class="md:hidden p-2 w-10 h-10 text-white rounded-lg hover:bg-white/10">
+      <span class="sr-only">Open main menu</span>
+      <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 17 14">
+        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 1h15M1 7h15M1 13h15"/>
+      </svg>
+    </button>
+
+    <!-- Desktop Navigation Links -->
+    <ul id="navbarUser" class="hidden md:flex flex-row font-medium p-4 md:p-0 space-x-8 md:bg-blue-900">
+      <li><a href="../index.php#home" class="block py-2 px-3 text-white hover:text-blue-500">Home</a></li>
+      <li><a href="../index.php#services" class="block py-2 px-3 text-white hover:text-blue-500">Services</a></li>
+      <li><a href="../index.php#about" class="block py-2 px-3 text-white hover:text-blue-500">About</a></li>
+      <li><a href="../index.php#album" class="block py-2 px-3 text-white hover:text-blue-500">Album</a></li>
+      <li><a href="../index.php#reviews" class="block py-2 px-3 text-white hover:text-blue-500">Reviews</a></li>
+      <li><a href="../index.php#contact" class="block py-2 px-3 text-white hover:text-blue-500">Contact</a></li>
+    </ul>
+
+    <!-- Profile/Login (Desktop) -->
+    <div class="hidden md:flex items-center space-x-6">
+      <?php if (isset($full_name) && !empty($full_name)): ?>
+        <div class="relative inline-block text-left">
+          <button id="profileButton" type="button" class="flex items-center space-x-3 text-sm bg-blue-900 hover:bg-white/10 rounded-lg px-4 py-4">
+            <span class="text-white font-medium"><?php echo htmlspecialchars($full_name); ?></span>
+            <svg class="w-4 h-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+            </svg>
+          </button>
+          <!-- Dropdown Menu -->
+          <div id="dropdownMenu" class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-2 hidden">
+            <a href="customer_reservation.php" class="block px-4 py-2 text-gray-700 hover:bg-gray-200">Reservations</a>
+            <a href="edit_profile.php" class="block px-4 py-2 text-gray-700 hover:bg-gray-200">Profile</a>
+            <hr class="border-gray-300">
+            <a href="logout.php" class="block px-4 py-2 text-gray-700 hover:bg-gray-200">Logout</a>
+          </div>
+        </div>
+      <?php else: ?>
+        <a href="login.php" class="flex items-center space-x-3 text-sm bg-white hover:bg-gray-300 text-blue-900 font-semibold rounded-lg px-6 py-3 transition-all duration-300 ease-in-out shadow-md hover:shadow-lg">
+          <span class="font-semibold">Login</span>
         </a>
-
-        <!-- Cart, Profile, and Hamburger -->
-        <div class="flex items-center md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">
-            <button type="button" class="flex text-lg dark:bg-blue-900 rounded-lg md:me-0 px-4 py-4 p-2 hover:bg-white/10">
-                <span class="sr-only">Open cart</span>
-                <!-- Cart Icon using Google Material Icons with fixed size -->
-                <span class="material-icons text-white text-2xl bg-opacity-100 hover:bg-opacity-10">
-                    shopping_cart
-                </span>
-            </button>
-
-            <!-- Profile button -->
-            <button type="button" class="flex items-center ml-2 space-x-3 text-sm dark:bg-blue-900 hover:bg-white/10 rounded-lg px-4 py-2">
-                <span class="sr-only">Open user menu</span>
-                <!-- Display user profile picture -->
-                
-                <!-- Display user first name and last name to the right -->
-                <span class="text-white font-medium"><?php echo htmlspecialchars($full_name); ?></span>
-            </button>
-
-            <!-- Hamburger menu -->
-            <button data-collapse-toggle="navbar-user" type="button" class="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-white rounded-lg md:hidden hover:bg-gray-100 dark:text-gray-400 hover:bg-white/10" aria-controls="navbar-user" aria-expanded="false">
-                <span class="sr-only">Open main menu</span>
-                <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 17 14">
-                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 1h15M1 7h15M1 13h15"/>
-                </svg>
-            </button>
-        </div>
-
-        <!-- Navigation Links -->
-        <div class="items-center mr-110 justify-center hidden w-full md:flex md:w-auto md:order-1" id="navbar-user">
-            <ul class="flex flex-col font-medium p-4 md:p-0 mt-4 border border-gray-100 rounded-lg bg-gray-50 md:flex-row md:space-x-8 rtl:space-x-reverse md:mt-0 md:border-0 md:bg-white dark:bg-blue-800 md:dark:bg-blue-900">
-                <li>
-                    <a href="../index.php" class="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">Home</a>
-                </li>
-                <li>
-                    <a href="../index.php#about" class="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">About</a>
-                </li>
-                <li>
-                    <a href="../index.php#album" class="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">Gallery</a>
-                </li>
-                <li>
-                    <a href="../index.php#rates" class="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">Services</a>
-                </li>
-                <li>
-                    <a href="../index.php#reviews" class="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">Reviews</a>
-                </li>
-            </ul>
-        </div>
+      <?php endif; ?>
     </div>
+  </div>
+
+  <!-- Mobile Dropdown -->
+  <div id="mobileMenu" class="hidden md:hidden absolute top-16 left-0 w-full bg-white shadow-lg rounded-lg">
+    <div class="p-4">
+      <?php if (isset($full_name) && !empty($full_name)): ?>
+        <p class="text-lg font-semibold text-blue-900"><?php echo htmlspecialchars($full_name); ?></p>
+        <a href="customer_reservation.php" class="block py-2 text-gray-700 hover:bg-gray-200">Reservations</a>
+        <hr class="border-gray-300 my-2">
+      <?php endif; ?>
+      <a href="../index.php#home" class="block py-2 text-gray-700 hover:bg-gray-200">Home</a>
+      <a href="../index.php#services" class="block py-2 text-gray-700 hover:bg-gray-200">Services</a>
+      <a href="../index.php#about" class="block py-2 text-gray-700 hover:bg-gray-200">About</a>
+      <a href="../index.php#album" class="block py-2 text-gray-700 hover:bg-gray-200">Album</a>
+      <a href="../index.php#reviews" class="block py-2 text-gray-700 hover:bg-gray-200">Reviews</a>
+      <a href="../index.php#contact" class="block py-2 text-gray-700 hover:bg-gray-200">Contact</a>
+      <hr class="border-gray-300 my-2">
+      <?php if (isset($full_name) && !empty($full_name)): ?>
+        <a href="logout.php" class="block py-2 text-gray-700 hover:bg-gray-200">Logout</a>
+      <?php else: ?>
+        <a href="login.php" class="block py-2 text-gray-700 hover:bg-gray-200">Login</a>
+      <?php endif; ?>
+    </div>
+  </div>
 </nav>
+
+<!-- JavaScript -->
+<script>
+  // Toggle Mobile Menu
+  document.getElementById('hamburgerButton').addEventListener('click', function () {
+    var mobileMenu = document.getElementById('mobileMenu');
+    mobileMenu.classList.toggle('hidden');
+  });
+
+  // Toggle Profile Dropdown (Desktop)
+  document.getElementById('profileButton')?.addEventListener('click', function (event) {
+    event.stopPropagation();
+    document.getElementById('dropdownMenu').classList.toggle('hidden');
+  });
+
+  // Close dropdown if clicked outside (Desktop)
+  document.addEventListener('click', function (event) {
+    var dropdownMenu = document.getElementById('dropdownMenu');
+    if (dropdownMenu && !event.target.closest('#profileButton')) {
+      dropdownMenu.classList.add('hidden');
+    }
+  });
+</script>
 
 <div class="max-w-7xl mx-auto my-8 px-6 mt-30">
     <h2 class="text-3xl font-semibold text-center text-gray-800 mb-6">Your Reservations</h2>

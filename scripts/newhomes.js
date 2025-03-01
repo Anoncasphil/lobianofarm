@@ -168,6 +168,7 @@ document.getElementById('rate-modal').addEventListener('click', function(event) 
   document.addEventListener("DOMContentLoaded", function() {
     initializeFlatpickr();
   });
+  
   async function fetchReservedDates() {
     try {
       const response = await fetch('api/get_reserved_dates_booking.php');
@@ -185,8 +186,29 @@ document.getElementById('rate-modal').addEventListener('click', function(event) 
     }
   }
   
+  async function fetchDisabledDates() {
+    try {
+      const response = await fetch('api/get_disabled_dates.php'); // Update the URL if necessary
+      const disabledDates = await response.json();
+  
+      console.log("Fetched Disabled Dates:", disabledDates);
+  
+      if (!disabledDates || !Array.isArray(disabledDates.disableDates)) {
+        console.error('Expected an array for disabled dates but received:', disabledDates);
+        return [];
+      }
+  
+      // Return the array of disabled dates
+      return disabledDates.disableDates.map(item => item.date); // Ensure we are returning just an array of dates
+    } catch (error) {
+      console.error('Error fetching disabled dates:', error);
+      return [];
+    }
+  }
+  
   async function initializeFlatpickr() {
     const { reservedDaytime, reservedNighttime, reservedWholeDay } = await fetchReservedDates();
+    const disabledDates = await fetchDisabledDates(); // Fetch disabled dates from the API
   
     const checkInDateInput = document.getElementById("check-in");
   
@@ -210,24 +232,36 @@ document.getElementById('rate-modal').addEventListener('click', function(event) 
       fullyReservedDates.add(date);
     });
   
-    // Log reserved dates
+    // Add disabled dates to the Set of fullyReservedDates
+    disabledDates.forEach(date => {
+      fullyReservedDates.add(date); // Add the date directly
+    });
+  
+    // Log reserved and disabled dates
     console.log("Reserved Daytime Dates:", reservedDaytime);
     console.log("Reserved Nighttime Dates:", reservedNighttime);
     console.log("Reserved Whole Day Dates:", reservedWholeDay);
     console.log("Disabled Dates:", Array.from(fullyReservedDates));
   
-    // Initialize Flatpickr
+    // Prepare the disabled dates for Flatpickr
+    const disableDatesFormatted = Array.from(fullyReservedDates).map(date => {
+      return { from: date, to: date };
+    });
+  
+    console.log("Formatted Disable Dates for Flatpickr:", disableDatesFormatted);
+  
+    // Initialize Flatpickr with both reserved and disabled dates
     flatpickr(checkInDateInput, {
       dateFormat: "Y-m-d",
+      disable: [
+        { from: "1970-01-01", to: new Date().toISOString().split("T")[0] }, // Disable past dates
+        ...disableDatesFormatted // Disable dates in fullyReservedDates
+      ],
       onChange: function (selectedDates, dateStr, instance) {
         if (selectedDates[0]) {
           console.log(`Check-In Date Selected: ${selectedDates[0].toISOString().split("T")[0]}`);
         }
-      },
-      disable: [
-        { from: "1970-01-01", to: new Date().toISOString().split("T")[0] }, // Disable past dates
-        ...Array.from(fullyReservedDates).map(date => ({ from: date, to: date })) // Disable dates in fullyReservedDates
-      ]
+      }
     });
   
     // Add event listener to the "Book" button
@@ -250,6 +284,7 @@ document.getElementById('rate-modal').addEventListener('click', function(event) 
   }
   
   document.addEventListener("DOMContentLoaded", function() {
+    console.log("DOM Loaded. Initializing Flatpickr...");
     initializeFlatpickr();
   });
   

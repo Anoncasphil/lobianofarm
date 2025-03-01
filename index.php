@@ -291,13 +291,14 @@ body {
             <div class="inline-flex flex-col sm:flex-row border rounded-lg overflow-hidden shadow-lg border-yellow-500">
                 <!-- Check-In Date Input -->
                 <input
-                    type="text"
-                    id="check-in"
-                    name="check-in"
-                    class="px-6 py-3 w-56 sm:w-48 border-r-2 border-yellow-500 opacity-90 focus:ring-2 focus:ring-blue-500 focus:outline-none bg-white text-black"
-                    placeholder="Check-In"
-                    required
+                  type="text"
+                  id="check-in"
+                  name="check-in"
+                  class="px-6 py-3 w-56 sm:w-48 border-r-2 border-yellow-500 opacity-90 focus:ring-2 focus:ring-blue-500 focus:outline-none bg-white text-black"
+                  placeholder="Check-In"
+                  required
                 />
+
                 <!-- Book Button -->
                 <?php if (isset($_SESSION['user_id'])): ?>
                     <button

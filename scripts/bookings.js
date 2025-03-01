@@ -627,7 +627,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   async function fetchReservedDates() {
     try {
-      const response = await fetch('/api/get_reserved_dates_booking.php'); // API call to fetch all reservations
+      const response = await fetch('../api/get_reserved_dates_booking.php'); // API call to fetch all reservations
       const reservedDates = await response.json();
   
       // Check if the response contains the expected structure
@@ -641,14 +641,36 @@ document.addEventListener("DOMContentLoaded", () => {
       console.error('Error fetching reserved dates:', error);
       return { reservedDaytime: [], reservedNighttime: [], reservedWholeDay: [] }; // Return empty arrays on error
     }
-  }
-  
-  async function initializeFlatpickr() {
+}
+
+async function fetchDisabledDates() {
+    try {
+        const response = await fetch('../api/get_disabled_dates.php'); // Update the URL if necessary
+        const disabledDates = await response.json();
+    
+        console.log("Fetched Disabled Dates:", disabledDates);
+    
+        if (!disabledDates || !Array.isArray(disabledDates.disableDates)) {
+            console.error('Expected an array for disabled dates but received:', disabledDates);
+            return [];
+        }
+    
+        // Return the array of disabled dates
+        return disabledDates.disableDates.map(item => item.date); // Ensure we are returning just an array of dates
+    } catch (error) {
+        console.error('Error fetching disabled dates:', error);
+        return [];
+    }
+}
+
+async function initializeFlatpickr() {
     const { reservedDaytime, reservedNighttime, reservedWholeDay } = await fetchReservedDates();
+    const disabledDates = await fetchDisabledDates();
 
     console.log("Reserved Daytime Dates:", reservedDaytime);
     console.log("Reserved Nighttime Dates:", reservedNighttime);
     console.log("Reserved Whole Day Dates:", reservedWholeDay);
+    console.log("Disabled Dates:", disabledDates);
 
     const checkInDateInput = document.getElementById("check-in-date");
     const checkOutDateInput = document.getElementById("check-out-date");
@@ -706,7 +728,9 @@ document.addEventListener("DOMContentLoaded", () => {
             ...reservedDaytime.filter(date => reservedNighttime.includes(date)).map(date => ({
                 from: date,
                 to: date
-            }))
+            })),
+            // Disable disabled dates
+            ...disabledDates.map(date => ({ from: date, to: date }))
         ]
     });
 
@@ -720,7 +744,6 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 }
-
 
 // Show the alert (Ensures only one is visible at a time)
 function showAlert(rateType) {
@@ -756,16 +779,15 @@ function hideAlert() {
 // Initialize Flatpickr and fetch reserved dates
 initializeFlatpickr();
 
-
-
-  selectedItems.forEach((button) => {
+selectedItems.forEach((button) => {
     button.addEventListener("click", (e) => {
-      const rateId = e.target.dataset.id;
-      const rateName = e.target.dataset.name;
-      const ratePrice = e.target.dataset.price;
-      selectRate(rateId, rateName, ratePrice);
+        const rateId = e.target.dataset.id;
+        const rateName = e.target.dataset.name;
+        const ratePrice = e.target.dataset.price;
+        selectRate(rateId, rateName, ratePrice);
     });
-  });
+});
+
 });
 
 // Function to open the modal and display data
