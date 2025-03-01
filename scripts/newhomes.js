@@ -252,7 +252,7 @@ document.getElementById('rate-modal').addEventListener('click', function(event) 
       dateFormat: "Y-m-d",
       disable: [
         { from: "1970-01-01", to: new Date().toISOString().split("T")[0] }, // Disable past dates
-        ...disableDatesFormatted // Disable the reserved and disabled dates
+        ...disableDatesFormatted // Merge the reserved and disabled dates
       ],
       onChange: function (selectedDates, dateStr, instance) {
         if (selectedDates[0]) {
