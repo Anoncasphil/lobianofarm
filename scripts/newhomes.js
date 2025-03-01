@@ -171,7 +171,7 @@ document.getElementById('rate-modal').addEventListener('click', function(event) 
   
   async function fetchReservedDates() {
     try {
-      const response = await fetch('api/get_reserved_dates_booking.php');
+      const response = await fetch('../api/get_reserved_dates_booking.php');
       const reservedDates = await response.json();
   
       if (!reservedDates || !reservedDates.reservedDaytime || !reservedDates.reservedNighttime || !reservedDates.reservedWholeDay) {
@@ -188,7 +188,7 @@ document.getElementById('rate-modal').addEventListener('click', function(event) 
   
   async function fetchDisabledDates() {
     try {
-      const response = await fetch('api/get_disabled_dates.php'); // Update the URL if necessary
+      const response = await fetch('../api/get_disabled_dates.php'); // Update the URL if necessary
       const disabledDates = await response.json();
   
       console.log("Fetched Disabled Dates:", disabledDates);
