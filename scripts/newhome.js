@@ -249,5 +249,5 @@ async function initializeFlatpickr(rateType) {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-    initializeFlatpickr("Daytime"); // or your chosen rate type
+    initializeFlatpickr(); // or your chosen rate type
 });
