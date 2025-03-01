@@ -193,7 +193,7 @@ body {
           </div>
         </div>
       <?php else: ?>
-        <a href="/landing_page_customer/login.php" class="flex items-center space-x-3 text-sm bg-white hover:bg-gray-300 text-blue-900 font-semibold rounded-lg px-6 py-3 transition-all duration-300 ease-in-out shadow-md hover:shadow-lg">
+        <a href="landing_page_customer/login.php" class="flex items-center space-x-3 text-sm bg-white hover:bg-gray-300 text-blue-900 font-semibold rounded-lg px-6 py-3 transition-all duration-300 ease-in-out shadow-md hover:shadow-lg">
           <span class="font-semibold">Login</span>
         </a>
       <?php endif; ?>
@@ -460,7 +460,7 @@ $result = $conn->query($sql);
                 $firstCategoryId = $row['id']; // Set the first category ID
             }
         ?>
-        <button type="button" class="category-button text-gray-900 bg-gray-200 hover:bg-gray-300 focus:ring-4 focus:outline-none focus:ring-gray-300 rounded-full text-base font-medium px-5 py-2.5 text-center me-3 mb-3" data-id="<?php echo $row['id']; ?>" onclick="toggleCategory(<?php echo $row['id']; ?>)">
+        <button type="button" class="category-button text-gray-900 bg-gray-200 hover:bg-gray-300 focus:ring-4 focus:outline-none focus:ring-blue-900 rounded-full text-base font-medium px-5 py-2.5 text-center me-3 mb-3" data-id="<?php echo $row['id']; ?>" onclick="toggleCategory(<?php echo $row['id']; ?>)">
             <?php echo htmlspecialchars($row['name']); ?>
         </button>
         <?php endwhile; ?>
