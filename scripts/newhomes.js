@@ -171,131 +171,83 @@ document.getElementById('rate-modal').addEventListener('click', function(event) 
   
   async function fetchReservedDates() {
     try {
-      const response = await fetch('api/get_reserved_dates_booking.php');
-      const reservedDates = await response.json();
-  
-      if (!reservedDates || !reservedDates.reservedDaytime || !reservedDates.reservedNighttime || !reservedDates.reservedWholeDay) {
-        console.error('Expected structure but received:', reservedDates);
-        return { reservedDaytime: [], reservedNighttime: [], reservedWholeDay: [] };
-      }
-  
-      return reservedDates;
+        const response = await fetch("api/get_reserved_dates_booking.php");
+        const reservedDates = await response.json();
+
+        if (!reservedDates || !reservedDates.reservedDaytime || !reservedDates.reservedNighttime || !reservedDates.reservedWholeDay) {
+            console.error("Unexpected reserved dates structure:", reservedDates);
+            return { reservedDaytime: [], reservedNighttime: [], reservedWholeDay: [] };
+        }
+
+        console.log("Fetched reserved dates:", reservedDates); // Log fetched reserved dates
+        return reservedDates;
     } catch (error) {
-      console.error('Error fetching reserved dates:', error);
-      return { reservedDaytime: [], reservedNighttime: [], reservedWholeDay: [] };
-    }
-  }
-  
-  async function fetchReservedDates() {
-    try {
-      const response = await fetch('api/get_reserved_dates_booking.php');
-      const reservedDates = await response.json();
-  
-      if (!reservedDates || !reservedDates.reservedDaytime || !reservedDates.reservedNighttime || !reservedDates.reservedWholeDay) {
-        console.error('Expected structure but received:', reservedDates);
+        console.error("Error fetching reserved dates:", error);
         return { reservedDaytime: [], reservedNighttime: [], reservedWholeDay: [] };
-      }
-  
-      return reservedDates;
-    } catch (error) {
-      console.error('Error fetching reserved dates:', error);
-      return { reservedDaytime: [], reservedNighttime: [], reservedWholeDay: [] };
     }
-  }
-  
-  async function fetchDisabledDates() {
+}
+
+async function fetchDisabledDates() {
     try {
-      const response = await fetch('api/get_disabled_dates.php');
-      const disabledDates = await response.json();
-  
-      console.log("Fetched Disabled Dates:", disabledDates);
-  
-      // Ensure the structure is correct
-      if (!disabledDates || !Array.isArray(disabledDates.disableDates)) {
-        console.error('Expected an array for disabled dates but received:', disabledDates);
+        const response = await fetch('api/get_disabled_dates.php');
+        const disabledDates = await response.json();
+
+        console.log("Fetched Disabled Dates:", disabledDates);
+
+        if (!disabledDates || !Array.isArray(disabledDates.disableDates)) {
+            console.error('Expected an array for disabled dates but received:', disabledDates);
+            return [];
+        }
+
+        return disabledDates.disableDates.map(item => item.date);
+    } catch (error) {
+        console.error('Error fetching disabled dates:', error);
         return [];
-      }
-  
-      // If it's an object with a key "disableDates", map the dates
-      const dates = disabledDates.disableDates.map(item => item.date);  // Directly map the 'date' field from each object
-  
-      console.log("Mapped Disabled Dates:", dates);
-  
-      return dates; // Return an array of date strings
-    } catch (error) {
-      console.error('Error fetching disabled dates:', error);
-      return [];
     }
-  }
-  
-  async function initializeFlatpickr() {
+}
+
+async function initializeFlatpickr(rateType) {
     const { reservedDaytime, reservedNighttime, reservedWholeDay } = await fetchReservedDates();
     const disabledDates = await fetchDisabledDates();
-  
+
+    const currentDate = new Date().toISOString().split("T")[0];
+
+    let disableDates = [{ from: "1970-01-01", to: currentDate }];
+
+    if (rateType === "WholeDay") {
+        disableDates = disableDates.concat(
+            reservedWholeDay.map((date) => ({ from: date, to: date }))
+        );
+    } else if (rateType === "Daytime") {
+        disableDates = disableDates.concat(
+            reservedDaytime.map((date) => ({ from: date, to: date }))
+        );
+    } else if (rateType === "Nighttime") {
+        disableDates = disableDates.concat(
+            reservedNighttime.map((date) => ({ from: date, to: date }))
+        );
+    }
+
+    disableDates = disableDates.concat(
+        disabledDates.map((date) => ({ from: date, to: date }))
+    );
+
+    disableDates = disableDates.concat(
+        reservedWholeDay.map((date) => ({ from: date, to: date }))
+    );
+
     const checkInDateInput = document.getElementById("check-in");
-  
-    const daytimeSet = new Set(reservedDaytime);
-    const nighttimeSet = new Set(reservedNighttime);
-    const wholeDaySet = new Set(reservedWholeDay);
-  
-    const fullyReservedDates = new Set();
-  
-    // Combine reserved dates (daytime, nighttime, and whole day)
-    reservedDaytime.forEach(date => {
-      if (nighttimeSet.has(date)) {
-        fullyReservedDates.add(date);
-      }
-    });
-  
-    reservedWholeDay.forEach(date => {
-      fullyReservedDates.add(date);
-    });
-  
-    // Add disabled dates (from the server) to the fullyReservedDates set
-    disabledDates.forEach(date => {
-      console.log("Adding Disabled Date:", date); // Debugging line
-      fullyReservedDates.add(date); // Ensure date is in "YYYY-MM-DD" format
-    });
-  
-    console.log("Reserved Daytime Dates:", reservedDaytime);
-    console.log("Reserved Nighttime Dates:", reservedNighttime);
-    console.log("Reserved Whole Day Dates:", reservedWholeDay);
-    console.log("Disabled Dates:", Array.from(fullyReservedDates));
-  
-    // Ensure all dates are formatted for Flatpickr (Y-m-d format)
-    const disableDatesFormatted = Array.from(fullyReservedDates).map(date => date.split("T")[0]);
-  
-    console.log("Formatted Disable Dates for Flatpickr:", disableDatesFormatted);
-  
-    // Initialize Flatpickr for check-in date input
-    flatpickr(checkInDateInput, {
-      dateFormat: "Y-m-d",
-      disable: [
-        { from: "1970-01-01", to: new Date().toISOString().split("T")[0] }, // Disable past dates
-        ...disableDatesFormatted // Merge the reserved and disabled dates
-      ],
-      onChange: function (selectedDates, dateStr, instance) {
-        if (selectedDates[0]) {
-          console.log(`Check-In Date Selected: ${selectedDates[0].toISOString().split("T")[0]}`);
-        }
-      }
-    });
-  
-    const bookButton = document.getElementById("book-btn");
-    bookButton.addEventListener("click", function (event) {
-      event.preventDefault();
-      const selectedDate = checkInDateInput.value;
-      if (selectedDate) {
-        localStorage.setItem("selectedDate", JSON.stringify({ checkIn: selectedDate }));
-        window.location.href = "landing_page_customer/booking.php";
-      } else {
-        alert("Please select a check-in date.");
-      }
-    });
-  }
-  
-  document.addEventListener("DOMContentLoaded", function () {
-    console.log("DOM Loaded. Initializing Flatpickr...");
-    initializeFlatpickr();
-  });
-  
+
+    if (checkInDateInput) {
+        flatpickr(checkInDateInput, {
+            dateFormat: "Y-m-d",
+            disable: disableDates
+        });
+    } else {
+        console.error("Check-in input element not found.");
+    }
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+    initializeFlatpickr("Daytime"); // or your chosen rate type
+});
