@@ -50,9 +50,19 @@ $result = $conn->query($sql);
                         <p class="text-gray-500 text-sm"><?php echo htmlspecialchars($row['description']); ?></p>
                     </div>
                     <div>
-                        <button onclick="openArchiveModal(event, <?php echo $row['id']; ?>);" class="text-gray-500 hover:text-red-600">
-                            <span class="material-icons">delete</span>
-                        </button>
+                        <?php if ($filter == 0): ?>
+                            <button onclick="openArchiveModal(event, <?php echo $row['id']; ?>);" class="text-gray-500 hover:text-red-600">
+                                <span class="material-icons">delete</span>
+                            </button>
+                        <?php else: ?>
+                            <button onclick="toggleModal(event, 'restoreModal', <?php echo $row['id']; ?>);" class="text-gray-500 hover:text-green-600">
+    <span class="material-icons">restore</span>
+</button>
+<button onclick="toggleModal(event, 'permanentDeleteModal', <?php echo $row['id']; ?>);" class="text-gray-500 hover:text-red-800">
+    <span class="material-icons">delete_forever</span>
+</button>
+
+                        <?php endif; ?>
                     </div>
                 </div>
             <?php endwhile; ?>
@@ -89,15 +99,74 @@ $result = $conn->query($sql);
         </div>
     </div>
 
-    <!-- External Script -->
-    <script src="file_manager.js" defer></script>
+       <!-- Restore Confirmation Modal -->
+       <div id="restoreModal" class="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center hidden">
+        <div class="bg-white rounded-lg shadow-lg p-6 w-full max-w-md">
+            <h2 class="text-lg font-medium text-gray-800">Restore this folder?</h2>
+            <div class="mt-4 flex justify-end space-x-4">
+                <button class="text-gray-700 bg-gray-200 px-4 py-2 rounded-lg hover:bg-gray-300" onclick="toggleModal('restoreModal')">No</button>
+                <button id="confirmRestore" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700" onclick="restoreFolder();">
+                    Yes
+                </button>
+            </div>
+        </div>
+    </div>
 
+    <!-- Permanent Delete Modal -->
+    <div id="permanentDeleteModal" class="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center hidden">
+        <div class="bg-white rounded-lg shadow-lg p-6 w-full max-w-md">
+            <h2 class="text-lg font-medium text-gray-800">Permanently delete this folder? This action cannot be undone.</h2>
+            <div class="mt-4 flex justify-end space-x-4">
+                <button class="text-gray-700 bg-gray-200 px-4 py-2 rounded-lg hover:bg-gray-300" onclick="toggleModal('permanentDeleteModal')">No</button>
+                <button id="confirmDelete" class="bg-red-800 text-white px-4 py-2 rounded-lg hover:bg-red-900" onclick="deleteFolder();">
+                    Yes
+                </button>
+            </div>
+        </div>
+    </div>
+             
     <script>
-        function filterFolders(filter) {
-    window.location.href = '?filter=' + filter;
+    // Archive folder logic
+let selectedFolderId = null;
+
+function openArchiveModal(event, folderId) {
+    event.stopPropagation(); // Prevent unintended actions
+    selectedFolderId = folderId;
+    $("#deleteModal").removeClass("hidden");
 }
 
-    </script>
+function closeModal() {
+    $("#deleteModal").addClass("hidden");
+    selectedFolderId = null;
+}
 
+function archiveFolder() {
+    if (!selectedFolderId) {
+        showMessage("Error: No folder selected.");
+        return;
+    }
+
+    $.post("archive_folder.php", { folder_id: selectedFolderId }, function (response) {
+        try {
+            let res = typeof response === "object" ? response : JSON.parse(response);
+            if (res.success) {
+                localStorage.setItem("folderSuccessMessage", res.message);
+                location.reload();
+            } else {
+                showMessage("Error: " + res.message);
+            }
+        } catch (error) {
+            console.error("JSON Parsing Error:", error, response);
+            showMessage("Invalid response from server.");
+        }
+    }).fail(function (xhr) {
+        console.error("AJAX Error:", xhr.responseText);
+        showMessage("Failed to archive folder.");
+    });
+
+    closeModal();
+}
+    </script>
+    <script src="file_manager.js" defer></script>
 </body>
 </html>

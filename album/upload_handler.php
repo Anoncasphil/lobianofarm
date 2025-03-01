@@ -4,8 +4,6 @@ include '../db_connection.php';
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Fetch the folder_id from POST data
     $folder_id = intval($_POST['folder_id']);
-    $name = trim($_POST['name']);
-    $description = trim($_POST['description']);
 
     // Check if folder_id is valid
     if ($folder_id <= 0) {
@@ -14,8 +12,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 
     // Validate if file is uploaded
-    if (empty($name) || empty($_FILES['file'])) {
-        echo json_encode(["success" => false, "message" => "Name and image are required."]);
+    if (empty($_FILES['file'])) {
+        echo json_encode(["success" => false, "message" => "Image is required."]);
         exit;
     }
 
@@ -52,7 +50,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 
     // Define upload directory using the fetched folder path
-    $uploadDir = "../" . $folderPath;  // Prepend with ../ to ensure it maps correctly to the server
+    $uploadDir =  $folderPath;  // Prepend with ../ to ensure it maps correctly to the server
 
     // Check if folder exists on the server, and if not, create it
     if (!is_dir($uploadDir)) {
@@ -72,8 +70,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $relativeFilePath = $folderPath . "/" . $fileName;
 
         // Insert the image details into the images table
-        $stmt = $conn->prepare("INSERT INTO images (folder_id, name, description, image_path) VALUES (?, ?, ?, ?)");
-        $stmt->bind_param("isss", $folder_id, $name, $description, $relativeFilePath);
+        $stmt = $conn->prepare("INSERT INTO images (folder_id, image_path) VALUES (?, ?)");
+        $stmt->bind_param("is", $folder_id, $relativeFilePath);
 
         if ($stmt->execute()) {
             echo json_encode(["success" => true, "message" => "Image uploaded successfully."]);

@@ -1,4 +1,139 @@
 <?php
+session_start(); // Start the session
+
+// Check if the session is set for the user
+if (!isset($_SESSION['admin_id'])) {
+    // If not set, redirect to login page
+    header("Location: ../adlogin.php");
+    exit; // Ensure no further code is executed
+}
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+	<link href='https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css' rel='stylesheet'>
+	<script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/all.min.css" integrity="sha512-5Hs3dF2AEPkpNAR7UiOHba+lRSJNeM2ECkwxUIxC1Q/FLycGTbNapWXB4tP889k5T5Ju8fs4b1P5z/iB4nMfSQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+	<link rel="stylesheet" href="../styles/style.css">
+    <link rel="stylesheet" href="../styles/album.css">
+	<link rel="stylesheet" href="../styles/rate.css">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+
+	
+	<title>Admin</title>
+</head>
+<body>
+	
+	<!-- SIDEBAR -->
+	<section id="sidebar">
+		<a href="#" class="brand"><i class='bx bxs-smile icon'></i> Admin</a>
+		<ul class="side-menu">
+			<li><a href="../admindash.php"><i class='bx bxs-dashboard icon' ></i> Dashboard</a></li>
+
+			<li class="divider" data-text="management">Management</li>
+			<li><a href="../reservation/reservation_admin.php"><i class='bx bx-list-ol icon' ></i> Reservations</a></li>
+            <li><a href="../calendar/calendar.php"><i class='bx bxs-calendar icon' ></i> Calendar</a></li>
+			<li><a href="../rates/rates.php"><i class="bx bxs-star icon min-w-[48px] flex justify-center items-center mr-2"></i>Rates</a></li>
+			<li><a href="../addons/addons.php"><i class='bx bxs-cart-add icon' ></i> Add-ons</a></li>
+			<li><a href="../events/events.php"><i class='bx bxs-calendar-event icon' ></i> Events</a></li>
+			<li><a href="../album/album.php" class="active"><i class='bx bxs-photo-album icon' ></i> Album</a></li>
+            <?php if ($_SESSION['role'] === 'superadmin'): ?>
+				<li><a href="../team/team.php"><i class='bx bxs-buildings icon'></i> Team</a></li>
+			<?php endif; ?>
+
+			<!-- <li class="divider" data-text="table and forms">Table and forms</li>
+			<li><a href="#"><i class='bx bx-table icon' ></i> Tables</a></li>
+			<li>
+				<a href="#"><i class='bx bxs-notepad icon' ></i> Forms <i class='bx bx-chevron-right icon-right' ></i></a>
+				<ul class="side-dropdown">
+					<li><a href="#">Basic</a></li>
+					<li><a href="#">Select</a></li>
+					<li><a href="#">Checkbox</a></li>
+					<li><a href="#">Radio</a></li>
+				</ul>
+			</li> -->
+		</ul>
+	</section>
+	<!-- SIDEBAR -->
+
+	<!-- NAVBAR -->
+	<section id="content">
+		<!-- NAVBAR -->
+		<nav>
+			<i class='bx bx-menu toggle-sidebar' ></i>
+			<form action="#">
+			</form>
+			<span class="divider"></span>
+            <?php
+					include('../db_connection.php'); // Include your database connection file
+
+					// Check if the user is logged in
+					if (isset($_SESSION['admin_id'])) {
+						$admin_id = $_SESSION['admin_id']; // Get the logged-in user's ID
+
+						// Query to get the logged-in user's data from the admin_tbl
+						$query = "SELECT * FROM admin_tbl WHERE admin_id = ?";
+						$stmt = $conn->prepare($query);
+
+						if ($stmt === false) {
+							die('MySQL prepare error: ' . $conn->error);
+						}
+
+						$stmt->bind_param("i", $admin_id); // Bind the admin ID
+						$stmt->execute();
+
+						// Check if query executed successfully
+						$result = $stmt->get_result();
+
+						if ($result->num_rows > 0) {
+							$admin = $result->fetch_assoc();
+							$firstname = $admin['firstname'];
+							$lastname = $admin['lastname'];
+							$role = ucfirst($admin['role']); // Capitalize the first letter of the role
+							// Prepend the directory path to the profile picture
+						$profile_picture = '../src/uploads/team/' . $admin['profile_picture'];
+						} else {
+							// If no user found, redirect to login
+							header('Location: ../adlogin.php');
+							exit;
+						}
+					} else {
+						// If not logged in, redirect to login page
+						header('Location: ../adlogin.php');
+						exit;
+					}
+					?>
+
+					<!-- HTML to display the profile information -->
+					<div class="profile flex items-center space-x-4 cursor-pointer">
+						<img class="w-10 h-10 rounded-full" src="<?= htmlspecialchars($profile_picture) ?>" alt="Profile Picture">
+
+						<div>
+							<h4 class="text-sm font-medium text-gray-800 dark:text-gray-200"><?= htmlspecialchars($firstname) . ' ' . htmlspecialchars($lastname) ?></h4>
+							<span class="text-xs text-gray-500 dark:text-gray-400"><?= htmlspecialchars($role) ?></span>
+						</div>
+					</div>
+			
+				<!-- Profile Dropdown Menu -->
+				<ul class="profile-link absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-lg z-50 hidden">
+					<li>
+						<a href="../logout.php" class="flex items-center px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-red-100 dark:hover:bg-red-700">
+							<i class='bx bxs-log-out-circle text-xl mr-2'></i> 
+							Logout
+						</a>
+					</li>
+				</ul>
+			</div>
+			
+		</nav>
+
+        <?php
 include '../db_connection.php';
 
 $folder_id = isset($_GET['folder_id']) ? intval($_GET['folder_id']) : 0;
@@ -23,27 +158,27 @@ $imageQuery->bind_param("i", $folder_id);
 $imageQuery->execute();
 $images = $imageQuery->get_result();
 ?>
+        <main class="relative flex justify-center pt-10">
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Upload Images - <?php echo htmlspecialchars($folder['name']); ?></title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-</head>
-<body class="bg-gray-50 p-8 flex flex-col items-center">
-    <div class="max-w-4xl w-full bg-white p-6 rounded-lg shadow-md">
-        <!-- Header -->
+
+        <div class="max-w-4xl w-full bg-white p-6 rounded-lg shadow-md mx-auto">
+
+
         <header class="flex justify-between items-center border-b pb-4">
-            <h1 class="text-xl font-semibold text-gray-800">
-                Upload Images to "<?php echo htmlspecialchars($folder['name']); ?>"
-            </h1>
-            <button onclick="toggleUploadModal()" class="px-3 py-1.5 text-sm font-medium bg-blue-500 text-white rounded-md hover:bg-blue-600 transition">
-                + Add Image
-            </button>
-        </header>
+    <div class="flex items-center space-x-3">
+        <!-- Back Button -->
+        <a href="album.php" class="bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700">
+            ⬅ Back
+        </a>
+        <h1 class="text-xl font-semibold text-gray-800">
+            Upload Images to "<?php echo htmlspecialchars($folder['name']); ?>"
+        </h1>
+    </div>
+    <button onclick="toggleUploadModal()" class="bg-blue-900 text-white px-4 py-2 rounded-lg hover:bg-blue-700">
+        + Add Image
+    </button>
+</header>
+
 
         <div id="info-alert" class="flex items-center p-3 mb-3 mt-5 text-sm text-blue-800 rounded-lg bg-blue-200 hidden">
           <svg class="shrink-0 w-4 h-4 me-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
@@ -135,6 +270,34 @@ $images = $imageQuery->get_result();
             </form>
         </div>
     </div>
+
+    <!-- Permanent Delete Modal -->
+<div id="permanentDeleteModal" class="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center hidden">
+    <div class="bg-white rounded-lg shadow-lg p-6 w-full max-w-md">
+        <h2 class="text-lg font-medium text-gray-800">Permanently delete these images? This action cannot be undone.</h2>
+        <div class="mt-4 flex justify-end space-x-4">
+            <button class="text-gray-700 bg-gray-200 px-4 py-2 rounded-lg hover:bg-gray-300" onclick="toggleModal('permanentDeleteModal')">No</button>
+            <button id="confirmDelete" class="bg-red-800 text-white px-4 py-2 rounded-lg hover:bg-red-900" onclick="confirmDeleteImages()">
+                Yes
+            </button>
+        </div>
+    </div>
+</div>
+
+</main>
+
+
+
+
+
+
+</section>
+	<script src="../scripts/album.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/flowbite@2.5.2/dist/flowbite.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"></script>
+	<script src="../path/to/flowbite/dist/flowbite.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+	<script src="../scripts/script.js"></script>
     <script>
     // This script sets the folder_id in the hidden input when the page loads
     document.addEventListener('DOMContentLoaded', function() {
@@ -325,30 +488,43 @@ function showAlert(title, message, type = "blue") {
     }, 3000);
 }
 
+let selectedImageIds = [];  // Store selected image IDs globally
+let selectedImagePaths = []; // Store selected image paths globally
+
 function deleteSelectedImages() {
     let selectedImages = document.querySelectorAll(".select-image:checked");
+    
     if (selectedImages.length === 0) {
         showAlert("Warning!", "No images selected for deletion.", "yellow");
         return;
     }
 
-    let imageIds = [];
-    let imagePaths = [];
+    // Store selected image details
+    selectedImageIds = [];
+    selectedImagePaths = [];
 
     selectedImages.forEach(img => {
-        imageIds.push(img.value);
-        imagePaths.push(img.getAttribute("data-path"));
+        selectedImageIds.push(img.value);
+        selectedImagePaths.push(img.getAttribute("data-path"));
     });
+
+    // Show the confirmation modal
+    toggleModal("permanentDeleteModal");
+}
+
+// Function to proceed with deletion after confirmation
+function confirmDeleteImages() {
+    toggleModal("permanentDeleteModal"); // Hide modal
 
     $.ajax({
         url: "delete_images.php",
         type: "POST",
-        data: { image_ids: imageIds, image_paths: imagePaths },
+        data: { image_ids: selectedImageIds, image_paths: selectedImagePaths },
         success: function (response) {
             try {
                 let res = JSON.parse(response);
                 if (res.success) {
-                    // Store success message in localStorage before reload
+                    // Store success message before reload
                     localStorage.setItem("postReloadMessage", JSON.stringify({
                         title: "Success!",
                         message: "Images deleted successfully.",
@@ -371,6 +547,12 @@ function deleteSelectedImages() {
     });
 }
 
+// Function to show/hide modals dynamically
+function toggleModal(modalId) {
+    let modal = document.getElementById(modalId);
+    modal.classList.toggle("hidden");
+}
+
 // Show alert message after reload if stored
 document.addEventListener("DOMContentLoaded", function () {
     let storedMessage = localStorage.getItem("postReloadMessage");
@@ -385,8 +567,8 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 
+
     </script>
 
-    
 </body>
 </html>
