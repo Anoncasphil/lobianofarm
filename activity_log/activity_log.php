@@ -4,13 +4,8 @@ session_start(); // Start the session
 // Check if the session is set for the user
 if (!isset($_SESSION['admin_id'])) {
     // If not set, redirect to login page
-<<<<<<< HEAD
-    header("Location: adlogin.php");
-    exit;
-=======
     header("Location: ../adlogin.php");
     exit; // Ensure no further code is executed
->>>>>>> c11ce06046444655f9700fb782e84578f7656693
 }
 
 include('../db_connection.php'); // Include database connection
@@ -86,52 +81,14 @@ include('../db_connection.php'); // Include database connection
             }
             ?>
 
-<<<<<<< HEAD
             <!-- Profile Display -->
             <div class="profile flex items-center space-x-4 cursor-pointer">
                 <img class="w-10 h-10 rounded-full" src="<?= htmlspecialchars($profile_picture) ?>" alt="Profile Picture">
                 <div>
                     <h4 class="text-sm font-medium text-gray-800"><?= htmlspecialchars($firstname) . ' ' . htmlspecialchars($lastname) ?></h4>
                     <span class="text-xs text-gray-500"><?= htmlspecialchars($role) ?></span>
-=======
-						if ($stmt === false) {
-							die('MySQL prepare error: ' . $conn->error);
-						}
-
-						$stmt->bind_param("i", $admin_id); // Bind the admin ID
-						$stmt->execute();
-
-						// Check if query executed successfully
-						$result = $stmt->get_result();
-
-						if ($result->num_rows > 0) {
-							$admin = $result->fetch_assoc();
-							$firstname = $admin['firstname'];
-							$lastname = $admin['lastname'];
-							$role = ucfirst($admin['role']); // Capitalize the first letter of the role
-							// Prepend the directory path to the profile picture
-						$profile_picture = '../src/uploads/team/' . $admin['profile_picture'];
-						} else {
-							// If no user found, redirect to login
-							header('Location: adlogin.php');
-							exit;
-						}
-					} else {
-						// If not logged in, redirect to login page
-						header('Location: adlogin.php');
-						exit;
-					}
-					?>
-
-					<!-- HTML to display the profile information -->
-					<div class="profile flex items-center space-x-4 cursor-pointer">
-						<img class="w-10 h-10 rounded-full" src="<?= htmlspecialchars($profile_picture) ?>" alt="Profile Picture">
-
-						<div>
-							<h4 class="text-sm font-medium text-gray-800 dark:text-gray-200"><?= htmlspecialchars($firstname) . ' ' . htmlspecialchars($lastname) ?></h4>
-							<span class="text-xs text-gray-500 dark:text-gray-400"><?= htmlspecialchars($role) ?></span>
-						</div>
-					</div>
+                </div>
+            </div>
 
 
 
@@ -175,10 +132,11 @@ include('../db_connection.php'); // Include database connection
                                 date_default_timezone_set('Asia/Manila');
                                 
                                 // Query to get logs from the database with admin and rate information
-                                $sql = "SELECT al.id, al.timestamp, a.firstname, a.lastname, al.changes 
-                                    FROM activity_logs al
-                                    LEFT JOIN admin_tbl a ON al.admin_id = a.admin_id
-                                    ORDER BY al.timestamp DESC";
+                                $sql = "SELECT al.id, al.timestamp, a.firstname, a.lastname, r.name as rate_name, al.changes 
+                                        FROM activity_logs al
+                                        LEFT JOIN admin_tbl a ON al.admin_id = a.admin_id
+                                        LEFT JOIN rates r ON al.rate_id = r.id
+                                        ORDER BY al.timestamp DESC";
                                         
                                 $result = $conn->query($sql);
                                 
@@ -223,74 +181,14 @@ include('../db_connection.php'); // Include database connection
                             </tbody>
                         </table>
                     </div>
->>>>>>> c11ce06046444655f9700fb782e84578f7656693
                 </div>
             </div>
+        </main>
+        <!-- MAIN -->
 
-            <!-- Logout -->
-            <ul class="profile-link absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg z-50 hidden">
-                <li>
-                    <a href="logout.php" class="flex items-center px-4 py-2 text-gray-700 hover:bg-red-100">
-                        <i class='bx bxs-log-out-circle text-xl mr-2'></i> Logout
-                    </a>
-                </li>
-            </ul>
-        </div>
-    </nav>
-
-    <!-- MAIN CONTENT -->
-    <main>
-        <div class="container mx-auto px-4 py-8">
-            <div class="activity-log-container">
-                <h1 class="text-2xl font-bold mb-6">Activity Log</h1>
-
-                <div class="table-responsive">
-                    <table class="activity-log-table">
-                        <thead>
-                            <tr>
-                                <th>Date</th>
-                                <th>Admin</th>
-                                <th>Changes</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php
-                            // Set timezone
-                            date_default_timezone_set('Asia/Manila');
-
-                            // Updated SQL query (without rate_id)
-                            $sql = "SELECT al.timestamp, a.firstname, a.lastname, al.changes 
-                                    FROM activity_logs al
-                                    LEFT JOIN admin_tbl a ON al.admin_id = a.admin_id
-                                    ORDER BY al.timestamp DESC";
-                            
-                            $result = $conn->query($sql);
-
-                            if ($result && $result->num_rows > 0) {
-                                while ($row = $result->fetch_assoc()) {
-                                    $admin_name = htmlspecialchars($row['firstname'] . ' ' . $row['lastname']);
-                                    $date_formatted = date("M d Y g:i a", strtotime($row['timestamp']));
-                                    $changes = htmlspecialchars($row['changes']); // Prevent XSS
-
-                                    echo "<tr>";
-                                    echo "<td class='log-date'>$date_formatted</td>";
-                                    echo "<td class='log-admin'>$admin_name</td>";
-                                    echo "<td class='log-changes'>$changes</td>";
-                                    echo "</tr>";
-                                }
-                            } else {
-                                echo '<tr><td colspan="3" class="activity-log-empty">No activity logs found.</td></tr>';
-                            }
-
-                            $conn->close();
-                            ?>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </main>
-</section>
+        
+	</section>
+	<!-- NAVBAR -->
 
 <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 <script src="../scripts/script.js"></script>
