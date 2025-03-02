@@ -111,8 +111,7 @@ function logRateUpdate($admin_id, $admin_name, $rate_id, $current_rate, $new_nam
         die("Database connection failed: " . $conn->connect_error);
     }
 
-    // Initialize log message
-    $log_message = "Admin $admin_name updated Rate ID: $rate_id.\n";
+
 
     // Check and log changes
     if (strcasecmp($current_rate['name'], $new_name) !== 0) {
@@ -148,7 +147,7 @@ function logRateUpdate($admin_id, $admin_name, $rate_id, $current_rate, $new_nam
     }
 
     // Only log if changes were made
-    if (trim($log_message) !== "Admin $admin_name updated Rate ID: $rate_id.\n") {
+    if (trim($log_message) !== "Updated Rate ID: $rate_id.\n") {
         // Insert log entry into the database
         $sql = "INSERT INTO activity_logs (admin_id, timestamp, changes) VALUES (?, NOW(), ?)";
         $stmt = $conn->prepare($sql);
