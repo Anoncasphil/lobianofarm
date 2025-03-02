@@ -1,6 +1,26 @@
 <?php
 header('Content-Type: application/json'); 
 include '../db_connection.php';
+session_start(); // Start session for admin tracking
+
+// Check if admin is logged in
+if (!isset($_SESSION['admin_id'])) {
+    echo json_encode(["success" => false, "message" => "Unauthorized access"]);
+    exit;
+}
+
+$admin_id = $_SESSION['admin_id']; // Get logged-in admin ID
+
+// Fetch admin details
+$sql_admin = "SELECT firstname, lastname FROM admin_tbl WHERE admin_id = ?";
+$stmt = $conn->prepare($sql_admin);
+$stmt->bind_param("i", $admin_id);
+$stmt->execute();
+$stmt->bind_result($firstname, $lastname);
+$stmt->fetch();
+$stmt->close();
+
+$admin_name = $firstname . " " . $lastname; // Full name of admin
 
 if (!isset($_POST['folder_id'])) {
     echo json_encode(["success" => false, "message" => "Folder ID is missing."]);
@@ -9,18 +29,21 @@ if (!isset($_POST['folder_id'])) {
 
 $folder_id = intval($_POST['folder_id']);
 
-// Fetch folder path
-$stmt = $conn->prepare("SELECT path FROM folders WHERE id = ?");
+// Fetch folder path and name
+$stmt = $conn->prepare("SELECT path, name FROM folders WHERE id = ?");
 $stmt->bind_param("i", $folder_id);
 $stmt->execute();
-$stmt->bind_result($folderPath);
-$stmt->fetch();
+$result = $stmt->get_result();
+$folder_data = $result->fetch_assoc();
 $stmt->close();
 
-if (!$folderPath || !is_dir($folderPath)) {
+if (!$folder_data || !is_dir($folder_data['path'])) {
     echo json_encode(["success" => false, "message" => "Folder not found or invalid."]);
     exit;
 }
+
+$folderPath = $folder_data['path'];
+$folderName = $folder_data['name'];
 
 // Define archive directory
 $archiveDir = "../src/uploads/album/archive/";
@@ -31,13 +54,13 @@ if (!file_exists($archiveDir)) {
 }
 
 // Get the folder name from the existing path
-$folderName = basename($folderPath);
-$newFolderPath = $archiveDir . $folderName;
+$folderBaseName = basename($folderPath);
+$newFolderPath = $archiveDir . $folderBaseName;
 
 // If the folder already exists in archive, rename it
 $counter = 1;
 while (file_exists($newFolderPath)) {
-    $newFolderPath = $archiveDir . $folderName . "_$counter";
+    $newFolderPath = $archiveDir . $folderBaseName . "_$counter";
     $counter++;
 }
 
@@ -80,6 +103,9 @@ if (copy_folder($folderPath, $newFolderPath)) {
         $updateStmt->bind_param("si", $newFolderPath, $folder_id);
         
         if ($updateStmt->execute()) {
+            // Log the archive action
+            logFolderArchive($admin_id, $admin_name, $folder_id, $folderName);
+            
             echo json_encode(["success" => true, "message" => "Folder archived successfully!"]);
         } else {
             echo json_encode(["success" => false, "message" => "Failed to update database."]);
@@ -90,6 +116,26 @@ if (copy_folder($folderPath, $newFolderPath)) {
     }
 } else {
     echo json_encode(["success" => false, "message" => "Failed to move folder to archive."]);
+}
+
+/**
+ * Log folder archive action to activity logs
+ */
+function logFolderArchive($admin_id, $admin_name, $folder_id, $folder_name) {
+    global $conn;
+    
+    // Set timezone
+    date_default_timezone_set('Asia/Manila');
+    
+    // Create log message
+    $log_message = "Archived the album folder: '$folder_name' (ID: $folder_id).";
+    
+    // Insert into activity_logs table
+    $sql = "INSERT INTO activity_logs (admin_id, timestamp, changes) VALUES (?, NOW(), ?)";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("is", $admin_id, $log_message);
+    $stmt->execute();
+    $stmt->close();
 }
 
 $conn->close();
