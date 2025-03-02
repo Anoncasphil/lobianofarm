@@ -102,73 +102,83 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 }
 
 /**
- * Log the rate update to the database with human-readable format showing before and after values
+ * Log the rate update to the database with human-readable format showing before and after values.
  */
 function logRateUpdate($admin_id, $admin_name, $rate_id, $current_rate, $new_name, $new_price, $new_description, $new_hoursofstay, $new_checkin_time, $new_checkout_time, $new_rate_type, $new_picture) {
-    include('../db_connection.php'); // Include your database connection file
+    include('../db_connection.php'); // Ensure database connection
 
-    // Set timezone to ensure correct time
-    date_default_timezone_set('Asia/Manila');
-    $timestamp = date("M d Y g:i a");
-    
-    // Compare and add changes to the log message - using case-insensitive comparison
+    if (!$conn) {
+        die("Database connection failed: " . $conn->connect_error);
+    }
+
+    // Initialize log message
+    $log_message = "Admin $admin_name updated Rate ID: $rate_id.\n";
+
+    // Check and log changes
     if (strcasecmp($current_rate['name'], $new_name) !== 0) {
-        $log_message .= "Updated the Rate Name from {$current_rate['name']} to $new_name.\n";
+        $log_message .= "- Rate Name: '{$current_rate['name']}' → '$new_name'.\n";
     }
     
     if ($current_rate['price'] != $new_price) {
-        $log_message .= "Changed the Price from {$current_rate['price']} to $new_price.\n";
-    }
-    
-    if (strcasecmp($current_rate['description'], $new_description) !== 0) {
-        $log_message .= "Updated the Description.\n";
-    }
-    
-    if ($current_rate['hoursofstay'] != $new_hoursofstay) {
-        $log_message .= "Changed the Hours of Stay from {$current_rate['hoursofstay']} to $new_hoursofstay.\n";
-    }
-    
-    // Normalize time formats before comparison
-    if (normalizeTime($current_rate['checkin_time']) !== normalizeTime($new_checkin_time)) {
-        $log_message .= "Changed the Check-in Time from {$current_rate['checkin_time']} to $new_checkin_time.\n";
-    }
-    
-    if (normalizeTime($current_rate['checkout_time']) !== normalizeTime($new_checkout_time)) {
-        $log_message .= "Changed the Check-out Time from {$current_rate['checkout_time']} to $new_checkout_time.\n";
-    }
-    
-    if (strcasecmp($current_rate['rate_type'], $new_rate_type) !== 0) {
-        $log_message .= "Changed the Rate Type from {$current_rate['rate_type']} to $new_rate_type.\n";
-    }
-    
-    // Check if picture was updated
-    if ($new_picture !== null) {
-        $log_message .= "Updated the Rate Picture.\n";
+        $log_message .= "- Price: '{$current_rate['price']}' → '$new_price'.\n";
     }
 
-    // Insert log entry into the database
-    $sql = "INSERT INTO activity_logs (admin_id, rate_id, timestamp, changes) VALUES (?, ?, NOW(), ?)";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("iis", $admin_id, $rate_id, $log_message);
-    $stmt->execute();
-    $stmt->close();
+    if (strcasecmp($current_rate['description'], $new_description) !== 0) {
+        $log_message .= "- Description was updated.\n";
+    }
+
+    if ($current_rate['hoursofstay'] != $new_hoursofstay) {
+        $log_message .= "- Hours of Stay: '{$current_rate['hoursofstay']}' → '$new_hoursofstay'.\n";
+    }
+
+    if (normalizeTime($current_rate['checkin_time']) !== normalizeTime($new_checkin_time)) {
+        $log_message .= "- Check-in Time: '{$current_rate['checkin_time']}' → '$new_checkin_time'.\n";
+    }
+
+    if (normalizeTime($current_rate['checkout_time']) !== normalizeTime($new_checkout_time)) {
+        $log_message .= "- Check-out Time: '{$current_rate['checkout_time']}' → '$new_checkout_time'.\n";
+    }
+
+    if (strcasecmp($current_rate['rate_type'], $new_rate_type) !== 0) {
+        $log_message .= "- Rate Type: '{$current_rate['rate_type']}' → '$new_rate_type'.\n";
+    }
+
+    if ($new_picture !== null) {
+        $log_message .= "- Picture was updated.\n";
+    }
+
+    // Only log if changes were made
+    if (trim($log_message) !== "Admin $admin_name updated Rate ID: $rate_id.\n") {
+        // Insert log entry into the database
+        $sql = "INSERT INTO activity_logs (admin_id, timestamp, changes) VALUES (?, NOW(), ?)";
+        $stmt = $conn->prepare($sql);
+
+        if (!$stmt) {
+            die("SQL Prepare Error: " . $conn->error);
+        }
+
+        $stmt->bind_param("is", $admin_id, $log_message);
+
+        if (!$stmt->execute()) {
+            die("SQL Execute Error: " . $stmt->error);
+        }
+
+        $stmt->close();
+    }
+
+    $conn->close();
 }
 
+
 /**
- * Normalize time format for comparison (e.g., "07:00:00" and "7:00" should be considered the same)
+ * Normalize time format for comparison (e.g., "07:00:00" and "7:00" should be considered the same).
  */
 function normalizeTime($timeStr) {
-    // If the time is empty, return an empty string
     if (empty($timeStr)) {
         return '';
     }
-    
-    // Extract hours and minutes, ignoring seconds
     $timeParts = preg_split('/[:\s]/', $timeStr);
     $hours = isset($timeParts[0]) ? (int)$timeParts[0] : 0;
     $minutes = isset($timeParts[1]) ? (int)$timeParts[1] : 0;
-    
-    // Return a standardized format (H:M)
     return sprintf("%d:%02d", $hours, $minutes);
 }
-?>

@@ -58,24 +58,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 /**
  * Log the rate restoration action to the database
  */
-function logRateRestore($admin_id, $admin_name, $rate_id, $rate_name) {
+function logRateRestore($admin_id, $admin_name, $rateId, $rate_name) {
     include('../db_connection.php'); // Include your database connection file
 
     // Set timezone to ensure correct time
     date_default_timezone_set('Asia/Manila');
 
-    // Create a structured change log
-    $changes = array(
-        'Restore' => "Restored the Rate named as: $rate_name."
-    );
+    // Log message
+    $log_message = "Admin $admin_name restored the rate: $rate_name (ID: $rateId).";
 
-    // Convert to JSON for storage
-    $changes_json = json_encode($changes);
-
-    // Insert log entry into the database
-    $sql = "INSERT INTO activity_logs (admin_id, rate_id, timestamp, changes) VALUES (?, ?, NOW(), ?)";
+    // Insert log entry into the database (no rate_id inserted)
+    $sql = "INSERT INTO activity_logs (admin_id, timestamp, changes) VALUES (?, NOW(), ?)";
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("iis", $admin_id, $rate_id, $changes_json);
+    $stmt->bind_param("is", $admin_id, $log_message);
     $stmt->execute();
     $stmt->close();
     $conn->close();
