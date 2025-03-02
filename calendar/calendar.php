@@ -467,7 +467,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     
 	<script src="../scripts/script.js"></script>
-    <script src="../scripts/calendar.js"></script>
+    <script src="../scripts/calendars.js"></script>
 	<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 </body>
 </html>
