@@ -1,4 +1,4 @@
-document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener('DOMContentLoaded', async function () {
     const calendarEl = document.getElementById('calendar');
     const calendar = new FullCalendar.Calendar(calendarEl, {
         initialView: 'dayGridMonth',
@@ -43,17 +43,25 @@ document.addEventListener('DOMContentLoaded', function () {
             center: 'title',
             right: 'dayGridMonth,dayGridWeek,dayGridDay',
         },
-        eventsMinWidth: 100,
         dayHeaderClassNames: ['bg-blue-200', 'text-gray-800'],
         dayCellClassNames: ['text-center', 'py-4', 'px-2'],
         eventColor: '#FFFFFF',
         eventBorderColor: '#FFFFFF',
+        selectable: true, // Allows date selection
+        dateClick: function (info) {
+            const clickedDate = info.dateStr;
+            const disabledEvent = calendar.getEvents().find(event => event.startStr === clickedDate && event.extendedProps.isDisabled);
+
+            if (disabledEvent) {
+                openDisableDateModal(clickedDate, disabledEvent.extendedProps.reason);
+            }
+        }
     });
 
     // Fetch disabled dates and disable them in the calendar
     async function fetchDisabledDates() {
         try {
-            const response = await fetch('https://lightslategray-gorilla-105007.hostingersite.com/api/get_disabled_dates.php');
+            const response = await fetch('../api/get_disabled_dates.php');
             const data = await response.json();
             
             console.log("Fetched Disabled Dates:", data); // Debugging log
@@ -94,60 +102,36 @@ document.addEventListener('DOMContentLoaded', function () {
         // Force re-rendering
         calendar.refetchEvents();
     });
-    
 
-
-        // Log disabled events to confirm they are created
-        console.log("Disabled events:", disabledEvents);
-
-        // Add the disabled dates as background events
-        calendar.addEventSource({
-            events: disabledEvents
-        });
-
-        // Render the calendar
-        calendar.render();
-    });
-
-    // Open modal when a disabled date is clicked
-    calendar.on('dateClick', function (info) {
-        // Check if the clicked date is disabled
-        const clickedDate = info.dateStr;
-        const disabledEvent = calendar.getEvents().find(event => event.startStr === clickedDate && event.extendedProps.isDisabled);
-
-        if (disabledEvent) {
-            const reason = disabledEvent.extendedProps.reason; // Get the reason for the disabled date
-            openDisableDateModal(clickedDate, reason);
-        }
-    });
+    // Render the calendar
+    calendar.render();
 
     // Open the modal to show the disabled date and reason
-function openDisableDateModal(date, reason) {
-    const modal = document.getElementById('date-info'); // Corrected ID reference
-    const dateElement = document.getElementById('disable-date');
-    const reasonElement = document.getElementById('disable-reason');
-    const reenableButton = document.getElementById('reenable-btn');
+    function openDisableDateModal(date, reason) {
+        const modal = document.getElementById('date-info'); // Corrected ID reference
+        const dateElement = document.getElementById('disable-date');
+        const reasonElement = document.getElementById('disable-reason');
+        const reenableButton = document.getElementById('reenable-btn');
 
-    // Format the date to "February 15, 2025"
-    const formattedDate = new Date(date).toLocaleDateString('en-US', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric'
-    });
+        // Format the date to "February 15, 2025"
+        const formattedDate = new Date(date).toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        });
 
-    // Set the content of the modal
-    dateElement.innerText = formattedDate;
-    reasonElement.innerText = reason;
+        // Set the content of the modal
+        dateElement.innerText = formattedDate;
+        reasonElement.innerText = reason;
 
-    // Handle re-enable functionality
-    reenableButton.onclick = function () {
-        reenableDate(date);
-    };
+        // Handle re-enable functionality
+        reenableButton.onclick = function () {
+            reenableDate(date);
+        };
 
-    // Show the modal by removing the 'hidden' class
-    modal.classList.remove('hidden');
-}
-
+        // Show the modal by removing the 'hidden' class
+        modal.classList.remove('hidden');
+    }
 
     // Close modal
     document.getElementById('close-btn-info').addEventListener('click', function () {
