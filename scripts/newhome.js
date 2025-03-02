@@ -167,7 +167,7 @@ document.getElementById('rate-modal').addEventListener('click', function(event) 
 
   async function fetchReservedDates() {
     try {
-      const response = await fetch('../api/get_reserved_dates_booking.php');
+      const response = await fetch('api/get_reserved_dates_booking.php');
       const reservedDates = await response.json();
   
       if (!reservedDates || !reservedDates.reservedDaytime || !reservedDates.reservedNighttime || !reservedDates.reservedWholeDay) {
@@ -184,7 +184,7 @@ document.getElementById('rate-modal').addEventListener('click', function(event) 
   
   async function fetchDisabledDates() {
     try {
-      const response = await fetch('../api/get_disabled_dates.php');
+      const response = await fetch('api/get_disabled_dates.php');
       const disabledDates = await response.json();
   
       console.log("Fetched Disabled Dates:", disabledDates);
@@ -210,68 +210,60 @@ document.getElementById('rate-modal').addEventListener('click', function(event) 
   async function initializeFlatpickr() {
     const { reservedDaytime, reservedNighttime, reservedWholeDay } = await fetchReservedDates();
     const disabledDates = await fetchDisabledDates();
-  
+
     const checkInDateInput = document.getElementById("check-in");
-  
-    const daytimeSet = new Set(reservedDaytime);
+
     const nighttimeSet = new Set(reservedNighttime);
-    const wholeDaySet = new Set(reservedWholeDay);
-  
     const fullyReservedDates = new Set();
-  
-    // Combine reserved dates (daytime, nighttime, and whole day)
+
+    // Combine reserved dates (daytime + nighttime = fully booked)
     reservedDaytime.forEach(date => {
-      if (nighttimeSet.has(date)) {
-        fullyReservedDates.add(date);
-      }
-    });
-  
-    reservedWholeDay.forEach(date => {
-      fullyReservedDates.add(date);
-    });
-  
-    // Add disabled dates (from the server) to the fullyReservedDates set
-    disabledDates.forEach(date => {
-      console.log("Adding Disabled Date:", date); // Debugging line
-      fullyReservedDates.add(date); // Ensure date is in "YYYY-MM-DD" format
-    });
-  
-    console.log("Reserved Daytime Dates:", reservedDaytime);
-    console.log("Reserved Nighttime Dates:", reservedNighttime);
-    console.log("Reserved Whole Day Dates:", reservedWholeDay);
-    console.log("Disabled Dates:", Array.from(fullyReservedDates));
-  
-    // Ensure all dates are formatted for Flatpickr (Y-m-d format)
-    const disableDatesFormatted = Array.from(fullyReservedDates).map(date => date.split("T")[0]);
-  
-    console.log("Formatted Disable Dates for Flatpickr:", disableDatesFormatted);
-  
-    // Initialize Flatpickr for check-in date input
-    flatpickr(checkInDateInput, {
-      dateFormat: "Y-m-d",
-      disable: [
-        { from: "1970-01-01", to: new Date().toISOString().split("T")[0] }, // Disable past dates
-        ...disableDatesFormatted // Merge the reserved and disabled dates
-      ],
-      onChange: function (selectedDates, dateStr, instance) {
-        if (selectedDates[0]) {
-          console.log(`Check-In Date Selected: ${selectedDates[0].toISOString().split("T")[0]}`);
+        if (nighttimeSet.has(date)) {
+            fullyReservedDates.add(date);
         }
-      }
     });
-  
+
+    reservedWholeDay.forEach(date => {
+        fullyReservedDates.add(date);
+    });
+
+    // Add server-disabled dates to the fullyReservedDates set
+    disabledDates.forEach(date => {
+        console.log("Adding Disabled Date:", date);
+        fullyReservedDates.add(date);
+    });
+
+    console.log("Formatted Disable Dates for Flatpickr:", Array.from(fullyReservedDates));
+
+    // Ensure all dates are in "YYYY-MM-DD" format
+    const disableDatesFormatted = Array.from(fullyReservedDates).map(date => date.split("T")[0]);
+
+    console.log("Final Disabled Dates:", disableDatesFormatted);
+
+    // Initialize Flatpickr with properly formatted disabled dates
+    flatpickr(checkInDateInput, {
+        dateFormat: "Y-m-d",
+        disable: disableDatesFormatted, // Ensure this is an array of strings
+        onChange: function (selectedDates) {
+            if (selectedDates[0]) {
+                console.log(`Check-In Date Selected: ${selectedDates[0].toISOString().split("T")[0]}`);
+            }
+        }
+    });
+
     const bookButton = document.getElementById("book-btn");
     bookButton.addEventListener("click", function (event) {
-      event.preventDefault();
-      const selectedDate = checkInDateInput.value;
-      if (selectedDate) {
-        localStorage.setItem("selectedDate", JSON.stringify({ checkIn: selectedDate }));
-        window.location.href = "landing_page_customer/booking.php";
-      } else {
-        alert("Please select a check-in date.");
-      }
+        event.preventDefault();
+        const selectedDate = checkInDateInput.value;
+        if (selectedDate) {
+            localStorage.setItem("selectedDate", JSON.stringify({ checkIn: selectedDate }));
+            window.location.href = "landing_page_customer/booking.php";
+        } else {
+            alert("Please select a check-in date.");
+        }
     });
-  }
+}
+
   
   document.addEventListener("DOMContentLoaded", function () {
     console.log("DOM Loaded. Initializing Flatpickr...");
