@@ -50,24 +50,31 @@ document.addEventListener("DOMContentLoaded", function () {
                 const cancelBtn = document.getElementById('cancel-btn');
                 const rescheduleBtn = document.getElementById('reschedule-btn');
                 const reviewBtn = document.getElementById('review-btn');
+                const resubmitBtn = document.getElementById('resubmit-btn');
 
                 if (data.status === 'Pending') {
                     if (cancelBtn) cancelBtn.classList.remove('hidden');
+                    if (rescheduleBtn) rescheduleBtn.classList.add('hidden');
+                    if (reviewBtn) reviewBtn.classList.add('hidden');
+                    if (resubmitBtn) resubmitBtn.classList.remove('hidden');
+                } else if (data.status === 'Confirmed') {
+                    if (cancelBtn) cancelBtn.classList.remove('hidden');
                     if (rescheduleBtn) rescheduleBtn.classList.remove('hidden');
                     if (reviewBtn) reviewBtn.classList.add('hidden');
-                } else if (data.status === 'Completed') {
-                    if (cancelBtn) cancelBtn.classList.add('hidden');
-                    if (rescheduleBtn) rescheduleBtn.classList.add('hidden');
-                    if (reviewBtn) reviewBtn.classList.remove('hidden');
+                    if (resubmitBtn) resubmitBtn.classList.add('hidden');
                 } else if (data.status === 'Cancelled') {
                     // Hide all buttons if reservation is cancelled
                     if (cancelBtn) cancelBtn.classList.add('hidden');
                     if (rescheduleBtn) rescheduleBtn.classList.add('hidden');
                     if (reviewBtn) reviewBtn.classList.add('hidden');
+                    if (resubmitBtn) resubmitBtn.classList.add('hidden');
+
                 } else {
-                    if (cancelBtn) cancelBtn.classList.remove('hidden');
-                    if (rescheduleBtn) rescheduleBtn.classList.remove('hidden');
-                    if (reviewBtn) reviewBtn.classList.add('hidden');
+                    if (cancelBtn) cancelBtn.classList.add('hidden');
+                    if (rescheduleBtn) rescheduleBtn.classList.add('hidden');
+                    if (reviewBtn) reviewBtn.classList.remove('hidden');
+                    if (resubmitBtn) resubmitBtn.classList.add('hidden');
+
                 }
 
                 updateStatus(data.status.toLowerCase()); // Convert to lowercase for consistency

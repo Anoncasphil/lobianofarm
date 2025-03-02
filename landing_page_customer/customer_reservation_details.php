@@ -228,6 +228,10 @@ $stmt->close();
           Cancel Reservation
         </button>
 
+        <button type="button" id="resubmit-btn" onclick="toggleModal('resubmit-reservation')" class="mt-4 flex w-full items-center justify-center rounded-lg bg-white px-5 py-2.5 text-sm font-medium text-blue-900 hover:bg-blue-100 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-900 dark:text-white dark:hover:bg-blue-700 dark:focus:ring-blue-600 sm:mt-0">
+          Resubmit Proof of payment
+        </button>
+
         <button type="button" id="reschedule-btn" class="mt-4 flex w-full items-center justify-center rounded-lg bg-white px-5 py-2.5 text-sm font-medium text-blue-900 hover:bg-blue-100 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-900 dark:text-white dark:hover:bg-blue-700 dark:focus:ring-blue-600 sm:mt-0">
           Reschedule Reservation
         </button>
@@ -562,6 +566,227 @@ $stmt->close();
         </div>
     </div>
 </div>
+
+
+<!-- Resubmit modal -->
+<div id="resubmit-reservation" tabindex="-1" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 left-0 w-full h-full flex bg-black/20 justify-center items-center z-50">
+    <div class="relative p-4 w-full max-w-md max-h-full">
+        <!-- Modal content -->
+        <div class="relative bg-white rounded-lg shadow-sm">
+            <!-- Modal header -->
+            <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t border-gray-200">
+                <h3 class="text-lg font-semibold text-gray-900">
+                    Resubmit Proof of Payment
+                </h3>
+                <button type="button" onclick="toggleModal('resubmit-reservation')" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center">
+                    <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                    </svg>
+                    <span class="sr-only">Close modal</span>
+                </button>
+            </div>
+            
+            <!-- Modal body -->
+            <form id="resubmit-payment-form" method="POST" enctype="multipart/form-data" class="p-4 md:p-5">
+                <input type="hidden" id="resubmit-reservation-id" name="reservation_id" value="">
+                
+                <div id="resubmit-alert" class="flex items-center p-4 mb-4 text-sm text-blue-800 rounded-lg bg-blue-200 dark:text-blue-900 hidden" role="alert">
+                    <svg class="shrink-0 inline w-4 h-4 me-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 1 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
+                    </svg>
+                    <span class="sr-only">Info</span>
+                    <div>
+                        <span class="font-medium" id="resubmit-alert-title">Info alert!</span> 
+                        <span id="resubmit-alert-message"></span>
+                    </div>
+                </div>
+
+                <!-- Reference Number -->
+                <div class="mb-5">
+                    <label for="reference-number" class="block mb-2 text-sm font-medium text-gray-900">Reference Number</label>
+                    <input type="text" id="reference-number" name="reference_number" class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="Enter payment reference number" required>
+                </div>
+                
+                <!-- File Upload -->
+                <div class="mb-5">
+                    <label class="block mb-2 text-sm font-medium text-gray-900" for="payment-receipt">Upload Payment Receipt</label>
+                    <input class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-white focus:outline-none" id="payment-receipt" name="payment_receipt" type="file" accept="image/*" required>
+                    <p class="mt-1 text-sm text-gray-500">PNG, JPG, or JPEG (MAX. 5MB).</p>
+                    
+                    <!-- Preview container -->
+                    <div id="receipt-preview" class="mt-3 hidden">
+                        <h4 class="text-sm font-medium text-gray-700 mb-2">Preview:</h4>
+                        <img id="receipt-preview-image" class="max-h-36 rounded border border-gray-200" src="" alt="Payment Receipt Preview">
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="flex justify-end">
+                    <button type="button" id="resubmit-payment-btn" class="text-white bg-blue-900 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 focus:outline-none">
+                        Submit Payment
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Function to toggle modals
+    function toggleModal(modalId) {
+        const modal = document.getElementById(modalId);
+        if (modal.classList.contains('hidden')) {
+            modal.classList.remove('hidden');
+            
+            // If this is the resubmit modal, set the reservation ID
+            if (modalId === 'resubmit-reservation') {
+                console.log('Setting reservation ID to:', reservation_id);
+                document.getElementById('resubmit-reservation-id').value = reservation_id;
+            }
+        } else {
+            modal.classList.add('hidden');
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log("Document loaded. Reservation ID variable:", reservation_id);
+
+        // Helper function to show alerts in the resubmit modal
+        function showResubmitAlert(type, message) {
+            const alertBox = document.getElementById('resubmit-alert');
+            const alertTitle = document.getElementById('resubmit-alert-title');
+            const alertMessage = document.getElementById('resubmit-alert-message');
+            
+            if (type === 'success') {
+                alertBox.classList.remove('text-red-800', 'bg-red-200');
+                alertBox.classList.add('text-green-800', 'bg-green-200');
+                alertTitle.textContent = 'Success!';
+            } else {
+                alertBox.classList.remove('text-green-800', 'bg-green-200');
+                alertBox.classList.add('text-red-800', 'bg-red-200');
+                alertTitle.textContent = 'Error!';
+            }
+            
+            alertMessage.textContent = message;
+            alertBox.classList.remove('hidden');
+        }
+
+        // Image preview functionality
+        const paymentReceipt = document.getElementById('payment-receipt');
+        const receiptPreview = document.getElementById('receipt-preview');
+        const receiptPreviewImage = document.getElementById('receipt-preview-image');
+
+        paymentReceipt?.addEventListener('change', function() {
+            if (this.files && this.files[0]) {
+                const file = this.files[0];
+                
+                // Check file size (max 5MB)
+                if (file.size > 5 * 1024 * 1024) {
+                    showResubmitAlert('error', 'File size exceeds 5MB. Please select a smaller file.');
+                    this.value = '';
+                    receiptPreview.classList.add('hidden');
+                    return;
+                }
+
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    receiptPreviewImage.src = e.target.result;
+                    receiptPreview.classList.remove('hidden');
+                };
+                reader.readAsDataURL(file);
+            } else {
+                receiptPreview.classList.add('hidden');
+            }
+        });
+
+        // Resubmit payment form submission
+        const resubmitPaymentBtn = document.getElementById('resubmit-payment-btn');
+        resubmitPaymentBtn?.addEventListener('click', function() {
+            // Reset alert state
+            document.getElementById('resubmit-alert').classList.add('hidden');
+            
+            const form = document.getElementById('resubmit-payment-form');
+            
+            // Validate form inputs
+            const referenceNumber = document.getElementById('reference-number').value.trim();
+            const paymentFile = document.getElementById('payment-receipt').files[0];
+            
+            if (!referenceNumber) {
+                showResubmitAlert('error', 'Please enter a reference number');
+                return;
+            }
+            
+            if (!paymentFile) {
+                showResubmitAlert('error', 'Please upload a payment receipt');
+                return;
+            }
+            
+            // Make sure the reservation ID is set correctly
+            const hiddenReservationId = document.getElementById('resubmit-reservation-id');
+            if (!hiddenReservationId.value) {
+                console.log('Setting reservation ID before submission:', reservation_id);
+                hiddenReservationId.value = reservation_id;
+            }
+            
+            // Debug check
+            console.log('Form data check:');
+            console.log('- Reservation ID:', hiddenReservationId.value);
+            console.log('- Reference Number:', referenceNumber);
+            console.log('- Payment File:', paymentFile ? paymentFile.name : 'None');
+            
+            // Create FormData and manually add all data
+            const formData = new FormData();
+            formData.append('reservation_id', hiddenReservationId.value);
+            formData.append('reference_number', referenceNumber);
+            formData.append('payment_receipt', paymentFile);
+            
+            // Show loading state
+            resubmitPaymentBtn.disabled = true;
+            resubmitPaymentBtn.innerHTML = '<svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white inline-block" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Processing...';
+            
+            // Send AJAX request
+            fetch('../api/resubmit_payment.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('API response:', data);
+                
+                // Reset button
+                resubmitPaymentBtn.disabled = false;
+                resubmitPaymentBtn.innerHTML = 'Submit Payment';
+                
+                if (data.success) {
+                    showResubmitAlert('success', data.message || 'Payment proof submitted successfully!');
+                    
+                    // Reset form
+                    form.reset();
+                    receiptPreview.classList.add('hidden');
+                    
+                    // Close modal after 2 seconds and reload page
+                    setTimeout(() => {
+                        toggleModal('resubmit-reservation');
+                        window.location.reload();
+                    }, 2000);
+                } else {
+                    showResubmitAlert('error', data.message || 'Something went wrong. Please try again.');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                resubmitPaymentBtn.disabled = false;
+                resubmitPaymentBtn.innerHTML = 'Submit Payment';
+                showResubmitAlert('error', 'Network error occurred. Please try again.');
+            });
+        });
+    });
+</script>
 
     <script src="../scripts/booking.js" defer></script>
     <script src="../scripts/customer_reservation_details.js" defer></script>
