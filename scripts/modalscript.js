@@ -340,21 +340,25 @@ function archiveRate(rateId) {
     xhr.open("POST", "archive-rate.php", true);
     xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 
-	xhr.onreadystatechange = function () {
-    if (xhr.readyState === 4) {
-        console.log("Server Response: ", xhr.responseText);
-        if (xhr.status === 200 && xhr.responseText.trim() === 'success') {
-            const row = document.getElementById('rate-' + rateId);
-            if (row) {
-                row.style.display = 'none';
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState === 4) {
+            console.log("Server Response: ", xhr.responseText);
+            if (xhr.status === 200 && xhr.responseText.trim() === 'success') {
+                const row = document.getElementById('rate-' + rateId);
+                if (row) {
+                    row.style.display = 'none';
+                }
+                showModal('successModal', 'The rate has been successfully archived.');
+                // Add timeout to hide the modal or reload page after 1500ms
+                setTimeout(() => {
+                    // You can either hide the modal or reload the page after timeout
+                    // For consistency with restoreRate, we'll just let the default modal timeout handle it
+                }, 1500);
+            } else {
+                showModal('errorModal', 'Failed to archive the rate. Please try again.');
             }
-            showModal('successModal', 'The rate has been successfully archived.');
-        } else {
-            showModal('errorModal', 'Failed to archive the rate. Please try again.');
         }
-    }
-};
-
+    };
 
     // Send the rate ID to the server to mark it as inactive
     xhr.send("id=" + rateId);
@@ -456,4 +460,29 @@ function calculateCheckoutUpdate() {
         // Update the checkout field with the calculated time
         document.getElementById("updatecheckout").value = `${formattedCheckoutHour}:${formattedCheckoutMinute}`;
     }
+}
+
+function restoreRate(rateId) {
+    // Create a request to restore the rate
+    const xhr = new XMLHttpRequest();
+    xhr.open("POST", "restore_rate.php", true);
+    xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState === 4) {
+            console.log("Server Response: ", xhr.responseText);
+            if (xhr.status === 200 && xhr.responseText.trim() === 'success') {
+                showModal('successModal', 'The rate has been successfully restored.');
+                // Reload page to show the restored rate
+                setTimeout(() => {
+                    location.reload();
+                }, 1500);
+            } else {
+                showModal('errorModal', 'Failed to restore the rate. Please try again.');
+            }
+        }
+    };
+
+    // Send the rate ID to the server to mark it as active
+    xhr.send("rate_id=" + rateId);
 }

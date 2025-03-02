@@ -18,7 +18,7 @@ if (!isset($_SESSION['admin_id'])) {
 	<link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet">
 	<link href='https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css' rel='stylesheet'>
 	<link rel="stylesheet" href="../styles/style.css">
-	
+	<link rel="stylesheet" href="../styles/activity_log.css">
 	<title>Admin</title>
 </head>
 <body>
@@ -127,10 +127,84 @@ if (!isset($_SESSION['admin_id'])) {
 			
 		</nav>
 		<!-- NAVBAR -->
+        <!-- MAIN -->
+        <main>
+            <div class="container mx-auto px-4 py-8">
+                <div class="activity-log-container">
+                    <h1 class="text-2xl font-bold mb-6">Activity Log</h1>
+                    
+                    <div class="table-responsive">
+                        <table class="activity-log-table">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Admin</th>
+                                    <th>Changes</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php
+                                include('../db_connection.php'); // Include your database connection file
+                                
+                                // Set timezone to ensure correct time display
+                                date_default_timezone_set('Asia/Manila');
+                                
+                                // Query to get logs from the database with admin and rate information
+                                $sql = "SELECT al.id, al.timestamp, a.firstname, a.lastname, r.name as rate_name, al.changes 
+                                        FROM activity_logs al
+                                        LEFT JOIN admin_tbl a ON al.admin_id = a.admin_id
+                                        LEFT JOIN rates r ON al.rate_id = r.id
+                                        ORDER BY al.timestamp DESC";
+                                        
+                                $result = $conn->query($sql);
+                                
+                                if ($result && $result->num_rows > 0) {
+                                    while ($row = $result->fetch_assoc()) {
+                                        $admin_name = $row['firstname'] . ' ' . $row['lastname'];
+                                        $date_formatted = date("M d Y g:i a", strtotime($row['timestamp']));
+                                        
+                                        // Try to decode changes as JSON, if it fails, treat as plain text
+                                        $changes_array = json_decode($row['changes'], true);
+                                        
+                                        echo '<tr class="activity-log-row">';
+                                        echo '<td class="log-date">' . $date_formatted . '</td>';
+                                        echo '<td class="log-admin">' . $admin_name . '</td>';
+                                        echo '<td class="log-changes">';
+                                        
+                                        if (is_array($changes_array)) {
+                                            echo '<div class="change-entries">';
+                                            // Display changes in the structured format with each category on a new line
+                                            foreach ($changes_array as $category => $detail) {
+                                                echo '<div class="change-category">';
+                                                echo '<div class="change-detail">'.nl2br($detail).'</div>';
+                                                echo '</div>';
+                                            }
+                                            echo '</div>';
+                                        } else {
+                                            // Fallback for old format - Convert periods to line breaks for better readability
+                                            $changes_text = $row['changes'];
+                                            $changes_text = str_replace('. ', ".<br>", $changes_text);
+                                            echo '<div class="legacy-format">' . $changes_text . '</div>';
+                                        }
+                                        
+                                        echo '</td>';
+                                        echo '</tr>';
+                                    }
+                                } else {
+                                    echo '<tr><td colspan="3" class="activity-log-empty">No activity logs found.</td></tr>';
+                                }
+                                
+                                $conn->close();
+                                ?>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+        <!-- MAIN -->
 
-		
-
-		<!-- MAIN -->
+        
 	</section>
 	<!-- NAVBAR -->
 

@@ -1,0 +1,194 @@
+/* Activity Log Container Styles */
+.activity-log-container {
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    margin-bottom: 30px;
+}
+
+.activity-log-container h1 {
+    color: #2d3748;
+    margin-bottom: 20px;
+    font-weight: 600;
+    border-bottom: 2px solid #edf2f7;
+    padding-bottom: 10px;
+}
+
+/* Table layout */
+.table-responsive {
+    overflow-x: auto;
+}
+
+.activity-log-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.activity-log-table thead {
+    background: #09385f;
+    color: white;
+}
+
+.activity-log-table th {
+    padding: 16px;
+    text-align: left;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    border-bottom: none;
+    position: relative;
+    white-space: nowrap;
+}
+
+.activity-log-table th:first-child {
+    width: 180px;
+}
+
+.activity-log-table th:nth-child(2) {
+    width: 150px;
+}
+
+.activity-log-table td {
+    padding: 16px;
+    vertical-align: top;
+    border-bottom: 1px solid #edf2f7;
+    color: #000000;
+}
+
+
+
+.activity-log-row:nth-child(even) {
+    background-color: #f9fafb;
+}
+
+/* Date cell */
+.log-date {
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+/* Admin cell */
+.log-admin {
+    white-space: nowrap;
+}
+
+/* Changes cell */
+.log-changes {
+    line-height: 1.6;
+}
+
+/* Change entries container */
+.change-entries {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+/* Individual change category */
+.change-category {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    position: relative;
+    margin-bottom: 8px;
+}
+
+.change-category:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    bottom: -6px;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background-color: #e2e8f0;
+}
+
+/* Change detail - indented under category */
+.change-detail {
+    padding-left: 20px;
+    color: #4a5568;
+}
+
+/* Empty logs message */
+.activity-log-empty {
+    padding: 20px;
+    text-align: center;
+    color: #000000;
+}
+
+/* Legacy format styling */
+.legacy-format {
+    color: #000000;
+    line-height: 1.8;
+    white-space: pre-line;
+}
+
+/* Status indicators for different types of changes - unified style */
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .activity-log-table th,
+    .activity-log-table td {
+        padding: 12px;
+    }
+    
+    .change-detail {
+        padding-left: 10px;
+    }
+    
+    .activity-log-container {
+        padding: 15px;
+    }
+    
+    /* Force table to not be like tables on small screens */
+    .activity-log-table, 
+    .activity-log-table thead, 
+    .activity-log-table tbody, 
+    .activity-log-table th, 
+    .activity-log-table td, 
+    .activity-log-table tr {
+        display: block;
+    }
+    
+    /* Hide table headers on mobile */
+    .activity-log-table thead tr {
+        position: absolute;
+        top: -9999px;
+        left: -9999px;
+    }
+    
+    .activity-log-table tr {
+        margin-bottom: 15px;
+        border: 1px solid #edf2f7;
+        border-radius: 8px;
+    }
+    
+    .activity-log-table td {
+        position: relative;
+        padding-left: 40%;
+        border: none;
+        border-bottom: 1px solid #edf2f7;
+    }
+    
+    .activity-log-table td:last-child {
+        border-bottom: none;
+    }
+    
+    .activity-log-table td:before {
+        position: absolute;
+        left: 10px;
+        width: 35%;
+        padding-right: 10px;
+        white-space: nowrap;
+        font-weight: 500;
+    }
+    
+    /* Add labels for mobile */
+    .activity-log-table td:nth-of-type(1):before { content: "Date:"; }
+    .activity-log-table td:nth-of-type(2):before { content: "Admin:"; }
+    .activity-log-table td:nth-of-type(3):before { content: "Changes:"; }
+}
