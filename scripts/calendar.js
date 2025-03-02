@@ -53,13 +53,24 @@ document.addEventListener('DOMContentLoaded', function () {
     // Fetch disabled dates and disable them in the calendar
     async function fetchDisabledDates() {
         try {
-            const response = await fetch('../api/get_disabled_dates.php');
+            const response = await fetch('https://lightslategray-gorilla-105007.hostingersite.com/api/get_disabled_dates.php');
             const data = await response.json();
             
-            console.log("Fetched disabled dates:", data); // Debugging log
-
+            console.log("Fetched Disabled Dates:", data); // Debugging log
+    
             if (data.disableDates && Array.isArray(data.disableDates)) {
-                return data.disableDates;
+                return data.disableDates.map(dateInfo => ({
+                    title: 'Disabled',
+                    start: dateInfo.date,
+                    end: dateInfo.date,
+                    display: 'background', // Correct method for FullCalendar v5+
+                    color: '#d3d3d3', // Light gray background
+                    textColor: '#000000', // Black text for visibility
+                    extendedProps: {
+                        isDisabled: true,
+                        reason: dateInfo.reason || 'No reason provided',
+                    }
+                }));
             } else {
                 console.error("Invalid disabled dates structure:", data);
                 return [];
@@ -69,25 +80,21 @@ document.addEventListener('DOMContentLoaded', function () {
             return [];
         }
     }
-
-    // Fetch the disabled dates and disable them in the calendar
-    fetchDisabledDates().then(disabledDates => {
-        if (disabledDates.length === 0) {
-            console.warn("No disabled dates found."); // Debugging log
+    
+    // Fetch the disabled dates and add them to FullCalendar
+    fetchDisabledDates().then(disabledEvents => {
+        if (disabledEvents.length === 0) {
+            console.warn("No disabled dates found.");
         }
-
-const disabledEvents = disabledDates.map(dateInfo => ({
-    start: dateInfo.date,
-    end: dateInfo.date,
-    rendering: 'background', // This might not work in the latest FullCalendar versions
-    color: '#d3d3d3',        
-    textColor: '#ffffff',    
-    title: 'Disabled',       
-    extendedProps: {
-        isDisabled: true,     
-        reason: dateInfo.reason || 'No reason provided',  
-    }
-}));
+    
+        console.log("Adding disabled dates to FullCalendar:", disabledEvents);
+    
+        calendar.addEventSource(disabledEvents);
+    
+        // Force re-rendering
+        calendar.refetchEvents();
+    });
+    
 
 
         // Log disabled events to confirm they are created
