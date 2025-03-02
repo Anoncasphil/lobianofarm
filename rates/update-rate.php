@@ -33,6 +33,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $checkout_time = $_POST['checkout'];
     $rate_type = $_POST['type']; 
 
+    // Get current rate details before updating
+    $sql_current = "SELECT name, price, description, hoursofstay, checkin_time, checkout_time, rate_type, picture FROM rates WHERE id = ?";
+    $stmt_current = $conn->prepare($sql_current);
+    $stmt_current->bind_param("i", $id);
+    $stmt_current->execute();
+    $result = $stmt_current->get_result();
+    $current_rate = $result->fetch_assoc();
+    $stmt_current->close();
+
     // Handle file upload (if any)
     $picture = null;
     if (isset($_FILES['picture']) && $_FILES['picture']['error'] == 0) {
@@ -81,7 +90,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
 
     if ($stmt->execute()) {
-        logRateUpdate($admin_id, $admin_name, $id, $name);
+        logRateUpdate($admin_id, $admin_name, $id, $current_rate, $name, $price, $description, $hoursofstay, $checkin_time, $checkout_time, $rate_type, $picture);
         echo "Rate updated successfully";
         header("Location: rates.php");
     } else {
@@ -93,23 +102,73 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 }
 
 /**
- * Log the rate update to a file
+ * Log the rate update to the database with human-readable format showing before and after values
  */
-function logRateUpdate($admin_id, $admin_name, $rate_id, $rate_name) {
-    $log_dir = "../adminlogs/";
-    $log_file = $log_dir . "logs.txt";
+function logRateUpdate($admin_id, $admin_name, $rate_id, $current_rate, $new_name, $new_price, $new_description, $new_hoursofstay, $new_checkin_time, $new_checkout_time, $new_rate_type, $new_picture) {
+    include('../db_connection.php'); // Include your database connection file
 
-    // Create directory if it doesn't exist
-    if (!file_exists($log_dir)) {
-        mkdir($log_dir, 0777, true);
+    // Set timezone to ensure correct time
+    date_default_timezone_set('Asia/Manila');
+    $timestamp = date("M d Y g:i a");
+    
+    // Compare and add changes to the log message - using case-insensitive comparison
+    if (strcasecmp($current_rate['name'], $new_name) !== 0) {
+        $log_message .= "Updated the Rate Name from {$current_rate['name']} to $new_name.\n";
+    }
+    
+    if ($current_rate['price'] != $new_price) {
+        $log_message .= "Changed the Price from {$current_rate['price']} to $new_price.\n";
+    }
+    
+    if (strcasecmp($current_rate['description'], $new_description) !== 0) {
+        $log_message .= "Updated the Description.\n";
+    }
+    
+    if ($current_rate['hoursofstay'] != $new_hoursofstay) {
+        $log_message .= "Changed the Hours of Stay from {$current_rate['hoursofstay']} to $new_hoursofstay.\n";
+    }
+    
+    // Normalize time formats before comparison
+    if (normalizeTime($current_rate['checkin_time']) !== normalizeTime($new_checkin_time)) {
+        $log_message .= "Changed the Check-in Time from {$current_rate['checkin_time']} to $new_checkin_time.\n";
+    }
+    
+    if (normalizeTime($current_rate['checkout_time']) !== normalizeTime($new_checkout_time)) {
+        $log_message .= "Changed the Check-out Time from {$current_rate['checkout_time']} to $new_checkout_time.\n";
+    }
+    
+    if (strcasecmp($current_rate['rate_type'], $new_rate_type) !== 0) {
+        $log_message .= "Changed the Rate Type from {$current_rate['rate_type']} to $new_rate_type.\n";
+    }
+    
+    // Check if picture was updated
+    if ($new_picture !== null) {
+        $log_message .= "Updated the Rate Picture.\n";
     }
 
-    // Format log entry
-    $timestamp = date("Y-m-d H:i:s");
-    $log_entry = "[$timestamp] Admin ID: $admin_id | Name: $admin_name | Updated Rate ID: $rate_id | Rate Name: $rate_name\n";
+    // Insert log entry into the database
+    $sql = "INSERT INTO activity_logs (admin_id, rate_id, timestamp, changes) VALUES (?, ?, NOW(), ?)";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("iis", $admin_id, $rate_id, $log_message);
+    $stmt->execute();
+    $stmt->close();
+}
 
-    // Append log entry to the file
-    file_put_contents($log_file, $log_entry, FILE_APPEND);
+/**
+ * Normalize time format for comparison (e.g., "07:00:00" and "7:00" should be considered the same)
+ */
+function normalizeTime($timeStr) {
+    // If the time is empty, return an empty string
+    if (empty($timeStr)) {
+        return '';
+    }
+    
+    // Extract hours and minutes, ignoring seconds
+    $timeParts = preg_split('/[:\s]/', $timeStr);
+    $hours = isset($timeParts[0]) ? (int)$timeParts[0] : 0;
+    $minutes = isset($timeParts[1]) ? (int)$timeParts[1] : 0;
+    
+    // Return a standardized format (H:M)
+    return sprintf("%d:%02d", $hours, $minutes);
 }
 ?>
-    
