@@ -51,6 +51,7 @@ if (!isset($_SESSION['admin_id'])) {
 			<li><a href="../album/album.php"><i class='bx bxs-photo-album icon' ></i> Album</a></li>
             <?php if ($_SESSION['role'] === 'superadmin'): ?>
 				<li><a href="../team/team.php"><i class='bx bxs-buildings icon'></i> Team</a></li>
+                <li><a href="../activity_log/activity_log.php"><i class='bx bxs-log icon'></i> Activity Log</a></li>
 			<?php endif; ?>
 
 			<!-- <li class="divider" data-text="table and forms">Table and forms</li>

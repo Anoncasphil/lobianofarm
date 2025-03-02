@@ -169,6 +169,7 @@ $total_completed_sales = $total_data['total_sales'] ?? 0;
             <li><a href="album/album.php"><i class='bx bxs-photo-album icon'></i> Album</a></li>
             <?php if ($_SESSION['role'] === 'superadmin'): ?>
                 <li><a href="team/team.php"><i class='bx bxs-buildings icon'></i> Team</a></li>
+                <li><a href="../activity_log/activity_log.php"><i class='bx bxs-log icon'></i> Activity Log</a></li>
             <?php endif; ?>
         </ul>
     </section>
