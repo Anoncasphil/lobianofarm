@@ -444,6 +444,13 @@ $stmt->close();
         </div>
     </div>
 
+    <ul class="list-disc text-gray-700 ml-9 space-y-2">
+      <li>Rescheduling requests must be made at least 3 days before the reserved date.</li>
+      <li>Rescheduling requests made less than 3 days before the reserved date will not be accepted.</li>
+      <li>Rescheduling is allowed only once per reservation.</li>
+      <li>Rescheduling is subject to availability of the requested new date.</li>
+    </ul>
+
     <!-- Reason for Reschedule -->
     <div class="col-span-2 mb-5">
         <label for="schedule_reason" class="block mb-2 text-sm font-medium text-black">Reason</label>
@@ -556,6 +563,12 @@ $stmt->close();
                 </svg>
                 <h3 class="mb-5 text-lg font-normal text-gray-500 ">Are you sure about the changes you made?</h3>
                 <h3 class="mb-5 text-lg font-normal text-gray-500 ">You would have to wait for your payment to be refunded manually</h3>
+                <ul class="list-disc text-gray-700 ml-9 space-y-2">
+                  <li>If cancellation is made 1 week before the reserved date, refund will be provided with a 20% deduction from the reservation fee.</li>
+                  <li>If cancellation is made 2 days before the reserved date, refund will be provided with a 40% deduction.</li>
+                  <li>If cancellation is made 2 hours before the reserved date/time or less, no refund will be provided.</li>
+                  <li>All cancellation requests must be made through the reservation system.</li>
+                </ul>
                 <button id="submitBTN" type="button" class="text-white bg-blue-900 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center" onclick="cancelReservation()">
                     Yes, I'm sure
                 </button>
