@@ -56,120 +56,125 @@ function fetchRateData(id) {
     fetch(`../rates/fetch-rate.php?id=${id}`)
     .then(response => response.json())
     .then(data => {
-        console.log('Data received:', data);
+        console.log('✅ Data received:', data);
 
-        // Populate fields with fetched data
-        document.getElementById('updatename').value = data.name || ''; 
-        document.getElementById('updateprice').value = data.price || ''; 
-        document.getElementById('updatedescription').value = data.description || ''; 
-        document.getElementById('updatehoursofstay').value = data.hoursofstay || ''; 
+        // Select elements
+        const nameField = document.getElementById('updatename');
+        const tempPriceField = document.getElementById('updatetemp_price'); // Original price
+        const descriptionField = document.getElementById('updatedescription');
+        const hoursOfStayField = document.getElementById('updatehoursofstay');
+        const checkinField = document.getElementById('updatecheckin');
+        const checkoutField = document.getElementById('updatecheckout');
+        const discountField = document.getElementById('updatediscount');
+        const discountCheckbox = document.getElementById('updateadd_discount_checkbox');
+        const discountContainer = document.getElementById("updatediscount_container");
+        const rateTypeSelect = document.getElementById('update-rate-type');
+        const rateIdField = document.getElementById('updateRateId');
 
-        // Ensure the check-in and check-out time inputs are correctly populated
-        document.getElementById('updatecheckin').value = data.checkin_time ? data.checkin_time.slice(0, 5) : ''; // Slice off seconds if needed
-        document.getElementById('updatecheckout').value = data.checkout_time ? data.checkout_time.slice(0, 5) : ''; // Slice off seconds if needed
+        // Validate data exists
+        if (!data || Object.keys(data).length === 0) {
+            console.error("❌ Error: No data received!");
+            return;
+        }
 
-        const updateRateIdElement = document.getElementById('updateRateId');
-        if (updateRateIdElement) {
-            updateRateIdElement.value = id;
+        // Populate fields
+        if (nameField) nameField.value = data.name || ''; 
+        if (tempPriceField) tempPriceField.value = data.original_price || ''; // Use original price
+        if (descriptionField) descriptionField.value = data.description || ''; 
+        if (hoursOfStayField) hoursOfStayField.value = data.hoursofstay || ''; 
+        if (checkinField) checkinField.value = data.checkin_time ? data.checkin_time.slice(0, 5) : ''; 
+        if (checkoutField) checkoutField.value = data.checkout_time ? data.checkout_time.slice(0, 5) : ''; 
+
+        // Set discount dropdown & checkbox
+        if (discountField) discountField.value = data.discount_percentage || ''; 
+        if (discountCheckbox) {
+            discountCheckbox.checked = data.has_discount == 1;
+            if (discountContainer) discountContainer.classList.toggle("hidden", !data.has_discount);
+        }
+
+        if (rateIdField) rateIdField.value = id;
+
+        // Set the dropdown selection manually for rate_type
+        if (rateTypeSelect) {
+            const validRateTypes = ["Daytime", "Nighttime", "WholeDay"];
+            
+            // Log the rate_type to verify the value received from the database
+            console.log("✅ rate_type from DB:", data.rate_type);
+            
+            // Normalize the rate_type value to match the case exactly as in the dropdown
+            const normalizedRateType = data.rate_type;
+            
+            // Check and log if the value matches any of the valid types
+            if (validRateTypes.includes(normalizedRateType)) {
+                rateTypeSelect.value = normalizedRateType;
+                console.log(`✅ Setting rate type to: ${normalizedRateType}`);
+            } else {
+                rateTypeSelect.value = 'Daytime'; // Default value
+                console.log("❌ Invalid rate type from DB, defaulting to 'Daytime'");
+            }
         } else {
-            console.error('Element with id "updateRateId" not found');
+            console.error('❌ Element with id "update-rate-type" not found');
         }
 
-        // Check if rate_type is available in the data
-        const rateType = data.rate_type || 'Daytime'; // Default to 'Daytime' if NULL or not set
-        console.log('Rate Type:', rateType); // Log to see what rate_type value is being set
+        console.log("✅ Fields populated successfully!");
 
-        function fetchRateData(id) {
-            fetch(`../rates/fetch-rate.php?id=${id}`)
-            .then(response => response.json())
-            .then(data => {
-                console.log('Data received:', data);
-        
-                // Populate fields with fetched data
-                document.getElementById('updatename').value = data.name || ''; 
-                document.getElementById('updateprice').value = data.price || ''; 
-                document.getElementById('updatedescription').value = data.description || ''; 
-                document.getElementById('updatehoursofstay').value = data.hoursofstay || ''; 
-        
-                // Ensure the check-in and check-out time inputs are correctly populated
-                document.getElementById('updatecheckin').value = data.checkin_time ? data.checkin_time.slice(0, 5) : ''; // Slice off seconds if needed
-                document.getElementById('updatecheckout').value = data.checkout_time ? data.checkout_time.slice(0, 5) : ''; // Slice off seconds if needed
-        
-                const updateRateIdElement = document.getElementById('updateRateId');
-                if (updateRateIdElement) {
-                    updateRateIdElement.value = id;
-                } else {
-                    console.error('Element with id "updateRateId" not found');
-                }
-        
-                // Check the rate_type value and set the dropdown option accordingly
-                const rateType = data.rate_type || 'Daytime'; // Default to 'Daytime' if NULL or not set
-                console.log('Rate Type:', rateType); // Log to see what rate_type value is being set
-        
-                // Set the dropdown selection manually
-                const rateTypeSelect = document.getElementById('update-rate-type');
-                if (rateTypeSelect) {
-                    if (rateType === 'Daytime') {
-                        rateTypeSelect.value = 'Daytime';
-                    } else if (rateType === 'Nighttime') {
-                        rateTypeSelect.value = 'Nighttime';
-                    } else if (rateType === 'WholeDay') {
-                        rateTypeSelect.value = 'Whole Day';
-                    } else {
-    
-                    }
-                } else {
-                    console.error('Element with id "update-rate-type" not found');
-                }
-        
-                // Clear existing image previews
-                const imagePreviewContainerDb = document.getElementById('image-preview-from-db');
-                const imagePreviewContainerNew = document.getElementById('image-preview-new');
-                imagePreviewContainerDb.innerHTML = ''; // Clear previous image
-                imagePreviewContainerNew.innerHTML = ''; // Clear new image preview container
-        
-                if (data.picture) {
-                    const imgElementDb = document.createElement('img');
-                    imgElementDb.src = data.picture; // Use the correct picture path
-                    imgElementDb.className = "w-full h-auto object-cover rounded-lg img-zoom-out";
-                    imgElementDb.alt = "Rate Image from DB";
-                    imgElementDb.style.height = '100px';
-                    imagePreviewContainerDb.appendChild(imgElementDb);
-                    imagePreviewContainerDb.classList.remove('hidden'); // Make sure it's visible
-                } else {
-                    imagePreviewContainerDb.classList.add('hidden'); // Hide if no image exists
-                }
-        
-                // Make sure modal is displayed
-                document.getElementById("update-rate-modal").classList.remove('hidden');
-            })
-            .catch(error => console.error('Error fetching rate data:', error));
-        }
-        
-
-        // Clear existing image previews
-        const imagePreviewContainerDb = document.getElementById('image-preview-from-db');
-        const imagePreviewContainerNew = document.getElementById('image-preview-new');
-        imagePreviewContainerDb.innerHTML = ''; // Clear previous image
-        imagePreviewContainerNew.innerHTML = ''; // Clear new image preview container
-
-        if (data.picture) {
-            const imgElementDb = document.createElement('img');
-            imgElementDb.src = data.picture; // Use the correct picture path
-            imgElementDb.className = "w-full h-auto object-cover rounded-lg img-zoom-out";
-            imgElementDb.alt = "Rate Image from DB";
-            imgElementDb.style.height = '100px';
-            imagePreviewContainerDb.appendChild(imgElementDb);
-            imagePreviewContainerDb.classList.remove('hidden'); // Make sure it's visible
-        } else {
-            imagePreviewContainerDb.classList.add('hidden'); // Hide if no image exists
-        }
-
-        // Make sure modal is displayed
-        document.getElementById("update-rate-modal").classList.remove('hidden');
+        // Calculate final price
+        setTimeout(calculateFinalPrice, 50);
     })
-    .catch(error => console.error('Error fetching rate data:', error));
+    .catch(error => console.error('❌ Error fetching rate data:', error));
 }
+
+
+
+// Ensure final price updates when discount or original price changes
+document.addEventListener("DOMContentLoaded", function () {
+    const discountCheckbox = document.getElementById("updateadd_discount_checkbox");
+    const discountDropdown = document.getElementById("updatediscount");
+    const tempPriceField = document.getElementById("updatetemp_price");
+
+    if (discountCheckbox) {
+        discountCheckbox.addEventListener("change", function() {
+            document.getElementById("updatediscount_container").classList.toggle("hidden", !this.checked);
+            calculateFinalPrice();
+        });
+    }
+
+    if (discountDropdown) discountDropdown.addEventListener("change", calculateFinalPrice);
+    if (tempPriceField) tempPriceField.addEventListener("input", calculateFinalPrice);
+});
+
+function calculateFinalPrice() {
+    const tempPriceField = document.getElementById("updatetemp_price");
+    const discountCheckbox = document.getElementById("updateadd_discount_checkbox");
+    const discountField = document.getElementById("updatediscount");
+    const priceField = document.getElementById("updateprice");
+
+    // Check if elements exist and log any missing ones
+    if (!tempPriceField) {
+        console.error("❌ Error: 'updatetemp_price' element not found.");
+    }
+    if (!discountCheckbox) {
+        console.error("❌ Error: 'updateadd_discount_checkbox' element not found.");
+    }
+    if (!discountField) {
+        console.error("❌ Error: 'updatediscount' element not found.");
+    }
+    if (!priceField) {
+        console.error("❌ Error: 'updateprice' element not found.");
+    }
+
+    // If any element is missing, stop the function
+    if (!tempPriceField || !discountCheckbox || !discountField || !priceField) {
+        return;
+    }
+
+    let tempPrice = parseFloat(tempPriceField.value) || 0;
+    let discount = discountCheckbox.checked ? parseFloat(discountField.value) || 0 : 0;
+
+    priceField.value = (tempPrice - (tempPrice * discount / 100)).toFixed(2);
+    console.log("✅ Final price updated:", priceField.value);
+}
+
 
 
 
@@ -486,3 +491,5 @@ function restoreRate(rateId) {
     // Send the rate ID to the server to mark it as active
     xhr.send("rate_id=" + rateId);
 }
+
+

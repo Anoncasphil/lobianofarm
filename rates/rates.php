@@ -426,13 +426,20 @@ if (!isset($_SESSION['admin_id'])) {
 								<label for="name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Name</label>
 								<input type="text" name="name" id="name" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Type product name" required="">
 							</div>
-							<div class="col-span-2 sm:col-span-1">
-								<label for="price" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Price</label>
-								<input type="number" name="price" id="price" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="₱15000" required="">
-							</div>
+
 							<div class="col-span-2 sm:col-span-1">
 								<label for="hours" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Hours of Stay</label>
 								<input type="number" name="hours" id="hours" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="12" required="" oninput="calculateCheckout()">
+							</div>
+
+														<!-- Daytime, Nighttime, WholeDay Selection -->
+														<div class="col-span-2 sm:col-span-1">
+								<label for="type" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Type</label>
+								<select name="type" id="type" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
+									<option value="daytime">Daytime</option>
+									<option value="nighttime">Nighttime</option>
+									<option value="wholeDay">Whole Day</option>
+								</select>
 							</div>
 
 							<div class="col-span-2 sm:col-span-1">
@@ -445,15 +452,46 @@ if (!isset($_SESSION['admin_id'])) {
 								<input type="time" name="checkout" id="checkout" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Select Check-out Time" required readonly>
 							</div>
 
-							<!-- Daytime, Nighttime, WholeDay Selection -->
-							<div class="col-span-2 sm:col-span-1">
-								<label for="type" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Type</label>
-								<select name="type" id="type" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
-									<option value="daytime">Daytime</option>
-									<option value="nighttime">Nighttime</option>
-									<option value="wholeDay">Whole Day</option>
-								</select>
-							</div>
+
+							<!-- Original Price & Final Price in Same Line -->
+
+    <div class="col-span-2 sm:col-span-1">	
+        <label for="temp_price" class="text-sm font-medium text-gray-900 dark:text-white w-full">Original Price</label>
+        <input type="number" name="temp_price" id="temp_price" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="₱15000" required>
+    </div>
+    <div class="col-span-2 sm:col-span-1">
+        <label for="price" class="text-sm font-medium text-gray-900 dark:text-white w-full">Final Price</label>
+        <input type="text" id="price" name="price" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" readonly>
+    </div>
+</div>
+
+
+<!-- Add Discount Checkbox & Discount Selection in the Same Line -->
+<div class="grid grid-cols-2 gap-4 items-center">
+<!-- Checkbox & Label -->
+<div class="flex items-center space-x-3 w-full">
+    <input type="hidden" name="add_discount_checkbox" value="0"> <!-- Ensures a value is always sent -->
+    <input type="checkbox" id="add_discount_checkbox" name="add_discount_checkbox" value="1" class="w-4 h-4 text-blue-600 border-gray-300 rounded">
+    <label for="add_discount_checkbox" class="text-sm font-medium text-gray-900 dark:text-white">Add Discount</label>
+</div>
+
+<!-- Discount Selection -->
+<div id="discount_container" class="hidden w-full">
+    <label for="discount" class="sr-only">Discount (%)</label>
+    <select id="discount" name="discount" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+        <option value="10">10%</option>
+        <option value="20">20%</option>
+        <option value="30">30%</option>
+        <option value="40">40%</option>
+        <option value="50">50%</option>
+        <option value="60">60%</option>
+        <option value="70">70%</option>
+        <option value="80">80%</option>
+        <option value="90">90%</option>
+        <option value="100">100%</option>
+    </select>
+</div>
+
 
 							<div class="col-span-2">
 								<label for="description" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Rate Description</label>
@@ -480,6 +518,31 @@ if (!isset($_SESSION['admin_id'])) {
 				</div>
 			</div>
 		</div>
+
+
+
+
+<script>
+    document.getElementById("add_discount_checkbox").addEventListener("change", function() {
+        let discountContainer = document.getElementById("discount_container");
+        discountContainer.classList.toggle("hidden", !this.checked);
+        calculateFinalPrice();
+    });
+
+    document.getElementById("discount").addEventListener("change", calculateFinalPrice);
+    document.getElementById("temp_price").addEventListener("input", calculateFinalPrice);
+
+    function calculateFinalPrice() {
+        let tempPrice = parseFloat(document.getElementById("temp_price").value) || 0;
+        let discountCheckbox = document.getElementById("add_discount_checkbox").checked;
+        let discount = discountCheckbox ? parseFloat(document.getElementById("discount").value) || 0 : 0;
+
+        document.getElementById("price").value = (tempPrice - (tempPrice * discount / 100)).toFixed(2);
+    }
+
+	
+</script>
+
 
 
 
@@ -513,12 +576,20 @@ if (!isset($_SESSION['admin_id'])) {
 								<input type="text" name="name" id="updatename" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"  required="">
 							</div>
 							<div class="col-span-2 sm:col-span-1">
-								<label for="price" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Price</label>
-								<input type="number" name="price" id="updateprice" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"  required="">
-							</div>
-							<div class="col-span-2 sm:col-span-1">
 								<label for="hoursofstay" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Hours of Stay</label>
 								<input type="number" name="hoursofstay" id="updatehoursofstay" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" oninput="calculateCheckoutUpdate()" required="">
+							</div>
+
+														<!-- Daytime, Nighttime, WholeDay Selection -->
+														<div class="col-span-2 sm:col-span-1">
+								<label for="type" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Type</label>
+								<select name="type" id="update-rate-type" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
+    <option value="Daytime">Daytime</option>
+    <option value="Nighttime">Nighttime</option>
+    <option value="WholeDay">Whole Day</option>
+</select>
+
+
 							</div>
 
 							<div class="col-span-2 sm:col-span-1">
@@ -531,15 +602,44 @@ if (!isset($_SESSION['admin_id'])) {
 								<input type="time" name="checkout" id="updatecheckout" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Select Check-out Time" required>
 							</div>
 
-							<!-- Daytime, Nighttime, WholeDay Selection -->
-							<div class="col-span-2 sm:col-span-1">
-								<label for="type" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Type</label>
-								<select name="type" id="update-rate-type" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
-									<option value="daytime">Daytime</option>
-									<option value="nighttime">Nighttime</option>
-									<option value="wholeDay">Whole Day</option>
-								</select>
-							</div>
+							
+    <div class="col-span-2 sm:col-span-1">	
+        <label for="temp_price" class="text-sm font-medium text-gray-900 dark:text-white w-full">Original Price</label>
+        <input type="number" name="tempprice" id="updatetemp_price" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="₱15000" required>
+    </div>
+    <div class="col-span-2 sm:col-span-1">
+        <label for="price" class="text-sm font-medium text-gray-900 dark:text-white w-full">Final Price</label>
+        <input type="text" id="updateprice" name="price" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
+    </div>
+</div>
+
+
+<!-- Add Discount Checkbox & Discount Selection in the Same Line -->
+<div class="grid grid-cols-2 gap-4 items-center">
+    <!-- Checkbox & Label -->
+<!-- Checkbox to add discount -->
+<div class="flex items-center space-x-3 w-full">
+    <input type="checkbox" id="updateadd_discount_checkbox" name="add_discount_checkbox" class="w-4 h-4 text-blue-600 border-gray-300 rounded">
+    <label for="updateadd_discount_checkbox" class="text-sm font-medium text-gray-900 dark:text-white">Add Discount</label>
+</div>
+
+<!-- Discount Selection -->
+<div id="updatediscount_container" class="hidden w-full">
+    <label for="discount" class="sr-only">Discount (%)</label>
+    <select id="updatediscount" name="discount" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+        <option value="10">10%</option>
+        <option value="20">20%</option>
+        <option value="30">30%</option>
+        <option value="40">40%</option>
+        <option value="50">50%</option>
+        <option value="60">60%</option>
+        <option value="70">70%</option>
+        <option value="80">80%</option>
+        <option value="90">90%</option>
+        <option value="100">100%</option>
+    </select>
+</div>
+
 
 							<div class="col-span-2">
 								<label for="description" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Rate Description</label>
@@ -572,6 +672,18 @@ if (!isset($_SESSION['admin_id'])) {
 			</div>
 		</div>
 
+		<script>
+			// Handle discount checkbox
+document.getElementById("updateadd_discount_checkbox").addEventListener("change", function() {
+    var discountContainer = document.getElementById("updatediscount_container");
+    if (this.checked) {
+        discountContainer.classList.remove("hidden");
+    } else {
+        discountContainer.classList.add("hidden");
+    }
+});
+
+		</script>
 
 	</main>
 </section>

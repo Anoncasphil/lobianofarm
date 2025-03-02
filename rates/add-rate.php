@@ -23,14 +23,17 @@ $admin_name = $firstname . " " . $lastname; // Full name of the admin
 
 // Initialize variables
 $name = $_POST['name'];
-$price = $_POST['price'];
+$original_price = $_POST['temp_price'];
+$discount_percentage = isset($_POST['discount_percentage']) ? $_POST['discount_percentage'] : 0;
+$has_discount = isset($_POST['has_discount']) ? 1 : 0;
+$price = $_POST['price']; // Final price after discount
 $description = $_POST['description'];
 $hoursofstay = $_POST['hours'];
 $checkin_time = $_POST['checkin'];
 $checkout_time = $_POST['checkout'];
-$rate_type = $_POST['type'];  
+$rate_type = $_POST['type'];
 
-// Set the status to "active" by default
+// Set status to "active" by default
 $status = isset($_POST['status']) ? $_POST['status'] : 'active';
 
 // Define the upload directory
@@ -47,7 +50,7 @@ $imageFileType = strtolower(pathinfo($original_file_name, PATHINFO_EXTENSION));
 
 // Generate a unique file name
 $unique_name = time() . '_' . rand(1000, 9999) . '.' . $imageFileType;
-$target_file = $target_dir . $unique_name;  
+$target_file = $target_dir . $unique_name;
 
 // Validate and move the file
 $valid_types = array("jpg", "jpeg", "png");
@@ -62,16 +65,16 @@ if (in_array($imageFileType, $valid_types)) {
 }
 
 // Insert data into rates table
-$stmt = $conn->prepare("INSERT INTO rates (name, price, description, hoursofstay, checkin_time, checkout_time, picture, status, rate_type) 
-                      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
-$stmt->bind_param("sdsssssss", $name, $price, $description, $hoursofstay, $checkin_time, $checkout_time, $picture, $status, $rate_type);
+$stmt = $conn->prepare("INSERT INTO rates (name, original_price, discount_percentage, has_discount, price, description, hoursofstay, checkin_time, checkout_time, picture, status, rate_type) 
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+$stmt->bind_param("sdidsdssssss", $name, $original_price, $discount_percentage, $has_discount, $price, $description, $hoursofstay, $checkin_time, $checkout_time, $picture, $status, $rate_type);
 
 if ($stmt->execute()) {
     $rate_id = $conn->insert_id; // Get the ID of the newly inserted rate
-    
+
     // Log the rate addition
     logRateAddition($admin_id, $admin_name, $rate_id, $name);
-    
+
     header("Location: rates.php");  // Redirect to rates page
     exit;
 } else {
