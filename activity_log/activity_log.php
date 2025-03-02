@@ -133,12 +133,12 @@ include('../db_connection.php'); // Include database connection
                                 while ($row = $result->fetch_assoc()) {
                                     $admin_name = htmlspecialchars($row['firstname'] . ' ' . $row['lastname']);
                                     $date_formatted = date("M d Y g:i a", strtotime($row['timestamp']));
-                                    $changes = htmlspecialchars($row['changes']); // Prevent XSS
+                                    $changes = $row['changes']; // Don't use htmlspecialchars to allow HTML tags
 
                                     echo "<tr>";
                                     echo "<td class='log-date'>$date_formatted</td>";
                                     echo "<td class='log-admin'>$admin_name</td>";
-                                    echo "<td class='log-changes'>$changes</td>";
+                                    echo "<td class='log-changes'>$changes</td>"; // Display with HTML formatting
                                     echo "</tr>";
                                 }
                             } else {

@@ -111,43 +111,44 @@ function logRateUpdate($admin_id, $admin_name, $rate_id, $current_rate, $new_nam
         die("Database connection failed: " . $conn->connect_error);
     }
 
+    // Initialize log message - use <br> for HTML line breaks instead of \n
+    $log_message = "Updated Rate ID: $rate_id.<br>";
 
-
-    // Check and log changes
+    // Check and log changes with HTML breaks
     if (strcasecmp($current_rate['name'], $new_name) !== 0) {
-        $log_message .= "- Rate Name: '{$current_rate['name']}' → '$new_name'.\n";
+        $log_message .= "- Rate Name: '{$current_rate['name']}' → '$new_name'.<br>";
     }
     
     if ($current_rate['price'] != $new_price) {
-        $log_message .= "- Price: '{$current_rate['price']}' → '$new_price'.\n";
+        $log_message .= "- Price: '{$current_rate['price']}' → '$new_price'.<br>";
     }
 
     if (strcasecmp($current_rate['description'], $new_description) !== 0) {
-        $log_message .= "- Description was updated.\n";
+        $log_message .= "- Description was updated.<br>";
     }
 
     if ($current_rate['hoursofstay'] != $new_hoursofstay) {
-        $log_message .= "- Hours of Stay: '{$current_rate['hoursofstay']}' → '$new_hoursofstay'.\n";
+        $log_message .= "- Hours of Stay: '{$current_rate['hoursofstay']}' → '$new_hoursofstay'.<br>";
     }
 
     if (normalizeTime($current_rate['checkin_time']) !== normalizeTime($new_checkin_time)) {
-        $log_message .= "- Check-in Time: '{$current_rate['checkin_time']}' → '$new_checkin_time'.\n";
+        $log_message .= "- Check-in Time: '{$current_rate['checkin_time']}' → '$new_checkin_time'.<br>";
     }
 
     if (normalizeTime($current_rate['checkout_time']) !== normalizeTime($new_checkout_time)) {
-        $log_message .= "- Check-out Time: '{$current_rate['checkout_time']}' → '$new_checkout_time'.\n";
+        $log_message .= "- Check-out Time: '{$current_rate['checkout_time']}' → '$new_checkout_time'.<br>";
     }
 
     if (strcasecmp($current_rate['rate_type'], $new_rate_type) !== 0) {
-        $log_message .= "- Rate Type: '{$current_rate['rate_type']}' → '$new_rate_type'.\n";
+        $log_message .= "- Rate Type: '{$current_rate['rate_type']}' → '$new_rate_type'.<br>";
     }
 
     if ($new_picture !== null) {
-        $log_message .= "- Picture was updated.\n";
+        $log_message .= "- Picture was updated.<br>";
     }
 
     // Only log if changes were made
-    if (trim($log_message) !== "Updated Rate ID: $rate_id.\n") {
+    if (trim(str_replace('<br>', '', $log_message)) !== "Updated Rate ID: $rate_id.") {
         // Insert log entry into the database
         $sql = "INSERT INTO activity_logs (admin_id, timestamp, changes) VALUES (?, NOW(), ?)";
         $stmt = $conn->prepare($sql);
@@ -167,7 +168,6 @@ function logRateUpdate($admin_id, $admin_name, $rate_id, $current_rate, $new_nam
 
     $conn->close();
 }
-
 
 /**
  * Normalize time format for comparison (e.g., "07:00:00" and "7:00" should be considered the same).
