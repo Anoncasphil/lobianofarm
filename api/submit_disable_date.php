@@ -1,40 +1,69 @@
 <?php
-// Enable error reporting for debugging purposes
+// Enable error reporting for debugging
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
 
-// Include the database connection file
-include('../db_connection.php'); // Adjust path if necessary
+session_start(); // Start session
 
-// Check connection
+include('../db_connection.php'); // Database connection
+
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
+// Ensure admin is logged in
+if (!isset($_SESSION['admin_id'])) {
+    echo json_encode(['success' => false, 'message' => 'Admin not logged in']);
+    exit;
+}
+
+$admin_id = $_SESSION['admin_id'];
+error_log("Admin ID: " . $admin_id); // Debugging admin_id
+
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    // Get form data and sanitize
-    $disable_date = filter_var($_POST['disable_date'], FILTER_SANITIZE_STRING); // Single date for disabling
-    $reason = filter_var($_POST['reason'], FILTER_SANITIZE_STRING);   // Reason for disabling
-    $status = filter_var($_POST['status'], FILTER_SANITIZE_STRING);             // Status (Disabled)
+    // Sanitize inputs
+    $disable_date = filter_var($_POST['disable_date'], FILTER_SANITIZE_STRING);
+    $reason = filter_var($_POST['reason'], FILTER_SANITIZE_STRING);
+    $status = filter_var($_POST['status'], FILTER_SANITIZE_STRING);
 
-    // Log received data for debugging purposes
-    error_log("Received data: " . print_r($_POST, true));
+    error_log("Received data: Disable Date: $disable_date, Reason: $reason, Status: $status");
 
-    // Prepare SQL statement to insert data (adjusted for single disable_date)
+    // Insert into disable_dates
     $stmt = $conn->prepare("INSERT INTO disable_dates (disable_date, reason, status) VALUES (?, ?, ?)");
-    $stmt->bind_param('sss', $disable_date, $reason, $status); // 'sss' because all columns are strings
+    $stmt->bind_param('sss', $disable_date, $reason, $status);
 
-    // Execute the query and return a response
     if ($stmt->execute()) {
-        // Success response
+        // Fetch admin details
+        $stmt_admin = $conn->prepare("SELECT firstname, lastname FROM admin_tbl WHERE admin_id = ?");
+        $stmt_admin->bind_param('i', $admin_id);
+        $stmt_admin->execute();
+        $stmt_admin->bind_result($firstname, $lastname);
+        $stmt_admin->fetch();
+        $stmt_admin->close();
+
+        error_log("Admin Name: $firstname $lastname"); // Debugging name fetch
+
+        // Construct activity log message
+        $changes = "Admin $firstname $lastname disabled the date $disable_date for reason: $reason.";
+
+        // Insert into activity_logs (without rate_id)
+        $stmt_log = $conn->prepare("INSERT INTO activity_logs (admin_id, changes) VALUES (?, ?)");
+        $stmt_log->bind_param('is', $admin_id, $changes);
+
+        if ($stmt_log->execute()) {
+            error_log("Activity log inserted successfully.");
+        } else {
+            error_log("Activity log insert error: " . $stmt_log->error);
+        }
+
+        $stmt_log->close();
+
         echo json_encode(['success' => true]);
     } else {
-        // Error response with detailed error logging
-        error_log("Database error: " . $stmt->error);
+        error_log("Database insert error: " . $stmt->error);
         echo json_encode(['success' => false, 'message' => 'Database insert failed']);
     }
 
-    // Close the statement and connection
     $stmt->close();
     $conn->close();
 } else {

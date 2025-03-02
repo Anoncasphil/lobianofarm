@@ -28,42 +28,40 @@ $description = $_POST['description'];
 $hoursofstay = $_POST['hours'];
 $checkin_time = $_POST['checkin'];
 $checkout_time = $_POST['checkout'];
-$rate_type = $_POST['type'];  // Capture the new field "type" (mapped to "rate_type" in the database)
+$rate_type = $_POST['type'];  
 
 // Set the status to "active" by default
-$status = isset($_POST['status']) ? $_POST['status'] : 'active'; // Check if status is set, otherwise default to "active"
+$status = isset($_POST['status']) ? $_POST['status'] : 'active';
 
 // Define the upload directory
 $target_dir = "../src/uploads/rates/";
 
-// Check if the directory exists, if not, create it
+// Create the directory if it doesn't exist
 if (!file_exists($target_dir)) {
-    mkdir($target_dir, 0777, true); // Create the directory with write permissions
+    mkdir($target_dir, 0777, true);
 }
 
 // Get the file extension
 $original_file_name = basename($_FILES["picture"]["name"]);
 $imageFileType = strtolower(pathinfo($original_file_name, PATHINFO_EXTENSION));
 
-// Generate a unique file name using timestamp and random number
+// Generate a unique file name
 $unique_name = time() . '_' . rand(1000, 9999) . '.' . $imageFileType;
-$target_file = $target_dir . $unique_name;  // Only the file name and directory, no full path
+$target_file = $target_dir . $unique_name;  
 
-// Check if the file is a valid image
+// Validate and move the file
 $valid_types = array("jpg", "jpeg", "png");
 if (in_array($imageFileType, $valid_types)) {
     if (move_uploaded_file($_FILES["picture"]["tmp_name"], $target_file)) {
-        $picture = $unique_name;  // Only store the file name in the database
+        $picture = $unique_name;
     } else {
-        echo "Sorry, there was an error uploading your file.";
-        exit;
+        die("Error uploading file.");
     }
 } else {
-    echo "Sorry, only JPG, JPEG, PNG files are allowed.";
-    exit;
+    die("Invalid file type.");
 }
 
-// Insert data into the database, including the new "rate_type" field
+// Insert data into rates table
 $stmt = $conn->prepare("INSERT INTO rates (name, price, description, hoursofstay, checkin_time, checkout_time, picture, status, rate_type) 
                       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
 $stmt->bind_param("sdsssssss", $name, $price, $description, $hoursofstay, $checkin_time, $checkout_time, $picture, $status, $rate_type);
@@ -72,38 +70,33 @@ if ($stmt->execute()) {
     $rate_id = $conn->insert_id; // Get the ID of the newly inserted rate
     
     // Log the rate addition
-    logRateAddition($admin_id, $admin_name, $rate_id, $name, $price, $hoursofstay, $checkin_time, $checkout_time, $rate_type);
+    logRateAddition($admin_id, $admin_name, $rate_id, $name);
     
-    echo "New record created successfully";
-    header("Location: rates.php");  // Redirect to rates page after success
+    header("Location: rates.php");  // Redirect to rates page
+    exit;
 } else {
-    echo "Error: " . $stmt->error;
+    die("Error: " . $stmt->error);
 }
 
 $stmt->close();
 $conn->close();
 
 /**
- * Log the rate addition to the database
+ * Log the rate addition to the activity_logs table.
  */
-function logRateAddition($admin_id, $admin_name, $rate_id, $name, $price, $hoursofstay, $checkin_time, $checkout_time, $rate_type) {
+function logRateAddition($admin_id, $admin_name, $rate_id, $rate_name) {
     include('../db_connection.php'); // Include your database connection file
 
-    // Set timezone to ensure correct time
+    // Set timezone
     date_default_timezone_set('Asia/Manila');
 
-    // Create a simplified change log with just the addition information
-    $changes = array(
-        'Addition' => "Added a new Rate: $name."
-    );
+    // Log message
+    $changes = "Admin $admin_name added a new rate: '$rate_name' (ID: $rate_id)";
 
-    // Convert to JSON for storage
-    $changes_json = json_encode($changes);
-
-    // Insert log entry into the database
-    $sql = "INSERT INTO activity_logs (admin_id, rate_id, timestamp, changes) VALUES (?, ?, NOW(), ?)";
+    // Insert log entry
+    $sql = "INSERT INTO activity_logs (admin_id, timestamp, changes) VALUES (?, NOW(), ?)";
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("iis", $admin_id, $rate_id, $changes_json);
+    $stmt->bind_param("is", $admin_id, $changes);
     $stmt->execute();
     $stmt->close();
     $conn->close();
