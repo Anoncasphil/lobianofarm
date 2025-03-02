@@ -1,6 +1,9 @@
 <?php
 session_start(); // Start the session
 
+// Include database connection at the beginning
+include '../db_connection.php';
+
 // Check if the session is set for the user
 if (!isset($_SESSION['admin_id'])) {
     // If not set, redirect to login page
@@ -27,111 +30,95 @@ if (!isset($_SESSION['admin_id'])) {
 <body>
 	
 	<!-- SIDEBAR -->
-	<section id="sidebar">
-		<a href="#" class="brand"><i class='bx bxs-smile icon'></i> Admin</a>
-		<ul class="side-menu">
-			<li><a href="../admindash.php"><i class='bx bxs-dashboard icon' ></i> Dashboard</a></li>
+    <section id="sidebar">
+        <a href="#" class="brand"><i class='bx bxs-smile icon'></i>Admin</a>
+        <ul class="side-menu">
+            <li><a href="admindash.php"><i class='bx bxs-dashboard icon'></i> Dashboard</a></li>
 
-			<li class="divider" data-text="management">Management</li>
-			<li><a href="../reservation/reservation_admin.php"><i class='bx bx-list-ol icon' ></i> Reservations</a></li>
-            <li><a href="../calendar/calendar.php"><i class='bx bxs-calendar icon' ></i> Calendar</a></li>
-			<li><a href="../sales.php"><i class='bx bx-line-chart icon'></i> Sales</a></li>
-			<li><a href="../rates/rates.php"><i class="bx bxs-star icon min-w-[48px] flex justify-center items-center mr-2"></i>Rates</a></li>
-			<li><a href="../addons/addons.php" class="active" ><i class='bx bxs-cart-add icon' ></i> Add-ons</a></li>
-			<li><a href="../events/events.php"><i class='bx bxs-calendar-event icon' ></i> Events</a></li>
-			<li><a href="../album/album.php"><i class='bx bxs-photo-album icon' ></i> Album</a></li>
+            <li class="divider" data-text="management">Management</li>
+            <li><a href="../reservation/reservation_admin.php"><i class='bx bx-list-ol icon'></i> Reservations</a></li>
+            <li><a href="../calendar/calendar.php"><i class='bx bxs-calendar icon'></i> Calendar</a></li>
+            <li><a href="../sales.php" ><i class='bx bx-line-chart icon'></i> Sales</a></li>
+            <li><a href="../rates/rates.php"><i class="bx bxs-star icon min-w-[48px] flex justify-center items-center mr-2"></i>Rates</a></li>
+            <li><a href="../addons/addons.php" class="active"><i class='bx bxs-cart-add icon'></i> Add-ons</a></li>
+            <li><a href="../events/events.php"><i class='bx bxs-calendar-event icon'></i> Events</a></li>
+            <li><a href="../album/album.php"><i class='bx bxs-photo-album icon'></i> Album</a></li>
             <?php if ($_SESSION['role'] === 'superadmin'): ?>
-				<li><a href="../team/team.php"><i class='bx bxs-buildings icon'></i> Team</a></li>
+                <li><a href="../team/team.php"><i class='bx bxs-buildings icon'></i> Team</a></li>
                 <li><a href="../activity_log/activity_log.php"><i class='bx bxs-log icon'></i> Activity Log</a></li>
-			<?php endif; ?>
-
-			<!-- <li class="divider" data-text="table and forms">Table and forms</li>
-			<li><a href="#"><i class='bx bx-table icon' ></i> Tables</a></li>
-			<li>
-				<a href="#"><i class='bx bxs-notepad icon' ></i> Forms <i class='bx bx-chevron-right icon-right' ></i></a>
-				<ul class="side-dropdown">
-					<li><a href="#">Basic</a></li>
-					<li><a href="#">Select</a></li>
-					<li><a href="#">Checkbox</a></li>
-					<li><a href="#">Radio</a></li>
-				</ul>
-			</li> -->
-		</ul>
-	</section>
-	<!-- SIDEBAR -->
+            <?php endif; ?>
+        </ul>
+    </section>
+    <!-- SIDEBAR -->
 
 	<!-- NAVBAR -->
 	<section id="content">
-		<!-- NAVBAR -->
-		<nav>
-			<i class='bx bx-menu toggle-sidebar' ></i>
-			<form action="#">
-			</form>
-			<span class="divider"></span>
-			<div class="relative">
-            <?php
-					include('../db_connection.php'); // Include your database connection file
+        <!-- NAVBAR -->
+        <nav>
+            <i class='bx bx-menu toggle-sidebar'></i>
+            <form action="#">
+            </form>
+            <span class="divider"></span>
+            <div class="relative">
+                <!-- Profile Dropdown Trigger -->
+                <?php
+                // Check if the user is logged in
+                if (isset($_SESSION['admin_id'])) {
+                    $admin_id = $_SESSION['admin_id']; // Get the logged-in user's ID
 
-					// Check if the user is logged in
-					if (isset($_SESSION['admin_id'])) {
-						$admin_id = $_SESSION['admin_id']; // Get the logged-in user's ID
+                    // Query to get the logged-in user's data from the admin_tbl
+                    $query = "SELECT * FROM admin_tbl WHERE admin_id = ?";
+                    $stmt = $conn->prepare($query);
 
-						// Query to get the logged-in user's data from the admin_tbl
-						$query = "SELECT * FROM admin_tbl WHERE admin_id = ?";
-						$stmt = $conn->prepare($query);
+                    if ($stmt === false) {
+                        die('MySQL prepare error: ' . $conn->error);
+                    }
 
-						if ($stmt === false) {
-							die('MySQL prepare error: ' . $conn->error);
-						}
+                    $stmt->bind_param("i", $admin_id); // Bind the admin ID
+                    $stmt->execute();
 
-						$stmt->bind_param("i", $admin_id); // Bind the admin ID
-						$stmt->execute();
+                    // Check if query executed successfully
+                    $result = $stmt->get_result();
 
-						// Check if query executed successfully
-						$result = $stmt->get_result();
+                    if ($result->num_rows > 0) {
+                        $admin = $result->fetch_assoc();
+                        $firstname = $admin['firstname'];
+                        $lastname = $admin['lastname'];
+                        $role = ucfirst($admin['role']); // Capitalize the first letter of the role
+                        $profile_picture = '../src/uploads/team/' . $admin['profile_picture'];
+                    } else {
+                        // If no user found, redirect to login
+                        header('Location: adlogin.php');
+                        exit;
+                    }
+                } else {
+                    // If not logged in, redirect to login page
+                    header('Location: adlogin.php');
+                    exit;
+                }
+                ?>
 
-						if ($result->num_rows > 0) {
-							$admin = $result->fetch_assoc();
-							$firstname = $admin['firstname'];
-							$lastname = $admin['lastname'];
-							$role = ucfirst($admin['role']); // Capitalize the first letter of the role
-							// Prepend the directory path to the profile picture
-						$profile_picture = '../src/uploads/team/' . $admin['profile_picture'];
-						} else {
-							// If no user found, redirect to login
-							header('Location: ../adlogin.php');
-							exit;
-						}
-					} else {
-						// If not logged in, redirect to login page
-						header('Location: ../adlogin.php');
-						exit;
-					}
-					?>
+                <!-- HTML to display the profile information -->
+                <div class="profile flex items-center space-x-4 cursor-pointer">
+                    <img class="w-10 h-10 rounded-full" src="<?= htmlspecialchars($profile_picture) ?>" alt="Profile Picture">
+                    <div>
+                        <h4 class="text-sm font-medium text-gray-800 dark:text-gray-200"><?= htmlspecialchars($firstname) . ' ' . htmlspecialchars($lastname) ?></h4>
+                        <span class="text-xs text-gray-500 dark:text-gray-400"><?= htmlspecialchars($role) ?></span>
+                    </div>
+                </div>
 
-					<!-- HTML to display the profile information -->
-					<div class="profile flex items-center space-x-4 cursor-pointer">
-						<img class="w-10 h-10 rounded-full" src="<?= htmlspecialchars($profile_picture) ?>" alt="Profile Picture">
-
-						<div>
-							<h4 class="text-sm font-medium text-gray-800 dark:text-gray-200"><?= htmlspecialchars($firstname) . ' ' . htmlspecialchars($lastname) ?></h4>
-							<span class="text-xs text-gray-500 dark:text-gray-400"><?= htmlspecialchars($role) ?></span>
-						</div>
-					</div>
-			
-				<!-- Profile Dropdown Menu -->
-				<ul class="profile-link absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-lg z-50 hidden">
-					<li>
-						<a href="../logout.php" class="flex items-center px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-red-100 dark:hover:bg-red-700">
-							<i class='bx bxs-log-out-circle text-xl mr-2'></i> 
-							Logout
-						</a>
-					</li>
-				</ul>
-			</div>
-			
-		</nav>
-		<!-- NAVBAR -->
+                <!-- Profile Dropdown Menu -->
+                <ul class="profile-link absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-lg z-50 hidden">
+                    <li>
+                        <a href="logout.php" class="flex items-center px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-red-100 dark:hover:bg-red-700">
+                            <i class='bx bxs-log-out-circle text-xl mr-2'></i>
+                            Logout
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+        <!-- NAVBAR -->
 
 		<!-- MAIN -->
     
@@ -139,8 +126,8 @@ if (!isset($_SESSION['admin_id'])) {
         <main class="relative">
     <!-- PHP CONNECTION-->
     <?php
-    // Include database connection
-    include '../db_connection.php';
+    // Database connection already included at the top
+    // include '../db_connection.php'; - Keeping this comment to show what was changed
     ?>
 
     <div class="main flex-1 p-6">
@@ -488,4 +475,4 @@ if (!isset($_SESSION['admin_id'])) {
 </html>
 
 <script src="../scripts/script.js"></script>
-<script src="addonss.js"></script>
+<script src="../addons/addonss.js"></script>

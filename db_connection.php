@@ -1,19 +1,13 @@
 <?php
+$host = "localhost"; 
+$dbname = "u157210740_lobianofarmres";
+$username = "u157210740_lobianofarmres";
+$password = "Acast_1209"; // Change this immediately for security
 
-$host = "localhost"; // XAMPP default host
-$username = "root"; // Default XAMPP MySQL user
-$password = ""; // Default password is empty in XAMPP
-$database = "login"; // Your database name
-
-// Create connection
-$conn = new mysqli($host, $username, $password, $database);
+$conn = new mysqli($host, $username, $password, $dbname);
 
 // Check connection
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
-} 
-
-// Uncomment this line for debugging
-// echo "Connected successfully";
-
+}
 ?>

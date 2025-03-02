@@ -94,7 +94,7 @@ function logRateAddition($admin_id, $admin_name, $rate_id, $rate_name) {
     date_default_timezone_set('Asia/Manila');
 
     // Log message
-    $changes = "Admin $admin_name added a new rate: '$rate_name' (ID: $rate_id)";
+    $changes = "Added a new rate: '$rate_name' (ID: $rate_id)";
 
     // Insert log entry
     $sql = "INSERT INTO activity_logs (admin_id, timestamp, changes) VALUES (?, NOW(), ?)";

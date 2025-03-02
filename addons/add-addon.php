@@ -1,5 +1,24 @@
 <?php
 include '../db_connection.php';  // Include database connection
+session_start(); // Start session to track logged-in admin
+
+// Check if the admin is logged in
+if (!isset($_SESSION['admin_id'])) {
+    die("Admin not authenticated.");
+}
+
+$admin_id = $_SESSION['admin_id']; // Get logged-in admin ID
+
+// Fetch admin details from the database
+$sql_admin = "SELECT firstname, lastname FROM admin_tbl WHERE admin_id = ?";
+$stmt = $conn->prepare($sql_admin);
+$stmt->bind_param("i", $admin_id);
+$stmt->execute();
+$stmt->bind_result($firstname, $lastname);
+$stmt->fetch();
+$stmt->close();
+
+$admin_name = $firstname . " " . $lastname; // Full name of the admin
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // Get form values
@@ -34,6 +53,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
                 // Execute the query
                 if ($stmt->execute()) {
+                    $addon_id = $conn->insert_id; // Get the ID of the newly inserted addon
+                    
+                    // Log the addon addition
+                    logAddonAddition($admin_id, $admin_name, $addon_id, $name);
+                    
                     // Redirect to addons.php without success parameter
                     header('Location: addons.php');  
                     exit();
@@ -52,6 +76,27 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     } else {
         echo "Error: File not uploaded.";  // Handle file upload error
     }
+}
+
+/**
+ * Log the addon addition to the activity_logs table.
+ */
+function logAddonAddition($admin_id, $admin_name, $addon_id, $addon_name) {
+    include('../db_connection.php'); // Include your database connection file
+
+    // Set timezone
+    date_default_timezone_set('Asia/Manila');
+
+    // Log message
+    $changes = "Added a new addon: '$addon_name' (ID: $addon_id)";
+
+    // Insert log entry
+    $sql = "INSERT INTO activity_logs (admin_id, timestamp, changes) VALUES (?, NOW(), ?)";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("is", $admin_id, $changes);
+    $stmt->execute();
+    $stmt->close();
+    $conn->close();
 }
 
 $conn->close();  // Close the database connection

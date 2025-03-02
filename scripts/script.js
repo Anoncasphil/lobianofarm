@@ -1,4 +1,4 @@
-s// SIDEBAR DROPDOWN
+// SIDEBAR DROPDOWN
 try {
     const sidebar = document.getElementById('sidebar');
     if (sidebar) {

@@ -65,7 +65,7 @@ function logRateRestore($admin_id, $admin_name, $rateId, $rate_name) {
     date_default_timezone_set('Asia/Manila');
 
     // Log message
-    $log_message = "Admin $admin_name restored the rate: $rate_name (ID: $rateId).";
+    $log_message = "Restored the rate: $rate_name (ID: $rateId).";
 
     // Insert log entry into the database (no rate_id inserted)
     $sql = "INSERT INTO activity_logs (admin_id, timestamp, changes) VALUES (?, NOW(), ?)";
