@@ -61,7 +61,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     // Fetch disabled dates and disable them in the calendar
     async function fetchDisabledDates() {
         try {
-            const response = await fetch('https://lightslategray-gorilla-105007.hostingersite.com/api/get_disabled_dates.php');
+            const response = await fetch('../api/get_disabled_dates.php');
             const data = await response.json();
             
             console.log("Fetched Disabled Dates:", data); // Debugging log
