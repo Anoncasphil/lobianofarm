@@ -1,0 +1,245 @@
+[2025-03-02 15:26:58] API Request
+[2025-03-02 15:26:58] POST: Array
+(
+    [id] => [object HTMLInputElement]
+    [reference_number] => 221392183921
+)
+
+[2025-03-02 15:26:58] FILES: Array
+(
+    [payment_receipt] => Array
+        (
+            [name] => cord.jpg
+            [full_path] => cord.jpg
+            [type] => image/jpeg
+            [tmp_name] => C:\xampp_main\tmp\php88A4.tmp
+            [error] => 0
+            [size] => 10964
+        )
+
+)
+
+[2025-03-02 15:26:58] ID: 0, Ref: 221392183921
+[2025-03-02 15:29:38] API Request
+[2025-03-02 15:29:38] POST: Array
+(
+    [id] => [object HTMLInputElement]
+    [reference_number] => 221392183921
+)
+
+[2025-03-02 15:29:38] FILES: Array
+(
+    [payment_receipt] => Array
+        (
+            [name] => cord.jpg
+            [full_path] => cord.jpg
+            [type] => image/jpeg
+            [tmp_name] => C:\xampp_main\tmp\phpF986.tmp
+            [error] => 0
+            [size] => 10964
+        )
+
+)
+
+[2025-03-02 15:29:38] ID: 0, Ref: 221392183921
+[2025-03-02 15:33:10] API Request
+[2025-03-02 15:33:10] POST: Array
+(
+    [id] => [object HTMLInputElement]
+    [reference_number] => 221392183921
+)
+
+[2025-03-02 15:33:10] FILES: Array
+(
+    [payment_receipt] => Array
+        (
+            [name] => cord.jpg
+            [full_path] => cord.jpg
+            [type] => image/jpeg
+            [tmp_name] => C:\xampp_main\tmp\php3808.tmp
+            [error] => 0
+            [size] => 10964
+        )
+
+)
+
+[2025-03-02 15:33:10] ID: 0, Ref: 221392183921
+[2025-03-02 15:36:41] API Request
+[2025-03-02 15:36:41] POST: Array
+(
+    [id] => [object HTMLInputElement]
+    [reference_number] => 221392183921
+)
+
+[2025-03-02 15:36:41] FILES: Array
+(
+    [payment_receipt] => Array
+        (
+            [name] => cord.jpg
+            [full_path] => cord.jpg
+            [type] => image/jpeg
+            [tmp_name] => C:\xampp_main\tmp\php6FD4.tmp
+            [error] => 0
+            [size] => 10964
+        )
+
+)
+
+[2025-03-02 15:36:41] ID: 0, Ref: 221392183921
+[2025-03-02 15:37:27] API Request
+[2025-03-02 15:37:27] POST: Array
+(
+    [id] => [object HTMLInputElement]
+    [reference_number] => 221392183921
+)
+
+[2025-03-02 15:37:27] FILES: Array
+(
+    [payment_receipt] => Array
+        (
+            [name] => cord.jpg
+            [full_path] => cord.jpg
+            [type] => image/jpeg
+            [tmp_name] => C:\xampp_main\tmp\php2431.tmp
+            [error] => 0
+            [size] => 10964
+        )
+
+)
+
+[2025-03-02 15:37:27] ID: 0, Ref: 221392183921
+[2025-03-02 15:38:33] API Request
+[2025-03-02 15:38:33] POST: Array
+(
+    [id] => [object HTMLInputElement]
+    [reference_number] => 221392183921
+)
+
+[2025-03-02 15:38:33] FILES: Array
+(
+    [payment_receipt] => Array
+        (
+            [name] => cord.jpg
+            [full_path] => cord.jpg
+            [type] => image/jpeg
+            [tmp_name] => C:\xampp_main\tmp\php268F.tmp
+            [error] => 0
+            [size] => 10964
+        )
+
+)
+
+[2025-03-02 15:38:33] ID: 0, Ref: 221392183921
+[2025-03-02 15:41:08] API Request
+[2025-03-02 15:41:08] POST: Array
+(
+    [id] => [object HTMLInputElement]
+    [reference_number] => 221392183921
+)
+
+[2025-03-02 15:41:08] FILES: Array
+(
+    [payment_receipt] => Array
+        (
+            [name] => cord.jpg
+            [full_path] => cord.jpg
+            [type] => image/jpeg
+            [tmp_name] => C:\xampp_main\tmp\php8197.tmp
+            [error] => 0
+            [size] => 10964
+        )
+
+)
+
+[2025-03-02 15:41:08] ID: 0, Ref: 221392183921
+[2025-03-02 15:44:24] API Request
+[2025-03-02 15:44:24] POST: Array
+(
+    [id] => [object HTMLInputElement]
+    [reference_number] => 221392183921
+)
+
+[2025-03-02 15:44:24] FILES: Array
+(
+    [payment_receipt] => Array
+        (
+            [name] => cord.jpg
+            [full_path] => cord.jpg
+            [type] => image/jpeg
+            [tmp_name] => C:\xampp_main\tmp\php7E8C.tmp
+            [error] => 0
+            [size] => 10964
+        )
+
+)
+
+[2025-03-02 15:44:24] ID: 0, Ref: 221392183921
+[2025-03-02 15:45:45] API Request
+[2025-03-02 15:45:45] POST: Array
+(
+    [id] => [object HTMLInputElement]
+    [reference_number] => 221392183921
+)
+
+[2025-03-02 15:45:45] FILES: Array
+(
+    [payment_receipt] => Array
+        (
+            [name] => cord.jpg
+            [full_path] => cord.jpg
+            [type] => image/jpeg
+            [tmp_name] => C:\xampp_main\tmp\phpBB33.tmp
+            [error] => 0
+            [size] => 10964
+        )
+
+)
+
+[2025-03-02 15:45:45] ID: 0, Ref: 221392183921
+[2025-03-02 15:52:16] API Request
+[2025-03-02 15:52:16] POST: Array
+(
+    [id] => 127
+    [reference_number] => 221392183921
+)
+
+[2025-03-02 15:52:16] FILES: Array
+(
+    [payment_receipt] => Array
+        (
+            [name] => cord.jpg
+            [full_path] => cord.jpg
+            [type] => image/jpeg
+            [tmp_name] => C:\xampp_main\tmp\phpB2EA.tmp
+            [error] => 0
+            [size] => 10964
+        )
+
+)
+
+[2025-03-02 15:52:16] ID: 127, Ref: 221392183921
+[2025-03-02 15:52:16] Created directory: ../src/uploads/payments/
+[2025-03-02 15:52:16] File uploaded to: ../src/uploads/payments/payment_127_67c470a03c871.jpg
+[2025-03-02 16:12:29] API Request
+[2025-03-02 16:12:29] POST: Array
+(
+    [id] => 127
+    [reference_number] => 2213921839210
+)
+
+[2025-03-02 16:12:29] FILES: Array
+(
+    [payment_receipt] => Array
+        (
+            [name] => cord.jpg
+            [full_path] => cord.jpg
+            [type] => image/jpeg
+            [tmp_name] => C:\xampp_main\tmp\php3449.tmp
+            [error] => 0
+            [size] => 10964
+        )
+
+)
+
+[2025-03-02 16:12:29] ID: 127, Ref: 2213921839210
+[2025-03-02 16:12:29] File uploaded to: ../src/uploads/customerpayment/payment_receipt_1740928349_8156.jpg
