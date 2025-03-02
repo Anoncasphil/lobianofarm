@@ -112,3 +112,4 @@ function logRateUpdate($admin_id, $admin_name, $rate_id, $rate_name) {
     file_put_contents($log_file, $log_entry, FILE_APPEND);
 }
 ?>
+    
