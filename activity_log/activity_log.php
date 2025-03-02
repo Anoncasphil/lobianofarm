@@ -29,7 +29,7 @@ if (!isset($_SESSION['admin_id'])) {
 	<a href="#" class="brand"><i class='bx bxs-smile icon'></i>Admin</a>
 
     <ul class="side-menu">
-            <li><a href="../admindash.php" class="active"><i class='bx bxs-dashboard icon'></i> Dashboard</a></li>
+            <li><a href="../admindash.php"><i class='bx bxs-dashboard icon'></i> Dashboard</a></li>
 
             <li class="divider" data-text="management">Management</li>
             <li><a href="../reservation/reservation_admin.php"><i class='bx bx-list-ol icon'></i> Reservations</a></li>
@@ -42,7 +42,7 @@ if (!isset($_SESSION['admin_id'])) {
  
             <?php if ($_SESSION['role'] === 'superadmin'): ?>
                 <li><a href="../team/team.php"><i class='bx bxs-buildings icon'></i> Team</a></li>
-                <li><a href="../activity_log/activity_log.php"><i class='bx bxs-log icon'></i> Activity Log</a></li>
+                <li><a href="../activity_log/activity_log.php" class="active"><i class='bx bxs-log icon'></i> Activity Log</a></li>
             <?php endif; ?>
         </ul>
 	</section>
