@@ -150,11 +150,10 @@ if (!isset($_SESSION['admin_id'])) {
                                 date_default_timezone_set('Asia/Manila');
                                 
                                 // Query to get logs from the database with admin and rate information
-                                $sql = "SELECT al.id, al.timestamp, a.firstname, a.lastname, r.name as rate_name, al.changes 
-                                        FROM activity_logs al
-                                        LEFT JOIN admin_tbl a ON al.admin_id = a.admin_id
-                                        LEFT JOIN rates r ON al.rate_id = r.id
-                                        ORDER BY al.timestamp DESC";
+                                $sql = "SELECT al.id, al.timestamp, a.firstname, a.lastname, al.changes 
+                                    FROM activity_logs al
+                                    LEFT JOIN admin_tbl a ON al.admin_id = a.admin_id
+                                    ORDER BY al.timestamp DESC";
                                         
                                 $result = $conn->query($sql);
                                 
