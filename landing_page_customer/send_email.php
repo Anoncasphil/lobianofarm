@@ -143,8 +143,8 @@ $email_body = "
         </div>
         
         <div style='padding: 20px;'>
-            <p style='font-size: 16px; font-weight: bold; color: #333;'>Total Price: <span>₱" . number_format($total_price_value, 2) . "</span></p>
-            <p style='font-size: 14px; font-weight: bold; color: #555;'>Valid Amount Paid: <span>₱" . number_format($amount_paid_value, 2) . "</span></p>
+            <p style='font-size: 16px; font-weight: bold; color: #333;'>Subtotal: <span>₱" . number_format($total_price_value, 2) . "</span></p>
+            <p style='font-size: 14px; font-weight: bold; color: #555;'>Amount Paid: <span>₱" . number_format($amount_paid_value, 2) . "</span></p>
             <p style='font-size: 18px; font-weight: bold; color: #1e3a8a; text-align: left;'>Total: <span>₱" . number_format($new_total, 2) . "</span></p>
         </div>
         
