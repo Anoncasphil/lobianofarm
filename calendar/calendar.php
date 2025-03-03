@@ -401,15 +401,20 @@ document.addEventListener("DOMContentLoaded", function () {
 
 <script>
 
-
-
-
-// Handle form submission via AJAX
 document.getElementById('submit-btn').addEventListener('click', function (e) {
     e.preventDefault();
 
-    // Get form data
+    // Validate form (check if required fields are filled)
     const formData = new FormData(document.getElementById('disable-date-form'));
+    const date = formData.get('disable_date'); // Assuming 'disable_date' is the name of your input
+
+    // Check if disable_date is provided
+    if (!date) {
+        document.getElementById('alert-title').innerText = 'Error';
+        document.getElementById('alert-message').innerText = 'Please select a valid date.';
+        document.getElementById('info-alert').classList.remove('hidden');
+        return; // Stop the form submission if validation fails
+    }
 
     // Log form data for debugging purposes
     for (let [key, value] of formData.entries()) {
@@ -421,14 +426,19 @@ document.getElementById('submit-btn').addEventListener('click', function (e) {
         method: 'POST',
         body: formData
     })
-    .then(response => response.json())
+    .then(response => {
+        // Check if the response is valid JSON
+        return response.json().catch(() => {
+            throw new Error('Invalid JSON response');
+        });
+    })
     .then(data => {
-        // Show success or failure message
+        // Show success or failure message based on server response
         if (data.success) {
             // Store success message in localStorage before reload
             localStorage.setItem('successMessage', 'The disable date has been saved successfully.');
 
-            // Reload the page
+            // Reload the page to show the updated date
             location.reload();
         } else {
             document.getElementById('alert-title').innerText = 'Error';
@@ -437,9 +447,21 @@ document.getElementById('submit-btn').addEventListener('click', function (e) {
         }
     })
     .catch(error => {
-        console.error("Error:", error);
-        document.getElementById('alert-title').innerText = 'Error';
-        document.getElementById('alert-message').innerText = 'There was an issue with the request.';
+        // Log the error details for debugging
+        console.error("Error occurred during form submission:", error);
+
+        // Check if it's a network error or a JSON parse error
+        if (error instanceof SyntaxError) {
+            document.getElementById('alert-title').innerText = 'Error';
+            document.getElementById('alert-message').innerText = 'There was an issue with the response format (Invalid JSON). Please try again later.';
+        } else if (error.message === 'Failed to fetch') {
+            document.getElementById('alert-title').innerText = 'Network Error';
+            document.getElementById('alert-message').innerText = 'There was an issue with the network. Please check your connection and try again.';
+        } else {
+            document.getElementById('alert-title').innerText = 'Error';
+            document.getElementById('alert-message').innerText = 'There was an issue with the request. Please try again later.';
+        }
+        
         document.getElementById('info-alert').classList.remove('hidden');
     });
 });
@@ -462,6 +484,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }, 3000); // 3 seconds delay
     }
 });
+
 
 
 </script>

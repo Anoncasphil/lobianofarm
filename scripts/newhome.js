@@ -240,25 +240,38 @@ document.getElementById('rate-modal').addEventListener('click', function(event) 
 
     console.log("Final Disabled Dates:", disableDatesFormatted);
 
-    // Initialize Flatpickr with properly formatted disabled dates
+    // Get today's date in "YYYY-MM-DD" format
+    const today = new Date().toISOString().split("T")[0];
+
+    // Get the current date in "YYYY-MM-DD" format
+    const currentDate = new Date().toISOString().split("T")[0];
+
+    // Initialize Flatpickr with the updated `disable` configuration
     flatpickr(checkInDateInput, {
         dateFormat: "Y-m-d",
-        disable: disableDatesFormatted, // Ensure this is an array of strings
+        disable: [
+            // Disable all dates before today (including 50 years ago)
+            { from: "1970-01-01", to: currentDate },
+            // Disable reserved dates
+            ...reservedWholeDay.map(date => ({ from: date, to: date })),
+            ...reservedDaytime.filter(date => reservedNighttime.includes(date)).map(date => ({
+                from: date,
+                to: date
+            })),
+            // Disable server-disabled dates
+            ...disabledDates.map(date => ({ from: date, to: date }))
+        ],
+        minDate: today, // Ensure users can only select today or future dates
         onChange: function (selectedDates) {
             if (selectedDates[0]) {
                 console.log(`Check-In Date Selected: ${selectedDates[0].toISOString().split("T")[0]}`);
             }
-        }
-    });
+        },
 
-    
+    });
 }
 
-  
-  document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener("DOMContentLoaded", function () {
     console.log("DOM Loaded. Initializing Flatpickr...");
     initializeFlatpickr();  // Ensure this is called once the DOM is fully loaded
-  });
-
-  
-  
+});
