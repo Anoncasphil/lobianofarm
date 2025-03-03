@@ -70,6 +70,17 @@ if (mysqli_query($conn, $sql)) {
         mysqli_query($conn, $addon_sql);
     }
 
+    // Insert notification into the notifications table for admin
+    $admin_id = 1; // Replace with dynamic admin retrieval if necessary
+    $title = "New Reservation";
+    $message = "A new reservation has been made. Reservation Code: $reservation_code.";
+    $type = "reservation";
+    $status = "unread";
+
+    $notification_sql = "INSERT INTO notifications (user_id, reservation_id, title, message, type, status) 
+                         VALUES ('$admin_id', '$reservation_id', '$title', '$message', '$type', '$status')";
+    mysqli_query($conn, $notification_sql);
+
     echo "Reservation successfully added with addons!";
 } else {
     echo "Error executing query: " . mysqli_error($conn);

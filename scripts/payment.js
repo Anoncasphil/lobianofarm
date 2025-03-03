@@ -485,7 +485,7 @@ async function submitReservation() {
                 sendEmail();
                 document.getElementById('success-modal').classList.remove('hidden');
 
-                let countdown = 300;
+                let countdown = 10;
                 const countdownElement = document.getElementById('countdown-timer');
                 const interval = setInterval(() => {
                     countdownElement.textContent = countdown;
