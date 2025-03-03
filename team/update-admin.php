@@ -1,7 +1,9 @@
 <?php
+
+session_start(); // Start session to track logged-in admin
 // Include database connection
 include('../db_connection.php'); 
-session_start(); // Start session to track logged-in admin
+
 
 // Check if the admin is logged in
 if (!isset($_SESSION['admin_id'])) {
@@ -91,32 +93,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Check and append fields to the SQL query if they have changed
     if (!empty($firstname)) {
-        $sql .= " firstname = ?,";
+        $sql .= " firstname = ?,"; 
         $params[] = $firstname;
         $types .= "s"; // Add string type
     }
     if (!empty($lastname)) {
-        $sql .= " lastname = ?,";
+        $sql .= " lastname = ?,"; 
         $params[] = $lastname;
         $types .= "s"; // Add string type
     }
     if (!empty($email)) {
-        $sql .= " email = ?,";
+        $sql .= " email = ?,"; 
         $params[] = $email;
         $types .= "s"; // Add string type
     }
     if (!empty($role)) {
-        $sql .= " role = ?,";
+        $sql .= " role = ?,"; 
         $params[] = $role;
         $types .= "s"; // Add string type
     }
     if (!empty($password)) {
-        $sql .= " password = ?,";
+        $sql .= " password = ?,"; 
         $params[] = $hashedPassword;
         $types .= "s"; // Add string type
     }
     if ($profilePicture) {
-        $sql .= " profile_picture = ?,";
+        $sql .= " profile_picture = ?,"; 
         $params[] = $profilePicturePath;
         $types .= "s"; // Add string type
     }
@@ -143,9 +145,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $admin_full_name = "$current_firstname $current_lastname";
                 logAdminUpdate($logged_admin_id, $admin_name, $adminId, $admin_full_name, $changes);
             }
-            
-            echo "Admin details updated successfully!";
-            header("Location: team.php");
         } else {
             echo "Error updating admin details: " . $stmt->error;
         }
@@ -155,12 +154,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } else {
         echo "Error preparing SQL statement.";
     }
-
-    // Close connection
-    $conn->close();
-} else {
-    echo "Invalid request method.";
 }
+
+// Close connection
+$conn->close();
+
+// Redirect to team.php
+header("Location: team.php");
+exit;
 
 /**
  * Log the admin update action to the database
