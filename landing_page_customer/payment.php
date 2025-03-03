@@ -231,7 +231,6 @@ $stmt->close();
     <table class="w-full table-auto border-separate border-spacing-0.5">
       <thead>
       <tr class="bg-gray-100">
-        <th class="bg-white text-left custom-padding font-medium text-gray-700"></th>
         <th class="bg-gray text-left py-2 px-4 font-medium text-gray-700">Category</th>
         <th class="bg-gray text-left py-2 px-4 font-medium text-gray-700">Item</th>
         <th class="bg-gray text-left py-2 px-4 font-medium text-gray-700">Price</th>
