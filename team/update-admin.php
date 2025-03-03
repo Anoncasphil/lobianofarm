@@ -34,7 +34,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $role = $_POST['updaterole'];
     $password = $_POST['updatepassword'];
     
-    // Get current admin details for comparison and logging
+    // Get current admin details for comparison
     $sql_current = "SELECT firstname, lastname, email, role, profile_picture FROM admin_tbl WHERE admin_id = ?";
     $stmt_current = $conn->prepare($sql_current);
     $stmt_current->bind_param('i', $adminId);
@@ -43,7 +43,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $stmt_current->fetch();
     $stmt_current->close();
     
-    // Track changes for logging
+    // Track changes for updating
     $changes = array();
     if ($current_firstname != $firstname && !empty($firstname)) {
         $changes[] = "First name changed from '$current_firstname' to '$firstname'";
@@ -140,11 +140,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         // Execute the statement
         if ($stmt->execute()) {
-            // Log the update if there were changes
-            if (count($changes) > 0) {
-                $admin_full_name = "$current_firstname $current_lastname";
-                logAdminUpdate($logged_admin_id, $admin_name, $adminId, $admin_full_name, $changes);
-            }
+            // Redirect to team.php after successful update
+            header("Location: team.php");
+            exit;
         } else {
             echo "Error updating admin details: " . $stmt->error;
         }
@@ -163,28 +161,4 @@ $conn->close();
 header("Location: team.php");
 exit;
 
-/**
- * Log the admin update action to the database
- */
-function logAdminUpdate($admin_id, $admin_name, $updated_admin_id, $updated_admin_name, $changes) {
-    include('../db_connection.php'); // Include your database connection file
-
-    // Set timezone to ensure correct time
-    date_default_timezone_set('Asia/Manila');
-
-    // Initialize log message with HTML line breaks
-    $log_message = "Updated admin account: $updated_admin_name (ID: $updated_admin_id).<br>";
-    
-    // Add each change with a line break
-    foreach($changes as $change) {
-        $log_message .= "- " . $change . ".<br>";
-    }
-
-    // Insert log entry into the database
-    $sql = "INSERT INTO activity_logs (admin_id, timestamp, changes) VALUES (?, NOW(), ?)";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("is", $admin_id, $log_message);
-    $stmt->execute();
-    $stmt->close();
-}
 ?>
