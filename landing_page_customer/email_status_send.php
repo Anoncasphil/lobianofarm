@@ -161,8 +161,8 @@ $body .= "
                 </tbody>
             </table>
             <div style='margin-top: 10px; text-align: right;'>
-                <p style='font-size: 16px; font-weight: bold; color: #333;'>Total Price: <span id='total-price'>₱" . number_format($total_price, 2) . "</span></p>
-                <p style='font-size: 14px; font-weight: bold; color: #555;'>Valid Amount Paid: <span id='valid_amount_paid'>₱" . number_format($valid_amount_paid, 2) . "</span></p>
+                <p style='font-size: 16px; font-weight: bold; color: #333;'>Subtotal: <span id='total-price'>₱" . number_format($total_price, 2) . "</span></p>
+                <p style='font-size: 14px; font-weight: bold; color: #555;'>Amount Paid: <span id='valid_amount_paid'>₱" . number_format($valid_amount_paid, 2) . "</span></p>
                 <p style='font-size: 18px; font-weight: bold; color: #1e3a8a;'>Total: <span id='new_total_amount'>₱" . number_format($new_total, 2) . "</span></p>
             </div>
         </div>

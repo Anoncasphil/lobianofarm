@@ -140,6 +140,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         // Execute the statement
         if ($stmt->execute()) {
+            // Log the activity if there were changes
+            if (!empty($changes)) {
+                logAdminUpdate($logged_admin_id, $admin_name, $adminId, $firstname, $lastname, $changes);
+            }
+            
             // Redirect to team.php after successful update
             header("Location: team.php");
             exit;
@@ -152,6 +157,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } else {
         echo "Error preparing SQL statement.";
     }
+}
+
+/**
+ * Log the admin update action to the database
+ */
+function logAdminUpdate($admin_id, $admin_name, $edited_admin_id, $firstname, $lastname, $changes) {
+    include('../db_connection.php'); // Include database connection file
+
+    // Set timezone to ensure correct time
+    date_default_timezone_set('Asia/Manila');
+
+    // Initialize log message with HTML formatting
+    $log_message = "Updated admin account: $firstname $lastname (ID: $edited_admin_id).<br>";
+    
+    // Format the changes into HTML list
+    $log_message .= "<ul>";
+    foreach ($changes as $change) {
+        $log_message .= "<li>{$change}</li>";
+    }
+    $log_message .= "</ul>";
+    
+    // Insert log entry into the database
+    $sql = "INSERT INTO activity_logs (admin_id, timestamp, changes) VALUES (?, NOW(), ?)";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("is", $admin_id, $log_message);
+    $stmt->execute();
+    $stmt->close();
 }
 
 // Close connection
