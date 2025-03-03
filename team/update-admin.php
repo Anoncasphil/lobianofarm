@@ -1,7 +1,9 @@
 <?php
+
+session_start(); // Start session to track logged-in admin
 // Include database connection
 include('../db_connection.php'); 
-session_start(); // Start session to track logged-in admin
+
 
 // Check if the admin is logged in
 if (!isset($_SESSION['admin_id'])) {
