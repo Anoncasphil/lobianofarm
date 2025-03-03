@@ -354,6 +354,10 @@ $stmt->close();
   <p id="modal-message" class="text-center">Please fill in the required fields</p>
 </div>
 
+
+<!-- Elfsight Facebook Chat | Untitled Facebook Chat -->
+<script src="https://static.elfsight.com/platform/platform.js" async></script>
+<div class="elfsight-app-ba949789-bf48-4f26-a7e1-ceb2bc7e1123" data-elfsight-app-lazy></div>
 </script>
 <script src="../scripts/payment.js" defer></script>
 <script src="../scripts/bookings.js" defer></script>

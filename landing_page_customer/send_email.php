@@ -21,6 +21,10 @@ $reservation_code = $_POST['reservation_code'] ?? 'N/A'; // Add reservation code
 $status = $_POST['status'] ?? 'Pending'; // Add reservation status with default as Pending
 $valid_amount_paid = $_POST['valid_amount_paid'] ?? '0.00'; // Add valid amount paid
 
+// Get the extra pax details
+$extra_pax = $_POST['extra_pax'] ?? 0;
+$extra_pax_price = $_POST['extra_pax_price'] ?? 0;
+
 // Calculate remaining balance
 $total_price_value = floatval($total_price);
 $valid_amount_paid_value = floatval($valid_amount_paid);
@@ -46,6 +50,16 @@ $formatted_invoice_date = formatDate($invoice_date);
 
 // Process invoice items to ensure proper styling and each addon on its own row
 $styled_invoice_items = str_replace('<td', '<td style="padding: 10px; border: 1px solid #ddd;"', $invoice_items);
+
+// If there are extra pax, add them to the invoice table
+if ($extra_pax > 0) {
+    $styled_invoice_items .= "
+    <tr>
+        <td style='padding: 10px; border: 1px solid #ddd;'>Extra Pax</td>
+        <td style='padding: 10px; border: 1px solid #ddd;'>Extra Pax ({$extra_pax} pax)</td>
+        <td style='padding: 10px; border: 1px solid #ddd;'>₱" . number_format($extra_pax_price, 2) . "</td>
+    </tr>";
+}
 
 // Get the appropriate status color
 $status_color = "#FFA500"; // Default orange for Pending
@@ -75,8 +89,6 @@ $email_body = "
         <div style='padding: 20px;'>
             <p style='font-size: 16px; color: #333;text-align: center;'>Dear <strong>{$first_name} {$last_name}</strong>,</p>
             <p style='font-size: 16px; color: #333;text-align: center;'>Here are the details of your reservation at <strong>888 Lobiano's Farm Resort:</strong><br></p>
-            
-            
             
             <div style='text-align: center; padding: 5px; background-color: #1e3a8a; color: white;text-align: center;'>
                 <h3>Reservation Code: <strong>{$reservation_code}</strong></h3>
@@ -111,8 +123,6 @@ $email_body = "
         <div style='text-align: center; padding: 10px; background-color: #1e3a8a; color: white;'>
             <h3>Invoice Details</h3>
         </div>
-
-
 
         <div style='padding: 20px;'>
             <p style='font-size: 14px; color: #333;'>Date: <strong>{$formatted_invoice_date}</strong></p>

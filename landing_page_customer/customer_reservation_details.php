@@ -826,7 +826,9 @@ $stmt->close();
         });
     });
 </script>
-
+    <!-- Elfsight Facebook Chat | Untitled Facebook Chat -->
+<script src="https://static.elfsight.com/platform/platform.js" async></script>
+<div class="elfsight-app-ba949789-bf48-4f26-a7e1-ceb2bc7e1123" data-elfsight-app-lazy></div>
     <script src="../scripts/booking.js" defer></script>
     <script src="../scripts/customer_reservation_details.js" defer></script>
     <script src="../scripts/flatpickr.js" defer></script>   
