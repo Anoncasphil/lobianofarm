@@ -606,16 +606,6 @@ function showAlert(type, message) {
     // Set the alert title and message based on the type (success or error)
     alertTitle.textContent = type + ' alert!';
     alertMessage.textContent = message;
-
-    // Change alert class based on success/error
-    if (type === 'Success') {
-        alertDiv.classList.remove('bg-red-200', 'text-red-800'); // remove error classes
-        alertDiv.classList.add('bg-green-200', 'text-green-800'); // add success classes
-    } else {
-        alertDiv.classList.remove('bg-green-200', 'text-green-800'); // remove success classes
-        alertDiv.classList.add('bg-red-200', 'text-red-800'); // add error classes
-    }
-
     // Force a reflow to ensure styles are applied correctly
     alertDiv.offsetHeight; // Read to trigger reflow
 

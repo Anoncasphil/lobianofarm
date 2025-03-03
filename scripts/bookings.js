@@ -945,3 +945,20 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   };
 });
+
+function showMessage(message) {
+  // Get the alert field and its message elements
+  const alertField = document.getElementById("info-alert-field");
+  const alertMessageField = document.getElementById("alert-message-field");
+
+  // Set the message text
+  alertMessageField.textContent = message;
+
+  // Show the alert by removing the 'hidden' class
+  alertField.classList.remove("hidden");
+
+  // Optionally, auto-hide the alert after a certain time (e.g., 5 seconds)
+  setTimeout(function() {
+    alertField.classList.add("hidden");
+  }, 5000);
+}
