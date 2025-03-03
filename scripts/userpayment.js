@@ -33,57 +33,53 @@ document.querySelectorAll('.peer').forEach(input => {
   });
 
   
-function populateForm() {
-    // Retrieve the stored selections from localStorage
-    const selectionsJSON = localStorage.getItem('selections');
+  function populateForm() {
+    try {
+        // Retrieve the stored selections from localStorage
+        const selectionsJSON = localStorage.getItem('selections');
 
-    // Check if selections exist in localStorage
-    if (selectionsJSON) {
+        // Check if selections exist in localStorage
+        if (!selectionsJSON) {
+            console.log('❌ No selections found in localStorage');
+            return;
+        }
+
         const selections = JSON.parse(selectionsJSON);
 
+        // ✅ Debugging: Log retrieved selections
+        console.log('📥 Retrieved selections:', selections);
+
         // Populate user details if elements exist
-        const firstNameElement = document.getElementById('first-name-p');
-        const lastNameElement = document.getElementById('last-name-p');
-        const emailElement = document.getElementById('email-p');
-        const mobileNumberElement = document.getElementById('mobile-number-p');
+        document.getElementById('first-name-p')?.setAttribute('value', selections.user?.firstName || '');
+        document.getElementById('last-name-p')?.setAttribute('value', selections.user?.lastName || '');
+        document.getElementById('email-p')?.setAttribute('value', selections.user?.email || '');
+        document.getElementById('mobile-number-p')?.setAttribute('value', selections.user?.mobileNumber || '');
 
-        if (firstNameElement) firstNameElement.value = selections.user?.firstName || '';
-        if (lastNameElement) lastNameElement.value = selections.user?.lastName || '';
-        if (emailElement) emailElement.value = selections.user?.email || '';
-        if (mobileNumberElement) mobileNumberElement.value = selections.user?.mobileNumber || '';
+        // Populate reservation details
+        document.getElementById('check-in-date')?.setAttribute('value', selections.reservation?.checkInDate || '');
+        document.getElementById('check-out-date')?.setAttribute('value', selections.reservation?.checkOutDate || '');
+        document.getElementById('check-in-time')?.setAttribute('value', selections.reservation?.checkInTime || '');
+        document.getElementById('check-out-time')?.setAttribute('value', selections.reservation?.checkOutTime || '');
 
-        // Populate reservation details if elements exist
-        const checkInDateElement = document.getElementById('check-in-date');
-        const checkOutDateElement = document.getElementById('check-out-date');
-        const checkInTimeElement = document.getElementById('check-in-time');
-        const checkOutTimeElement = document.getElementById('check-out-time');
+        // Populate rate ID and price
+        document.getElementById('rate-id-field')?.setAttribute('value', selections.rate?.rateId || '');
+        document.getElementById('rate-price-field')?.setAttribute('value', selections.rate?.ratePrice || '0');
 
-        if (checkInDateElement) checkInDateElement.value = selections.reservation?.checkInDate || '';
-        if (checkOutDateElement) checkOutDateElement.value = selections.reservation?.checkOutDate || '';
-        if (checkInTimeElement) checkInTimeElement.value = selections.reservation?.checkInTime || '';
-        if (checkOutTimeElement) checkOutTimeElement.value = selections.reservation?.checkOutTime || '';
+        // Populate add-ons (IDs and Prices)
+        document.getElementById('addon-ids-field')?.setAttribute('value', selections.addons?.addonIds?.join(',') || '');
+        document.getElementById('addon-prices-field')?.setAttribute('value', selections.addons?.addonPrices?.join(',') || '');
 
-        // Retrieve rateId from localStorage
-        const rateId = selections?.rate?.rateId || '';
-        console.log('Retrieved rateId from localStorage:', rateId);
+        // Populate extra pax and price
+        document.getElementById('extra-pax-field')?.setAttribute('value', selections.reservation?.extraPax || '0');
+        document.getElementById('extra-pax-price-field')?.setAttribute('value', selections.reservation?.extraPaxPrice || '0');
 
-        // Optional: Populate rate and add-ons (if needed)
-        const rateIdField = document.getElementById('rate-id-field');
-        const addonIdsField = document.getElementById('addon-ids-field');
-
-        if (rateIdField) rateIdField.value = rateId;
-        if (addonIdsField) addonIdsField.value = selections.addons?.join(',') || '';
-
-        // Optional: Log the populated data for debugging
-        console.log('Form populated with selections:', selections);
-    } else {
-        console.log('No selections found in localStorage');
+        // ✅ Debugging: Log success message
+        console.log('✅ Form populated successfully!');
+    } catch (error) {
+        console.error('❌ Error populating form:', error);
     }
-}  
+}
 
-
-
-window.onload = populateForm;
 
 // Function to remove an add-on
 function removeAddon(event) {
@@ -100,64 +96,99 @@ function removeAddon(event) {
     populateInvoice();
 }
 
+
+window.onload = populateForm;
+
 async function populateInvoice() {
+    console.log('🚀 populateInvoice() function is running...');
+
     // Retrieve selections from localStorage
     const selections = JSON.parse(localStorage.getItem('selections'));
+    console.log('📌 Retrieved selections:', selections);
 
     if (!selections) {
-        console.log('No selections found in localStorage');
-        return;  // Exit if no selections are found
+        console.error('❌ No selections found in localStorage');
+        return;
     }
 
-    const rateId = selections.rate.rateId;
-    const addonIds = selections.addons;
+    const rateId = selections.rate?.rateId;
+    const addonIds = selections.addons?.addonIds || [];
+    const extraPax = parseInt(selections.reservation?.extraPax) || 0;
+    const extraPaxPrice = parseFloat(selections.reservation?.extraPaxPrice) || 0;
 
-    // Fetch the rate data from a JSON or an API
+    console.log('✅ Rate ID:', rateId);
+    console.log('✅ Add-on IDs:', addonIds);
+    console.log('✅ Extra Pax:', extraPax);
+    console.log('✅ Extra Pax Price:', extraPaxPrice);
+
+    // Fetch rate data
     const rateData = await fetchDataFromServer(rateId, 'rate');
-    
-    // Fetch the add-ons data if there are any add-ons
+    if (!rateData || !rateData.price) {
+        console.error('❌ Error: rateData is invalid:', rateData);
+        return;
+    }
+    console.log('📌 Retrieved Rate Data:', rateData);
+
+    // Ensure price is a valid number
+    const ratePrice = parseFloat(rateData.price) || 0;
+
+    // Fetch add-ons data
     let addonsData = [];
     if (addonIds.length > 0) {
         addonsData = await fetchDataFromServer(addonIds, 'addons');
+        console.log('📌 Retrieved Add-ons Data:', addonsData);
+    }
+
+    // Get Invoice Elements
+    const invoiceItemsDiv = document.getElementById('invoice-items');
+    if (!invoiceItemsDiv) {
+        console.error('❌ Invoice items table not found in HTML');
+        return;
     }
 
     // Get the current date
     const invoiceDate = new Date().toLocaleDateString();
     document.getElementById('invoice-date').innerText = invoiceDate;
 
-    // Generate invoice number (auto-generated, simple approach)
+    // Generate invoice number
     const invoiceNo = 'INV-' + Math.floor(Math.random() * 1000000);
     document.getElementById('invoice-no').innerText = invoiceNo;
 
-    // Populate the rate section
-    const invoiceItemsDiv = document.getElementById('invoice-items');
-    let totalPrice = parseFloat(rateData.price);
+    // Initialize Invoice Items and Total Price
+    let totalPrice = ratePrice;
     let itemHtml = `
         <tr>
             <td class="py-2">Rate</td>
             <td class="py-2">${rateData.name}</td>
-            <td class="py-2 text-right">${rateData.price}</td>
+            <td class="py-2 text-right">₱${ratePrice.toFixed(2)}</td>
         </tr>
     `;
-    invoiceItemsDiv.innerHTML = itemHtml;
 
-    // Populate add-ons section
+    // Add Extra Pax if applicable
+    if (extraPax > 0) {
+        itemHtml += `
+            <tr>
+                <td class="py-2"></td>
+                <td class="py-2">Extra Pax</td>
+                <td class="py-2">${extraPax} Pax</td>
+                <td class="py-2 text-right">₱${extraPaxPrice.toFixed(2)}</td>
+            </tr>
+        `;
+        totalPrice += extraPaxPrice;
+    }
+
+    // Add Add-ons if applicable
     if (addonsData.length > 0) {
         addonsData.forEach(addon => {
+            const addonPrice = parseFloat(addon.price) || 0;
             itemHtml += `
                 <tr>
                     <td class="py-2">Add-on</td>
                     <td class="py-2">${addon.name}</td>
-                    <td class="py-2 text-right">${addon.price}</td>
+                    <td class="py-2 text-right">₱${addonPrice.toFixed(2)}</td>
                 </tr>
             `;
-            totalPrice += parseFloat(addon.price);
-        });
-        invoiceItemsDiv.innerHTML = itemHtml;
-
-        // Add event listeners to remove icons
-        document.querySelectorAll('.ico-times').forEach(icon => {
-            icon.addEventListener('click', removeAddon);
+            totalPrice += addonPrice;
         });
     } else {
         itemHtml += `
@@ -165,42 +196,45 @@ async function populateInvoice() {
                 <td class="py-2 text-gray-500" colspan="4">No add-ons selected</td>
             </tr>
         `;
-        invoiceItemsDiv.innerHTML = itemHtml;
     }
 
-    // Update the total price
-    document.getElementById('total-price').innerText = totalPrice.toFixed(2);
+    // Update Invoice Items in HTML
+    invoiceItemsDiv.innerHTML = itemHtml;
 
-    // Calculate the downpayment (50% of total price)
+    // Update total price
+    document.getElementById('total-price').innerText = `₱${totalPrice.toFixed(2)}`;
+
+    // Calculate and update downpayment (50% of total price)
     const downpayment = totalPrice / 2;
-    document.getElementById('downpayment').innerText = downpayment.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    document.getElementById('downpayment').innerText = `₱${downpayment.toFixed(2)}`;
 
-    // Now, create the JSON object based on the populated invoice
+    // Store Invoice Data
     const populatedInvoice = {
-        invoiceDate: invoiceDate,
-        invoiceNo: invoiceNo,
+        invoiceDate,
+        invoiceNo,
         items: [
-            {
-                category: 'Rate',
-                name: rateData.name,
-                price: rateData.price
-            },
+            { category: 'Rate', name: rateData.name, price: ratePrice.toFixed(2) },
+            ...(extraPax > 0 ? [{ category: 'Extra Pax', name: `${extraPax} Pax`, price: extraPaxPrice.toFixed(2) }] : []),
             ...addonsData.map(addon => ({
                 category: 'Add-on',
                 name: addon.name,
-                price: addon.price
+                price: parseFloat(addon.price).toFixed(2)
             }))
         ],
         totalPrice: totalPrice.toFixed(2),
-        downpayment: downpayment.toFixed(2)  // Add downpayment to the invoice data
+        downpayment: downpayment.toFixed(2)
     };
 
-    // Store the populated invoice JSON in localStorage
     localStorage.setItem('populatedInvoice', JSON.stringify(populatedInvoice));
-
-    // Log the populated invoice for debugging
-    console.log('Populated invoice stored:', populatedInvoice);
+    console.log('✅ Final Populated Invoice:', populatedInvoice);
 }
+
+// Ensure function runs after the DOM is loaded
+window.addEventListener('DOMContentLoaded', () => {
+    console.log('📢 DOM fully loaded, running populateInvoice()...');
+    populateInvoice();
+});
+
 
 // Function to simulate fetching data (for rate and add-ons)
 async function fetchDataFromServer(ids, type) {

@@ -448,62 +448,56 @@ function unselectRate(selectButton, id, availableRateCards) {
   }
   
   function storeSelections() {
-    // Get the input values from the form
-    const firstName = document.getElementById('first-name').value || '';  
-    const lastName = document.getElementById('last-name').value || '';
-    const email = document.getElementById('email').value || '';
-    const mobileNumber = document.getElementById('mobile-number').value || '';
-    const checkInDate = document.getElementById('check-in-date').value || '';
-    const checkOutDate = document.getElementById('check-out-date').value || '';
-    const checkInTime = document.getElementById('check-in-time').value || '';
-    const checkOutTime = document.getElementById('check-out-time').value || '';
+    // Get user details
+    const firstName = document.getElementById('first-name')?.value || '';  
+    const lastName = document.getElementById('last-name')?.value || '';
+    const email = document.getElementById('email')?.value || '';
+    const mobileNumber = document.getElementById('mobile-number')?.value || '';
 
-    // Capture rate ID from the <input> field
-    const rateIdField = document.getElementById('rate-id-field');
-    const rateId = rateIdField ? rateIdField.value.trim() : ''; // Use trim() to remove extra spaces
+    // Get reservation details
+    const checkInDate = document.getElementById('check-in-date')?.value || '';
+    const checkOutDate = document.getElementById('check-out-date')?.value || '';
+    const checkInTime = document.getElementById('check-in-time')?.value || '';
+    const checkOutTime = document.getElementById('check-out-time')?.value || '';
 
-    // Log the rateId to the console
+    // Capture rate ID and price (ensure value exists)
+    const rateId = document.getElementById('rate-id-field')?.value.trim() || ''; 
+    const ratePriceValue = document.getElementById('rate-price-field')?.value;
+    const ratePrice = ratePriceValue ? parseFloat(ratePriceValue) : 0;
 
-
-    // Check if the rateId is valid (not empty)
     if (!rateId) {
-        console.log("No rateId found or rateId is empty.");
-        return; // Prevent storing selections if no rate is selected
+        console.log("❌ No rateId found or rateId is empty.");
+        return; // Prevent storing if no rate is selected
     }
 
-    // Capture selected add-on IDs from the hidden field in the form (set to empty array if none)
-    const addonIdsField = document.getElementById('addon-ids-field');
-    const addonIds = addonIdsField ? addonIdsField.value.split(',') : [];  // Make sure it's an array
+    // Capture add-on IDs and prices
+    const addonIdsValue = document.getElementById('addon-ids-field')?.value;
+    const addonIds = addonIdsValue ? addonIdsValue.split(',') : [];
+
+    const addonPricesValue = document.getElementById('addon-prices-field')?.value;
+    const addonPrices = addonPricesValue 
+        ? addonPricesValue.split(',').map(price => price.trim() ? parseFloat(price) : 0)
+        : [];
+
+    // Capture extra pax count and calculate total extra pax cost
+    const extraPaxValue = document.getElementById('extra-pax-field')?.value;
+    const extraPax = extraPaxValue ? parseInt(extraPaxValue, 10) : 0;
+    const extraPaxPrice = extraPax * 250; // ₱250 per extra guest
 
     // Prepare the selections object
     const selections = {
-        user: {
-            firstName: firstName,
-            lastName: lastName,
-            email: email,
-            mobileNumber: mobileNumber
-        },
-        reservation: {
-            checkInDate: checkInDate,
-            checkOutDate: checkOutDate,  
-            checkInTime: checkInTime,    
-            checkOutTime: checkOutTime   
-        },
-        rate: {
-            rateId: rateId  // Ensure rateId is stored
-        },
-        addons: addonIds.length ? addonIds : []  // Store add-ons even if empty
+        user: { firstName, lastName, email, mobileNumber },
+        reservation: { checkInDate, checkOutDate, checkInTime, checkOutTime, extraPax, extraPaxPrice },
+        rate: { rateId, ratePrice },
+        addons: { addonIds, addonPrices }
     };
 
-    // Convert the selections object to JSON
-    const selectionsJSON = JSON.stringify(selections);
+    // Convert to JSON and store in localStorage
+    localStorage.setItem('selections', JSON.stringify(selections));
 
-    // Store it in localStorage
-    localStorage.setItem('selections', selectionsJSON);
-
-    // Log the stored selections object to the console
-    // console.log('Stored selections:', selections);
+    console.log('✅ Stored selections:', selections);
 }
+
 
 
 
