@@ -156,21 +156,22 @@ if (!isset($_SESSION['admin_id'])) {
         require_once 'db_connection.php';
 
         // Fetch confirmed reservations
-        $query = "SELECT SUM(total_price) as total_sales FROM reservations WHERE status = 'Confirmed'";
+        $query = "SELECT SUM(total_price) as total_sales FROM reservations WHERE status = 'Completed'";
         $result = $conn->query($query);
         $total_sales = $result->fetch_assoc()['total_sales'] ?? 0;
         ?>
 
-        <div class="card">
-            <div class="head">
-                <div>
-                    <h2>₱<?php echo number_format($total_sales, 2); ?></h2>
-                    <p>Sales</p>
+        <a href="../sales.php">
+            <div class="card">
+                <div class="head">
+                    <div>
+                        <h2>₱<?php echo number_format($total_sales, 2); ?></h2>
+                        <p>Sales</p>
+                    </div>
+                    <i class='bx bx-trending-down icon down'></i>
                 </div>
-                <i class='bx bx-trending-down icon down'></i>
             </div>
-        </div>
-
+        </a>
         <?php
         // Fetch pending and approved reservations count
         $pending_query = "SELECT COUNT(*) as pending_count FROM reservations WHERE status = 'Pending'";
@@ -189,18 +190,19 @@ if (!isset($_SESSION['admin_id'])) {
         $approved_percentage = $total_count > 0 ? ($approved_count / $total_count) * 100 : 0;
         ?>
 
-        <div class="card">
-            <div class="head">
-                <div>
-                    <h2><?php echo $pending_count; ?></h2>
-                    <p>Pending Reservations</p>
+        <a href="../reservation/reservation_admin.php"> 
+            <div class="card">
+                <div class="head">
+                    <div>
+                        <h2><?php echo $pending_count; ?></h2>
+                        <p>Pending Reservations</p>
+                    </div>
+                    <i class='bx bx-time-five icon'></i>
                 </div>
-                <i class='bx bx-time-five icon'></i>
+                <span class="progress" data-value="<?php echo $pending_percentage; ?>%"></span>
+                <span class="label"><?php echo number_format($pending_percentage, 2); ?>%</span>
             </div>
-            <span class="progress" data-value="<?php echo $pending_percentage; ?>%"></span>
-            <span class="label"><?php echo number_format($pending_percentage, 2); ?>%</span>
-        </div>
-
+        </a>
         <div class="card">
             <div class="head">
                 <div>
