@@ -20,33 +20,29 @@ $reference_number = $_POST['reference_number'];
 $invoice_date = $_POST['invoice_date'];
 $invoice_number = $_POST['invoice_number'];
 $total_price = $_POST['total_price'];
-$contact_number = $_POST['mobile_number'];
-$rate_id = $_POST['rate_id'];  // Collect rate_id from the POST data
-$first_name = $_POST['first_name'];  // Collect first name
-$last_name = $_POST['last_name'];    // Collect last name
-$email = $_POST['email'];            // Collect email
-$mobile_number = $_POST['mobile_number']; // Collect mobile number
-
-// Collect the new total and valid amount paid from the POST data
 $new_total = $_POST['new_total'];  // New total price after adjustments
 $amount_paid = $_POST['amount_paid'];  // Valid amount paid for the reservation
-
-// Collect the reservation code
-$reservation_code = $_POST['reservation_code'];  // Collect reservation code from the POST data
+$reservation_code = $_POST['reservation_code'];
+$rate_id = $_POST['rate_id'];
+$rate_price = $_POST['rate_price'];
+$extra_pax = $_POST['extra_pax'];
+$extra_pax_price = $_POST['extra_pax_price'];
+$first_name = $_POST['first_name'];
+$last_name = $_POST['last_name'];
+$email = $_POST['email'];
+$mobile_number = $_POST['mobile_number'];
+$contact_number = $_POST['mobile_number'];
 
 // Handle the payment receipt file upload
 if (isset($_FILES['payment_receipt']) && $_FILES['payment_receipt']['error'] === UPLOAD_ERR_OK) {
-    $upload_dir = '../src/uploads/customerpayment/';  // Directory where payment receipts are saved
+    $upload_dir = '../src/uploads/customerpayment/';  
     $file_name = $_FILES['payment_receipt']['name'];
     $file_tmp = $_FILES['payment_receipt']['tmp_name'];
     $file_ext = pathinfo($file_name, PATHINFO_EXTENSION);
-
-    // Create a unique file name using timestamp and random number
     $unique_file_name = 'payment_receipt_' . time() . '_' . rand(1000, 9999) . '.' . $file_ext;
 
-    // Move the uploaded file to the specified directory
     if (move_uploaded_file($file_tmp, $upload_dir . $unique_file_name)) {
-        $payment_receipt = $unique_file_name;  // Store the file name in the database
+        $payment_receipt = $unique_file_name;  
     } else {
         echo 'Error uploading payment receipt file.';
         exit;
@@ -56,32 +52,16 @@ if (isset($_FILES['payment_receipt']) && $_FILES['payment_receipt']['error'] ===
     exit;
 }
 
-// Escape input data to prevent SQL injection
-$check_in_date = mysqli_real_escape_string($conn, $check_in_date);
-$check_out_date = mysqli_real_escape_string($conn, $check_out_date);
-$check_in_time = mysqli_real_escape_string($conn, $check_in_time);
-$check_out_time = mysqli_real_escape_string($conn, $check_out_time);
-$reference_number = mysqli_real_escape_string($conn, $reference_number);
-$invoice_date = mysqli_real_escape_string($conn, $invoice_date);
-$invoice_number = mysqli_real_escape_string($conn, $invoice_number);
-$total_price = mysqli_real_escape_string($conn, $total_price);
-$contact_number = mysqli_real_escape_string($conn, $contact_number);
-$rate_id = mysqli_real_escape_string($conn, $rate_id);  // Escape rate_id
-$first_name = mysqli_real_escape_string($conn, $first_name);  // Escape first_name
-$last_name = mysqli_real_escape_string($conn, $last_name);    // Escape last_name
-$email = mysqli_real_escape_string($conn, $email);            // Escape email
-$mobile_number = mysqli_real_escape_string($conn, $mobile_number); // Escape mobile_number
-
 $addon_ids = isset($_POST['addon_ids']) ? json_decode($_POST['addon_ids'], true) : [];
 
-// Prepare the SQL query to insert into the reservations table, including new total, valid amount paid, and reservation code
+// Prepare the SQL query to insert into the reservations table
 $sql = "INSERT INTO reservations 
-        (user_id, check_in_date, check_out_date, check_in_time, check_out_time, reference_number, invoice_date, invoice_number, total_price, new_total, valid_amount_paid, payment_receipt, status, payment_status, contact_number, rate_id, first_name, last_name, email, mobile_number, reservation_code) 
-        VALUES ('$user_id', '$check_in_date', '$check_out_date', '$check_in_time', '$check_out_time', '$reference_number', '$invoice_date', '$invoice_number', '$total_price', '$new_total', '$amount_paid', '$payment_receipt', 'Pending', 'Pending', '$contact_number', '$rate_id', '$first_name', '$last_name', '$email', '$mobile_number', '$reservation_code')";
+        (user_id, check_in_date, check_out_date, check_in_time, check_out_time, reference_number, invoice_date, invoice_number, total_price, new_total, valid_amount_paid, payment_receipt, status, payment_status, contact_number, rate_id, rate_price, extra_pax, extra_pax_price, first_name, last_name, email, mobile_number, reservation_code) 
+        VALUES ('$user_id', '$check_in_date', '$check_out_date', '$check_in_time', '$check_out_time', '$reference_number', '$invoice_date', '$invoice_number', '$total_price', '$new_total', '$amount_paid', '$payment_receipt', 'Pending', 'Pending', '$contact_number', '$rate_id', '$rate_price', '$extra_pax', '$extra_pax_price', '$first_name', '$last_name', '$email', '$mobile_number', '$reservation_code')";
 
 // Execute the query for the reservation
 if (mysqli_query($conn, $sql)) {
-    $reservation_id = mysqli_insert_id($conn);  // Get the ID of the newly inserted reservation
+    $reservation_id = mysqli_insert_id($conn);  
 
     // Insert each addon into the reservation_addons table
     foreach ($addon_ids as $addon_id) {
