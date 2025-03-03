@@ -75,8 +75,9 @@ if ($stmt->execute()) {
     // Log the rate addition
     logRateAddition($admin_id, $admin_name, $rate_id, $name);
 
-    header("Location: rates.php");  // Redirect to rates page
-    exit;
+    // Ensure no further code execution and properly redirect
+    header("Location: rates.php");
+    exit; // Ensure that no further code is executed after the redirect
 } else {
     die("Error: " . $stmt->error);
 }
