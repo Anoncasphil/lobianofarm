@@ -374,14 +374,26 @@ async function submitReservation() {
     const checkOutDate = document.getElementById('check-out-date').value;
     const paymentReceipt = document.getElementById('dropzone-file').files[0];
 
+    // Check if payment receipt is uploaded
     if (!paymentReceipt) {
-        alert("Please upload the payment receipt.");
+        showAlert('Error', 'Please upload the payment receipt.');
         submitButton.innerHTML = 'Submit';
         submitButton.disabled = false;
         return;
     }
 
     const referenceNumber = document.getElementById('reference-number').value;
+    const amountPaidInput = document.getElementById('amount-paid-input');
+    const amountPaid = parseFloat(amountPaidInput.value) || 0;
+
+    // Check if reference number and valid amount paid are provided
+    if (!referenceNumber || amountPaid <= 0) {
+        showAlert('Error', 'Please enter both the reference number and a valid amount paid.');
+        submitButton.innerHTML = 'Submit';
+        submitButton.disabled = false;
+        return;
+    }
+
     const invoiceDate = new Date().toISOString().split('T')[0];
     const invoiceNumber = document.getElementById('invoice-no').innerText;
     const totalPriceElement = document.getElementById('total-price');
@@ -434,8 +446,6 @@ async function submitReservation() {
     });
 
     const finalDownpayment = finalTotalPrice / 2;
-    const amountPaidInput = document.getElementById('amount-paid-input');
-    const amountPaid = parseFloat(amountPaidInput.value) || 0;
     const validAmountPaid = amountPaid > 0 ? amountPaid : 0;
     const newTotal = finalTotalPrice - validAmountPaid;
 
@@ -515,41 +525,113 @@ async function submitReservation() {
 function redirectHome() {
     window.location.href = "../index.php"; // Redirect to the homepage
 }
- // Function to collect the data and send it via AJAX
- function sendEmail() {
+function sendEmail() {
+    var firstName = document.getElementById('first-name-p').value;
+    var lastName = document.getElementById('last-name-p').value;
+    var email = document.getElementById('email-p').value;
+    var mobileNumber = document.getElementById('mobile-number-p').value;
+    var checkInDate = document.getElementById('check-in-date').value;
+    var checkOutDate = document.getElementById('check-out-date').value;
+    var checkInTime = document.getElementById('check-in-time').value;
+    var checkOutTime = document.getElementById('check-out-time').value;
+
+    var reservationCodeElement = document.getElementById('code');
+    var reservationCode = reservationCodeElement ? reservationCodeElement.textContent : '';
+
+    if (!reservationCode) {
+        showAlert('Error', 'Reservation code is missing. Please ensure the code is generated before submitting.');
+        return;
+    }
+
+    var invoiceDate = document.getElementById('invoice-date') ? document.getElementById('invoice-date').textContent : '';
+    var invoiceNo = document.getElementById('invoice-no') ? document.getElementById('invoice-no').textContent : '';
+    var totalPrice = document.getElementById('total-price') ? document.getElementById('total-price').textContent.replace('₱', '').trim() : '';
+    var amountPaid = document.getElementById('amount-paid-display') ? document.getElementById('amount-paid-display').textContent : '';
+
+    // Get the inner text of new-total span
+    var newTotal = document.getElementById('new-total') ? document.getElementById('new-total').textContent.replace('₱', '').trim() : '';
+
+    if (!firstName || !lastName || !email || !mobileNumber || !checkInDate || !checkOutDate || !totalPrice || !invoiceDate || !invoiceNo || !reservationCode) {
+        showAlert('Error', 'Please fill in all the required fields before submitting.');
+        return;
+    }
+
     var reservationData = {
-      first_name: document.getElementById('first-name-p').value,
-      last_name: document.getElementById('last-name-p').value,
-      email: document.getElementById('email-p').value,
-      mobile_number: document.getElementById('mobile-number-p').value,
-      check_in_date: document.getElementById('check-in-date').value,
-      check_out_date: document.getElementById('check-out-date').value,
-      check_in_time: document.getElementById('check-in-time').value,
-      check_out_time: document.getElementById('check-out-time').value,
-      invoice_date: document.getElementById('invoice-date').textContent,
-      invoice_no: document.getElementById('invoice-no').textContent,
-      invoice_items: getInvoiceItems(),  // Function to get dynamic invoice items
-      total_price: document.getElementById('total-price').textContent.replace('₱', '').trim()
+        first_name: firstName,
+        last_name: lastName,
+        email: email,
+        mobile_number: mobileNumber,
+        check_in_date: checkInDate,
+        check_out_date: checkOutDate,
+        check_in_time: checkInTime,
+        check_out_time: checkOutTime,
+        invoice_date: invoiceDate,
+        invoice_no: invoiceNo,
+        invoice_items: getInvoiceItems(),  // Function to get dynamic invoice items
+        total_price: totalPrice,
+        reservation_code: reservationCode,
+        amount_paid: amountPaid,
+        new_total: newTotal // Send the inner text of new-total here
     };
 
-    // Send AJAX request to the PHP script
     $.ajax({
-      url: 'send_email.php',  // Path to your PHP script
-      type: 'POST',
-      data: reservationData,
-      success: function(response) {
-        const result = JSON.parse(response);
-        if (result.status === 'success') {
-        //   put alert here
-        } else {
-          alert('Error: ' + result.message);
+        url: 'send_email.php',
+        type: 'POST',
+        data: reservationData,
+        success: function(response) {
+            try {
+                const result = JSON.parse(response); // Parse the JSON response
+                if (result.status === 'success') {
+                    showAlert('Success', 'Email sent successfully!');
+                } else {
+                    showAlert('Error', 'Error: ' + result.message);
+                }
+            } catch (error) {
+                console.error('Error parsing JSON:', error);
+                showAlert('Error', 'Error occurred while sending the email.');
+            }
+        },
+        error: function() {
+            showAlert('Error', 'An error occurred while sending the email.');
         }
-      },
-      error: function() {
-        alert('An error occurred while sending the email.');
-      }
     });
-  }
+}
+
+// Function to display the alert
+function showAlert(type, message) {
+    var alertDiv = document.getElementById('info-alert-payment');
+    var alertTitle = document.getElementById('alert-title-payment');
+    var alertMessage = document.getElementById('alert-message-payment');
+
+    // Set the alert title and message based on the type (success or error)
+    alertTitle.textContent = type + ' alert!';
+    alertMessage.textContent = message;
+
+    // Change alert class based on success/error
+    if (type === 'Success') {
+        alertDiv.classList.remove('bg-red-200', 'text-red-800'); // remove error classes
+        alertDiv.classList.add('bg-green-200', 'text-green-800'); // add success classes
+    } else {
+        alertDiv.classList.remove('bg-green-200', 'text-green-800'); // remove success classes
+        alertDiv.classList.add('bg-red-200', 'text-red-800'); // add error classes
+    }
+
+    // Force a reflow to ensure styles are applied correctly
+    alertDiv.offsetHeight; // Read to trigger reflow
+
+    // Show the alert
+    alertDiv.classList.remove('hidden');
+    
+    // Optionally, hide the alert after a few seconds
+    setTimeout(function() {
+        alertDiv.classList.add('hidden');
+    }, 5000);
+}
+
+
+
+
+
 
   // Function to gather invoice items dynamically (this assumes you've already created the table)
   function getInvoiceItems() {

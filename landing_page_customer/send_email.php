@@ -17,9 +17,9 @@ $invoice_date = $_POST['invoice_date'] ?? '';
 $invoice_no = $_POST['invoice_no'] ?? ''; // This is the correct parameter name from the form
 $invoice_items = $_POST['invoice_items'] ?? '';
 $total_price = $_POST['total_price'] ?? '';
-$reservation_code = $_POST['reservation_code'] ?? 'N/A'; // Add reservation code
+$reservation_code = $_POST['reservation_code'] ?? 'N/A'; // Ensure 'N/A' is the default if not provided
 $status = $_POST['status'] ?? 'Pending'; // Add reservation status with default as Pending
-$valid_amount_paid = $_POST['valid_amount_paid'] ?? '0.00'; // Add valid amount paid
+$amount_paid = $_POST['amount_paid'] ?? '0.00'; // Add valid amount paid
 
 // Get the extra pax details
 $extra_pax = $_POST['extra_pax'] ?? 0;
@@ -27,8 +27,9 @@ $extra_pax_price = $_POST['extra_pax_price'] ?? 0;
 
 // Calculate remaining balance
 $total_price_value = floatval($total_price);
-$valid_amount_paid_value = floatval($valid_amount_paid);
-$new_total = $total_price_value - $valid_amount_paid_value;
+$amount_paid_value = floatval($amount_paid);
+$new_total = $_POST['new_total'] ?? '0.00'; // Use the value from the form
+
 
 // Format dates and times
 function formatDate($date) {
@@ -143,7 +144,7 @@ $email_body = "
         
         <div style='padding: 20px;'>
             <p style='font-size: 16px; font-weight: bold; color: #333;'>Total Price: <span>₱" . number_format($total_price_value, 2) . "</span></p>
-            <p style='font-size: 14px; font-weight: bold; color: #555;'>Valid Amount Paid: <span>₱" . number_format($valid_amount_paid_value, 2) . "</span></p>
+            <p style='font-size: 14px; font-weight: bold; color: #555;'>Valid Amount Paid: <span>₱" . number_format($amount_paid_value, 2) . "</span></p>
             <p style='font-size: 18px; font-weight: bold; color: #1e3a8a; text-align: left;'>Total: <span>₱" . number_format($new_total, 2) . "</span></p>
         </div>
         
