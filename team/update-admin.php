@@ -91,32 +91,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Check and append fields to the SQL query if they have changed
     if (!empty($firstname)) {
-        $sql .= " firstname = ?,";
+        $sql .= " firstname = ?,"; 
         $params[] = $firstname;
         $types .= "s"; // Add string type
     }
     if (!empty($lastname)) {
-        $sql .= " lastname = ?,";
+        $sql .= " lastname = ?,"; 
         $params[] = $lastname;
         $types .= "s"; // Add string type
     }
     if (!empty($email)) {
-        $sql .= " email = ?,";
+        $sql .= " email = ?,"; 
         $params[] = $email;
         $types .= "s"; // Add string type
     }
     if (!empty($role)) {
-        $sql .= " role = ?,";
+        $sql .= " role = ?,"; 
         $params[] = $role;
         $types .= "s"; // Add string type
     }
     if (!empty($password)) {
-        $sql .= " password = ?,";
+        $sql .= " password = ?,"; 
         $params[] = $hashedPassword;
         $types .= "s"; // Add string type
     }
     if ($profilePicture) {
-        $sql .= " profile_picture = ?,";
+        $sql .= " profile_picture = ?,"; 
         $params[] = $profilePicturePath;
         $types .= "s"; // Add string type
     }
@@ -144,8 +144,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 logAdminUpdate($logged_admin_id, $admin_name, $adminId, $admin_full_name, $changes);
             }
             
-            echo "Admin details updated successfully!";
+            // Redirect to team.php after successful update
             header("Location: team.php");
+            exit;
         } else {
             echo "Error updating admin details: " . $stmt->error;
         }
