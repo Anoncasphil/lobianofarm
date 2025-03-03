@@ -18,8 +18,11 @@ if (!isset($_GET['reservation_id']) || empty($_GET['reservation_id']) || !is_num
 
 $reservation_id = $_GET['reservation_id'];
 
-// Fetch reservation details
-$query = "SELECT * FROM reservations WHERE id = ?";
+// Fetch reservation details along with rate name
+$query = "SELECT res.*, r.name AS rate_name 
+          FROM reservations res
+          JOIN rates r ON res.rate_id = r.id
+          WHERE res.id = ?";
 if ($stmt = $conn->prepare($query)) {
     $stmt->bind_param('i', $reservation_id);
     $stmt->execute();
@@ -46,57 +49,36 @@ if ($stmt = $conn->prepare($query)) {
             }
         }
 
-        // Fetch rate details
-        $ratesQuery = "
-            SELECT r.id AS rate_id, r.name AS rate_name, r.price AS rate_price, r.description AS rate_description
-            FROM rates r
-            JOIN reservations res ON res.rate_id = r.id
-            WHERE res.id = ?";
-        $ratesStmt = $conn->prepare($ratesQuery);
-        $rates = [];
-
-        if ($ratesStmt) {
-            $ratesStmt->bind_param('i', $reservation_id);
-            $ratesStmt->execute();
-            $ratesResult = $ratesStmt->get_result();
-            while ($rate = $ratesResult->fetch_assoc()) {
-                $rates[] = $rate;
-            }
-        }
-
-        // Format valid_amount_paid as currency
+        // Calculate new total
         $valid_amount_paid = number_format($reservation['valid_amount_paid'], 2, '.', ',');
+        $new_total = floatval(str_replace(',', '', $reservation['total_price'])) - floatval(str_replace(',', '', $valid_amount_paid));
 
-        // Construct the full path to the payment receipt image
-        $payment_receipt_path =  $reservation['payment_receipt'];
-
-        
-// Calculate new total
-$new_total = floatval(str_replace(',', '', $reservation['total_price'])) - floatval(str_replace(',', '', $valid_amount_paid));
-
-// Return JSON response
-echo json_encode([
-    'reservation_id' => $reservation_id,
-    'invoice_date' => $reservation['invoice_date'],
-    'invoice_number' => $reservation['invoice_number'],
-    'reference_number' => $reservation['reference_number'],
-    'total_price' => $reservation['total_price'],
-    'valid_amount_paid' => $valid_amount_paid,  // formatted value
-    'new_total_amount' => number_format($new_total, 2, '.', ''), // Ensure proper formatting
-    'payment_receipt' => $payment_receipt_path,  // full path to the image
-    'status' => $reservation['status'],
-    'contact_number' => $reservation['contact_number'],
-    'first_name' => $reservation['first_name'],
-    'last_name' => $reservation['last_name'],
-    'email' => $reservation['email'],
-    'mobile_number' => $reservation['mobile_number'],
-    'checkin_date' => $reservation['check_in_date'],
-    'checkout_date' => $reservation['check_out_date'],
-    'checkin_time' => $reservation['check_in_time'],
-    'checkout_time' => $reservation['check_out_time'],
-    'addons' => $addons,
-    'rates' => $rates
-]);
+        // Return JSON response
+        echo json_encode([
+            'reservation_id' => $reservation_id,
+            'invoice_date' => $reservation['invoice_date'],
+            'invoice_number' => $reservation['invoice_number'],
+            'reference_number' => $reservation['reference_number'],
+            'total_price' => $reservation['total_price'],
+            'valid_amount_paid' => $valid_amount_paid,
+            'new_total_amount' => number_format($new_total, 2, '.', ''),
+            'payment_receipt' => $reservation['payment_receipt'],
+            'status' => $reservation['status'],
+            'contact_number' => $reservation['contact_number'],
+            'first_name' => $reservation['first_name'],
+            'last_name' => $reservation['last_name'],
+            'email' => $reservation['email'],
+            'mobile_number' => $reservation['mobile_number'],
+            'checkin_date' => $reservation['check_in_date'],
+            'checkout_date' => $reservation['check_out_date'],
+            'checkin_time' => $reservation['check_in_time'],
+            'checkout_time' => $reservation['check_out_time'],
+            'rate_name' => $reservation['rate_name'], // ✅ Fetching rate name from rates table
+            'rate_price' => $reservation['rate_price'], // ✅ Fetching rate price from reservations table
+            'extra_pax' => $reservation['extra_pax'],
+            'extra_pax_price' => $reservation['extra_pax_price'],
+            'addons' => $addons
+        ]);
 
     } else {
         echo json_encode(['status' => 'error', 'message' => 'Reservation not found.']);

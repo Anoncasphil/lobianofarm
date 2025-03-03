@@ -20,6 +20,45 @@ if (!isset($_SESSION['admin_id'])) {
 	<link rel="stylesheet" href="styles/style.css">
 	
 	<title>Admin</title>
+
+    <style>
+        /* Minimalistic Scrollbar for Webkit Browsers (Chrome, Safari, Edge) */
+::-webkit-scrollbar {
+    width: 6px; /* Thin scrollbar */
+}
+
+::-webkit-scrollbar-track {
+    background: transparent; /* Invisible track */
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: rgba(100, 100, 100, 0.5); /* Subtle gray color */
+    border-radius: 10px; /* Rounded edges */
+    transition: background-color 0.3s ease-in-out;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(100, 100, 100, 0.8); /* Darker on hover */
+}
+
+/* Firefox Scrollbar */
+* {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(100, 100, 100, 0.5) transparent;
+}
+
+/* Add hover effect to the notification card */
+.notifications-list .hover-effect {
+    transition: transform 0.3s ease, box-shadow 0.3s ease; /* Smooth transition */
+}
+
+.notifications-list .hover-effect:hover {
+    transform: scale(1.05); /* Slightly enlarge the card */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Add a subtle shadow on hover */
+}
+
+
+    </style>
 </head>
 <body>
 	
@@ -217,59 +256,58 @@ if (!isset($_SESSION['admin_id'])) {
     </div>
 
     <div class="data flex">
-        <!-- Reservation Table -->
-        <div class="content-data w-3/4">
-            <div class="head">
-                <h3>Recent Reservations</h3>
-            </div>
+       <!-- Reservation Table -->
+<div class="content-data w-3/4">
+    <div class="head">
+        <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200">Recent Reservations</h3>
+    </div>
 
-            <div class="relative overflow-x-auto sm:rounded-lg">
-                <table class="w-full text-sm text-left rtl:text-right text-gray-700 dark:text-gray-300">
-                    <thead class="text-xs text-gray-800 uppercase bg-gray-100 dark:bg-gray-800 dark:text-gray-300">
-                        <tr>
-                            <th scope="col" class="px-6 py-3">Reservation ID</th>
-                            <th scope="col" class="px-6 py-3">Name</th>
-                            <th scope="col" class="px-6 py-3">Date</th>
-                            <th scope="col" class="px-6 py-3">Status</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php 
-                        $reservations = getReservations();
-                        if (!empty($reservations)) {
-                            foreach ($reservations as $reservation) {
-                                $statusColor = match($reservation['title']) {
-                                    'Confirmed' => 'text-green-500 dark:text-green-400',
-                                    'Pending' => 'text-orange-500 dark:text-orange-400',
-                                    'Rescheduled' => 'text-blue-500 dark:text-blue-400',
-                                    default => 'text-gray-500'
-                                };
+    <div class="relative overflow-x-auto overflow-y-auto max-h-96 sm:rounded-lg custom-scroll" style="max-height: 400px;">
+        <table class="w-full text-sm text-left rtl:text-right text-gray-700 dark:text-gray-300">
+            <thead class="text-xs text-gray-800 uppercase bg-gray-100">
+                <tr>
+                    <th scope="col" class="px-6 py-3">Reservation ID</th>
+                    <th scope="col" class="px-6 py-3">Name</th>
+                    <th scope="col" class="px-6 py-3">Date</th>
+                    <th scope="col" class="px-6 py-3">Status</th>
+                </tr>
+            </thead>
+            <tbody class="overflow-y-auto">
+                <?php 
+                $reservations = getReservations();
+                if (!empty($reservations)) {
+                    foreach ($reservations as $reservation) {
+                        $statusColor = match($reservation['title']) {
+                            'Confirmed' => 'text-green-500 dark:text-green-400',
+                            'Pending' => 'text-orange-500 dark:text-orange-400',
+                            'Rescheduled' => 'text-blue-500 dark:text-blue-400',
+                            default => 'text-gray-500'
+                        };
 
-                                echo "<tr class='bg-gray-50 border-b dark:bg-gray-900 dark:border-gray-800'>";
-                                echo "<td class='px-6 py-4'>#" . str_pad($reservation['reservation_id'], 3, '0', STR_PAD_LEFT) . "</td>";
-                                echo "<td class='px-6 py-4'>" . htmlspecialchars($reservation['first_name']) . " " . htmlspecialchars($reservation['last_name']) . "</td>";
-                                echo "<td class='px-6 py-4'>" . htmlspecialchars($reservation['formatted_date']) . "</td>";
-                                echo "<td class='px-6 py-4 font-medium " . $statusColor . "'>" . htmlspecialchars($reservation['title']) . "</td>";
-                                echo "</tr>";
-                            }
-                        } else {
-                            echo "<tr><td colspan='4' class='px-6 py-4'>No reservations found</td></tr>";
-                        }
-                        ?>
-                    </tbody>
-                </table>
-            </div>
-        </div>
+                        echo "<tr class='bg-gray-50 border-b dark:bg-gray-900 dark:border-gray-800'>";
+                        echo "<td class='px-6 py-4'>#" . str_pad($reservation['reservation_id'], 3, '0', STR_PAD_LEFT) . "</td>";
+                        echo "<td class='px-6 py-4'>" . htmlspecialchars($reservation['first_name']) . " " . htmlspecialchars($reservation['last_name']) . "</td>";
+                        echo "<td class='px-6 py-4'>" . htmlspecialchars($reservation['formatted_date']) . "</td>";
+                        echo "<td class='px-6 py-4 font-medium " . $statusColor . "'>" . htmlspecialchars($reservation['title']) . "</td>";
+                        echo "</tr>";
+                    }
+                } else {
+                    echo "<tr><td colspan='4' class='px-6 py-4 text-center'>No reservations found</td></tr>";
+                }
+                ?>
+            </tbody>
+        </table>
+    </div>
+</div>
+
 
 <?php
-// Define the query
+// Define the query to fetch all unread notifications
 $notif_query = "
-    SELECT r.reservation_code, rr.reason, rr.request_date, r.check_in_date, r.check_out_date
-    FROM reschedule_request rr
-    JOIN reservations r ON rr.reservation_id = r.id
-    WHERE rr.status = 'Pending'
-    ORDER BY rr.request_date DESC
-    LIMIT 5
+    SELECT title, message, type, created_at, reservation_id
+    FROM notifications
+    WHERE status = 'unread'
+    ORDER BY created_at DESC
 ";
 
 // Execute the query
@@ -279,37 +317,37 @@ $notif_result = $conn->query($notif_query);
 if (!$notif_result) {
     die("Query failed: " . $conn->error); // Debugging statement
 }
-
 ?>
-<!-- Reschedule Requests Notification -->
+
+<!-- Notifications Panel -->
 <div class="content-data w-1/4 bg-white dark:bg-gray-900 p-4 rounded-lg shadow">
     <div class="head mb-4">
-        <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200">Reschedule Requests</h3>
+        <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200">Notifications</h3>
     </div>
-    <div class="notifications-list space-y-3">
+    <div class="notifications-list space-y-3 overflow-y-auto max-h-96 pr-2 custom-scroll" style="overflow-y: auto; max-height: 400px;">
         <?php
         if ($notif_result->num_rows > 0) {
             while ($notif = $notif_result->fetch_assoc()) {
-                // Format the dates as "February 14, 2025"
-                $check_in = date("F j, Y", strtotime($notif['check_in_date']));
-                $check_out = date("F j, Y", strtotime($notif['check_out_date']));
-
-                echo "<div class='p-4 bg-blue-50 dark:bg-blue-900 border-l-4 border-blue-500 dark:border-blue-400 rounded-lg shadow-md'>";
-                echo "<p class='text-sm font-medium text-blue-800 dark:text-blue-300'><strong>Reservation Code:</strong> " . htmlspecialchars($notif['reservation_code']) . "</p>";
-                echo "<p class='text-sm text-gray-700 dark:text-gray-300'><strong>Reason:</strong> " . htmlspecialchars($notif['reason']) . "</p>";
-                echo "<p class='text-sm text-gray-700 dark:text-gray-300'><strong>Check-in:</strong> $check_in</p>";
-                echo "<p class='text-sm text-gray-700 dark:text-gray-300'><strong>Check-out:</strong> $check_out</p>";
-                echo "<span class='text-xs text-gray-600 dark:text-gray-400 block mt-2'>" . htmlspecialchars($notif['request_date']) . "</span>";
+                // Format the timestamp
+                $created_at = date("F j, Y g:i A", strtotime($notif['created_at']));
+                $reservationId = htmlspecialchars($notif['reservation_id']); // Get the reservation ID
+                
+                echo "<div class='p-4 bg-blue-50 dark:bg-blue-900 border-l-4 border-blue-500 dark:border-blue-400 rounded-lg shadow-md hover-effect' data-id='$reservationId' onclick='storeReservationAndRedirect(this)'>";
+                echo "<p class='text-sm font-medium text-blue-800 dark:text-blue-300'><strong>" . htmlspecialchars($notif['title']) . "</strong></p>";
+                echo "<p class='text-sm text-gray-700 dark:text-gray-300'>" . htmlspecialchars($notif['message']) . "</p>";
+                echo "<span class='text-xs text-gray-600 dark:text-gray-400 block mt-2'>$created_at</span>";
                 echo "</div>";
             }
         } else {
             echo "<div class='p-3 text-center bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 border-l-4 border-gray-500 rounded-lg'>";
-            echo "<p class='text-sm'>No pending reschedule requests</p>";
+            echo "<p class='text-sm'>No new notifications</p>";
             echo "</div>";
         }
         ?>
     </div>
 </div>
+
+
 
 
     </div>
@@ -321,5 +359,19 @@ if (!$notif_result) {
 
 	<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 	<script src="scripts/script.js"></script>
+
+    <script>
+    function storeReservationAndRedirect(cardElement) {
+        // Get the reservation ID from the data-id attribute of the clicked notification card
+        let reservationId = cardElement.getAttribute("data-id");
+
+        // Store the reservation ID in localStorage
+        localStorage.setItem("reservationID_admin", reservationId);        
+        console.log("Stored reservation ID:", reservationId);
+
+        // Redirect to reservation_customer.php
+        window.location.href = "reservation/reservation_customer.php";
+    }
+</script>
 </body>
 </html>

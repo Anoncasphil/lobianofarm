@@ -14,11 +14,50 @@ $check_out_date = $_POST['check_out_date'] ?? '';
 $check_in_time = $_POST['check_in_time'] ?? '';
 $check_out_time = $_POST['check_out_time'] ?? '';
 $invoice_date = $_POST['invoice_date'] ?? '';
-$invoice_no = $_POST['invoice_no'] ?? '';
+$invoice_no = $_POST['invoice_no'] ?? ''; // This is the correct parameter name from the form
 $invoice_items = $_POST['invoice_items'] ?? '';
 $total_price = $_POST['total_price'] ?? '';
+$reservation_code = $_POST['reservation_code'] ?? 'N/A'; // Add reservation code
+$status = $_POST['status'] ?? 'Pending'; // Add reservation status with default as Pending
+$valid_amount_paid = $_POST['valid_amount_paid'] ?? '0.00'; // Add valid amount paid
 
-// Prepare the email body content
+// Calculate remaining balance
+$total_price_value = floatval($total_price);
+$valid_amount_paid_value = floatval($valid_amount_paid);
+$new_total = $total_price_value - $valid_amount_paid_value;
+
+// Format dates and times
+function formatDate($date) {
+    if (empty($date)) return '';
+    return date("M d Y", strtotime($date)); // Format: Jan 15 2024
+}
+
+function formatTime($time) {
+    if (empty($time)) return '';
+    return date("g:iA", strtotime($time)); // Format: 7:00AM
+}
+
+// Apply formatting
+$formatted_check_in_date = formatDate($check_in_date);
+$formatted_check_out_date = formatDate($check_out_date);
+$formatted_check_in_time = formatTime($check_in_time);
+$formatted_check_out_time = formatTime($check_out_time);
+$formatted_invoice_date = formatDate($invoice_date);
+
+// Process invoice items to ensure proper styling and each addon on its own row
+$styled_invoice_items = str_replace('<td', '<td style="padding: 10px; border: 1px solid #ddd;"', $invoice_items);
+
+// Get the appropriate status color
+$status_color = "#FFA500"; // Default orange for Pending
+if ($status == "Confirmed") {
+    $status_color = "#008000"; // Green for Confirmed
+} else if ($status == "Completed") {
+    $status_color = "#0000FF"; // Blue for Completed
+} else if ($status == "Cancelled") {
+    $status_color = "#FF0000"; // Red for Cancelled
+}
+
+// Prepare the email body content with improved formatting
 $email_body = "
 <!DOCTYPE html>
 <html lang='en'>
@@ -26,184 +65,82 @@ $email_body = "
     <meta charset='UTF-8'>
     <meta name='viewport' content='width=device-width, initial-scale=1.0'>
     <title>Reservation Details</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f6f9;
-            margin: 0;
-            padding: 0;
-        }
-
-        .email-wrapper {
-            width: 100%;
-            background-color: #ffffff;
-            padding: 20px;
-        }
-
-        .container {
-            max-width: 600px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: #ffffff;
-            border-radius: 5px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-        }
-
-        h2 {
-            text-align: center;
-            color: #333;
-            margin-bottom: 15px;
-        }
-
-        p {
-            text-align: center;
-            color: #888;
-        }
-
-        .section-title {
-            font-size: 18px;
-            font-weight: bold;
-            color: #333;
-            margin-top: 30px;
-        }
-
-        .details-grid {
-            margin-top: 15px;
-        }
-
-        .details-grid label {
-            font-weight: bold;
-            color: #333;
-            display: block;
-        }
-
-        .details-grid input {
-            width: 100%;
-            padding: 10px;
-            margin-top: 5px;
-            background-color: #f8f9fa;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            color: #333;
-            font-size: 14px;
-            cursor: not-allowed;
-        }
-
-        .table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-
-        .table th, .table td {
-            padding: 8px;
-            text-align: left;
-            border: 1px solid #ddd;
-        }
-
-        .table th {
-            background-color: #f8f9fa;
-        }
-
-        .total-section {
-            font-size: 20px;
-            font-weight: bold;
-            margin-top: 20px;
-        }
-
-        .total-amount {
-            color: #007bff;
-            text-align: right;
-        }
-
-        .invoice-number {
-            color: #e74c3c;
-        }
-
-        .footer {
-            text-align: center;
-            font-size: 12px;
-            margin-top: 40px;
-            color: #888;
-        }
-    </style>
 </head>
 <body>
-
-<div class='email-wrapper'>
-    <div class='container'>
-        <h2>Reservation Details</h2>
-        <p>Here are your reservation details.</p>
-
-        <!-- Customer Information Section -->
-        <div class='section-title'>Customer Information</div>
-        <div class='details-grid'>
-            <label>First Name</label>
-            <input type='text' id='first-name-p' value='$first_name' disabled>
-            
-            <label>Last Name</label>
-            <input type='text' id='last-name-p' value='$last_name' disabled>
-            
-            <label>Email</label>
-            <input type='email' id='email-p' value='$email' disabled>
-            
-            <label>Mobile Number</label>
-            <input type='text' id='mobile-number-p' value='$mobile_number' disabled>
+    <div style='max-width: 600px; margin: auto; padding: 20px; border-radius: 10px; background-color: #f9f9f9; font-family: Arial, sans-serif;'>
+        <div style='text-align: center; padding: 10px; background-color: #1e3a8a; color: white; border-radius: 10px 10px 0 0;'>
+            <h2>Reservation Details</h2>
         </div>
+        
+        <div style='padding: 20px;'>
+            <p style='font-size: 16px; color: #333;text-align: center;'>Dear <strong>{$first_name} {$last_name}</strong>,</p>
+            <p style='font-size: 16px; color: #333;text-align: center;'>Here are the details of your reservation at <strong>888 Lobiano's Farm Resort:</strong><br></p>
+            
+            
+            
+            <div style='text-align: center; padding: 5px; background-color: #1e3a8a; color: white;text-align: center;'>
+                <h3>Reservation Code: <strong>{$reservation_code}</strong></h3>
+            </div>
 
-        <!-- Reservation Dates Section -->
-        <div class='section-title'>Reservation Dates</div>
-        <div class='details-grid'>
-            <label>Check-in Date</label>
-            <input type='date' id='check-in-date' value='$check_in_date' disabled>
-            
-            <label>Check-out Date</label>
-            <input type='date' id='check-out-date' value='$check_out_date' disabled>
-            
-            <label>Check-in Time</label>
-            <input type='time' id='check-in-time' value='$check_in_time' disabled>
-            
-            <label>Check-out Time</label>
-            <input type='time' id='check-out-time' value='$check_out_time' disabled>
-        </div>
+            <div style='text-align: center; margin: 20px 0;'>
+                <span style='font-size: 16px; color: #333; font-weight: bold;'>Status: </span>
+                <span style='background-color: {$status_color}; color: white; padding: 5px 10px; border-radius: 20px; font-weight: bold;'>{$status}</span>
+            </div>
 
-        <!-- Invoice Section -->
-        <div class='section-title'>Invoice</div>
-        <div class='details-grid'>
-            <label>Invoice Date</label>
-            <input type='text' id='invoice-date' value='$invoice_date' disabled>
-            
-            <label>Invoice Number</label>
-            <input type='text' id='invoice-no' class='invoice-number' value='$invoice_no' disabled>
-        </div>
-
-        <!-- Items Table Section -->
-        <div class='section-title'>Items</div>
-        <table class='table'>
-            <thead>
+            <p style='font-size: 16px; color: #333;text-align: left;'><strong>Stay Duration</strong>:</p>
+            <table style='width: 100%; margin-top: 10px; border-collapse: collapse; text-align: left; border: 1px solid #ddd;'>
                 <tr>
-                    <th>Category</th>
-                    <th>Item</th>
-                    <th>Price</th>
+                    <td style='padding: 10px; border: 1px solid #ddd;'>Check-in Date:</td>
+                    <td style='padding: 10px; border: 1px solid #ddd;'><strong>{$formatted_check_in_date}</strong></td>
                 </tr>
-            </thead>
-            <tbody id='invoice-items'>
-                $invoice_items
-            </tbody>
-        </table>
-
-        <!-- Total Amount Section -->
-        <div class='total-section'>
-            Total: <span id='total-price' class='total-amount'>₱$total_price</span>
+                <tr>
+                    <td style='padding: 10px; border: 1px solid #ddd;'>Check-out Date:</td>
+                    <td style='padding: 10px; border: 1px solid #ddd;'><strong>{$formatted_check_out_date}</strong></td>
+                </tr>
+                <tr>
+                    <td style='padding: 10px; border: 1px solid #ddd;'>Check-in Time:</td>
+                    <td style='padding: 10px; border: 1px solid #ddd;'><strong>{$formatted_check_in_time}</strong></td>
+                </tr>
+                <tr>
+                    <td style='padding: 10px; border: 1px solid #ddd;'>Check-out Time:</td>
+                    <td style='padding: 10px; border: 1px solid #ddd;'><strong>{$formatted_check_out_time}</strong></td>
+                </tr>
+            </table>
+        </div>
+        
+        <div style='text-align: center; padding: 10px; background-color: #1e3a8a; color: white;'>
+            <h3>Invoice Details</h3>
         </div>
 
-        <!-- Footer Section -->
-        <div class='footer'>
+
+
+        <div style='padding: 20px;'>
+            <p style='font-size: 14px; color: #333;'>Date: <strong>{$formatted_invoice_date}</strong></p>
+            <p style='font-size: 14px; color: #333;'>Invoice No: <strong>{$invoice_no}</strong></p>
+            <table style='width: 100%; margin-top: 10px; border-collapse: collapse; text-align: left; border: 1px solid #ddd;'>
+                <thead>
+                    <tr>
+                        <th style='padding: 10px; border: 1px solid #ddd;'>Category</th>
+                        <th style='padding: 10px; border: 1px solid #ddd;'>Item</th>
+                        <th style='padding: 10px; border: 1px solid #ddd;'>Price</th>
+                    </tr>
+                </thead>
+                <tbody id='invoice-items'>
+                    {$styled_invoice_items}
+                </tbody>
+            </table>
+        </div>
+        
+        <div style='padding: 20px;'>
+            <p style='font-size: 16px; font-weight: bold; color: #333;'>Total Price: <span>₱" . number_format($total_price_value, 2) . "</span></p>
+            <p style='font-size: 14px; font-weight: bold; color: #555;'>Valid Amount Paid: <span>₱" . number_format($valid_amount_paid_value, 2) . "</span></p>
+            <p style='font-size: 18px; font-weight: bold; color: #1e3a8a; text-align: left;'>Total: <span>₱" . number_format($new_total, 2) . "</span></p>
+        </div>
+        
+        <div style='text-align: center; padding: 10px; background-color: #1e3a8a; color: white; border-radius: 0 0 10px 10px;'>
             <p>&copy; 2025 888 Lobiano's Farm. All rights reserved.</p>
         </div>
     </div>
-</div>
-
 </body>
 </html>
 ";

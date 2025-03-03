@@ -168,131 +168,96 @@ window.onload = function () {
 };
 
 function fetchReservationDetails(reservationId) {
-    // Fetch the reservation details from the PHP script using the reservation ID
     fetch(`../api/get_invoice_details.php?reservation_id=${reservationId}`)
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Network response was not ok.');
-        }
-        return response.text();  // Read the response as text first
-    })
-    .then(text => {
-        try {
-            const data = JSON.parse(text);  // Try parsing the text as JSON
+    .then(response => response.json())
+    .then(data => {
+        if (["Cancelled", "Confirmed", "Pending", "Completed"].includes(data.status)) {
+            console.log("Reservation Status: " + data.status);
 
-            if (data.status === 'Cancelled' || data.status === 'Confirmed' || data.status === 'Pending' || data.status === 'Completed') {
-                console.log("Reservation Status: " + data.status); // Log the reservation status
+            // Fetch and display invoice details
+            document.getElementById('invoice-no-details').innerText = data.invoice_number || 'N/A';
+            document.getElementById('invoice-date-details').innerText = data.invoice_date || 'N/A';
 
-                // Fetch and display the invoice number
-                document.getElementById('invoice-no-details').innerText = data.invoice_number || 'N/A';
+            // Function to format currency with commas
+            const formatCurrency = (amount) => {
+                return `₱${parseFloat(amount || 0).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+            };
 
-                // Fetch and display the invoice date
-                document.getElementById('invoice-date-details').innerText = data.invoice_date || 'N/A';
+            // Remove commas and parse as float
+            const totalPrice = parseFloat(data.total_price.replace(/,/g, '')) || 0;
+            const validAmountPaid = parseFloat(data.valid_amount_paid.replace(/,/g, '')) || 0;
+            const ratePrice = parseFloat(data.rate_price.replace(/,/g, '')) || 0;
+            const extraPax = parseInt(data.extra_pax) || 0;
+            const extraPaxPrice = parseFloat(data.extra_pax_price.replace(/,/g, '')) || 0;
 
-                // Remove commas from valid_amount_paid and total_price before parsing as float
-                const totalPrice = parseFloat(data.total_price.replace(/,/g, ''));
-                const validAmountPaid = parseFloat(data.valid_amount_paid.replace(/,/g, ''));
+            // Calculate remaining balance
+            const newTotal = totalPrice - validAmountPaid;
 
-                // Update the total price
-                document.getElementById('total-price-details').innerText = `₱${totalPrice.toFixed(2)}`;
+            // Update price details with formatted currency
+            document.getElementById('total-price-details').innerText = formatCurrency(totalPrice);
+            document.getElementById('downpayment').innerText = formatCurrency(validAmountPaid);
+            document.getElementById('new-total-display').innerText = formatCurrency(newTotal);
 
-                // Update the downpayment
-                document.getElementById('downpayment').innerText = `₱${validAmountPaid.toFixed(2)}`;
+            // Populate the invoice items table
+            let itemsHTML = '';
 
-                // Calculate and update the new total (remaining balance)
-                const newTotal = totalPrice - validAmountPaid;
-                document.getElementById('new-total-display').innerText = `₱${newTotal.toFixed(2)}`;
+            // Display the rate directly from reservation data
+            itemsHTML += `
+                <tr>
+                    <td class="py-2 px-4">Rate</td>
+                    <td class="py-2 px-4">${data.rate_name || "N/A"}</td>
+                    <td class="py-2 px-4">${formatCurrency(ratePrice)}</td>
+                </tr>
+            `;
 
-                // Populate the items table with rates and addons
-                let itemsHTML = '';
-                if (data.rates && data.rates.length > 0) {
-                    data.rates.forEach(rate => {
-                        itemsHTML += `
-                            <tr>
-                                <td class="py-2 px-4">Rate</td>
-                                <td class="py-2 px-4">${rate.rate_name}</td>
-                                <td class="py-2 px-4">₱${parseFloat(rate.rate_price).toFixed(2)}</td>
-                            </tr>
-                        `;
-                    });
-                }
-                if (data.addons && data.addons.length > 0) {
-                    data.addons.forEach(addon => {
-                        itemsHTML += `
-                            <tr>
-                                <td class="py-2 px-4">Addon</td>
-                                <td class="py-2 px-4">${addon.addon_name}</td>
-                                <td class="py-2 px-4">₱${parseFloat(addon.addon_price).toFixed(2)}</td>
-                            </tr>
-                        `;
-                    });
-                }
-                document.getElementById('invoice-items-details').innerHTML = itemsHTML;
-
-                // Populate the personal information
-                document.getElementById('fname-details').value = data.first_name || '';
-                document.getElementById('lname-details').value = data.last_name || '';
-                document.getElementById('email-details').value = data.email || '';
-                document.getElementById('contact-details').value = data.contact_number || '';
-
-                // Ensure date and time values are in the correct format
-                const checkinDate = data.checkin_date || '';
-                const checkoutDate = data.checkout_date || '';
-                const checkinTime = data.checkin_time || '';
-                const checkoutTime = data.checkout_time || '';
-
-                // Check-In and Check-Out Dates (Convert to text if necessary)
-                if (checkinDate) {
-                    document.getElementById('checkin-details').value = checkinDate;
-                } else {
-                    console.log("Check-in date is missing or empty.");
-                }
-
-                if (checkoutDate) {
-                    document.getElementById('checkout-details').value = checkoutDate;
-                } else {
-                    console.log("Check-out date is missing or empty.");
-                }
-
-                // Check-In and Check-Out Times
-                if (checkinTime) {
-                    document.getElementById('checkin-time-details').value = checkinTime;
-                } else {
-                    console.log("Check-in time is missing or empty.");
-                }
-
-                if (checkoutTime) {
-                    document.getElementById('checkout-time-details').value = checkoutTime;
-                } else {
-                    console.log("Check-out time is missing or empty.");
-                }
-            } else if (data.status === 'Cancelled') {
-                console.log("Reservation Status: Cancelled"); // Log the cancelled status
-                // Show a message that the reservation is cancelled
-                document.getElementById('reservation-status').innerText = 'This reservation has been cancelled.';
-
-                // Optionally, you could hide or disable other sections if needed:
-                document.getElementById('total-price-details').innerText = '₱0.00';
-                document.getElementById('downpayment').innerText = '₱0.00';
-                document.getElementById('new-total-display').innerText = '₱0.00';
-
-                // Clear any further details (optional)
-                document.getElementById('invoice-items-details').innerHTML = '';
-                document.getElementById('fname-details').value = '';
-                document.getElementById('lname-details').value = '';
-                document.getElementById('email-details').value = '';
-                document.getElementById('contact-details').value = '';
-            } else {
-                console.error('Error fetching data:', data.message || 'Unknown error');
+            // Display extra pax if applicable
+            if (extraPax > 0) {
+                itemsHTML += `
+                    <tr>
+                        <td class="py-2 px-4">Extra Pax</td>
+                        <td class="py-2 px-4">${extraPax} person(s)</td>
+                        <td class="py-2 px-4">${formatCurrency(extraPaxPrice)}</td>
+                    </tr>
+                `;
             }
-        } catch (error) {
-            console.error('Error parsing JSON:', error);  // Catch JSON parsing errors
+
+            // Display addons
+            if (Array.isArray(data.addons) && data.addons.length > 0) {
+                data.addons.forEach(addon => {
+                    itemsHTML += `
+                        <tr>
+                            <td class="py-2 px-4">Addon</td>
+                            <td class="py-2 px-4">${addon.addon_name}</td>
+                            <td class="py-2 px-4">${formatCurrency(parseFloat(addon.addon_price))}</td>
+                        </tr>
+                    `;
+                });
+            }
+
+            document.getElementById('invoice-items-details').innerHTML = itemsHTML;
+
+            // Populate personal information
+            document.getElementById('fname-details').value = data.first_name || '';
+            document.getElementById('lname-details').value = data.last_name || '';
+            document.getElementById('email-details').value = data.email || '';
+            document.getElementById('contact-details').value = data.contact_number || '';
+
+            // Populate check-in and check-out details
+            document.getElementById('checkin-details').value = data.checkin_date || '';
+            document.getElementById('checkout-details').value = data.checkout_date || '';
+            document.getElementById('checkin-time-details').value = data.checkin_time || '';
+            document.getElementById('checkout-time-details').value = data.checkout_time || '';
+        } else {
+            console.error('Error fetching data:', data.message || 'Unknown error');
         }
     })
     .catch(error => {
         console.error('Error:', error);
     });
 }
+
+
+
 
 
 

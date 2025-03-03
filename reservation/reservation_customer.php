@@ -241,13 +241,13 @@ if (!isset($_SESSION['admin_id'])) {
   <div class="flex justify-between items-center">
   <h2 class="text-xl font-semibold text-gray-900">Invoice</h2>
   <div class="flex space-x-4"> <!-- Updated flex container with space between buttons -->
-    <button type="button" onclick="toggleModal('editModal')" class="bg-blue-900 text-white w-24 font-bold text-sm py-2 px-3 rounded-md shadow-lg hover:bg-blue-700 transition duration-200">
+    <button type="button" onclick="toggleModal('editModal')" class="bg-blue-900 text-white w-24 font-bold text-sm py-2 px-3 rounded-md shadow-lg hover:bg-blue-700 transition duration-200 hidden">
       Edit
     </button>
     
     <!-- View Payment Button -->
     <button type="button" onclick="openPaymentModal()" class="bg-blue-900 text-white w-24 font-bold text-sm py-2 px-3 rounded-md shadow-lg hover:bg-blue-700 transition duration-200">
-    Payment
+    Payment Proof
     </button>
   </div>
 </div>
