@@ -31,6 +31,19 @@ if (!$existing) {
     exit;
 }
 
+// Get reservation status
+$status = isset($existing['status']) ? $existing['status'] : 'Pending';
+
+// Get the appropriate status color
+$status_color = "#FFA500"; // Default orange for Pending
+if ($status == "Confirmed") {
+    $status_color = "#008000"; // Green for Confirmed
+} else if ($status == "Completed") {
+    $status_color = "#0000FF"; // Blue for Completed
+} else if ($status == "Cancelled") {
+    $status_color = "#FF0000"; // Red for Cancelled
+}
+
 // Fetch invoice details from reservations table
 $invoice_date = isset($existing['invoice_date']) ? formatDate($existing['invoice_date']) : "N/A";
 $invoice_number = isset($existing['invoice_number']) ? htmlspecialchars($existing['invoice_number']) : "N/A";
@@ -108,6 +121,12 @@ $body = "
             <div style='text-align: center; padding: 5px; background-color: #1e3a8a; color: white;text-align: center;'>
                 <h3>Reservation Code: <strong>{$reservation_code}</strong></h3>
             </div>
+
+            <div style='text-align: center; margin: 20px 0;'>
+                <span style='font-size: 16px; color: #333; font-weight: bold;'>Status: </span>
+                <span style='background-color: {$status_color}; color: white; padding: 5px 10px; border-radius: 20px; font-weight: bold;'>{$status}</span>
+            </div>
+
             <p style='font-size: 16px; color: #333;text-align: left;'><strong>Stay Duration</strong>:</p>
             <table style='width: 100%; margin-top: 10px; border-collapse: collapse; text-align: left; border: 1px solid #ddd;'>
                 <tr>
@@ -161,9 +180,9 @@ $body .= "
                 </tbody>
             </table>
             <div style='margin-top: 10px; text-align: right;'>
-                <p style='font-size: 16px; font-weight: bold; color: #333;'>Subtotal: <span id='total-price'>₱" . number_format($total_price, 2) . "</span></p>
-                <p style='font-size: 14px; font-weight: bold; color: #555;'>Amount Paid: <span id='valid_amount_paid'>₱" . number_format($valid_amount_paid, 2) . "</span></p>
-                <p style='font-size: 18px; font-weight: bold; color: #1e3a8a;'>Total: <span id='new_total_amount'>₱" . number_format($new_total, 2) . "</span></p>
+                <p style='font-size: 16px; font-weight: bold; color: #333;text-align: left;'>Subtotal: <span id='total-price'>₱" . number_format($total_price, 2) . "</span></p>
+                <p style='font-size: 14px; font-weight: bold; color: #555;text-align: left;'>Amount Paid: <span id='valid_amount_paid'>₱" . number_format($valid_amount_paid, 2) . "</span></p>
+                <p style='font-size: 18px; font-weight: bold; color: #1e3a8a;text-align: left;'>Total: <span id='new_total_amount'>₱" . number_format($new_total, 2) . "</span></p>
             </div>
         </div>
         
