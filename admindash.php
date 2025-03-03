@@ -47,6 +47,17 @@ if (!isset($_SESSION['admin_id'])) {
     scrollbar-color: rgba(100, 100, 100, 0.5) transparent;
 }
 
+/* Add hover effect to the notification card */
+.notifications-list .hover-effect {
+    transition: transform 0.3s ease, box-shadow 0.3s ease; /* Smooth transition */
+}
+
+.notifications-list .hover-effect:hover {
+    transform: scale(1.05); /* Slightly enlarge the card */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Add a subtle shadow on hover */
+}
+
+
     </style>
 </head>
 <body>
@@ -62,7 +73,7 @@ if (!isset($_SESSION['admin_id'])) {
             <li class="divider" data-text="management">Management</li>
             <li><a href="reservation/reservation_admin.php"><i class='bx bx-list-ol icon'></i> Reservations</a></li>
             <li><a href="calendar/calendar.php"><i class='bx bxs-calendar icon'></i> Calendar</a></li>
-			<li><a href="../sales.php"><i class='bx bx-line-chart icon'></i> Sales</a></li>
+			<li><a href="sales.php"><i class='bx bx-line-chart icon'></i> Sales</a></li>
             <li><a href="rates/rates.php"><i class="bx bxs-star icon min-w-[48px] flex justify-center items-center mr-2"></i>Rates</a></li>
             <li><a href="addons/addons.php"><i class='bx bxs-cart-add icon'></i> Add-ons</a></li>
             <li><a href="events/events.php"><i class='bx bxs-calendar-event icon'></i> Events</a></li>
@@ -184,21 +195,22 @@ if (!isset($_SESSION['admin_id'])) {
         require_once 'db_connection.php';
 
         // Fetch confirmed reservations
-        $query = "SELECT SUM(total_price) as total_sales FROM reservations WHERE status = 'Confirmed'";
+        $query = "SELECT SUM(total_price) as total_sales FROM reservations WHERE status = 'Completed'";
         $result = $conn->query($query);
         $total_sales = $result->fetch_assoc()['total_sales'] ?? 0;
         ?>
 
-        <div class="card">
-            <div class="head">
-                <div>
-                    <h2>₱<?php echo number_format($total_sales, 2); ?></h2>
-                    <p>Sales</p>
+        <a href="../sales.php">
+            <div class="card">
+                <div class="head">
+                    <div>
+                        <h2>₱<?php echo number_format($total_sales, 2); ?></h2>
+                        <p>Sales</p>
+                    </div>
+                    <i class='bx bx-trending-down icon down'></i>
                 </div>
-                <i class='bx bx-trending-down icon down'></i>
             </div>
-        </div>
-
+        </a>
         <?php
         // Fetch pending and approved reservations count
         $pending_query = "SELECT COUNT(*) as pending_count FROM reservations WHERE status = 'Pending'";
@@ -217,18 +229,19 @@ if (!isset($_SESSION['admin_id'])) {
         $approved_percentage = $total_count > 0 ? ($approved_count / $total_count) * 100 : 0;
         ?>
 
-        <div class="card">
-            <div class="head">
-                <div>
-                    <h2><?php echo $pending_count; ?></h2>
-                    <p>Pending Reservations</p>
+        <a href="../reservation/reservation_admin.php"> 
+            <div class="card">
+                <div class="head">
+                    <div>
+                        <h2><?php echo $pending_count; ?></h2>
+                        <p>Pending Reservations</p>
+                    </div>
+                    <i class='bx bx-time-five icon'></i>
                 </div>
-                <i class='bx bx-time-five icon'></i>
+                <span class="progress" data-value="<?php echo $pending_percentage; ?>%"></span>
+                <span class="label"><?php echo number_format($pending_percentage, 2); ?>%</span>
             </div>
-            <span class="progress" data-value="<?php echo $pending_percentage; ?>%"></span>
-            <span class="label"><?php echo number_format($pending_percentage, 2); ?>%</span>
-        </div>
-
+        </a>
         <div class="card">
             <div class="head">
                 <div>
@@ -251,7 +264,7 @@ if (!isset($_SESSION['admin_id'])) {
 
     <div class="relative overflow-x-auto overflow-y-auto max-h-96 sm:rounded-lg custom-scroll" style="max-height: 400px;">
         <table class="w-full text-sm text-left rtl:text-right text-gray-700 dark:text-gray-300">
-            <thead class="text-xs text-gray-800 uppercase bg-gray-100 dark:bg-gray-800 dark:text-gray-300">
+            <thead class="text-xs text-gray-800 uppercase bg-gray-100">
                 <tr>
                     <th scope="col" class="px-6 py-3">Reservation ID</th>
                     <th scope="col" class="px-6 py-3">Name</th>
@@ -288,10 +301,10 @@ if (!isset($_SESSION['admin_id'])) {
 </div>
 
 
-        <?php
+<?php
 // Define the query to fetch all unread notifications
 $notif_query = "
-    SELECT title, message, type, created_at
+    SELECT title, message, type, created_at, reservation_id
     FROM notifications
     WHERE status = 'unread'
     ORDER BY created_at DESC
@@ -317,8 +330,9 @@ if (!$notif_result) {
             while ($notif = $notif_result->fetch_assoc()) {
                 // Format the timestamp
                 $created_at = date("F j, Y g:i A", strtotime($notif['created_at']));
-
-                echo "<div class='p-4 bg-blue-50 dark:bg-blue-900 border-l-4 border-blue-500 dark:border-blue-400 rounded-lg shadow-md'>";
+                $reservationId = htmlspecialchars($notif['reservation_id']); // Get the reservation ID
+                
+                echo "<div class='p-4 bg-blue-50 dark:bg-blue-900 border-l-4 border-blue-500 dark:border-blue-400 rounded-lg shadow-md hover-effect' data-id='$reservationId' onclick='storeReservationAndRedirect(this)'>";
                 echo "<p class='text-sm font-medium text-blue-800 dark:text-blue-300'><strong>" . htmlspecialchars($notif['title']) . "</strong></p>";
                 echo "<p class='text-sm text-gray-700 dark:text-gray-300'>" . htmlspecialchars($notif['message']) . "</p>";
                 echo "<span class='text-xs text-gray-600 dark:text-gray-400 block mt-2'>$created_at</span>";
@@ -335,6 +349,7 @@ if (!$notif_result) {
 
 
 
+
     </div>
 </main>
 
@@ -344,5 +359,19 @@ if (!$notif_result) {
 
 	<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 	<script src="scripts/script.js"></script>
+
+    <script>
+    function storeReservationAndRedirect(cardElement) {
+        // Get the reservation ID from the data-id attribute of the clicked notification card
+        let reservationId = cardElement.getAttribute("data-id");
+
+        // Store the reservation ID in localStorage
+        localStorage.setItem("reservationID_admin", reservationId);        
+        console.log("Stored reservation ID:", reservationId);
+
+        // Redirect to reservation_customer.php
+        window.location.href = "reservation/reservation_customer.php";
+    }
+</script>
 </body>
 </html>

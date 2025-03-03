@@ -12,25 +12,25 @@ if (!isset($_SESSION['admin_id'])) {
 
 require_once 'db_connection.php';
 
-// Default to overall if no period is specified (changed from monthly)
-$period = isset($_GET['period']) ? $_GET['period'] : 'overall';
+// Change the default period from 'overall' to 'yearly'
+$period = isset($_GET['period']) ? $_GET['period'] : 'yearly';
 
 // Get current date information for queries
 $current_date = date('Y-m-d');
 $current_year = date('Y');
 
-// Function to get overall sales (all time)
-function getOverallSales($conn) {
-    // Get all sales data grouped by month and year
+// Function to get yearly sales (previously "overall")
+function getYearlySales($conn) {
+    // Get sales data grouped by year starting from 2025
     $query = "SELECT 
-              DATE_FORMAT(check_out_date, '%Y-%m') AS month_year,
-              DATE_FORMAT(check_out_date, '%b %Y') AS month_name,
+              YEAR(check_out_date) AS year,
               SUM(total_price) AS total_sales,
               COUNT(*) AS reservation_count
               FROM reservations 
               WHERE status IN ('Completed', 'completed', 'COMPLETED')
-              GROUP BY month_year, month_name
-              ORDER BY month_year ASC";  
+              AND YEAR(check_out_date) >= 2025
+              GROUP BY year
+              ORDER BY year ASC";  
     
     $stmt = $conn->prepare($query);
     $stmt->execute();
@@ -40,13 +40,13 @@ function getOverallSales($conn) {
     $total_sales = 0;
     
     while ($row = $result->fetch_assoc()) {
-        $month_sales = (float)($row['total_sales'] ?? 0);
-        $total_sales += $month_sales;
+        $year_sales = (float)($row['total_sales'] ?? 0);
+        $total_sales += $year_sales;
         
         $sales_data[] = [
-            'period' => $row['month_name'],
-            'value' => $row['month_year'],
-            'sales' => $month_sales,
+            'period' => $row['year'],
+            'value' => $row['year'],
+            'sales' => $year_sales,
             'count' => $row['reservation_count']
         ];
     }
@@ -57,8 +57,8 @@ function getOverallSales($conn) {
     ];
 }
 
-// Function to get yearly sales data
-function getYearlySales($conn) {
+// Function to get monthly sales data (previously "yearly")
+function getMonthlySales($conn) {
     $current_year = date('Y');
     
     $months = [
@@ -102,16 +102,16 @@ function getYearlySales($conn) {
     ];
 }
 
-// Get data based on selected period
+// Get data based on selected period (update case names)
 switch($period) {
-    case 'overall':
-        $sales_data = getOverallSales($conn);
-        break;
     case 'yearly':
         $sales_data = getYearlySales($conn);
         break;
+    case 'monthly':
+        $sales_data = getMonthlySales($conn);
+        break;
     default:
-        $sales_data = getOverallSales($conn);
+        $sales_data = getYearlySales($conn); // Default is now yearly
         break;
 }
 
@@ -267,8 +267,16 @@ $total_completed_sales = $total_data['total_sales'] ?? 0;
             <!-- Period Selection -->
             <div class="mt-6 flex justify-between items-center">
                 <div class="flex space-x-3">
-                    <a href="?period=overall" class="<?= $period === 'overall' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700' ?> px-4 py-2 rounded-lg hover:bg-blue-500 hover:text-white transition-colors">Overall</a>
                     <a href="?period=yearly" class="<?= $period === 'yearly' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700' ?> px-4 py-2 rounded-lg hover:bg-blue-500 hover:text-white transition-colors">Yearly</a>
+                    <a href="?period=monthly" class="<?= $period === 'monthly' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700' ?> px-4 py-2 rounded-lg hover:bg-blue-500 hover:text-white transition-colors">Monthly</a>
+                    
+                    <!-- Excel Export Button -->
+                    <a href="api/export_excel.php?period=<?= $period ?>" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                        Excel
+                    </a>
                 </div>
                 <div class="text-xl font-semibold text-gray-700">
                     <?= ucfirst($period) ?> Total: ₱<?= number_format($sales_data['total_sales'], 2) ?>
@@ -290,15 +298,15 @@ $total_completed_sales = $total_data['total_sales'] ?? 0;
                         <thead class="text-xs text-gray-800 uppercase bg-gray-100 dark:bg-gray-800 dark:text-gray-300">
                             <tr>
                                 <th scope="col" class="px-6 py-3">
-                                    <?php if ($period === 'overall'): ?>
-                                        Month/Year
+                                    <?php if ($period === 'yearly'): ?>
+                                        Year
                                     <?php else: ?>
                                         Month
                                     <?php endif; ?>
                                 </th>
                                 <th scope="col" class="px-6 py-3">
-                                    <?php if ($period === 'overall'): ?>
-                                        Period
+                                    <?php if ($period === 'yearly'): ?>
+                                        Year
                                     <?php else: ?>
                                         Month Number
                                     <?php endif; ?>
@@ -399,9 +407,9 @@ $total_completed_sales = $total_data['total_sales'] ?? 0;
                         ?>
                     ],
                     labels: {
-                        rotate: <?= ($period === 'overall') ? '-45' : '0' ?>,
+                        rotate: <?= ($period === 'yearly') ? '-45' : '0' ?>,
                         style: {
-                            fontSize: '<?= ($period === 'overall' && count($sales_data['period_data']) > 8) ? '10px' : '12px' ?>'
+                            fontSize: '<?= ($period === 'yearly' && count($sales_data['period_data']) > 8) ? '10px' : '12px' ?>'
                         }
                     }
                 },
@@ -426,7 +434,7 @@ $total_completed_sales = $total_data['total_sales'] ?? 0;
                     }
                 },
                 dataLabels: {
-                    enabled: <?= ($period === 'overall' && count($sales_data['period_data']) > 12) ? 'false' : 'true' ?>,
+                    enabled: <?= ($period === 'yearly' && count($sales_data['period_data']) > 12) ? 'false' : 'true' ?>,
                     formatter: function(val) {
                         return '₱' + parseFloat(val).toLocaleString('en-PH');
                     },
@@ -458,7 +466,7 @@ $total_completed_sales = $total_data['total_sales'] ?? 0;
                     size: 0 // No markers for bar charts
                 },
                 // For overall view with many data points
-                <?php if ($period === 'overall' && count($sales_data['period_data']) > 20): ?>
+                <?php if ($period === 'yearly' && count($sales_data['period_data']) > 20): ?>
                 chart: {
                     zoom: {
                         enabled: true

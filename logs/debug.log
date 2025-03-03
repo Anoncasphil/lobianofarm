@@ -243,3 +243,112 @@
 
 [2025-03-02 16:12:29] ID: 127, Ref: 2213921839210
 [2025-03-02 16:12:29] File uploaded to: ../src/uploads/customerpayment/payment_receipt_1740928349_8156.jpg
+[2025-03-03 16:57:27] API Request
+[2025-03-03 16:57:27] POST: Array
+(
+    [id] => 153
+    [reference_number] => 12343245346
+)
+
+[2025-03-03 16:57:27] FILES: Array
+(
+    [payment_receipt] => Array
+        (
+            [name] => 28d156e8-fcf9-4358-aad4-826492b8c23d.jpg
+            [type] => image/jpeg
+            [tmp_name] => C:\xampp\tmp\phpF0D7.tmp
+            [error] => 0
+            [size] => 24799
+        )
+
+)
+
+[2025-03-03 16:57:27] ID: 153, Ref: 12343245346
+[2025-03-03 16:57:27] File uploaded to: ../src/uploads/customerpayment/payment_receipt_1741017447_5653.jpg
+[2025-03-03 17:17:26] API Request
+[2025-03-03 17:17:26] POST: Array
+(
+    [id] => 153
+    [reference_number] => 12445346456
+)
+
+[2025-03-03 17:17:26] FILES: Array
+(
+    [payment_receipt] => Array
+        (
+            [name] => rizal.jpg
+            [type] => image/jpeg
+            [tmp_name] => C:\xampp\tmp\php3D2D.tmp
+            [error] => 0
+            [size] => 12682
+        )
+
+)
+
+[2025-03-03 17:17:26] ID: 153, Ref: 12445346456
+[2025-03-03 17:19:38] API Request
+[2025-03-03 17:19:38] POST: Array
+(
+    [id] => 153
+    [reference_number] => 2345435456
+)
+
+[2025-03-03 17:19:38] FILES: Array
+(
+    [payment_receipt] => Array
+        (
+            [name] => rizal.jpg
+            [type] => image/jpeg
+            [tmp_name] => C:\xampp\tmp\php40BF.tmp
+            [error] => 0
+            [size] => 12682
+        )
+
+)
+
+[2025-03-03 17:19:38] ID: 153, Ref: 2345435456
+[2025-03-03 17:19:38] Failed to insert notification: Column 'user_id' cannot be null
+[2025-03-03 17:20:57] API Request
+[2025-03-03 17:20:57] POST: Array
+(
+    [id] => 153
+    [reference_number] => 1345346
+)
+
+[2025-03-03 17:20:57] FILES: Array
+(
+    [payment_receipt] => Array
+        (
+            [name] => rizal.jpg
+            [type] => image/jpeg
+            [tmp_name] => C:\xampp\tmp\php7383.tmp
+            [error] => 0
+            [size] => 12682
+        )
+
+)
+
+[2025-03-03 17:20:57] ID: 153, Ref: 1345346
+[2025-03-03 17:20:57] Notification inserted successfully for reservation ID: 153
+[2025-03-03 17:22:25] API Request
+[2025-03-03 17:22:25] POST: Array
+(
+    [id] => 153
+    [reference_number] => 213454656547
+)
+
+[2025-03-03 17:22:25] FILES: Array
+(
+    [payment_receipt] => Array
+        (
+            [name] => book_image.jpg
+            [type] => image/jpeg
+            [tmp_name] => C:\xampp\tmp\phpCECE.tmp
+            [error] => 0
+            [size] => 10191
+        )
+
+)
+
+[2025-03-03 17:22:25] ID: 153, Ref: 213454656547
+[2025-03-03 17:22:25] Notification inserted successfully for reservation code: DT-000187

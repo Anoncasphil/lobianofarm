@@ -236,9 +236,9 @@ $stmt->close();
           Reschedule Reservation
         </button>
 
-        <button type="button" id="review-btn" class="mt-4 flex w-full items-center justify-center rounded-lg bg-white px-5 py-2.5 text-sm font-medium text-blue-900 hover:bg-blue-100 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-900 dark:text-white dark:hover:bg-blue-700 dark:focus:ring-blue-600 sm:mt-0">
-          Review Reservation
-        </button>
+        <a href="https://www.google.com/search?hl=en-PH&gl=ph&q=4VXW%2BQMV+Lobiano%60s+Farm+888,+Kaykwit+Road,+Indang,+Cavite&ludocid=17408039670452037793&lsig=AB86z5XFsr38YLdTnUIiP6hgke65#lrd=0x33bd79eaf08918e9:0xf195c7d93933a8a1,3" target="_blank" class="mt-4 flex w-full items-center justify-center rounded-lg bg-white px-5 py-2.5 text-sm font-medium text-blue-900 hover:bg-blue-100 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-900 dark:text-white dark:hover:bg-blue-700 dark:focus:ring-blue-600 sm:mt-0">
+          Leave a Review
+        </a>
       </div>
     </div>
    
@@ -582,13 +582,13 @@ $stmt->close();
 <!-- Resubmit Payment Modal -->
 <div id="resubmit-reservation" tabindex="-1" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 left-0 w-full h-full flex bg-black/50 justify-center items-center z-50">
     <div class="relative p-4 w-full max-w-md max-h-full">
-        <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+        <div class="relative bg-white rounded-lg shadow">
             <!-- Modal header -->
-            <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
-                <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
+            <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t">
+                <h3 class="text-xl font-semibold text-gray-900">
                     Resubmit Payment
                 </h3>
-                <button type="button" onclick="toggleModal('resubmit-reservation')" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white">
+                <button type="button" onclick="toggleModal('resubmit-reservation')" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center">
                     <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
                         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
                     </svg>
@@ -616,26 +616,26 @@ $stmt->close();
                 
                 <!-- Reference Number -->
                 <div class="mb-5">
-                    <label for="reference-number" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Reference Number</label>
-                    <input type="text" name="reference_number" id="reference-number" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" placeholder="Enter reference number" required>
+                    <label for="reference-number" class="block mb-2 text-sm font-medium text-gray-900">Reference Number</label>
+                    <input type="text" name="reference_number" id="reference-number" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5" placeholder="Enter reference number" required>
                 </div>
                 
                 <!-- File Upload -->
                 <div class="mb-5">
-                    <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white" for="payment-receipt">Upload Payment Receipt</label>
-                    <input class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" id="payment-receipt" name="payment_receipt" type="file" accept="image/*" required>
-                    <p class="mt-1 text-sm text-gray-500 dark:text-gray-300">PNG, JPG, or JPEG (MAX. 5MB).</p>
+                    <label class="block mb-2 text-sm font-medium text-gray-900" for="payment-receipt">Upload Payment Receipt</label>
+                    <input class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none" id="payment-receipt" name="payment_receipt" type="file" accept="image/*" required>
+                    <p class="mt-1 text-sm text-gray-500">PNG, JPG, or JPEG (MAX. 5MB).</p>
                     
                     <!-- Preview container -->
                     <div id="receipt-preview" class="mt-3 hidden">
-                        <h4 class="text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">Preview:</h4>
+                        <h4 class="text-sm font-medium text-gray-700 mb-2">Preview:</h4>
                         <img id="receipt-preview-image" class="max-h-36 rounded border border-gray-200" src="" alt="Payment Receipt Preview">
                     </div>
                 </div>
                 
                 <!-- Submit Button -->
                 <div class="flex justify-end">
-                    <button type="button" id="resubmit-payment-btn" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 focus:outline-none">
+                    <button type="button" id="resubmit-payment-btn" class="text-white bg-blue-900 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 focus:outline-none">
                         Submit Payment
                     </button>
                 </div>
@@ -643,6 +643,7 @@ $stmt->close();
         </div>
     </div>
 </div>
+
 
 <script>
     // Global variable to store the reservation ID
