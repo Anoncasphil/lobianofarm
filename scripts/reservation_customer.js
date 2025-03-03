@@ -1330,8 +1330,67 @@ document.addEventListener("DOMContentLoaded", function () {
     
 });
 
-
-
+// Add this to your existing JavaScript
+document.getElementById('submitBTN').addEventListener('click', function() {
+    // Get the reservation ID from localStorage
+    const reservationId = localStorage.getItem("reservationID_admin");
+    // Get the new status from dropdown
+    const newStatus = document.getElementById('status-dropdown').value;
+    
+    // Close the validation modal
+    toggleModal('submit-validation');
+    
+    // Send the update request
+    fetch('../api/update_reservation.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            reservation_id: reservationId,
+            status: newStatus
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            // Show success message
+            const alertModal = document.getElementById('alert-modal');
+            const alertMessage = document.getElementById('alert-message-modal');
+            alertMessage.textContent = 'Reservation status updated successfully.';
+            alertModal.classList.remove('hidden');
+            
+            // Hide the alert after a few seconds
+            setTimeout(() => {
+                alertModal.classList.add('hidden');
+            }, 3000);
+        } else {
+            // Show error message
+            const errorModal = document.getElementById('error-modal');
+            const errorMessage = document.getElementById('error-message-modal');
+            errorMessage.textContent = data.message;
+            errorModal.classList.remove('hidden');
+            
+            // Hide the error after a few seconds
+            setTimeout(() => {
+                errorModal.classList.add('hidden');
+            }, 3000);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        // Show error message
+        const errorModal = document.getElementById('error-modal');
+        const errorMessage = document.getElementById('error-message-modal');
+        errorMessage.textContent = 'An error occurred while updating the reservation.';
+        errorModal.classList.remove('hidden');
+        
+        // Hide the error after a few seconds
+        setTimeout(() => {
+            errorModal.classList.add('hidden');
+        }, 3000);
+    });
+});
 
 document.addEventListener("DOMContentLoaded", function () {
     let reservationId = localStorage.getItem("reservationID_admin");

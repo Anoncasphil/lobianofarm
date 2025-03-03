@@ -10,6 +10,8 @@ if (!isset($_SESSION['admin_id'])) {
 
 include('../db_connection.php'); // Include database connection
 
+// Get filter parameter if it exists
+$filter = isset($_GET['filter']) ? $_GET['filter'] : 'all';
 ?>
 
 <!DOCTYPE html>
@@ -106,6 +108,22 @@ include('../db_connection.php'); // Include database connection
         <div class="container mx-auto px-4 py-8">
             <div class="activity-log-container">
                 <h1 class="text-2xl font-bold mb-6">Activity Log</h1>
+                
+                <!-- Filter Form -->
+                <div class="filter-container mb-6">
+                    <form method="get" class="flex items-center space-x-4">
+                        <label for="filter" class="font-medium">Filter by:</label>
+                        <select name="filter" id="filter" class="border rounded px-3 py-2" onchange="this.form.submit()">
+                            <option value="all" <?= $filter == 'all' ? 'selected' : '' ?>>All Activities</option>
+                            <option value="rate" <?= $filter == 'rate' ? 'selected' : '' ?>>Rates</option>
+                            <option value="addons" <?= $filter == 'addons' ? 'selected' : '' ?>>Add-ons</option>
+                            <option value="admin" <?= $filter == 'admin' ? 'selected' : '' ?>>Admin Accounts</option>
+                            <option value="reservation" <?= $filter == 'reservation' ? 'selected' : '' ?>>Reservations</option>
+                            <option value="events" <?= $filter == 'events' ? 'selected' : '' ?>>Events</option>
+                            <option value="album" <?= $filter == 'album' ? 'selected' : '' ?>>Album</option>
+                        </select>
+                    </form>
+                </div>
 
                 <div class="table-responsive">
                     <table class="activity-log-table">
@@ -121,13 +139,80 @@ include('../db_connection.php'); // Include database connection
                             // Set timezone
                             date_default_timezone_set('Asia/Manila');
 
-                            // Updated SQL query (without rate_id)
+                            // Base SQL query
                             $sql = "SELECT al.timestamp, a.firstname, a.lastname, al.changes 
                                     FROM activity_logs al
-                                    LEFT JOIN admin_tbl a ON al.admin_id = a.admin_id
-                                    ORDER BY al.timestamp DESC";
+                                    LEFT JOIN admin_tbl a ON al.admin_id = a.admin_id";
                             
-                            $result = $conn->query($sql);
+                            // Add filter condition if not 'all'
+                            if ($filter != 'all') {
+                                // Map filters to appropriate search patterns
+                                switch ($filter) {
+                                    case 'reservation':
+                                        // Enhanced reservation filtering with more terms and reservation code pattern
+                                        $sql .= " WHERE (al.changes LIKE ? OR al.changes LIKE ? OR al.changes LIKE ? OR al.changes LIKE ? OR al.changes LIKE ? OR al.changes LIKE ?)";
+                                        // Match terms like "reservation", "Reservation", "booking", reservation codes like "#123456", status changes, etc.
+                                        $filterParams = [
+                                            "%reservation%", 
+                                            "%Reservation%", 
+                                            "%booking%",
+                                            "%#%",        // Capture reservation codes (e.g., #123456)
+                                            "%status changed%", 
+                                            "%check-in%"  // For check-in/check-out mentions
+                                        ];
+                                        $types = "ssssss";
+                                        break;
+                                    case 'events':
+                                        // Match both singular and plural, case insensitive
+                                        $sql .= " WHERE (al.changes LIKE ? OR al.changes LIKE ?)";
+                                        $filterParams = ["%event%", "%Events%"];
+                                        $types = "ss";
+                                        break;
+                                    case 'rate':
+                                        // Match both singular and plural, case insensitive
+                                        $sql .= " WHERE (al.changes LIKE ? OR al.changes LIKE ?)";
+                                        $filterParams = ["%rate%", "%pricing%"];
+                                        $types = "ss";
+                                        break;
+                                    case 'addons':
+                                        // Match variations
+                                        $sql .= " WHERE (al.changes LIKE ? OR al.changes LIKE ? OR al.changes LIKE ?)";
+                                        $filterParams = ["%addon%", "%add-on%", "%additional%"];
+                                        $types = "sss";
+                                        break;
+                                    case 'admin':
+                                        // Match admin-related terms
+                                        $sql .= " WHERE (al.changes LIKE ? OR al.changes LIKE ?)";
+                                        $filterParams = ["%admin%", "%account%"];
+                                        $types = "ss";
+                                        break;
+                                    case 'album':
+                                        // Match album-related terms
+                                        $sql .= " WHERE (al.changes LIKE ? OR al.changes LIKE ? OR al.changes LIKE ?)";
+                                        $filterParams = ["%album%", "%photo%", "%image%"];
+                                        $types = "sss";
+                                        break;
+                                    default:
+                                        // Default simple filter
+                                        $sql .= " WHERE al.changes LIKE ?";
+                                        $filterParams = ["%$filter%"];
+                                        $types = "s";
+                                }
+                            }
+                            
+                            // Add order by
+                            $sql .= " ORDER BY al.timestamp DESC";
+                            
+                            // Prepare and execute the query
+                            $stmt = $conn->prepare($sql);
+                            
+                            if ($filter != 'all') {
+                                // Dynamically bind parameters
+                                $stmt->bind_param($types, ...$filterParams);
+                            }
+                            
+                            $stmt->execute();
+                            $result = $stmt->get_result();
 
                             if ($result && $result->num_rows > 0) {
                                 while ($row = $result->fetch_assoc()) {
@@ -142,9 +227,10 @@ include('../db_connection.php'); // Include database connection
                                     echo "</tr>";
                                 }
                             } else {
-                                echo '<tr><td colspan="3" class="activity-log-empty">No activity logs found.</td></tr>';
+                                echo '<tr><td colspan="3" class="activity-log-empty">No activity logs found for the selected filter.</td></tr>';
                             }
 
+                            $stmt->close();
                             $conn->close();
                             ?>
                         </tbody>

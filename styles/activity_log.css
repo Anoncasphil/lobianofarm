@@ -129,6 +129,31 @@
 
 /* Status indicators for different types of changes - unified style */
 
+/* Filter component styles */
+.filter-container {
+    background-color: #f9fafb;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+select#filter {
+    min-width: 180px;
+    background-color: white;
+    transition: border-color 0.15s ease-in-out;
+}
+
+select#filter:focus {
+    border-color: #4f46e5;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.2);
+}
+
+/* Highlight filtered rows */
+tr.filtered-highlight {
+    background-color: rgba(79, 70, 229, 0.05);
+}
+
 /* Responsive adjustments */
 @media (max-width: 768px) {
     .activity-log-table th,
@@ -191,4 +216,20 @@
     .activity-log-table td:nth-of-type(1):before { content: "Date:"; }
     .activity-log-table td:nth-of-type(2):before { content: "Admin:"; }
     .activity-log-table td:nth-of-type(3):before { content: "Changes:"; }
+}
+
+/* Make existing styles responsive */
+@media (max-width: 640px) {
+    .filter-container form {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .filter-container form > * {
+        margin-bottom: 0.5rem;
+    }
+    
+    select#filter {
+        width: 100%;
+    }
 }
