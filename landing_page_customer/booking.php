@@ -458,21 +458,53 @@ $stmt->close();
   </div>
 </div>
 
-
-
-
-
-
-
-
-
 <!-- Proceed to Payment Button -->
 <div class="mt-6 flex justify-center">
-  <button onclick="storeSelections(), redirectToPayment()" class= "bg-blue-600 text-white font-bold py-3 w-full px-6 rounded-md shadow-lg hover:bg-blue-700 transition duration-200">
-    Proceed to Payment
-  </button>
+        <button onclick="handleProceed()" class="bg-blue-600 text-white font-bold py-3 w-full px-6 rounded-md shadow-lg hover:bg-blue-700 transition duration-200">
+            Proceed to Payment
+        </button>
+    </div>
 </div>
 
+<div id="error-modal" class="modal">
+        <div class="modal-content">
+            <p id="modal-message">Please fill out all the required fields.</p>
+            <button class="close-btn" onclick="closeModal()">Close</button>
+        </div>
+    </div>
+
+    <script>
+        function validateForm() {
+            const firstName = document.getElementById('first-name').value;
+            const lastName = document.getElementById('last-name').value;
+            const email = document.getElementById('email').value;
+            const mobileNumber = document.getElementById('mobile-number').value;
+            const checkInDate = document.getElementById('check-in-date').value;
+            const rateId = selectedRate ? selectedRate.id : null;
+
+            if (!firstName || !lastName || !email || !mobileNumber || !checkInDate || !rateId) {
+                showModal("Please select at least one rate.");
+                return false;
+            }
+            return true;
+        }
+
+        function handleProceed() {
+            if (validateForm()) {
+                storeSelections();
+                redirectToPayment();
+            }
+        }
+
+        function showModal(message) {
+            document.getElementById("modal-message").textContent = message;
+            document.getElementById("error-modal").style.display = "flex";
+        }
+
+        function closeModal() {
+            document.getElementById("error-modal").style.display = "none";
+        }
+    </script>
 
   </div>
 </section>

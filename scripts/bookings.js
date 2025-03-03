@@ -427,25 +427,25 @@ function unselectRate(selectButton, id, availableRateCards) {
       totalPriceElement.textContent = '₱' + total.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   }
   
-  function validateForm() {
-    // Get the values from the input fields
-    const firstName = document.getElementById('first-name').value;
-    const lastName = document.getElementById('last-name').value;
-    const email = document.getElementById('email').value;
-    const mobileNumber = document.getElementById('mobile-number').value;
-    const checkInDate = document.getElementById('check-in-date').value;
+  // function validateForm() {
+  //   // Get the values from the input fields
+  //   const firstName = document.getElementById('first-name').value;
+  //   const lastName = document.getElementById('last-name').value;
+  //   const email = document.getElementById('email').value;
+  //   const mobileNumber = document.getElementById('mobile-number').value;
+  //   const checkInDate = document.getElementById('check-in-date').value;
     
-    // Assuming 'selectedRate' holds the selected rate object
-    const rateId = selectedRate ? selectedRate.id : null; // Get the rateId from selectedRate
+  //   // Assuming 'selectedRate' holds the selected rate object
+  //   const rateId = selectedRate ? selectedRate.id : null; // Get the rateId from selectedRate
     
-    // Check if any of the required fields are empty
-    if (!firstName || !lastName || !email || !mobileNumber || !checkInDate || !rateId) {
-      // Show an alert or error message
-      alert("Please fill out all the required fields.");
-      return false; // Prevent submission
-    }
-    return true; // Allow submission if all fields are filled
-  }
+  //   // Check if any of the required fields are empty
+  //   if (!firstName || !lastName || !email || !mobileNumber || !checkInDate || !rateId) {
+  //     // Show an alert or error message
+  //     alert("Please fill out all the required fieslds.");
+  //     return false; // Prevent submission
+  //   }
+  //   return true; // Allow submission if all fields are filled
+  // }
   
   function storeSelections() {
     // Get user details

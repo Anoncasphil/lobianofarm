@@ -54,10 +54,6 @@ if (isset($_SESSION['user_id'])) {
 $conn->close();
 ?>
 
-
-
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -917,8 +913,8 @@ document.addEventListener("DOMContentLoaded", function () {
     </p>
     
     <div class="mt-4 space-x-4">
-      <a href="#" class="text-gray-400 hover:text-white">Privacy Policy</a>
-      <a href="#" class="text-gray-400 hover:text-white">Terms of Service</a>
+      <a href="" class="text-gray-400 hover:text-white">Privacy Policy</a>
+      <a href="tac.html" class="text-gray-400 hover:text-white">Terms of Service</a>
     </div>
   </div>
 </footer>
@@ -930,7 +926,7 @@ document.addEventListener("DOMContentLoaded", function () {
 <!-- Check-in Date Modal -->
 <div id="checkInModal" class="fixed mt-20 right-4 z-50 hidden bg-red-500 text-white rounded-lg px-4 py-3 shadow-lg">
   <div class="flex justify-between items-center">
-    <p id="modalMessage" class="modal-message">Please select a check-in date.</p>
+    <p id="modalMessage" class="modal-message">Pleasse selects a check-in date.</p>
     <button onclick="closeModal()" class="text-white">X</button>
   </div>
 </div>
@@ -981,7 +977,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 
-<!-- Check-in Date Modal -->
+<!-- Check-in Date Modal
 <div id="checkInModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden z-50">
   <div class="bg-white rounded-lg p-6 max-w-sm mx-auto">
     <div class="flex justify-between items-center">
@@ -989,7 +985,7 @@ document.addEventListener("DOMContentLoaded", function () {
       <button onclick="closeModal()" class="text-gray-700 font-bold">X</button>
     </div>
   </div>
-</div>
+</div> -->
 
 <!-- Modal for displaying Add-on Details -->
 <div id="addon-modal" class="fixed inset-0 bg-black/30 flex justify-center items-center hidden z-50">
@@ -1044,8 +1040,139 @@ document.addEventListener("DOMContentLoaded", function() {
 
 </script>
 
+<!-- Modal -->
+<div id="custom-modal">
+    <div class="modal-content">
+        <h2>Check-in Date Required</h2>
+        <p>Please select a check-in date before proceeding.</p>
+        <button id="close-modals">OK</button>
+    </div>
+</div>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    console.log("DOM Loaded. Initializing...");
 
+    const bookButton = document.getElementById("book-btn");
+    const modal = document.getElementById("custom-modal");
+    const closeModal = document.getElementById("close-modals");
+    const checkInDateInput = document.getElementById("check-in");
 
-    
+    if (!bookButton || !modal || !closeModal || !checkInDateInput) {
+        console.error("❌ One or more modal elements not found!");
+        return;
+    }
+
+    console.log("✅ All modal elements found!");
+
+    // Ensure modal is hidden on page load
+    modal.style.display = "none";
+
+    // Show modal if no check-in date is selected
+    bookButton.addEventListener("click", function (event) {
+        event.preventDefault();
+        console.log("🟢 Book button clicked!");
+
+        const selectedDate = checkInDateInput.value;
+        console.log("Selected Date:", selectedDate);
+
+        if (selectedDate) {
+            localStorage.setItem("selectedDate", JSON.stringify({ checkIn: selectedDate }));
+            console.log("✅ Redirecting to booking page...");
+            window.location.href = "landing_page_customer/booking.php";
+        } else {
+            console.log("⚠️ No check-in date selected. Showing modal...");
+            modal.style.display = "flex";
+            document.body.classList.add("modal-open"); // Prevent scrolling
+        }
+    });
+
+    // Close modal when clicking "OK"
+    closeModal.addEventListener("click", function () {
+        console.log("🔴 Closing modal...");
+        modal.style.display = "none";
+        document.body.classList.remove("modal-open");
+    });
+
+    // Close modal if clicking outside modal content
+    modal.addEventListener("click", function (event) {
+        if (event.target === modal) {
+            console.log("🔴 Closing modal (clicked outside)...");
+            modal.style.display = "none";
+            document.body.classList.remove("modal-open");
+        }
+    });
+});
+</script>
+<style>
+/* Modal Background */
+#custom-modal {
+    display: none; /* Ensure it is hidden by default */
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6); /* Dark overlay */
+    backdrop-filter: blur(3px);
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+/* Modal Content */
+.modal-content {
+    background: #ffffff;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    width: 320px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+/* Modal Title */
+.modal-content h2 {
+    font-size: 20px;
+    margin-bottom: 10px;
+}
+
+/* Modal Text */
+.modal-content p {
+    font-size: 16px;
+    color: #555;
+    margin-bottom: 15px;
+}
+
+/* OK Button */
+#close-modals {
+    background: #007bff;
+    color: white;
+    border: none;
+    padding: 8px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background 0.3s ease;
+}
+
+#close-modals:hover {
+    background: #0056b3;
+}
+
+/* Prevent scrolling when modal is open */
+body.modal-open {
+    overflow: hidden;
+}
+
+/* Fade-in animation */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+</style>
 </body>
 </html>

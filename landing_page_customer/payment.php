@@ -355,6 +355,39 @@ $stmt->close();
         </button>
     </div>
 </div>
+<!--Erormodal-->
+<div id="error-modal" class="modal hidden">
+    <div class="modal-content">
+        <p id="error-modal-message"></p>
+        <button onclick="closeErrorModal()">Close</button>
+    </div>
+</div>
+
+<style>
+.modal {
+    display: none; /* Initially hidden */
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.5); /* Dim background */
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
+    width: 300px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.hidden {
+    display: none !important;
+}
+</style>
+
 
 
 

@@ -251,17 +251,7 @@ document.getElementById('rate-modal').addEventListener('click', function(event) 
         }
     });
 
-    const bookButton = document.getElementById("book-btn");
-    bookButton.addEventListener("click", function (event) {
-        event.preventDefault();
-        const selectedDate = checkInDateInput.value;
-        if (selectedDate) {
-            localStorage.setItem("selectedDate", JSON.stringify({ checkIn: selectedDate }));
-            window.location.href = "landing_page_customer/booking.php";
-        } else {
-            alert("Please select a check-in date.");
-        }
-    });
+    
 }
 
   
@@ -269,5 +259,6 @@ document.getElementById('rate-modal').addEventListener('click', function(event) 
     console.log("DOM Loaded. Initializing Flatpickr...");
     initializeFlatpickr();  // Ensure this is called once the DOM is fully loaded
   });
+
   
   
