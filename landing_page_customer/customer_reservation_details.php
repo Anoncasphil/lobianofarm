@@ -64,6 +64,8 @@ $stmt->close();
     <script src="https://cdn.jsdelivr.net/npm/flatpickr@4.6.9/dist/flatpickr.min.js"></script>
     <link rel="stylesheet" href="../styles/booking.css">
     <link rel="stylesheet" href="../styles/customer_reservation_details.css">
+
+
 </head>
 <body>
 
@@ -232,13 +234,14 @@ $stmt->close();
           Resubmit Proof of payment
         </button>
 
-        <button type="button" id="reschedule-btn" class="mt-4 flex w-full items-center justify-center rounded-lg bg-white px-5 py-2.5 text-sm font-medium text-blue-900 hover:bg-blue-100 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-900 dark:text-white dark:hover:bg-blue-700 dark:focus:ring-blue-600 sm:mt-0">
+        <button type="button" id="reschedule-btn" class="hidden mt-4 flex w-full items-center justify-center rounded-lg bg-white px-5 py-2.5 text-sm font-medium text-blue-900 hover:bg-blue-100 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-900 dark:text-white dark:hover:bg-blue-700 dark:focus:ring-blue-600 sm:mt-0">
           Reschedule Reservation
         </button>
 
-        <a href="https://www.google.com/search?hl=en-PH&gl=ph&q=4VXW%2BQMV+Lobiano%60s+Farm+888,+Kaykwit+Road,+Indang,+Cavite&ludocid=17408039670452037793&lsig=AB86z5XFsr38YLdTnUIiP6hgke65#lrd=0x33bd79eaf08918e9:0xf195c7d93933a8a1,3" target="_blank" class="mt-4 flex w-full items-center justify-center rounded-lg bg-white px-5 py-2.5 text-sm font-medium text-blue-900 hover:bg-blue-100 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-900 dark:text-white dark:hover:bg-blue-700 dark:focus:ring-blue-600 sm:mt-0">
-          Leave a Review
-        </a>
+        <a href="https://www.google.com/search?hl=en-PH&gl=ph&q=4VXW%2BQMV+Lobiano%60s+Farm+888,+Kaykwit+Road,+Indang,+Cavite&ludocid=17408039670452037793&lsig=AB86z5XFsr38YLdTnUIiP6hgke65#lrd=0x33bd79eaf08918e9:0xf195c7d93933a8a1,3" target="_blank" id="review-btn" class="mt-4 flex w-full items-center justify-center rounded-lg bg-white px-5 py-2.5 text-sm font-medium text-blue-900 hover:bg-blue-100 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-900 dark:text-white dark:hover:bg-blue-700 dark:focus:ring-blue-600 sm:mt-0">
+  Leave a Review
+</a>
+
       </div>
     </div>
    

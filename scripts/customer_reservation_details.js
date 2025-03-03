@@ -39,48 +39,67 @@ document.addEventListener("DOMContentLoaded", function () {
         reservationIdInput.value = storedReservationId;
     }
 
-    // Fetch the status using the reservation_id from localStorage
-    fetch(`../api/fetch_status.php?reservation_id=${storedReservationId}`)
-        .then(response => response.json())
-        .then(data => {
-            if (data.status) {
-                console.log("Reservation Status: " + data.status); // Log the reservation status
+// Fetch the status using the reservation_id from localStorage
+fetch(`../api/fetch_status.php?reservation_id=${storedReservationId}`)
+    .then(response => response.json())
+    .then(data => {
+        if (data.status) {
+            console.log("Reservation Status: " + data.status); // Log the reservation status
 
-                // Handle button visibility based on status
-                const cancelBtn = document.getElementById('cancel-btn');
-                const rescheduleBtn = document.getElementById('reschedule-btn');
-                const reviewBtn = document.getElementById('review-btn');
-                const resubmitBtn = document.getElementById('resubmit-btn');
+            // Handle button visibility based on status
+            const cancelBtn = document.getElementById('cancel-btn');
+            const rescheduleBtn = document.getElementById('reschedule-btn');
+            const reviewBtn = document.getElementById('review-btn'); // Select review button by id
+            const resubmitBtn = document.getElementById('resubmit-btn');
+            const infoAlert = document.getElementById('info-alert');
+            const alertMessage = document.getElementById('alert-message'); // Select the alert message element
+            const alertTitle = document.getElementById('alert-title'); // Select the alert title element
 
-                if (data.status === 'Pending') {
-                    if (cancelBtn) cancelBtn.classList.remove('hidden');
-                    if (rescheduleBtn) rescheduleBtn.classList.add('hidden');
-                    if (reviewBtn) reviewBtn.classList.add('hidden');
-                    if (resubmitBtn) resubmitBtn.classList.remove('hidden');
-                } else if (data.status === 'Confirmed') {
-                    if (cancelBtn) cancelBtn.classList.remove('hidden');
-                    if (rescheduleBtn) rescheduleBtn.classList.remove('hidden');
-                    if (reviewBtn) reviewBtn.classList.add('hidden');
-                    if (resubmitBtn) resubmitBtn.classList.add('hidden');
-                } else if (data.status === 'Cancelled') {
-                    // Hide all buttons if reservation is cancelled
-                    if (cancelBtn) cancelBtn.classList.add('hidden');
-                    if (rescheduleBtn) rescheduleBtn.classList.add('hidden');
-                    if (reviewBtn) reviewBtn.classList.add('hidden');
-                    if (resubmitBtn) resubmitBtn.classList.add('hidden');
+            const status = data.status.trim().toLowerCase(); // Ensure status is consistent (trim and lowercase)
 
-                } else {
-                    if (cancelBtn) cancelBtn.classList.add('hidden');
-                    if (rescheduleBtn) rescheduleBtn.classList.add('hidden');
-                    if (reviewBtn) reviewBtn.classList.remove('hidden');
-                    if (resubmitBtn) resubmitBtn.classList.add('hidden');
+            // Hide the info alert initially
+            if (infoAlert) infoAlert.classList.add('hidden');
 
+            if (status === 'pending') {
+                // Only show the cancel and resubmit buttons for pending status
+                if (cancelBtn) cancelBtn.classList.remove('hidden');
+                if (rescheduleBtn) rescheduleBtn.classList.add('hidden');
+                if (reviewBtn) reviewBtn.classList.add('hidden');
+                if (resubmitBtn) resubmitBtn.classList.remove('hidden');
+            } else if (status === 'confirmed') {
+                // Only show the cancel and reschedule buttons for confirmed status
+                if (cancelBtn) cancelBtn.classList.remove('hidden');
+                if (rescheduleBtn) rescheduleBtn.classList.remove('hidden');
+                if (reviewBtn) reviewBtn.classList.add('hidden');
+                if (resubmitBtn) resubmitBtn.classList.add('hidden');
+            } else if (status === 'cancelled') {
+                // Only show the review button for cancelled status
+                if (cancelBtn) cancelBtn.classList.add('hidden');
+                if (rescheduleBtn) rescheduleBtn.classList.add('hidden');
+                if (reviewBtn) reviewBtn.classList.remove('hidden');
+                if (resubmitBtn) resubmitBtn.classList.add('hidden');
+
+                // Show the info alert with the cancellation message
+                if (infoAlert) {
+                    infoAlert.classList.remove('hidden');
+                    if (alertTitle) alertTitle.textContent = "Reservation Cancelled";
+                    if (alertMessage) alertMessage.textContent = "Your reservation has been cancelled. We will contact you via email about our refund policy. Thank you.";
                 }
-
-                updateStatus(data.status.toLowerCase()); // Convert to lowercase for consistency
+            } else {
+                // For other statuses, only show the review button
+                if (cancelBtn) cancelBtn.classList.add('hidden');
+                if (rescheduleBtn) rescheduleBtn.classList.add('hidden');
+                if (reviewBtn) reviewBtn.classList.remove('hidden');
+                if (resubmitBtn) resubmitBtn.classList.add('hidden');
             }
-        })
-        .catch(error => console.error("Error fetching status:", error));
+
+            updateStatus(status); // Use the lowercase status
+        }
+    })
+    .catch(error => console.error("Error fetching status:", error));
+
+
+
 
     // Review Modal functionality
     const reviewModal = document.getElementById('review-modal');
