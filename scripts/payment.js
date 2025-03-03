@@ -158,7 +158,6 @@ async function populateInvoice() {
     let totalPrice = ratePrice;
     let itemHtml = `
         <tr>
-            <td class="py-2"></td>
             <td class="py-2">Rate</td>
             <td class="py-2">${rateData.name}</td>
             <td class="py-2 text-right">₱${ratePrice.toFixed(2)}</td>
@@ -169,7 +168,6 @@ async function populateInvoice() {
     if (extraPax > 0) {
         itemHtml += `
             <tr>
-                <td class="py-2"></td>
                 <td class="py-2">Extra Pax</td>
                 <td class="py-2">${extraPax} Pax</td>
                 <td class="py-2 text-right">₱${extraPaxPrice.toFixed(2)}</td>
@@ -183,10 +181,6 @@ async function populateInvoice() {
         addonsData.forEach(addon => {
             const addonPrice = parseFloat(addon.price) || 0;
             itemHtml += `
-                <tr data-addon-id="${addon.id}">
-                    <td class="py-2 text-right">
-                        <i class="ico-times text-gray-500 text-xs cursor-pointer hover:text-red-500" role="img" aria-label="Remove"></i>
-                    </td>
                     <td class="py-2">Add-on</td>
                     <td class="py-2">${addon.name}</td>
                     <td class="py-2 text-right">₱${addonPrice.toFixed(2)}</td>
