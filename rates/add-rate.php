@@ -70,39 +70,12 @@ $stmt = $conn->prepare("INSERT INTO rates (name, original_price, discount_percen
 $stmt->bind_param("sdidsdssssss", $name, $original_price, $discount_percentage, $has_discount, $price, $description, $hoursofstay, $checkin_time, $checkout_time, $picture, $status, $rate_type);
 
 if ($stmt->execute()) {
-    $rate_id = $conn->insert_id; // Get the ID of the newly inserted rate
-
-    // Log the rate addition
-    logRateAddition($admin_id, $admin_name, $rate_id, $name);
-
-    // Ensure no further code execution and properly redirect
-    header("Location: rates.php");
-    exit; // Ensure that no further code is executed after the redirect
+    header("Location: rates.php");  // Redirect to rates page
+    exit; // Ensure no further code is executed after redirection
 } else {
     die("Error: " . $stmt->error);
 }
 
 $stmt->close();
 $conn->close();
-
-/**
- * Log the rate addition to the activity_logs table.
- */
-function logRateAddition($admin_id, $admin_name, $rate_id, $rate_name) {
-    include('../db_connection.php'); // Include your database connection file
-
-    // Set timezone
-    date_default_timezone_set('Asia/Manila');
-
-    // Log message
-    $changes = "Added a new rate: '$rate_name' (ID: $rate_id)";
-
-    // Insert log entry
-    $sql = "INSERT INTO activity_logs (admin_id, timestamp, changes) VALUES (?, NOW(), ?)";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("is", $admin_id, $changes);
-    $stmt->execute();
-    $stmt->close();
-    $conn->close();
-}
 ?>
