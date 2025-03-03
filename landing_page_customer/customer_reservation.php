@@ -515,7 +515,9 @@ $stmt->close();
         ?>
     </div>
 </div>
-
+<!-- Elfsight Facebook Chat | Untitled Facebook Chat -->
+<script src="https://static.elfsight.com/platform/platform.js" async></script>
+<div class="elfsight-app-ba949789-bf48-4f26-a7e1-ceb2bc7e1123" data-elfsight-app-lazy></div>
 <script src="../scripts/customer_reservation.js"></script>
 <script src="https://static.elfsight.com/platform/platform.js" async></script>
 <div class="elfsight-app-b2701a5e-2312-4201-92bf-10db53498839" data-elfsight-app-lazy></div>

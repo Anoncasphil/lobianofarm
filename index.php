@@ -769,7 +769,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 <section class="bg-white">
     <div class="container px-6 py-12 mx-auto">
-        <div>
+        <div data-aos="fade-up">
             <p class="font-medium text-blue-500">Contact us</p>
 
             <h1 class="mt-2 text-2xl font-semibold text-gray-800 md:text-3xl">Chat to our friendly team</h1>
@@ -779,7 +779,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         <div class="grid grid-cols-1 gap-12 mt-10 lg:grid-cols-2">
             <div class="grid grid-cols-1 gap-12 md:grid-cols-2">
-                <div>
+                <div data-aos="fade-up">
                     <span class="inline-block p-3 text-blue-500 rounded-full bg-blue-100/80">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
@@ -791,7 +791,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     <p class="mt-2 text-sm text-blue-500">hello@merakiui.com</p>
                 </div>
 
-                <div>
+                <div data-aos="fade-up" data-aos-delay="100">
                     <span class="inline-block p-3 text-blue-500 rounded-full bg-blue-100/80">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -804,7 +804,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     <p class="mt-2 text-sm text-blue-500">Start new chat</p>
                 </div>
 
-                <div>
+                <div data-aos="fade-up" data-aos-delay="200">
                     <span class="inline-block p-3 text-blue-500 rounded-full bg-blue-100/80">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -817,7 +817,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     <p class="mt-2 text-sm text-blue-500">100 Smith Street Collingwood VIC 3066 AU</p>
                 </div>
 
-                <div>
+                <div data-aos="fade-up" data-aos-delay="300">
                     <span class="inline-block p-3 text-blue-500 rounded-full bg-blue-100/80">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 002.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 01-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 00-1.091-.852H4.5A2.25 2.25 0 002.25 4.5v2.25z" />
@@ -830,37 +830,35 @@ document.addEventListener("DOMContentLoaded", function () {
                 </div>
             </div>
 
-            <div class="p-4 py-6 rounded-lg bg-gray-50 md:p-8">
-    <form id="contact-form" method="POST" action="api/send_email_contact.php">
-        <div class="-mx-2 md:items-center md:flex">
-            <div class="flex-1 px-2">
-                <label class="block mb-2 text-sm text-gray-600">First Name</label>
-                <input type="text" name="first_name" placeholder="John " class="block w-full px-5 py-2.5 mt-2 text-gray-700 placeholder-gray-400 bg-white border border-gray-200 rounded-lg focus:border-blue-400 focus:ring-blue-400 focus:outline-none focus:ring focus:ring-opacity-40" />
+            <div class="p-4 py-6 rounded-lg bg-gray-50 md:p-8" data-aos="fade-up" data-aos-delay="400">
+                <form id="contact-form" method="POST" action="api/send_email_contact.php">
+                    <div class="-mx-2 md:items-center md:flex">
+                        <div class="flex-1 px-2">
+                            <label class="block mb-2 text-sm text-gray-600">First Name</label>
+                            <input type="text" name="first_name" placeholder="John " class="block w-full px-5 py-2.5 mt-2 text-gray-700 placeholder-gray-400 bg-white border border-gray-200 rounded-lg focus:border-blue-400 focus:ring-blue-400 focus:outline-none focus:ring focus:ring-opacity-40" />
+                        </div>
+
+                        <div class="flex-1 px-2 mt-4 md:mt-0">
+                            <label class="block mb-2 text-sm text-gray-600">Last Name</label>
+                            <input type="text" name="last_name" placeholder="Doe" class="block w-full px-5 py-2.5 mt-2 text-gray-700 placeholder-gray-400 bg-white border border-gray-200 rounded-lg focus:border-blue-400 focus:ring-blue-400 focus:outline-none focus:ring focus:ring-opacity-40" />
+                        </div>
+                    </div>
+
+                    <div class="mt-4">
+                        <label class="block mb-2 text-sm text-gray-600">Email address</label>
+                        <input type="email" name="email" placeholder="johndoe@example.com" class="block w-full px-5 py-2.5 mt-2 text-gray-700 placeholder-gray-400 bg-white border border-gray-200 rounded-lg focus:border-blue-400 focus:ring-blue-400 focus:outline-none focus:ring focus:ring-opacity-40" />
+                    </div>
+
+                    <div class="w-full mt-4">
+                        <label class="block mb-2 text-sm text-gray-600">Message</label>
+                        <textarea name="message" class="block w-full h-32 px-5 py-2.5 mt-2 text-gray-700 placeholder-gray-400 bg-white border border-gray-200 rounded-lg md:h-56 focus:border-blue-400 focus:ring-blue-400 focus:outline-none focus:ring focus:ring-opacity-40" placeholder="Message"></textarea>
+                    </div>
+
+                    <button class="w-full px-6 py-3 mt-4 text-sm font-medium tracking-wide text-white capitalize transition-colors duration-300 transform bg-blue-500 rounded-lg hover:bg-blue-400 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-50">
+                        Send message
+                    </button>
+                </form>
             </div>
-
-            <div class="flex-1 px-2 mt-4 md:mt-0">
-                <label class="block mb-2 text-sm text-gray-600">Last Name</label>
-                <input type="text" name="last_name" placeholder="Doe" class="block w-full px-5 py-2.5 mt-2 text-gray-700 placeholder-gray-400 bg-white border border-gray-200 rounded-lg focus:border-blue-400 focus:ring-blue-400 focus:outline-none focus:ring focus:ring-opacity-40" />
-            </div>
-        </div>
-
-        <div class="mt-4">
-            <label class="block mb-2 text-sm text-gray-600">Email address</label>
-            <input type="email" name="email" placeholder="johndoe@example.com" class="block w-full px-5 py-2.5 mt-2 text-gray-700 placeholder-gray-400 bg-white border border-gray-200 rounded-lg focus:border-blue-400 focus:ring-blue-400 focus:outline-none focus:ring focus:ring-opacity-40" />
-        </div>
-
-        <div class="w-full mt-4">
-            <label class="block mb-2 text-sm text-gray-600">Message</label>
-            <textarea name="message" class="block w-full h-32 px-5 py-2.5 mt-2 text-gray-700 placeholder-gray-400 bg-white border border-gray-200 rounded-lg md:h-56 focus:border-blue-400 focus:ring-blue-400 focus:outline-none focus:ring focus:ring-opacity-40" placeholder="Message"></textarea>
-        </div>
-
-        <button class="w-full px-6 py-3 mt-4 text-sm font-medium tracking-wide text-white capitalize transition-colors duration-300 transform bg-blue-500 rounded-lg hover:bg-blue-400 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-50">
-            Send message
-        </button>
-    </form>
-</div>
-
-
         </div>
     </div>
 </section>
@@ -1022,7 +1020,7 @@ document.addEventListener("DOMContentLoaded", function () {
 </div>
 
 <script src="scripts/newhome.js"></script>
-<!-- Elfsight WhatsApp Chat | Untitled WhatsApp Chat -->
+
 <!-- Elfsight Facebook Chat | Untitled Facebook Chat -->
 <script src="https://static.elfsight.com/platform/platform.js" async></script>
 <div class="elfsight-app-ba949789-bf48-4f26-a7e1-ceb2bc7e1123" data-elfsight-app-lazy></div>
