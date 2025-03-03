@@ -241,13 +241,13 @@ if (!isset($_SESSION['admin_id'])) {
   <div class="flex justify-between items-center">
   <h2 class="text-xl font-semibold text-gray-900">Invoice</h2>
   <div class="flex space-x-4"> <!-- Updated flex container with space between buttons -->
-    <button type="button" onclick="toggleModal('editModal')" class="bg-blue-900 text-white w-24 font-bold text-sm py-2 px-3 rounded-md shadow-lg hover:bg-blue-700 transition duration-200">
+    <button type="button" onclick="toggleModal('editModal')" class="bg-blue-900 text-white w-24 font-bold text-sm py-2 px-3 rounded-md shadow-lg hover:bg-blue-700 transition duration-200 hidden">
       Edit
     </button>
     
     <!-- View Payment Button -->
     <button type="button" onclick="openPaymentModal()" class="bg-blue-900 text-white w-24 font-bold text-sm py-2 px-3 rounded-md shadow-lg hover:bg-blue-700 transition duration-200">
-    Payment
+    Payment Proof
     </button>
   </div>
 </div>
@@ -426,16 +426,54 @@ if (!isset($_SESSION['admin_id'])) {
 
 <div>
 
+<!-- Status dropdown -->
 <div class="relative mt-10">
   <label for="status-dropdown" class="px-2 bg-white absolute left-3 top-[-10px] text-gray-600 text-sm font-medium">Status</label>
   <select id="status-dropdown" class="p-3 pt-5 w-full border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-blue-950 transition" onchange="updateStatusColor(this)">
-    <option value="pending">Pending</option>
+    <!-- Always show Pending option for all users -->
+    <option value="pending" id="pending-option">Pending</option>
     <option value="confirmed">Confirmed</option>
     <option value="completed">Completed</option>
     <option value="cancelled">Cancelled</option>
   </select>
   <div id="selected-status" class="mt-5 ml-2 text-sm font-medium text-gray-600"></div>
 </div>
+
+<!-- Add this JavaScript to handle the disabling logic -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const userRole = "<?php echo strtolower($_SESSION['role']); ?>";
+  const statusDropdown = document.getElementById('status-dropdown');
+  const pendingOption = document.getElementById('pending-option');
+  
+  // Function to check if pending should be disabled
+  function checkPendingOptionStatus() {
+    // Only apply restrictions for non-superadmin users
+    if (userRole !== 'superadmin') {
+      const currentStatus = statusDropdown.value.toLowerCase();
+      
+      // If current status is any of these, disable the pending option
+      if (['confirmed', 'completed', 'cancelled'].includes(currentStatus)) {
+        pendingOption.disabled = true;
+        // Apply gray styling to indicate it's disabled
+        pendingOption.style.color = '#9CA3AF';
+      } else {
+        pendingOption.disabled = false;
+        pendingOption.style.color = '';
+      }
+    }
+  }
+  
+  // Check status on initial load
+  checkPendingOptionStatus();
+  
+  // Check whenever the status changes
+  statusDropdown.addEventListener('change', checkPendingOptionStatus);
+  
+  // After external data loads (if applicable)
+  document.addEventListener('reservationDataLoaded', checkPendingOptionStatus);
+});
+</script>
 
 
 

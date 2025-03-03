@@ -556,83 +556,12 @@ $result = $conn->query($sql);
 
 
 
-
-<!-- Add-ons Section -->
-<section id="addons-section" class="bg-white flex flex-col items-center justify-center mt-12 px-4">
-<div class="w-full max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8">
-
-    <div class="mb-16 ml-5">
-    <h2 class="text-3xl font-extrabold text-center text-gray-900 header-rate" data-aos="fade-up">
-    Our Add-ons
-</h2>
-<p class="mt-4 text-lg text-center text-gray-600 text-rate" data-aos="fade-up">
-    Check out our affordable pricing plans designed for everyone.
-</p>
-
-
-        <!-- Scrollable Horizontal Add-ons Cards -->
-        <div class="mt-8 overflow-x-auto w-full px-5 py-2 scrollable-container flex justify-center" id="addons-container">
-        <div class="flex space-x-6 min-w-max">
-
-            <?php
-                // Include database connection
-                include 'db_connection.php';
-
-                // Fetch add-ons from the database
-                $sql = "SELECT * FROM addons WHERE status = 'active'";
-                $result = $conn->query($sql);
-
-                if ($result->num_rows > 0) {
-                    while ($row = $result->fetch_assoc()) {
-                        $id = $row['id'];
-                        $name = $row['name'];
-                        $price = $row['price'];
-                        $description = $row['description'];
-                        $picture = $row['picture'];
-
-// Add data attributes for modal
-echo "
-<div class='flex-none mb-5 mt-5 max-w-sm rounded-lg shadow-lg hover:shadow-lg relative addons-card animate-card hover:scale-103 hover:shadow-lg transition-all duration-500 ease-in-out opacity-0' 
-                        data-aos='fade-up' 
-                        data-aos-anchor-placement='bottom-bottom' 
-                        data-aos-duration='800' 
-                        style='will-change: transform, opacity;' 
-    onclick='openAddonModal(\"$picture\", \"$name\", \"$description\", \"$price\")'>
-
-    <img class='rounded-lg w-[300px] h-[250px] object-cover' src='src/uploads/addons/$picture' alt='$name'>
-
-    <div class='p-5'>
-        <h2 class='text-2xl font-bold text-gray-800'>$name</h2>
-        <p class='text-gray-800 font-semibold text-xl mt-4'>₱" . number_format($price, 2) . "</p>
-    </div>
-</div>";
-
-                    }
-                } else {
-                    echo "<p class='text-gray-600'>No active add-ons available.</p>";
-                }
-
-                // Close the database connection
-                $conn->close();
-            ?>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-
-
-
-
-
 <!-- About Us Section -->
-<section id="about" class="bg-whitel flex items-center justify-center px-g4 mb-16">
-  <div class="max-w-screen-xl mx-auto flex flex-col md:flex-row items-center gap-8 mb-8">
+<section id="about" class="bg-white flex items-center justify-center px-4 py-30 mb-16">
+  <div class="max-w-screen-xl mx-auto flex flex-col md:flex-row items-start gap-8 mb-8">
     
     <!-- Image Section -->
-    <div class="w-full md:w-1/2 flex justify-left" 
+    <div class="w-full md:w-1/2 flex justify-start"
          data-aos="fade-up" 
          data-aos-anchor-placement="top-bottom"
          data-aos-duration="1000"
@@ -646,25 +575,28 @@ echo "
     </div>
 
     <!-- Text Section -->
-    <div class="w-full md:w-1/2 text-center md:text-left md:mx-8"
+    <div class="w-full md:w-1/2 text-left md:mx-8 px-6 py-4 flex items-center"
          data-aos="fade-up" 
          data-aos-anchor-placement="top-bottom"
          data-aos-duration="1000"
          data-aos-delay="300">
-      <h2 class="text-3xl font-extrabold text-gray-900 mb-4">About Us</h2>
-      <p class="mt-4 text-lg text-center text-gray-600 text-about">
-        Welcome to 888 Lobiano's Farm Resort, where nature meets comfort. Our goal is to provide a serene escape where guests can unwind, reconnect with nature, and create unforgettable memories. Whether you're here for a weekend retreat or a special celebration, our resort offers a perfect blend of tranquility and adventure.
-      </p>
-      <a 
-        href="#learn-more"
-        class="inline-block px-6 py-3 bg-blue-600 text-white text-lg font-medium rounded-lg shadow-md hover:bg-blue-700 transition-all"
-      >
-        Learn More
-      </a>
+      <div>
+        <h2 class="text-3xl font-extrabold text-gray-900 mb-4">About Us</h2>
+        <p class="mt-4 text-lg text-gray-600">
+          Welcome to 888 Lobiano's Farm Resort, where nature meets comfort. Our goal is to provide a serene escape where guests can unwind, reconnect with nature, and create unforgettable memories. Whether you're here for a weekend retreat or a special celebration, our resort offers a perfect blend of tranquility and adventure.
+        </p>
+        <a 
+          href="#learn-more"
+          class="inline-block mt-6 px-6 py-3 bg-blue-600 text-white text-lg font-medium rounded-lg shadow-md hover:bg-blue-700 transition-all"
+        >
+          Learn More
+        </a>
+      </div>
     </div>
 
   </div>
 </section>
+
 
 <style>
   @media (max-width: 768px) {
@@ -677,9 +609,8 @@ echo "
   }
 </style>
 
-
 <!-- Location Section -->
-<section id="locations" class="bg-white flex items-center justify-center px-6 md:px-12 mt-16 md:mt-20 lg:mt-24 mb-16" 
+<section id="locations" class="bg-white flex items-center justify-center px-6 md:px-12 mb-16" 
          data-aos="fade-up" 
          data-aos-anchor-placement="top-bottom"
          data-aos-duration="800">
@@ -687,7 +618,7 @@ echo "
   <div class="max-w-screen-xl mx-auto flex flex-col md:flex-row items-center gap-8 mb-8">
     
     <!-- Text Section -->
-    <div class="w-full md:w-1/2 text-center md:text-left md:mx-8" 
+    <div class="w-full md:w-1/2 text-center md:text-left md:mx-8 px-6 py-4" 
          data-aos="fade-up" 
          data-aos-anchor-placement="top-bottom"
          data-aos-duration="800"
@@ -723,6 +654,8 @@ echo "
 
   </div>
 </section>
+
+
 
 
 
@@ -830,39 +763,101 @@ document.addEventListener("DOMContentLoaded", function () {
 </style>
 
 
-<!-- Contact Us Section -->
-<div class="overflow-x-hidden">
-  <!-- Contact Us Section -->
-  <section id="contacts" 
-       class="bg-white" 
-       data-aos="fade-up" 
-       data-aos-duration="800" 
-       data-aos-anchor-placement="top-bottom">
-    <div class="py-8 lg:py-16 px-4 mx-auto max-w-screen-md w-full">
-      <h2 class="mb-4 text-4xl tracking-tight font-extrabold text-center text-gray-900">Contact Us</h2>
-      <p class="mb-8 lg:mb-16 font-light text-center text-gray-500 sm:text-xl">
-        Got a technical issue? Want to send feedback about a beta feature? Need details about our Business plan? Let us know.
-      </p>
-      <form action="#" class="space-y-8">
-        <div data-aos="fade-up" data-aos-duration="800">
-          <label for="email" class="block mb-2 text-sm font-medium text-gray-900">Your email</label>
-          <input type="email" id="email" class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5" placeholder="name@flowbite.com" required>
+<section class="bg-white">
+    <div class="container px-6 py-12 mx-auto">
+        <div data-aos="fade-up">
+            <p class="font-medium text-blue-500">Contact us</p>
+
+            <h1 class="mt-2 text-2xl font-semibold text-gray-800 md:text-3xl">Chat to our friendly team</h1>
+
+            <p class="mt-3 text-gray-500">We’d love to hear from you. Please fill out this form or shoot us an email.</p>
         </div>
-        <div data-aos="fade-up" data-aos-duration="800">
-          <label for="subject" class="block mb-2 text-sm font-medium text-gray-900">Subject</label>
-          <input type="text" id="subject" class="block p-3 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 shadow-sm focus:ring-primary-500 focus:border-primary-500" placeholder="Let us know how we can help you" required>
+
+        <div class="grid grid-cols-1 gap-12 mt-10 lg:grid-cols-2">
+            <div class="grid grid-cols-1 gap-12 md:grid-cols-2">
+                <div data-aos="fade-up">
+                    <span class="inline-block p-3 text-blue-500 rounded-full bg-blue-100/80">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
+                        </svg>
+                    </span>
+
+                    <h2 class="mt-4 text-base font-medium text-gray-800">Email</h2>
+                    <p class="mt-2 text-sm text-gray-500">Our friendly team is here to help.</p>
+                    <p class="mt-2 text-sm text-blue-500">hello@merakiui.com</p>
+                </div>
+
+                <div data-aos="fade-up" data-aos-delay="100">
+                    <span class="inline-block p-3 text-blue-500 rounded-full bg-blue-100/80">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" />
+                        </svg>
+                    </span>
+                    
+                    <h2 class="mt-4 text-base font-medium text-gray-800">Live chat</h2>
+                    <p class="mt-2 text-sm text-gray-500">Our friendly team is here to help.</p>
+                    <p class="mt-2 text-sm text-blue-500">Start new chat</p>
+                </div>
+
+                <div data-aos="fade-up" data-aos-delay="200">
+                    <span class="inline-block p-3 text-blue-500 rounded-full bg-blue-100/80">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" />
+                        </svg>
+                    </span>
+                    
+                    <h2 class="mt-4 text-base font-medium text-gray-800">Office</h2>
+                    <p class="mt-2 text-sm text-gray-500">Come say hello at our office HQ.</p>
+                    <p class="mt-2 text-sm text-blue-500">100 Smith Street Collingwood VIC 3066 AU</p>
+                </div>
+
+                <div data-aos="fade-up" data-aos-delay="300">
+                    <span class="inline-block p-3 text-blue-500 rounded-full bg-blue-100/80">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 002.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 01-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 00-1.091-.852H4.5A2.25 2.25 0 002.25 4.5v2.25z" />
+                        </svg>
+                    </span>
+                    
+                    <h2 class="mt-4 text-base font-medium text-gray-800">Phone</h2>
+                    <p class="mt-2 text-sm text-gray-500">Mon-Fri from 8am to 5pm.</p>
+                    <p class="mt-2 text-sm text-blue-500">+1 (555) 000-0000</p>
+                </div>
+            </div>
+
+            <div class="p-4 py-6 rounded-lg bg-gray-50 md:p-8" data-aos="fade-up" data-aos-delay="400">
+                <form id="contact-form" method="POST" action="api/send_email_contact.php">
+                    <div class="-mx-2 md:items-center md:flex">
+                        <div class="flex-1 px-2">
+                            <label class="block mb-2 text-sm text-gray-600">First Name</label>
+                            <input type="text" name="first_name" placeholder="John " class="block w-full px-5 py-2.5 mt-2 text-gray-700 placeholder-gray-400 bg-white border border-gray-200 rounded-lg focus:border-blue-400 focus:ring-blue-400 focus:outline-none focus:ring focus:ring-opacity-40" />
+                        </div>
+
+                        <div class="flex-1 px-2 mt-4 md:mt-0">
+                            <label class="block mb-2 text-sm text-gray-600">Last Name</label>
+                            <input type="text" name="last_name" placeholder="Doe" class="block w-full px-5 py-2.5 mt-2 text-gray-700 placeholder-gray-400 bg-white border border-gray-200 rounded-lg focus:border-blue-400 focus:ring-blue-400 focus:outline-none focus:ring focus:ring-opacity-40" />
+                        </div>
+                    </div>
+
+                    <div class="mt-4">
+                        <label class="block mb-2 text-sm text-gray-600">Email address</label>
+                        <input type="email" name="email" placeholder="johndoe@example.com" class="block w-full px-5 py-2.5 mt-2 text-gray-700 placeholder-gray-400 bg-white border border-gray-200 rounded-lg focus:border-blue-400 focus:ring-blue-400 focus:outline-none focus:ring focus:ring-opacity-40" />
+                    </div>
+
+                    <div class="w-full mt-4">
+                        <label class="block mb-2 text-sm text-gray-600">Message</label>
+                        <textarea name="message" class="block w-full h-32 px-5 py-2.5 mt-2 text-gray-700 placeholder-gray-400 bg-white border border-gray-200 rounded-lg md:h-56 focus:border-blue-400 focus:ring-blue-400 focus:outline-none focus:ring focus:ring-opacity-40" placeholder="Message"></textarea>
+                    </div>
+
+                    <button class="w-full px-6 py-3 mt-4 text-sm font-medium tracking-wide text-white capitalize transition-colors duration-300 transform bg-blue-500 rounded-lg hover:bg-blue-400 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-50">
+                        Send message
+                    </button>
+                </form>
+            </div>
         </div>
-        <div class="sm:col-span-2" data-aos="fade-up" data-aos-duration="800">
-          <label for="message" class="block mb-2 text-sm font-medium text-gray-900">Your message</label>
-          <textarea id="message" rows="6" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg shadow-sm border border-gray-300 focus:ring-primary-500 focus:border-primary-500" placeholder="Leave a comment..."></textarea>
-        </div>
-        <button type="submit" class="py-3 px-5 text-sm font-medium text-center text-white rounded-lg bg-primary-700 sm:w-fit hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300" data-aos="fade-up" data-aos-duration="800">
-          Send message
-        </button>
-      </form>
     </div>
-  </section>
-</div>
+</section>
 
 
 
@@ -1021,9 +1016,10 @@ document.addEventListener("DOMContentLoaded", function () {
 </div>
 
 <script src="scripts/newhome.js"></script>
-<!-- Elfsight WhatsApp Chat | Untitled WhatsApp Chat -->
+
+<!-- Elfsight Facebook Chat | Untitled Facebook Chat -->
 <script src="https://static.elfsight.com/platform/platform.js" async></script>
-<div class="elfsight-app-b2701a5e-2312-4201-92bf-10db53498839" data-elfsight-app-lazy></div>
+<div class="elfsight-app-ba949789-bf48-4f26-a7e1-ceb2bc7e1123" data-elfsight-app-lazy></div>
 <!-- Elfsight Google Reviews | Untitled Google Reviews -->
 <script src="https://static.elfsight.com/platform/platform.js" async></script>
 <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>

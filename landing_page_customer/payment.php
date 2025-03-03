@@ -60,8 +60,6 @@ $stmt->close();
     <link href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <script src="../scripts/userpayment.js" defer></script>
-    <script src="../scripts/bookings.js" defer></script>
     <link rel="stylesheet" href="../styles/booking.css">
     <link href="../dist/output.css" rel="stylesheet">
 
@@ -228,22 +226,35 @@ $stmt->close();
     </table>
   </div>
 
+  <!-- Extra Pax Row -->
+  <div class="mt-4">
+    <table class="w-full table-auto border-separate border-spacing-0.5">
+      <tbody>
+        <tr id="extra-pax-row" class="hidden">
+          <td></td>
+          <td class="py-2 px-4 text-gray-700">Extra Pax</td>
+          <td class="py-2 px-4 text-gray-700"><span id="extra-pax-count">0</span> guest(s)</td>
+          <td class="py-2 px-4 font-medium text-gray-900">₱<span id="extra-pax-price">0.00</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
   <!-- Total Price Section -->
-    <div class="mt-6 flex justify-between items-center border-t pt-4">
-      <span class="text-xl font-semibold text-white dark:text-gray-900"></span>
-      <span id="total-price" class="text-medium font-bold text-gray-500">₱0.00</span>
-    </div>
+  <div class="mt-6 flex justify-between items-center border-t pt-4">
+    <span class="text-xl font-semibold text-gray-700">Subtotal</span>
+    <span id="total-price" class="text-medium font-bold text-gray-500">₱0.00</span>
+  </div>
 
-    <div class="flex justify-between items-center pt-4">
-      <span class="text-sm font-semibold text-white dark:text-gray-900"></span>
-      <span id="amount-paid-display" class="text-sm font-bold text-gray-500"></span>
-    </div>
+  <div class="flex justify-between items-center pt-4">
+    <span class="text-sm font-semibold text-gray-700">Amount Paid</span>
+    <span id="amount-paid-display" class="text-sm font-bold text-gray-500"></span>
+  </div>
 
-    <div class="flex justify-between items-center pt-4">
-      <span class="text-xl font-semibold text-white dark:text-gray-900">Total</span>
-      <span id="new-total" class="text-xl font-bold text-blue-900">₱0.00</span>
-    </div>
-
+  <div class="flex justify-between items-center pt-4">
+    <span class="text-xl font-semibold text-gray-700">Total</span>
+    <span id="new-total" class="text-xl font-bold text-blue-900">₱0.00</span>
+  </div>
 </div>
 </div>
 
@@ -376,7 +387,13 @@ $stmt->close();
   <p id="modal-message" class="text-center">Please fill in the required fields</p>
 </div>
 
+
+<!-- Elfsight Facebook Chat | Untitled Facebook Chat -->
+<script src="https://static.elfsight.com/platform/platform.js" async></script>
+<div class="elfsight-app-ba949789-bf48-4f26-a7e1-ceb2bc7e1123" data-elfsight-app-lazy></div>
 </script>
+<script src="../scripts/payment.js" defer></script>
+<script src="../scripts/bookings.js" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js"></script>
