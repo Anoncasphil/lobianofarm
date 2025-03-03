@@ -47,6 +47,17 @@ if (!isset($_SESSION['admin_id'])) {
     scrollbar-color: rgba(100, 100, 100, 0.5) transparent;
 }
 
+/* Add hover effect to the notification card */
+.notifications-list .hover-effect {
+    transition: transform 0.3s ease, box-shadow 0.3s ease; /* Smooth transition */
+}
+
+.notifications-list .hover-effect:hover {
+    transform: scale(1.05); /* Slightly enlarge the card */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Add a subtle shadow on hover */
+}
+
+
     </style>
 </head>
 <body>
@@ -251,7 +262,7 @@ if (!isset($_SESSION['admin_id'])) {
 
     <div class="relative overflow-x-auto overflow-y-auto max-h-96 sm:rounded-lg custom-scroll" style="max-height: 400px;">
         <table class="w-full text-sm text-left rtl:text-right text-gray-700 dark:text-gray-300">
-            <thead class="text-xs text-gray-800 uppercase bg-gray-100 dark:bg-gray-800 dark:text-gray-300">
+            <thead class="text-xs text-gray-800 uppercase bg-gray-100">
                 <tr>
                     <th scope="col" class="px-6 py-3">Reservation ID</th>
                     <th scope="col" class="px-6 py-3">Name</th>
@@ -288,10 +299,10 @@ if (!isset($_SESSION['admin_id'])) {
 </div>
 
 
-        <?php
+<?php
 // Define the query to fetch all unread notifications
 $notif_query = "
-    SELECT title, message, type, created_at
+    SELECT title, message, type, created_at, reservation_id
     FROM notifications
     WHERE status = 'unread'
     ORDER BY created_at DESC
@@ -317,8 +328,9 @@ if (!$notif_result) {
             while ($notif = $notif_result->fetch_assoc()) {
                 // Format the timestamp
                 $created_at = date("F j, Y g:i A", strtotime($notif['created_at']));
-
-                echo "<div class='p-4 bg-blue-50 dark:bg-blue-900 border-l-4 border-blue-500 dark:border-blue-400 rounded-lg shadow-md'>";
+                $reservationId = htmlspecialchars($notif['reservation_id']); // Get the reservation ID
+                
+                echo "<div class='p-4 bg-blue-50 dark:bg-blue-900 border-l-4 border-blue-500 dark:border-blue-400 rounded-lg shadow-md hover-effect' data-id='$reservationId' onclick='storeReservationAndRedirect(this)'>";
                 echo "<p class='text-sm font-medium text-blue-800 dark:text-blue-300'><strong>" . htmlspecialchars($notif['title']) . "</strong></p>";
                 echo "<p class='text-sm text-gray-700 dark:text-gray-300'>" . htmlspecialchars($notif['message']) . "</p>";
                 echo "<span class='text-xs text-gray-600 dark:text-gray-400 block mt-2'>$created_at</span>";
@@ -335,6 +347,7 @@ if (!$notif_result) {
 
 
 
+
     </div>
 </main>
 
@@ -344,5 +357,19 @@ if (!$notif_result) {
 
 	<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 	<script src="scripts/script.js"></script>
+
+    <script>
+    function storeReservationAndRedirect(cardElement) {
+        // Get the reservation ID from the data-id attribute of the clicked notification card
+        let reservationId = cardElement.getAttribute("data-id");
+
+        // Store the reservation ID in localStorage
+        localStorage.setItem("reservationID_admin", reservationId);        
+        console.log("Stored reservation ID:", reservationId);
+
+        // Redirect to reservation_customer.php
+        window.location.href = "reservation/reservation_customer.php";
+    }
+</script>
 </body>
 </html>

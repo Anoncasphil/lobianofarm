@@ -275,42 +275,55 @@ function populateFields(data) {
         }
     };
 
-    // Populate fields with the data from the response
+    // Populate text and input fields
     setValue("first-name-p", data.first_name);
     setValue("last-name-p", data.last_name);
     setValue("email-p", data.email);
     setValue("mobile-number-p", data.contact_number);
 
-    // Remove commas before parsing the numbers
+    // Ensure numeric values are properly parsed
     const totalPrice = parseFloat(data.total_price.replace(/,/g, '')) || 0;
     const validAmountPaid = parseFloat(data.valid_amount_paid.replace(/,/g, '')) || 0;
+    const ratePrice = parseFloat(data.rate_price.replace(/,/g, '')) || 0;
+    const extraPax = parseInt(data.extra_pax) || 0;
+    const extraPaxPrice = parseFloat(data.extra_pax_price.replace(/,/g, '')) || 0;
 
-    // Calculate the new total (total-price - valid_amount_paid)
+    // Calculate the new total amount
     const newTotal = totalPrice - validAmountPaid;
 
-    // Apply formatting after calculation
+    // Apply formatted text
     setText("invoice-date", data.invoice_date);
     setText("invoice-no", data.invoice_number);
     setText("total-price", formatCurrency(totalPrice));
     setText("valid_amount_paid", formatNegativeCurrency(validAmountPaid));
     setText("new_total_amount", formatCurrency(newTotal));
 
+    // Display the rate name
+    setText("rate-name", data.rate_name || "N/A");
+
     // Handle rates and addons in the invoice
     const invoiceItemsElement = document.getElementById("invoice-items");
     if (invoiceItemsElement) {
         let itemsHTML = "";
 
-        // Render the rates
-        if (Array.isArray(data.rates) && data.rates.length > 0) {
-            data.rates.forEach(rate => {
-                itemsHTML += `
-                    <tr>
-                        <td class="py-2 px-4">Rate</td>
-                        <td class="py-2 px-4">${rate.rate_name}</td>
-                        <td class="py-2 px-4">${formatCurrency(rate.rate_price)}</td>
-                    </tr>
-                `;
-            });
+        // Render the rate details
+        itemsHTML += `
+            <tr>
+                <td class="py-2 px-4">Rate</td>
+                <td class="py-2 px-4">${data.rate_name || "N/A"}</td>
+                <td class="py-2 px-4">${formatCurrency(ratePrice)}</td>
+            </tr>
+        `;
+
+        // Render extra pax details if applicable
+        if (extraPax > 0) {
+            itemsHTML += `
+                <tr>
+                    <td class="py-2 px-4">Extra Pax</td>
+                    <td class="py-2 px-4">${extraPax} person(s)</td>
+                    <td class="py-2 px-4">${formatCurrency(extraPaxPrice)}</td>
+                </tr>
+            `;
         }
 
         // Render the addons
@@ -331,6 +344,7 @@ function populateFields(data) {
         console.error("Element with ID 'invoice-items' not found.");
     }
 }
+
 
 
 
