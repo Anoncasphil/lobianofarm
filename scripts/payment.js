@@ -372,11 +372,22 @@ async function submitReservation() {
     const mobileNumber = document.getElementById('mobile-number-p').value;
     const checkInDate = document.getElementById('check-in-date').value;
     const checkOutDate = document.getElementById('check-out-date').value;
+    // Add explicit capture of check-in and check-out times
+    const checkInTime = document.getElementById('check-in-time').value;
+    const checkOutTime = document.getElementById('check-out-time').value;
     const paymentReceipt = document.getElementById('dropzone-file').files[0];
 
     // Check if payment receipt is uploaded
     if (!paymentReceipt) {
         showAlert('Error', 'Please upload the payment receipt.');
+        submitButton.innerHTML = 'Submit';
+        submitButton.disabled = false;
+        return;
+    }
+
+    // Validate check-in and check-out times
+    if (!checkInTime || !checkOutTime) {
+        showAlert('Error', 'Check-in and check-out times are required.');
         submitButton.innerHTML = 'Submit';
         submitButton.disabled = false;
         return;
@@ -457,6 +468,9 @@ async function submitReservation() {
         formData.append('mobile_number', mobileNumber);
         formData.append('check_in_date', checkInDate);
         formData.append('check_out_date', checkOutDate);
+        // Add check-in and check-out times to the form data
+        formData.append('check_in_time', checkInTime);
+        formData.append('check_out_time', checkOutTime);
         formData.append('reference_number', referenceNumber);
         formData.append('invoice_date', invoiceDate);
         formData.append('invoice_number', invoiceNumber);
@@ -540,6 +554,11 @@ function sendEmail() {
 
     if (!reservationCode) {
         showAlert('Error', 'Reservation code is missing. Please ensure the code is generated before submitting.');
+        return;
+    }
+
+    if (!firstName || !lastName || !email || !mobileNumber || !checkInDate || !checkOutDate || !checkInTime || !checkOutTime) {
+        showAlert('Error', 'Please fill in all the required fields before submitting.');
         return;
     }
 
