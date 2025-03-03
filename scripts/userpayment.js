@@ -134,7 +134,6 @@ async function populateInvoice() {
     let totalPrice = parseFloat(rateData.price);
     let itemHtml = `
         <tr>
-            <td class="py-2"></td>
             <td class="py-2">Rate</td>
             <td class="py-2">${rateData.name}</td>
             <td class="py-2 text-right">${rateData.price}</td>
@@ -146,10 +145,7 @@ async function populateInvoice() {
     if (addonsData.length > 0) {
         addonsData.forEach(addon => {
             itemHtml += `
-                <tr data-addon-id="${addon.id}">
-                    <td class="py-2 text-right">
-                        <i class="ico-times text-gray-500 text-xs cursor-pointer hover:text-red-500" role="img" aria-label="Remove"></i>
-                    </td>
+                <tr>
                     <td class="py-2">Add-on</td>
                     <td class="py-2">${addon.name}</td>
                     <td class="py-2 text-right">${addon.price}</td>
@@ -448,6 +444,10 @@ function redirectHome() {
 }
  // Function to collect the data and send it via AJAX
  function sendEmail() {
+    // Get the reservation code from the element with id="code"
+    const reservationCode = document.getElementById('code')?.textContent || 'N/A';
+    const amountPaid = parseFloat(document.getElementById('amount-paid-input').value) || 0;
+    
     var reservationData = {
       first_name: document.getElementById('first-name-p').value,
       last_name: document.getElementById('last-name-p').value,
@@ -460,9 +460,12 @@ function redirectHome() {
       invoice_date: document.getElementById('invoice-date').textContent,
       invoice_no: document.getElementById('invoice-no').textContent,
       invoice_items: getInvoiceItems(),  // Function to get dynamic invoice items
-      total_price: document.getElementById('total-price').textContent.replace('₱', '').trim()
+      total_price: document.getElementById('total-price').textContent.replace('₱', '').trim(),
+      reservation_code: reservationCode,
+      status: 'Pending',
+      valid_amount_paid: amountPaid.toFixed(2) // Add valid amount paid
     };
-
+  
     // Send AJAX request to the PHP script
     $.ajax({
       url: 'send_email.php',  // Path to your PHP script
