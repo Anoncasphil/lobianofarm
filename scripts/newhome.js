@@ -259,7 +259,9 @@ document.getElementById('rate-modal').addEventListener('click', function(event) 
                 to: date
             })),
             // Disable server-disabled dates
-            ...disabledDates.map(date => ({ from: date, to: date }))
+            ...disabledDates.map(date => ({ from: date, to: date })),
+            // Disable the range from January 1 to March 3, 2025
+            { from: "2025-01-01", to: "2025-03-03" }
         ],
         minDate: today, // Ensure users can only select today or future dates
         onChange: function (selectedDates) {
@@ -267,7 +269,6 @@ document.getElementById('rate-modal').addEventListener('click', function(event) 
                 console.log(`Check-In Date Selected: ${selectedDates[0].toISOString().split("T")[0]}`);
             }
         },
-
     });
 }
 

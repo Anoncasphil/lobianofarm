@@ -1281,6 +1281,9 @@ document.addEventListener("DOMContentLoaded", function () {
             let firstName = document.getElementById("first-name-p").value;
             let lastName = document.getElementById("last-name-p").value;
     
+            // Call populateFields to retrieve the necessary data
+            const { valid_amount_paid, new_total, total_price, rate_price, extra_pax, extra_pax_price } = populateFields(data);
+    
             // Log the data being sent
             console.log("📨 Sending Data:", JSON.stringify({ 
                 reservation_id: reservationId,
@@ -1290,7 +1293,13 @@ document.addEventListener("DOMContentLoaded", function () {
                 email: email,
                 mobile_number: mobileNumber,
                 first_name: firstName,
-                last_name: lastName
+                last_name: lastName,
+                valid_amount_paid: valid_amount_paid,
+                new_total: new_total,
+                total_price: total_price,
+                rate_price: rate_price,
+                extra_pax: extra_pax,
+                extra_pax_price: extra_pax_price
             }));
     
             let response = await fetch("../landing_page_customer/email_status_send.php", {
@@ -1304,7 +1313,13 @@ document.addEventListener("DOMContentLoaded", function () {
                     email: email,
                     mobile_number: mobileNumber,
                     first_name: firstName,
-                    last_name: lastName
+                    last_name: lastName,
+                    valid_amount_paid: valid_amount_paid,
+                    new_total: new_total,
+                    total_price: total_price,
+                    rate_price: rate_price,
+                    extra_pax: extra_pax,
+                    extra_pax_price: extra_pax_price
                 })
             });
     

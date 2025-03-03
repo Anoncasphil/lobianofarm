@@ -12,8 +12,8 @@ if (!isset($_SESSION['user_id'])) {
 include('../db_connection.php'); // Adjust the path if necessary
 
 // Initialize variables
-$first_name = $last_name = $email = $contact_no = $password = $confirm_password = "";
-$first_name_err = $last_name_err = $email_err = $contact_no_err = $password_err = $confirm_password_err = "";
+$first_name = $last_name = $email = $phone_number = $password = $confirm_password = "";
+$first_name_err = $last_name_err = $email_err = $phone_number_err = $password_err = $confirm_password_err = "";
 
 // Process form submission
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -31,13 +31,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $last_name = trim($_POST["last_name"]);
     }
 
-    // Validate contact number
-    if (empty(trim($_POST["contact_no"]))) {
-        $contact_no_err = "Please enter your contact number.";
-    } elseif (!preg_match('/^[0-9]{10,15}$/', trim($_POST["contact_no"]))) {
-        $contact_no_err = "Please enter a valid contact number.";
+    // Validate phone number
+    if (empty(trim($_POST["phone_number"]))) {
+        $phone_number_err = "Please enter your phone number.";
+    } elseif (!preg_match('/^[0-9]{10,15}$/', trim($_POST["phone_number"]))) {
+        $phone_number_err = "Please enter a valid phone number.";
     } else {
-        $contact_no = trim($_POST["contact_no"]);
+        $phone_number = trim($_POST["phone_number"]);
     }
 
     // Validate password
@@ -60,29 +60,29 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 
     // Check for errors before updating the database
-    if (empty($first_name_err) && empty($last_name_err) && empty($contact_no_err) && empty($password_err) && empty($confirm_password_err)) {
+    if (empty($first_name_err) && empty($last_name_err) && empty($phone_number_err) && empty($password_err) && empty($confirm_password_err)) {
         if (!empty($password)) {
             // Prepare an update statement with password
-            $sql = "UPDATE user_tbl SET first_name = ?, last_name = ?, contact_no = ?, password = ? WHERE user_id = ?";
+            $sql = "UPDATE user_tbl SET first_name = ?, last_name = ?, phone_number = ?, password = ? WHERE user_id = ?";
         } else {
             // Prepare an update statement without password
-            $sql = "UPDATE user_tbl SET first_name = ?, last_name = ?, contact_no = ? WHERE user_id = ?";
+            $sql = "UPDATE user_tbl SET first_name = ?, last_name = ?, phone_number = ? WHERE user_id = ?";
         }
 
         if ($stmt = $conn->prepare($sql)) {
             if (!empty($password)) {
                 // Bind variables to the prepared statement as parameters with password
-                $stmt->bind_param("ssssi", $param_first_name, $param_last_name, $param_contact_no, $param_password, $param_user_id);
+                $stmt->bind_param("ssssi", $param_first_name, $param_last_name, $param_phone_number, $param_password, $param_user_id);
                 $param_password = password_hash($password, PASSWORD_DEFAULT); // Create a password hash
             } else {
                 // Bind variables to the prepared statement as parameters without password
-                $stmt->bind_param("sssi", $param_first_name, $param_last_name, $param_contact_no, $param_user_id);
+                $stmt->bind_param("sssi", $param_first_name, $param_last_name, $param_phone_number, $param_user_id);
             }
 
             // Set parameters
             $param_first_name = $first_name;
             $param_last_name = $last_name;
-            $param_contact_no = $contact_no;
+            $param_phone_number = $phone_number;
             $param_user_id = $_SESSION['user_id'];
 
             // Attempt to execute the prepared statement
@@ -103,7 +103,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $conn->close();
 } else {
     // Fetch user data from the database
-    $sql = "SELECT first_name, last_name, email, contact_no FROM user_tbl WHERE user_id = ?";
+    $sql = "SELECT first_name, last_name, email, phone_number FROM user_tbl WHERE user_id = ?";
     if ($stmt = $conn->prepare($sql)) {
         // Bind variables to the prepared statement as parameters
         $stmt->bind_param("i", $param_user_id);
@@ -119,7 +119,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             // Check if user exists
             if ($stmt->num_rows == 1) {
                 // Bind result variables
-                $stmt->bind_result($first_name, $last_name, $email, $contact_no);
+                $stmt->bind_result($first_name, $last_name, $email, $phone_number);
                 $stmt->fetch();
             } else {
                 // User doesn't exist, redirect to login page
@@ -168,9 +168,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     <span class="text-red-500 text-sm"><?php echo $email_err; ?></span>
                 </div>
                 <div class="mb-4">
-                    <label for="contact_no" class="block text-gray-700 font-semibold">Contact Number</label>
-                    <input type="text" name="contact_no" id="contact_no" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 <?php echo (!empty($contact_no_err)) ? 'border-red-500' : ''; ?>" value="<?php echo htmlspecialchars($contact_no); ?>">
-                    <span class="text-red-500 text-sm"><?php echo $contact_no_err; ?></span>
+                    <label for="phone_number" class="block text-gray-700 font-semibold">Phone Number</label>
+                    <input type="text" name="phone_number" id="phone_number" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 <?php echo (!empty($phone_number_err)) ? 'border-red-500' : ''; ?>" value="<?php echo htmlspecialchars($phone_number); ?>">
+                    <span class="text-red-500 text-sm"><?php echo $phone_number_err; ?></span>
                 </div>
                 <div class="mb-4">
                     <label for="password" class="block text-gray-700 font-semibold">Password</label>

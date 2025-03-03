@@ -63,8 +63,16 @@ $addons_stmt->execute();
 $addons_result = $addons_stmt->get_result();
 $addons = $addons_result->fetch_all(MYSQLI_ASSOC);
 
-// Calculate total price
+// Calculate total pax and price (including extra pax)
+$total_pax = intval($existing['total_pax']); // Assuming total pax is stored in the database
+$extra_pax = intval($existing['extra_pax']);
+$total_pax += $extra_pax; // Add extra pax to the total pax count
+
+// Calculate total price (rate + extra pax + addons)
 $total_price = floatval($rate['price']);
+$extra_pax_price = floatval($existing['extra_pax_price']);
+$total_price += $extra_pax_price;
+
 foreach ($addons as $addon) {
     $total_price += floatval($addon['price']);
 }
@@ -147,13 +155,13 @@ $body = "
                 </tr>
             </table>
         </div>
-        
+
         <div style='text-align: center; padding: 10px; background-color: #1e3a8a; color: white;'>
             <h3>Invoice Details</h3>
         </div>
         <div style='padding: 20px;'>
-            <p style='font-size: 14px; color: #333;'>Date: <strong id='invoice-date'>{$invoice_date}</strong></p>
-            <p style='font-size: 14px; color: #333;'>Invoice No: <strong id='invoice-no'>{$invoice_number}</strong></p>
+            <p style='font-size: 14px; color: #333;'>Date: <strong>{$invoice_date}</strong></p>
+            <p style='font-size: 14px; color: #333;'>Invoice No: <strong>{$invoice_number}</strong></p>
             <table style='width: 100%; margin-top: 10px; border-collapse: collapse; text-align: left; border: 1px solid #ddd;'>
                 <thead>
                     <tr style='background-color: #f0f0f0;'>
@@ -180,12 +188,13 @@ $body .= "
                 </tbody>
             </table>
             <div style='margin-top: 10px; text-align: right;'>
-                <p style='font-size: 16px; font-weight: bold; color: #333;text-align: left;'>Subtotal: <span id='total-price'>₱" . number_format($total_price, 2) . "</span></p>
-                <p style='font-size: 14px; font-weight: bold; color: #555;text-align: left;'>Amount Paid: <span id='valid_amount_paid'>₱" . number_format($valid_amount_paid, 2) . "</span></p>
-                <p style='font-size: 18px; font-weight: bold; color: #1e3a8a;text-align: left;'>Total: <span id='new_total_amount'>₱" . number_format($new_total, 2) . "</span></p>
+                <p style='font-size: 16px; font-weight: bold; color: #333;text-align: left;'>Total Pax: <span>{$total_pax} person(s)</span></p>
+                <p style='font-size: 16px; font-weight: bold; color: #333;text-align: left;'>Subtotal: <span>₱" . number_format($total_price, 2) . "</span></p>
+                <p style='font-size: 14px; font-weight: bold; color: #555;text-align: left;'>Amount Paid: <span>₱" . number_format($valid_amount_paid, 2) . "</span></p>
+                <p style='font-size: 18px; font-weight: bold; color: #1e3a8a;text-align: left;'>Total: <span>₱" . number_format($new_total, 2) . "</span></p>
             </div>
         </div>
-        
+
         <div style='text-align: center; padding: 10px; background-color: #1e3a8a; color: white; border-radius: 0 0 10px 10px; font-size: 14px;'>
             &copy; 2025 888 Lobiano's Farm Resort | All Rights Reserved
         </div>
