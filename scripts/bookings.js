@@ -863,3 +863,91 @@ document.getElementById('addon-modal').addEventListener('click', function(event)
     setTimeout(() => modal.classList.add('hidden'),);  // Hide after fade-out transition
   }
 });
+
+// Extra pax functionality
+document.addEventListener('DOMContentLoaded', function() {
+  const decreasePaxBtn = document.getElementById('decrease-pax');
+  const increasePaxBtn = document.getElementById('increase-pax');
+  const paxCountDisplay = document.getElementById('pax-count');
+  const paxCountTextDisplay = document.getElementById('pax-count-display');
+  const extraPaxCostDisplay = document.getElementById('extra-pax-cost');
+  const extraPaxSection = document.getElementById('extra-pax-section');
+  
+  const PAX_COST = 250; // Cost per extra guest
+  let paxCount = 0;
+  
+  // Update UI and calculations when pax count changes
+  function updatePaxCount(newCount) {
+    paxCount = newCount;
+    paxCountDisplay.textContent = paxCount;
+    paxCountTextDisplay.textContent = paxCount;
+    
+    const extraPaxCost = paxCount * PAX_COST;
+    extraPaxCostDisplay.textContent = extraPaxCost.toFixed(2);
+    
+    // Show or hide the extra pax subtotal section
+    if (paxCount > 0) {
+      extraPaxSection.classList.remove('hidden');
+    } else {
+      extraPaxSection.classList.add('hidden');
+    }
+    
+    // Update total price
+    updateTotalPrice();
+  }
+  
+  // Decrement pax count
+  decreasePaxBtn.addEventListener('click', function() {
+    if (paxCount > 0) {
+      updatePaxCount(paxCount - 1);
+    }
+  });
+  
+  // Increment pax count
+  increasePaxBtn.addEventListener('click', function() {
+    updatePaxCount(paxCount + 1);
+  });
+  
+  // Modify the existing updateTotalPrice function to include extra pax cost
+  const originalUpdateTotalPrice = window.updateTotalPrice || function() {};
+  
+  window.updateTotalPrice = function() {
+    // Call the original function if it exists
+    if (typeof originalUpdateTotalPrice === 'function') {
+      originalUpdateTotalPrice();
+    }
+    
+    // Get the current total (without extra pax)
+    const totalPriceElement = document.getElementById('total-price');
+    let currentTotal = parseFloat(totalPriceElement.textContent.replace('₱', '').replace(',', '')) || 0;
+    
+    // If this is the first calculation, get total from selected items
+    if (currentTotal === 0) {
+      const priceElements = document.querySelectorAll('#selected-prices li');
+      priceElements.forEach(element => {
+        const price = parseFloat(element.textContent.replace('₱', '').replace(',', '')) || 0;
+        currentTotal += price;
+      });
+    }
+    
+    // Add extra pax cost
+    const extraPaxCost = paxCount * PAX_COST;
+    const newTotal = currentTotal + extraPaxCost;
+    
+    // Update total price display with proper formatting
+    totalPriceElement.textContent = '₱' + newTotal.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    
+    // Make sure the extra pax data is sent with the form
+    const extraPaxInput = document.getElementById('extra-pax-field');
+    if (!extraPaxInput) {
+      const input = document.createElement('input');
+      input.type = 'hidden';
+      input.id = 'extra-pax-field';
+      input.name = 'extra_pax';
+      input.value = paxCount;
+      document.getElementById('summary-form').appendChild(input);
+    } else {
+      extraPaxInput.value = paxCount;
+    }
+  };
+});

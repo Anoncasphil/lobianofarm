@@ -393,6 +393,42 @@ $stmt->close();
       </div>
     </div>
 
+        <!-- Extra Pax Section -->
+<div class="mt-6 border-t pt-4">
+  <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+    <div class="flex items-center justify-between">
+      <div>
+        <p class="text-gray-800 font-medium">Extra pax (₱250 per head)</p>
+        <p class="text-xs text-gray-500 mt-1">Additional guests beyond standard occupancy</p>
+      </div>
+      
+      <div class="flex items-center space-x-3">
+        <button type="button" id="decrease-pax" class="w-8 h-8 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center hover:bg-blue-200 focus:outline-none">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4" />
+          </svg>
+        </button>
+        
+        <span id="pax-count" class="text-xl font-semibold text-gray-800 w-6 text-center">0</span>
+        
+        <button type="button" id="increase-pax" class="w-8 h-8 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center hover:bg-blue-200 focus:outline-none">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+          </svg>
+        </button>
+      </div>
+    </div>
+    
+    <!-- Extra pax subtotal -->
+    <div id="extra-pax-section" class="hidden mt-3 pt-3 border-t border-blue-200">
+      <div class="flex justify-between items-center">
+        <p class="text-gray-700">Extra guests (<span id="pax-count-display">0</span>)</p>
+        <p class="text-gray-700 font-medium">₱<span id="extra-pax-cost">0.00</span></p>
+      </div>
+    </div>
+  </div>
+</div>
+
     <!-- Total Section Below the Grid -->
     <div class="mt-8 border-t pt-6">
       <div class="flex justify-between items-center">
@@ -405,6 +441,7 @@ $stmt->close();
     <form id="summary-form" action="/submit-booking" method="POST" class="hidden">
       <input type="text" id="rate-id-field" name="rate_id" />
       <input type="text" id="addon-ids-field" name="addon_ids" />
+      <input type="hidden" id="extra-pax-field" name="extra_pax" value="0" />
     </form>
   </div>
 </div>
