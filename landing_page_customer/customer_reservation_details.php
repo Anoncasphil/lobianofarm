@@ -236,9 +236,9 @@ $stmt->close();
           Reschedule Reservation
         </button>
 
-        <button type="button" id="review-btn" class="mt-4 flex w-full items-center justify-center rounded-lg bg-white px-5 py-2.5 text-sm font-medium text-blue-900 hover:bg-blue-100 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-900 dark:text-white dark:hover:bg-blue-700 dark:focus:ring-blue-600 sm:mt-0">
-          Review Reservation
-        </button>
+        <a href="https://www.google.com/search?hl=en-PH&gl=ph&q=4VXW%2BQMV+Lobiano%60s+Farm+888,+Kaykwit+Road,+Indang,+Cavite&ludocid=17408039670452037793&lsig=AB86z5XFsr38YLdTnUIiP6hgke65#lrd=0x33bd79eaf08918e9:0xf195c7d93933a8a1,3" class="mt-4 flex w-full items-center justify-center rounded-lg bg-white px-5 py-2.5 text-sm font-medium text-blue-900 hover:bg-blue-100 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-900 dark:text-white dark:hover:bg-blue-700 dark:focus:ring-blue-600 sm:mt-0">
+          Leave a Review
+        </a>
       </div>
     </div>
    
