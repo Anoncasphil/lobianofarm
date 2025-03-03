@@ -475,49 +475,50 @@ $result = $conn->query($sql);
         <div id="category-<?php echo $row['id']; ?>" class="category-content" style="display: none;" data-aos="fade-up">
             <div class="relative">
 
-                <!-- Full-screen carousel -->
-                <div id="indicators-carousel-28-<?php echo $row['id']; ?>" class="relative w-full h-[60vh] md:h-[80vh] overflow-hidden" data-carousel="static">
-                    <div class="relative h-full overflow-hidden rounded-lg">
-                        <?php
-                        $files = glob($path . "/*.{jpg,jpeg,png,gif}", GLOB_BRACE);
-                        $firstItem = true;
-                        foreach ($files as $index => $file):
-                            if (file_exists($file)): ?>
-                                <div class="duration-700 ease-in-out <?php echo $firstItem ? 'block' : 'hidden'; ?>" data-carousel-item <?php echo $firstItem ? 'data-carousel-item="active"' : ''; ?>>
-                                    <img src="<?php echo htmlspecialchars($file); ?>" class="absolute block w-full max-w-full h-auto object-cover top-0 left-0" alt="Image <?php echo $index + 1; ?>">
-                                </div>
-                                <?php $firstItem = false; ?>
-                            <?php else: ?>
-                                <p>File does not exist: <?php echo htmlspecialchars($file); ?></p>
-                            <?php endif;
-                        endforeach; ?>
-                    </div>
-
-                    <!-- Slider indicators -->
-                    <div class="absolute z-30 flex -translate-x-1/2 space-x-3 rtl:space-x-reverse bottom-5 left-1/2">
-                        <?php foreach ($files as $index => $file): ?>
-                            <button type="button" class="w-3 h-3 rounded-full" aria-current="false" aria-label="Slide <?php echo $index + 1; ?>" data-carousel-slide-to="<?php echo $index; ?>"></button>
-                        <?php endforeach; ?>
-                    </div>
-
-                    <!-- Slider controls -->
-                    <button type="button" class="absolute top-0 start-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none" data-carousel-prev>
-                        <span class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/30 dark:bg-gray-800/30 group-hover:bg-white/50 dark:group-hover:bg-gray-800/60 group-focus:ring-4 group-focus:ring-white dark:group-focus:ring-gray-800/70 group-focus:outline-none">
-                            <svg class="w-4 h-4 text-white dark:text-gray-800 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
-                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 1 1 5l4 4"></path>
-                            </svg>
-                            <span class="sr-only">Previous</span>
-                        </span>
-                    </button>
-                    <button type="button" class="absolute top-0 end-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none" data-carousel-next>
-                        <span class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/30 dark:bg-gray-800/30 group-hover:bg-white/50 dark:group-hover:bg-gray-800/60 group-focus:ring-4 group-focus:ring-white dark:group-focus:ring-gray-800/70 group-focus:outline-none">
-                            <svg class="w-4 h-4 text-white dark:text-gray-800 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
-                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4"></path>
-                            </svg>
-                            <span class="sr-only">Next</span>
-                        </span>
-                    </button>
+               <!-- Full-screen carousel -->
+<div id="indicators-carousel-28-<?php echo $row['id']; ?>" class="relative w-full h-[100vh] md:h-[100vh] overflow-hidden" data-carousel="static">
+    <div class="relative h-full overflow-hidden rounded-lg">
+        <?php
+        $files = glob($path . "/*.{jpg,jpeg,png,gif}", GLOB_BRACE);
+        $firstItem = true;
+        foreach ($files as $index => $file):
+            if (file_exists($file)): ?>
+                <div class="duration-700 ease-in-out <?php echo $firstItem ? 'block' : 'hidden'; ?>" data-carousel-item <?php echo $firstItem ? 'data-carousel-item="active"' : ''; ?>>
+                    <img src="<?php echo htmlspecialchars($file); ?>" class="absolute block w-full h-full object-fill top-0 left-0" alt="Image <?php echo $index + 1; ?>">
                 </div>
+                <?php $firstItem = false; ?>
+            <?php else: ?>
+                <p>File does not exist: <?php echo htmlspecialchars($file); ?></p>
+            <?php endif;
+        endforeach; ?>
+    </div>
+
+    <!-- Slider indicators -->
+    <div class="absolute z-30 flex -translate-x-1/2 space-x-3 rtl:space-x-reverse bottom-5 left-1/2">
+        <?php foreach ($files as $index => $file): ?>
+            <button type="button" class="w-3 h-3 rounded-full" aria-current="false" aria-label="Slide <?php echo $index + 1; ?>" data-carousel-slide-to="<?php echo $index; ?>"></button>
+        <?php endforeach; ?>
+    </div>
+
+    <!-- Slider controls -->
+    <button type="button" class="absolute top-0 start-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none" data-carousel-prev>
+        <span class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/30 dark:bg-gray-800/30 group-hover:bg-white/50 dark:group-hover:bg-gray-800/60 group-focus:ring-4 group-focus:ring-white dark:group-focus:ring-gray-800/70 group-focus:outline-none">
+            <svg class="w-4 h-4 text-white dark:text-gray-800 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 1 1 5l4 4"></path>
+            </svg>
+            <span class="sr-only">Previous</span>
+        </span>
+    </button>
+    <button type="button" class="absolute top-0 end-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none" data-carousel-next>
+        <span class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/30 dark:bg-gray-800/30 group-hover:bg-white/50 dark:group-hover:bg-gray-800/60 group-focus:ring-4 group-focus:ring-white dark:group-focus:ring-gray-800/70 group-focus:outline-none">
+            <svg class="w-4 h-4 text-white dark:text-gray-800 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4"></path>
+            </svg>
+            <span class="sr-only">Next</span>
+        </span>
+    </button>
+</div>
+
 
                 <!-- Overlay category name (at the bottom of the image with white background) -->
                 <div class="absolute bottom-0 left-0 w-full bg-white bg-opacity-80 text-gray-900 font-bold text-4xl p-4 z-10">
@@ -763,7 +764,6 @@ document.addEventListener("DOMContentLoaded", function () {
   overflow: hidden;
 }
 </style>
-
 
 <section class="bg-white">
     <div class="container px-6 py-12 mx-auto">
