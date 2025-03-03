@@ -143,10 +143,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $admin_full_name = "$current_firstname $current_lastname";
                 logAdminUpdate($logged_admin_id, $admin_name, $adminId, $admin_full_name, $changes);
             }
-            
-            // Redirect to team.php after successful update
-            header("Location: team.php");
-            exit;
         } else {
             echo "Error updating admin details: " . $stmt->error;
         }
@@ -156,12 +152,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } else {
         echo "Error preparing SQL statement.";
     }
-
-    // Close connection
-    $conn->close();
-} else {
-    echo "Invalid request method.";
 }
+
+// Close connection
+$conn->close();
+
+// Redirect to team.php
+header("Location: team.php");
+exit;
 
 /**
  * Log the admin update action to the database
