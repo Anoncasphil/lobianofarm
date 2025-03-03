@@ -332,10 +332,32 @@ function displayReservationCode() {
 // Call this function when the page loads
 document.addEventListener("DOMContentLoaded", displayReservationCode);
 
+//function for error modal
+function showErrorModal(message) {
+    const modal = document.getElementById("error-modal");
+    const modalMessage = document.getElementById("error-modal-message");
+
+    if (!modal || !modalMessage) {
+        console.error("❌ Modal elements not found in the DOM!");
+        return;
+    }
+
+    modalMessage.textContent = message;
+    modal.style.display = "flex";  // Ensure modal appears
+    modal.classList.remove("hidden");
+}
+
+function closeErrorModal() {
+    const modal = document.getElementById("error-modal");
+    if (modal) {
+        modal.style.display = "none";
+        modal.classList.add("hidden");
+    }
+}
 
 function submitReservation() {
     const submitButton = document.getElementById('submitButton');
-    submitButton.innerHTML = 'Submitted';
+    submitButton.innerHTML = 'Submitting...';
     submitButton.disabled = true;
 
     const firstName = document.getElementById('first-name-p').value;
@@ -349,7 +371,7 @@ function submitReservation() {
     const paymentReceipt = document.getElementById('dropzone-file').files[0];
 
     if (!paymentReceipt) {
-        alert("Please upload the payment receipt.");
+        showErrorModal("❌ Please upload the payment receipt."); //added custom modal
         submitButton.innerHTML = 'Submit';
         submitButton.disabled = false;
         return;
@@ -366,7 +388,7 @@ function submitReservation() {
     const addonIds = selections ? selections.addons : [];
 
     if (!rateId) {
-        alert("Rate is not selected.");
+        showErrorModal("Rate is not selected.");
         submitButton.innerHTML = 'Submit';
         submitButton.disabled = false;
         return;
@@ -377,9 +399,7 @@ function submitReservation() {
     const validAmountPaid = amountPaid > 0 ? amountPaid : 0;
     const newTotal = totalPrice - validAmountPaid;
 
-    // Call generateReservationCode to get the reservation code
     generateReservationCode().then(reservationCode => {
-        // Append all data to FormData
         const formData = new FormData();
         formData.append('first_name', firstName);
         formData.append('last_name', lastName);
@@ -399,9 +419,8 @@ function submitReservation() {
         formData.append('addon_ids', JSON.stringify(addonIds));
         formData.append('new_total', newTotal);
         formData.append('amount_paid', validAmountPaid);
-        formData.append('reservation_code', reservationCode); // Add reservation code to formData
+        formData.append('reservation_code', reservationCode);
 
-        // Submit the form
         fetch('submit_reservation.php', {
             method: 'POST',
             body: formData
@@ -409,7 +428,7 @@ function submitReservation() {
         .then(response => response.text())
         .then(result => {
             if (result.includes("Reservation successfully added")) {
-                sendEmail(); // Call sendEmail only if reservation is successful
+                sendEmail(); 
                 document.getElementById('success-modal').classList.remove('hidden');
 
                 let countdown = 5;
@@ -418,23 +437,127 @@ function submitReservation() {
                     countdownElement.textContent = countdown;
                     if (countdown === 0) {
                         clearInterval(interval);
-                        window.location.href = "../index.php"; // Redirect to homepage
+                        window.location.href = "../index.php"; 
                     }
                     countdown--;
                 }, 1000);
             } else {
-                alert(result); // Show error message
+                showErrorModal(result); // Show error message in modal
                 submitButton.innerHTML = 'Submit';
                 submitButton.disabled = false;
             }
         })
         .catch(error => {
             console.error('Error:', error);
+            showErrorModal("Something went wrong. Please try again.");
             submitButton.innerHTML = 'Submit';
             submitButton.disabled = false;
         });
     });
 }
+
+// function submitReservation() {
+//     const submitButton = document.getElementById('submitButton');
+//     submitButton.innerHTML = 'Submitted';
+//     submitButton.disabled = true;
+
+//     const firstName = document.getElementById('first-name-p').value;
+//     const lastName = document.getElementById('last-name-p').value;
+//     const email = document.getElementById('email-p').value;
+//     const mobileNumber = document.getElementById('mobile-number-p').value;
+//     const checkInDate = document.getElementById('check-in-date').value;
+//     const checkOutDate = document.getElementById('check-out-date').value;
+//     const checkInTime = document.getElementById('check-in-time').value;
+//     const checkOutTime = document.getElementById('check-out-time').value;
+//     const paymentReceipt = document.getElementById('dropzone-file').files[0];
+
+//     if (!paymentReceipt) {
+//         alert("Please upload the payment receipt.");
+//         submitButton.innerHTML = 'Submit';
+//         submitButton.disabled = false;
+//         return;
+//     }
+
+//     const referenceNumber = document.getElementById('reference-number').value;
+//     const invoiceDate = new Date().toISOString().split('T')[0];
+//     const invoiceNumber = document.getElementById('invoice-no').innerText;
+//     const totalPrice = parseFloat(document.getElementById('total-price').innerText.replace('₱', '').trim());
+//     const downpayment = totalPrice / 2;
+
+//     const selections = JSON.parse(localStorage.getItem('selections'));
+//     const rateId = selections ? selections.rate.rateId : null;
+//     const addonIds = selections ? selections.addons : [];
+
+//     if (!rateId) {
+//         alert("Rate is not selected.");
+//         submitButton.innerHTML = 'Submit';
+//         submitButton.disabled = false;
+//         return;
+//     }
+
+//     const amountPaidInput = document.getElementById('amount-paid-input');
+//     const amountPaid = parseFloat(amountPaidInput.value) || 0;
+//     const validAmountPaid = amountPaid > 0 ? amountPaid : 0;
+//     const newTotal = totalPrice - validAmountPaid;
+
+//     // Call generateReservationCode to get the reservation code
+//     generateReservationCode().then(reservationCode => {
+//         // Append all data to FormData
+//         const formData = new FormData();
+//         formData.append('first_name', firstName);
+//         formData.append('last_name', lastName);
+//         formData.append('email', email);
+//         formData.append('mobile_number', mobileNumber);
+//         formData.append('check_in_date', checkInDate);
+//         formData.append('check_out_date', checkOutDate);
+//         formData.append('check_in_time', checkInTime);
+//         formData.append('check_out_time', checkOutTime);
+//         formData.append('reference_number', referenceNumber);
+//         formData.append('invoice_date', invoiceDate);
+//         formData.append('invoice_number', invoiceNumber);
+//         formData.append('total_price', totalPrice);
+//         formData.append('downpayment', downpayment);
+//         formData.append('payment_receipt', paymentReceipt);
+//         formData.append('rate_id', rateId);
+//         formData.append('addon_ids', JSON.stringify(addonIds));
+//         formData.append('new_total', newTotal);
+//         formData.append('amount_paid', validAmountPaid);
+//         formData.append('reservation_code', reservationCode); // Add reservation code to formData
+
+//         // Submit the form
+//         fetch('submit_reservation.php', {
+//             method: 'POST',
+//             body: formData
+//         })
+//         .then(response => response.text())
+//         .then(result => {
+//             if (result.includes("Reservation successfully added")) {
+//                 sendEmail(); // Call sendEmail only if reservation is successful
+//                 document.getElementById('success-modal').classList.remove('hidden');
+
+//                 let countdown = 5;
+//                 const countdownElement = document.getElementById('countdown-timer');
+//                 const interval = setInterval(() => {
+//                     countdownElement.textContent = countdown;
+//                     if (countdown === 0) {
+//                         clearInterval(interval);
+//                         window.location.href = "../index.php"; // Redirect to homepage
+//                     }
+//                     countdown--;
+//                 }, 1000);
+//             } else {
+//                 alert(result); // Show error message
+//                 submitButton.innerHTML = 'Submit';
+//                 submitButton.disabled = false;
+//             }
+//         })
+//         .catch(error => {
+//             console.error('Error:', error);
+//             submitButton.innerHTML = 'Submit';
+//             submitButton.disabled = false;
+//         });
+//     });
+// }
 
 
 
