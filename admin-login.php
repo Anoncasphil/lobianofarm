@@ -2,8 +2,6 @@
 session_start(); // Start the session to manage user login status
 include_once('db_connection.php'); // Include the database connection
 
-$error_message = ''; // Initialize error message variable
-
 // Check if the form is submitted
 if (isset($_POST['email']) && isset($_POST['password'])) {
     $email = $_POST['email'];
@@ -29,15 +27,19 @@ if (isset($_POST['email']) && isset($_POST['password'])) {
             $_SESSION['role'] = $admin['role'];
 
             // Redirect to the admin dashboard or team page after login
-            header("Location: admindash.php"); // Redirect to admindash.php.php
+            header("Location: admindash.php"); // Redirect to admindash.php
             exit(); // Ensure the script stops here after redirection
         } else {
             // Invalid password
-            $error_message = "Invalid password!";
+            $_SESSION['error_message'] = "Invalid password!";
+            header("Location: adlogin.php"); // Redirect back to the login page
+            exit();
         }
     } else {
         // Invalid email
-        $error_message = "No user found with this email!";
+        $_SESSION['error_message'] = "No user found with this email!";
+        header("Location: adlogin.php"); // Redirect back to the login page
+        exit();
     }
 
     // Close statement and connection

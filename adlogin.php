@@ -47,11 +47,33 @@
         </form>
     </div>
 
+    <!-- Modal -->
+    <?php if (isset($_SESSION['error_message']) && !empty($_SESSION['error_message'])): ?>
+        <div id="errorModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+            <div class="bg-white rounded-lg p-6">
+                <h3 class="text-red-500 text-xl"><?= htmlspecialchars($_SESSION['error_message']) ?></h3>
+                <button id="closeModal" class="mt-4 px-4 py-2 bg-red-500 text-white rounded-lg">Close</button>
+            </div>
+        </div>
+
+        <?php
+        // Clear the error message after displaying it
+        unset($_SESSION['error_message']);
+        ?>
+    <?php endif; ?>
+
     <script>
         document.getElementById('togglePassword').addEventListener('click', function () {
             const passwordField = document.getElementById('password');
             passwordField.type = passwordField.type === 'password' ? 'text' : 'password';
         });
+
+        // Close the modal when clicking the close button
+        if (document.getElementById('closeModal')) {
+            document.getElementById('closeModal').addEventListener('click', function() {
+                document.getElementById('errorModal').style.display = 'none';
+            });
+        }
     </script>
 
 </body>
