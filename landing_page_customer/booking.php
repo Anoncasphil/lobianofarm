@@ -62,7 +62,7 @@ $stmt->close();
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" rel="stylesheet"/>
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
-    <script src="../scripts/bookings.js" defer></script>
+    <script src="../scripts/booking.js" defer></script>
     <link rel="stylesheet" href="../styles/booking.css">
     <link rel="stylesheet" href="../styles/homepage.css">
     <link href="../dist/output.css" rel="stylesheet">
