@@ -62,7 +62,7 @@ $stmt->close();
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" rel="stylesheet"/>
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
-    <script src="../scripts/bookings.js" defer></script>
+    <script src="../scripts/booking.js" defer></script>
     <link rel="stylesheet" href="../styles/booking.css">
     <link rel="stylesheet" href="../styles/homepage.css">
     <link href="../dist/output.css" rel="stylesheet">
@@ -74,7 +74,7 @@ $stmt->close();
 <nav class="border-blue-200 bg-blue-900 fixed top-0 left-0 w-full z-50" data-aos="fade-down" data-aos-duration="1200">
   <div class="max-w-screen-xl flex items-center justify-between mx-auto p-4">
     <!-- Logo -->
-    <a href="../index.php" class="flex items-center space-x-3 rtl:space-x-reverse">
+    <a href="index.php" class="flex items-center space-x-3 rtl:space-x-reverse">
       <img src="../src/uploads/logo.svg" class="logo" alt="Logo" />
       <span class="self-center text-2xl font-semibold whitespace-nowrap text-white"></span>
     </a>
