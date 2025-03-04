@@ -1006,7 +1006,7 @@ document.addEventListener("DOMContentLoaded", function () {
   </div>
 </div>
 
-<script src="scripts/newhome.js"></script>
+<script src="scripts/newhomes.js"></script>
 
 <!-- Elfsight Facebook Chat | Untitled Facebook Chat -->
 <script src="https://static.elfsight.com/platform/platform.js" async></script>
