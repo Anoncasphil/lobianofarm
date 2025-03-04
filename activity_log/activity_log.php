@@ -39,7 +39,7 @@ $filter = isset($_GET['filter']) ? $_GET['filter'] : 'all';
         <li><a href="../sales.php"><i class='bx bx-line-chart icon'></i> Sales</a></li>
         <li><a href="../rates/rates.php"><i class="bx bxs-star icon"></i> Rates</a></li>
         <li><a href="../addons/addons.php"><i class='bx bxs-cart-add icon'></i> Add-ons</a></li>
-        <li><a href="../events/events.php"><i class='bx bxs-calendar-event icon'></i> Events</a></li>
+        <!-- <li><a href="../events/events.php"><i class='bx bxs-calendar-event icon'></i> Events</a></li> -->
         <li><a href="../album/album.php"><i class='bx bxs-photo-album icon'></i> Album</a></li>
 
         <?php if ($_SESSION['role'] === 'superadmin'): ?>
