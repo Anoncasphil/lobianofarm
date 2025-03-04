@@ -586,12 +586,7 @@ $result = $conn->query($sql);
         <p class="mt-4 text-lg text-gray-600">
           Welcome to 888 Lobiano's Farm Resort, where nature meets comfort. Our goal is to provide a serene escape where guests can unwind, reconnect with nature, and create unforgettable memories. Whether you're here for a weekend retreat or a special celebration, our resort offers a perfect blend of tranquility and adventure.
         </p>
-        <a 
-          href="#learn-more"
-          class="inline-block mt-6 px-6 py-3 bg-blue-600 text-white text-lg font-medium rounded-lg shadow-md hover:bg-blue-700 transition-all"
-        >
-          Learn More
-        </a>
+
       </div>
     </div>
 
