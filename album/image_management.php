@@ -39,9 +39,10 @@ if (!isset($_SESSION['admin_id'])) {
 			<li class="divider" data-text="management">Management</li>
 			<li><a href="../reservation/reservation_admin.php"><i class='bx bx-list-ol icon' ></i> Reservations</a></li>
             <li><a href="../calendar/calendar.php"><i class='bx bxs-calendar icon' ></i> Calendar</a></li>
+            <li><a href="../sales.php"><i class='bx bx-line-chart icon'></i> Sales</a></li>
 			<li><a href="../rates/rates.php"><i class="bx bxs-star icon min-w-[48px] flex justify-center items-center mr-2"></i>Rates</a></li>
 			<li><a href="../addons/addons.php"><i class='bx bxs-cart-add icon' ></i> Add-ons</a></li>
-			<li><a href="../events/events.php"><i class='bx bxs-calendar-event icon' ></i> Events</a></li>
+			<!-- <li><a href="../events/events.php"><i class='bx bxs-calendar-event icon' ></i> Events</a></li> -->
 			<li><a href="../album/album.php" class="active"><i class='bx bxs-photo-album icon' ></i> Album</a></li>
             <?php if ($_SESSION['role'] === 'superadmin'): ?>
 				<li><a href="../team/team.php"><i class='bx bxs-buildings icon'></i> Team</a></li>
